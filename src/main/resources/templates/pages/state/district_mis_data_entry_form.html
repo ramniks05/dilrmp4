@@ -196,6 +196,20 @@
                     </div>
                   </div>
 
+                  <!-- //v5 CLR: S.No. [6.1] — validated against [5] Total RoR only -->
+                  <div class="form-group row">
+                    <label for="rorWithCadastralMap" class="col-sm-6 col-form-label">
+                      <span class="red-text">[6.1]</span> Number of RoR with Cadastral Map
+                    </label>
+                    <div class="col-sm-6">
+                      <input type="text" id="rorWithCadastralMap" name="rorWithCadastralMap"
+                        th:field="*{rorWithCadastralMap}" class="form-control"
+                        onchange="validateRorWithCadastralMapV5()"
+                        oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                        min="0" maxlength="10">
+                    </div>
+                  </div>
+
                   <div class="form-group row">
                     <label for="totalLandOwners" class="col-sm-6 col-form-label">
                       <span class="red-text">[7]</span> Total number of land owners
@@ -269,8 +283,33 @@
                     </label>
                     <div class="col-sm-4">
                       <input type="text" id="totalCadastralMaps" name="totalCadastralMaps"
-                        th:field="*{totalCadastralMaps}" onchange=" validateCadastralMapsRoR()"
-                             oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="10" maxlength="10" class="form-control" required>
+                        th:field="*{totalCadastralMaps}" onchange="validateCadastralMapsRoR()"
+                             oninput="this.value = this.value.replace(/[^0-9]/g, ''); updateMapsInGoodConditionV5();"
+                             min="10" maxlength="10" class="form-control" required>
+                    </div>
+                  </div>
+
+                  <!-- //v5 Map Digitization: S.No. [11.1] — validated against [11] only (Cadastral Maps) -->
+                  <div class="form-group row">
+                    <label for="totalDamagedMissingMaps" class="col-sm-8 col-form-label">
+                      [11.1] Total Damaged/Missing Maps
+                    </label>
+                    <div class="col-sm-4">
+                      <input type="text" id="totalDamagedMissingMaps" name="totalDamagedMissingMaps"
+                        th:field="*{totalDamagedMissingMaps}" onchange="validateTotalDamagedMissingMaps()"
+                        oninput="this.value = this.value.replace(/[^0-9]/g, ''); updateMapsInGoodConditionV5();"
+                        min="0" maxlength="10" class="form-control">
+                    </div>
+                  </div>
+
+                  <!-- //v5 display-only: [11] − [11.1] (not stored in database) -->
+                  <div class="form-group row">
+                    <label for="mapsInGoodConditionV5" class="col-sm-8 col-form-label">
+                      Map in Good Condition (Calculated: S.No. [11] − [11.1])
+                    </label>
+                    <div class="col-sm-4">
+                      <input type="text" id="mapsInGoodConditionV5" class="form-control bg-light" readonly
+                        tabindex="-1" aria-readonly="true">
                     </div>
                   </div>
 
@@ -691,6 +730,52 @@
                     </div>
                   </div>
 
+                  <!-- //v5 Aadhaar: S.No. [43] Number of RoR linked with Address -->
+                  <div class="form-group row">
+                    <label for="rorLinkedWithAddress" class="col-sm-8 col-form-label"><span
+                        class="red-text">[43]</span>
+                      Number of RoR linked with Address:</label>
+                    <div class="col-sm-4">
+                      <input type="text" id="rorLinkedWithAddress" name="rorLinkedWithAddress"
+                        th:field="*{rorLinkedWithAddress}" onchange="validateTotalRoR()"
+                             oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="0" maxlength="10" class="form-control">
+                    </div>
+                  </div>
+
+                  <!-- //v5 Aadhaar: Land owners linkage [44]-[46] -->
+                  <div class="form-group row">
+                    <label for="landOwnersAadhar" class="col-sm-8 col-form-label"><span
+                        class="red-text">[44]</span>
+                      Number of Land owners linked with Aadhaar:</label>
+                    <div class="col-sm-4">
+                      <input type="text" id="landOwnersAadhar" name="landOwnersAadhar"
+                        th:field="*{landOwnersAadhar}" onchange="validateLandOwnersLinkage()"
+                             oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="0" maxlength="10" class="form-control">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="landOwnersLinkedWithMobile" class="col-sm-8 col-form-label"><span
+                        class="red-text">[45]</span>
+                      Number of Land owners linked with Mobile Number:</label>
+                    <div class="col-sm-4">
+                      <input type="text" id="landOwnersLinkedWithMobile" name="landOwnersLinkedWithMobile"
+                        th:field="*{landOwnersLinkedWithMobile}" onchange="validateLandOwnersLinkage()"
+                             oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="0" maxlength="10" class="form-control">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="landOwnersLinkedWithAddress" class="col-sm-8 col-form-label"><span
+                        class="red-text">[46]</span>
+                      Number of Land owners linked with Address:</label>
+                    <div class="col-sm-4">
+                      <input type="text" id="landOwnersLinkedWithAddress" name="landOwnersLinkedWithAddress"
+                        th:field="*{landOwnersLinkedWithAddress}" onchange="validateLandOwnersLinkage()"
+                             oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="0" maxlength="10" class="form-control">
+                    </div>
+                  </div>
+
 
                 </div>
 
@@ -741,7 +826,11 @@
                   villagesWithRoRLinkedAadhaar: 39,
                   villagesWith100PercentRoRLinkedAadhaar: 40,
                   rorLinkedWithAadhaar: 41,
-                  rorLinkedWithMobileNumber: 42
+                  rorLinkedWithMobileNumber: 42,
+                  rorLinkedWithAddress: 43,
+                  landOwnersAadhar: 44,
+                  landOwnersLinkedWithMobile: 45,
+                  landOwnersLinkedWithAddress: 46
                 };
 
                 function isDistrictMisIncreaseOnly() {
@@ -923,7 +1012,10 @@
     }
      toggleMapsUpdatePeriod();
     // Initialize the field state on page load
-    document.addEventListener('DOMContentLoaded', toggleMapsUpdatePeriod);
+    document.addEventListener('DOMContentLoaded', function () {
+      toggleMapsUpdatePeriod();
+      updateMapsInGoodConditionV5(); //v5
+    });
 
     // Add event listeners for radio buttons
     document.getElementById('mapsUpdatedBasedOnMutationYes').addEventListener('change', toggleMapsUpdatePeriod);
@@ -1192,6 +1284,8 @@ $(document).ready(function() {
     const rorComputerized = document.getElementById("rorComputerized").value;
     const rorLinkedWithAadhaar = document.getElementById("rorLinkedWithAadhaar").value;
     const rorLinkedWithMobileNumber = document.getElementById("rorLinkedWithMobileNumber").value;
+    const rorLinkedWithAddressEl = document.getElementById("rorLinkedWithAddress");
+    const rorLinkedWithAddress = rorLinkedWithAddressEl ? rorLinkedWithAddressEl.value : 0;
     if (totalRoR === '' || totalRoR === null) {
        document.getElementById("totalRoR").value = 0;
     }
@@ -1208,10 +1302,16 @@ $(document).ready(function() {
      document.getElementById("rorLinkedWithMobileNumber").value = 0;
     }
 
+     if (rorLinkedWithAddressEl && (rorLinkedWithAddress === '' || rorLinkedWithAddress === null)) {
+     rorLinkedWithAddressEl.value = 0;
+    }
+
     if (parseInt(rorComputerized) > parseInt(totalRoR)) {
        alert("S.No. [6] must be equal to or lesser than S.No. [5].");
       document.getElementById("rorComputerized").value = 0;
     }
+
+    validateRorWithCadastralMapV5(); //v5
 
     if (parseInt(rorLinkedWithAadhaar) > parseInt(rorComputerized)) {
        alert("S.No. [41] must be equal to or lesser than S.No. [6].");
@@ -1221,6 +1321,67 @@ $(document).ready(function() {
     if (parseInt(rorLinkedWithMobileNumber) > parseInt(rorComputerized)) {
        alert("S.No. [42] must be equal to or lesser than S.No. [6].");
       document.getElementById("rorLinkedWithMobileNumber").value = 0;
+    }
+
+    if (rorLinkedWithAddressEl && parseInt(rorLinkedWithAddressEl.value || 0, 10) > parseInt(rorComputerized)) {
+       alert("S.No. [43] must be equal to or lesser than S.No. [6].");
+      rorLinkedWithAddressEl.value = 0;
+    }
+
+   }
+
+    //v5 Aadhaar: Land owners [44]-[46] <= Total land owners [7]
+    function validateLandOwnersLinkage() {
+    const totalLandOwnersEl = document.getElementById("totalLandOwners");
+    const totalLandOwners = totalLandOwnersEl ? totalLandOwnersEl.value : 0;
+    const landOwnersAadharEl = document.getElementById("landOwnersAadhar");
+    const landOwnersMobileEl = document.getElementById("landOwnersLinkedWithMobile");
+    const landOwnersAddressEl = document.getElementById("landOwnersLinkedWithAddress");
+
+    if (totalLandOwnersEl && (totalLandOwners === '' || totalLandOwners === null)) {
+      totalLandOwnersEl.value = 0;
+    }
+    if (landOwnersAadharEl && (landOwnersAadharEl.value === '' || landOwnersAadharEl.value === null)) {
+      landOwnersAadharEl.value = 0;
+    }
+    if (landOwnersMobileEl && (landOwnersMobileEl.value === '' || landOwnersMobileEl.value === null)) {
+      landOwnersMobileEl.value = 0;
+    }
+    if (landOwnersAddressEl && (landOwnersAddressEl.value === '' || landOwnersAddressEl.value === null)) {
+      landOwnersAddressEl.value = 0;
+    }
+
+    const total = parseInt(totalLandOwnersEl ? totalLandOwnersEl.value || 0 : 0, 10);
+    if (landOwnersAadharEl && parseInt(landOwnersAadharEl.value || 0, 10) > total) {
+      alert("S.No. [44] must be equal to or lesser than S.No. [7].");
+      landOwnersAadharEl.value = 0;
+    }
+    if (landOwnersMobileEl && parseInt(landOwnersMobileEl.value || 0, 10) > total) {
+      alert("S.No. [45] must be equal to or lesser than S.No. [7].");
+      landOwnersMobileEl.value = 0;
+    }
+    if (landOwnersAddressEl && parseInt(landOwnersAddressEl.value || 0, 10) > total) {
+      alert("S.No. [46] must be equal to or lesser than S.No. [7].");
+      landOwnersAddressEl.value = 0;
+    }
+   }
+  }
+
+  //v5 CLR: S.No. [6.1] — compare with S.No. [5] Total RoR only
+  function validateRorWithCadastralMapV5() {
+    const totalRoR = parseInt(document.getElementById("totalRoR").value || 0, 10);
+    const rorWithCadastralMapEl = document.getElementById("rorWithCadastralMap");
+    if (!rorWithCadastralMapEl) {
+      return;
+    }
+    let rorWithCadastralMap = rorWithCadastralMapEl.value;
+    if (rorWithCadastralMap === '' || rorWithCadastralMap === null) {
+      rorWithCadastralMapEl.value = 0;
+      return;
+    }
+    if (parseInt(rorWithCadastralMap, 10) > totalRoR) {
+      alert("S.No. [6.1] must be equal to or lesser than S.No. [5].");
+      rorWithCadastralMapEl.value = 0;
     }
   }
 
@@ -1237,10 +1398,65 @@ $(document).ready(function() {
      document.getElementById("digitizedCadastralMaps").value = 0;
     }
 
-    if (parseInt(digitizedCadastralMaps) > parseInt(totalCadastralMaps)) {
-       alert("S.No. [12] must be equal to or lesser than S.No. [11].");
-      document.getElementById("digitizedCadastralMaps").value = 0;
+    validateDigitizedCadastralMapsV5(); //v5
+    validateTotalDamagedMissingMaps(); //v5
+  }
+
+  //v5 S.No. [12] must not exceed S.No. [11] or Map in Good Condition ([11] − [11.1])
+  function getMapsInGoodConditionCountV5() {
+    const totalCadastralMaps = parseInt(document.getElementById("totalCadastralMaps").value || 0, 10);
+    const damagedEl = document.getElementById("totalDamagedMissingMaps");
+    const damagedMissing = damagedEl ? parseInt(damagedEl.value || 0, 10) : 0;
+    return Math.max(0, totalCadastralMaps - damagedMissing);
+  }
+
+  function validateDigitizedCadastralMapsV5() {
+    const digitizedEl = document.getElementById("digitizedCadastralMaps");
+    if (!digitizedEl) {
+      return;
     }
+    const totalCadastralMaps = parseInt(document.getElementById("totalCadastralMaps").value || 0, 10);
+    const digitizedCadastralMaps = parseInt(digitizedEl.value || 0, 10);
+    const mapsInGoodCondition = getMapsInGoodConditionCountV5();
+
+    if (digitizedCadastralMaps > totalCadastralMaps) {
+      alert("S.No. [12] must be equal to or lesser than S.No. [11].");
+      digitizedEl.value = 0;
+      return;
+    }
+    if (digitizedCadastralMaps > mapsInGoodCondition) {
+      alert("S.No. [12] must be equal to or lesser than Map in Good Condition (S.No. [11] − [11.1]).");
+      digitizedEl.value = 0;
+    }
+  }
+
+  //v5 Map Digitization: S.No. [11.1] — compare with S.No. [11] only (not FMB/Tippan)
+  function validateTotalDamagedMissingMaps() {
+    const totalCadastralMaps = parseInt(document.getElementById("totalCadastralMaps").value || 0, 10);
+    const totalDamagedMissingMapsEl = document.getElementById("totalDamagedMissingMaps");
+    if (!totalDamagedMissingMapsEl) {
+      return;
+    }
+    let totalDamagedMissingMaps = totalDamagedMissingMapsEl.value;
+    if (totalDamagedMissingMaps === '' || totalDamagedMissingMaps === null) {
+      totalDamagedMissingMapsEl.value = 0;
+      totalDamagedMissingMaps = 0;
+    }
+    if (parseInt(totalDamagedMissingMaps, 10) > totalCadastralMaps) {
+      alert("S.No. [11.1] must be equal to or lesser than S.No. [11].");
+      totalDamagedMissingMapsEl.value = 0;
+    }
+    updateMapsInGoodConditionV5(); //v5
+    validateDigitizedCadastralMapsV5(); //v5
+  }
+
+  //v5 Map in Good Condition = S.No. [11] − [11.1] (display only, not persisted)
+  function updateMapsInGoodConditionV5() {
+    const displayEl = document.getElementById("mapsInGoodConditionV5");
+    if (!displayEl) {
+      return;
+    }
+    displayEl.value = getMapsInGoodConditionCountV5();
   }
 
 

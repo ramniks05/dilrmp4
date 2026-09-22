@@ -24,6 +24,8 @@ public class ReportLabels {
 
     public static final String RoR = "No. of RoR";
     public static final String ROR_COMPUTERIZED = "RoR Computerized";
+    //v5 CLR — No. of RoR with Cadastral Map
+    public static final String ROR_WITH_CADASTRAL_MAP = "with Cadastral Map";
     public static final String CLR_COMPLETED = "CLR Completed";
     public static final String NUMBER_OF_VILLAGES = "No. of Villages";
     public static final String DIGITALLY_SIGNED_ROR_AVAILABLE = "Digitally signed RoR available";
@@ -52,6 +54,9 @@ public class ReportLabels {
     public static final String MUTATION_APPLICATION_SUBMITTED_ONLINE = "Mutation Application Can Be Submitted Online";
     public static final String WHETHER_AUTO_TRIGGERED_MUTATION_FACILITY_AVAILABLE = "Whether Auto-Triggered Mutation Facility Available";
     public static final String AUTO_TRIGGERED_MUTATION_FACILITY_AVAILABLE = "Auto-Triggered Mutation Facility Available";
+    //v5 CLR — Whether Auto-Mutation Facility Available
+    public static final String WHETHER_AUTO_MUTATION_FACILITY_AVAILABLE = "Whether Auto-Mutation Facility Available";
+    public static final String AUTO_MUTATION_FACILITY_AVAILABLE = "Auto-Mutation Facility Available";
     public static final String WHETHER_BANKS_AUTHORIZED_TO_CREATE_CLEAR_MORTGAGE_CHARGE_IN_ROR = "Whether Banks Authorized to Create/Clear 'Mortgage' Charge in RoR";
     public static final String BANKS_AUTHORIZED_TO_CREATE_CLEAR_MORTGAGE_CHARGE_IN_ROR = "Banks Authorized to Create/Clear 'Mortgage' Charge in RoR";
     public static final String WHETHER_LAND_RECORDS_BE_CHECKED_ONLINE_BY_REVENUE_COURTS = "Whether Land Records Can Be Checked Online by Revenue Courts";
@@ -73,6 +78,11 @@ public class ReportLabels {
     public static final String NO_OF_CADASTRAL_MAPS_FMBS_TIPPANS = "No. of Cadastral Maps / FMBs / Tippans";
     public static final String CADASTRAL_MAPS_FMBS_TIPPANS = "Cadastral Maps + FMBs + Tippans";
     public static final String CADASTRAL_MAPS = "Cadastral Maps";
+    //v5 Map Digitization — Cadastral Maps sub-columns
+    public static final String TOTAL_DAMAGED_MISSING_MAPS = "Total Damaged/ Missing Maps";
+    public static final String MAP_IN_GOOD_CONDITION = "Map in Good Condition";
+    public static final String DIGITIZED_PERCENT_OF_TOTAL_CADASTRAL_MAPS = "% Digitized (of Total Cadastral Maps)";
+    public static final String DIGITIZED_PERCENT_OF_GOOD_CONDITION_MAPS = "% Digitized (of Maps in Good Condition)";
     public static final String FMBs = "FMBs";
     public static final String TIPPANS = "Tippans";
     public static final String DIGITIZED = "Digitized";
@@ -207,6 +217,8 @@ public class ReportLabels {
     public static final String WHOSE_AADHAAR_LINKED_WITH_RoR = "Whose Aadhaar linked with RoR";
     public static final String LINKED_WITH_AADHAAR = "Linked with Aadhaar";
     public static final String LINKED_WITH_MOBILE_NUMBER = "Linked with Mobile Number";
+    //v5 Aadhaar — Linked with Address
+    public static final String LINKED_WITH_ADDRESS = "Linked with Address";
 
 
     //Reports Name

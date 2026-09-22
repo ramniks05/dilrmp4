@@ -9,6 +9,7 @@ import in.gov.dilrmp.models.reportDTO.clr.DistrictClrReportView;
 import in.gov.dilrmp.models.reportDTO.clr.StateClrReportView;
 import in.gov.dilrmp.repositories.physicalProgressRepositories.DistrictClrViewRepository;
 import in.gov.dilrmp.repositories.physicalProgressRepositories.StateClrReportViewRepository;
+import in.gov.dilrmp.utils.ClrReportV5Enricher;
 
 @Service
 public class DistrictCLRService {
@@ -17,12 +18,15 @@ public class DistrictCLRService {
     DistrictClrViewRepository districtClrViewRepository;
     @Autowired
     StateClrReportViewRepository stateClrReportViewRepository;
+    @Autowired
+    ClrReportV5Enricher clrReportV5Enricher;
 
     private Logger logger = LoggerFactory.getLogger(DistrictCLRService.class);
 
     public List<StateClrReportView> getClrListByStateId(Long  stateId) {
-
-        return stateClrReportViewRepository.findAllByStateId(stateId);
+        List<StateClrReportView> reports = stateClrReportViewRepository.findAllByStateId(stateId);
+        clrReportV5Enricher.enrichStateReportListForDistrictPage(reports, stateId);
+        return reports;
     }
 
     public List<DistrictClrReportView> getDistrictReportsByStateId(Long stateId) {
@@ -48,6 +52,7 @@ public class DistrictCLRService {
             }
         }
 
+        clrReportV5Enricher.enrichDistrictReports(clrReportViews, stateId);
         return clrReportViews;
     }
 

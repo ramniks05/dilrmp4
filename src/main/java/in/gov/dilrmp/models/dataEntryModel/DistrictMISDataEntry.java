@@ -46,6 +46,10 @@ public class DistrictMISDataEntry {
     @Column(name = "ror_computerized", columnDefinition = "int default 0")
     private Integer rorComputerized = 0;
 
+    //v5 CLR: S.No. [6.1] Number of RoR with Cadastral Map (validated vs [5] Total RoR)
+    @Column(name = "ror_with_cadastral_map", columnDefinition = "int default 0")
+    private Integer rorWithCadastralMap = 0;
+
     @Column(name = "total_land_owners", columnDefinition = "int default 0")
     private Integer totalLandOwners = 0;
 
@@ -122,6 +126,10 @@ public class DistrictMISDataEntry {
 
     @Column(name = "land_parcels_with_ulipn",columnDefinition = "int default 0")
     private Integer landParcelsWithULIPN = 0;
+
+    //v5 Map Digitization: S.No. [11.1] Total Damaged/Missing Maps (Cadastral; validated vs [11] only)
+    @Column(name = "total_damaged_missing_maps", columnDefinition = "int default 0")
+    private Integer totalDamagedMissingMaps = 0;
 
     //Component 3: Computerization of Registration (SRO)
 
@@ -209,6 +217,18 @@ public class DistrictMISDataEntry {
 
     @Column(name = "ror_linked_with_mobile_number",columnDefinition = "int default 0")
     private Integer rorLinkedWithMobileNumber = 0;
+
+    //v5 Aadhaar: S.No. [43] Number of RoR linked with Address
+    @Column(name = "ror_linked_with_address", columnDefinition = "int default 0")
+    private Integer rorLinkedWithAddress = 0;
+
+    //v5 Aadhaar: Land owners linked with Aadhaar / Mobile / Address [44]-[46]
+    // landOwnersAadhar already exists above as [44]
+    @Column(name = "land_owners_linked_with_mobile", columnDefinition = "int default 0")
+    private Integer landOwnersLinkedWithMobile = 0;
+
+    @Column(name = "land_owners_linked_with_address", columnDefinition = "int default 0")
+    private Integer landOwnersLinkedWithAddress = 0;
 
       // Additional fieldsa
     @Column(name = "last_update_on_date")

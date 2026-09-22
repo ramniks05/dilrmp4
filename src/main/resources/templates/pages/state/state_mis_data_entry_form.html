@@ -285,10 +285,36 @@
                                         </div>
                                     </div>
 
+                                    <!-- //v5 State MIS: S.No. [11] Whether Auto-Mutation Facility Available -->
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <label for="autoMutationFacility" class="col-md-8 col-form-label">
+                                                <span class="red-text">[11]</span> Whether Auto-Mutation Facility Available:
+                                            </label>
+                                            <div class="col-md-4">
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="autoMutationFacilityYes"
+                                                        name="autoMutationFacility" th:field="*{autoMutationFacility}"
+                                                        value="true" class="form-check-input">
+                                                    <label for="autoMutationFacilityYes"
+                                                        class="form-check-label">Yes</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="autoMutationFacilityNo"
+                                                        name="autoMutationFacility" th:field="*{autoMutationFacility}"
+                                                        value="false" class="form-check-input"
+                                                        th:checked="${autoMutationFacility == null || !autoMutationFacility}">
+                                                    <label for="autoMutationFacilityNo"
+                                                        class="form-check-label">No</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <div class="col-md-12">
                                         <div class="form-group row">
                                             <label for="eRCMSAvailable" class="col-md-8 col-form-label">
-                                                <span class="red-text">[11]</span> Whether e-Revenue Court Management System is available:
+                                                <span class="red-text">[12]</span> Whether e-Revenue Court Management System is available:
                                             </label>
                                             <div class="col-md-4">
                                                 <div class="form-check form-check-inline">
@@ -311,7 +337,7 @@
                                     <div class="col-md-12">
                                         <div class="form-group row">
                                             <label for="eRCMSNameUrl" class="col-md-8 col-form-label">
-                                                <span class="red-text">[12]</span> If yes, Name and URL of e-RCMS:
+                                                <span class="red-text">[13]</span> If yes, Name and URL of e-RCMS:
                                             </label>
                                             <div class="col-md-4">
                                                 <input type="text" id="eRCMSNameUrl" name="eRCMSNameUrl"
@@ -328,7 +354,7 @@
                                     <div class="col-md-12">
                                         <div class="form-group row">
                                             <label for="totalRevenueCourts" class="col-md-8 col-form-label">
-                                                <span class="red-text">[13]</span> Total number of Revenue
+                                                <span class="red-text">[14]</span> Total number of Revenue
                                                 Courts in the State:
                                             </label>
                                             <div class="col-md-4">
@@ -342,7 +368,7 @@
                                     <div class="col-md-12">
                                         <div class="form-group row">
                                             <label for="computerizedRevenueCourts" class="col-md-8 col-form-label">
-                                                <span class="red-text">[14]</span> Of this, number of Revenue
+                                                <span class="red-text">[15]</span> Of this, number of Revenue
                                                 Courts computerized:
                                             </label>
                                             <div class="col-md-4">
@@ -354,7 +380,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <h5>[15] Have the below mentioned Processes of Revenue Courts been made
+                                    <h5>[16] Have the below mentioned Processes of Revenue Courts been made
                                         online?</h5>
 
                                     <div class="row">
@@ -600,12 +626,12 @@
                                         </div>
                                     </div>
 
-                                    <!-- Question 16 -->
+                                    <!-- Question 17 -->
                                     <div class="col-md-12">
                                         <div class="form-group row">
                                             <label for="landRecordsOnlineForCivilCourts"
                                                 class="col-md-8 col-form-label">
-                                                <span class="red-text">16</span> Has the Revenue Court
+                                                <span class="red-text">[17]</span> Has the Revenue Court
                                                 proceedings been made completely paperless or is option?:
                                             </label>
                                             <div class="col-md-4">
@@ -629,12 +655,12 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- Question 17 -->
+                                    <!-- Question 18 -->
                                     <div class="col-md-12">
                                         <div class="form-group row">
                                             <label for="caseFilingRedFlaggedInLandRecordsFromCivilCourts"
                                                 class="col-md-8 col-form-label">
-                                                <span class="red-text">17</span> Can Land Records be checked
+                                                <span class="red-text">[18]</span> Can Land Records be checked
                                                 online by Civil Courts (through eCourts System):
                                             </label>
                                             <div class="col-md-4">
@@ -690,7 +716,7 @@
                                     <div class="col-md-12">
                                         <div class="form-group row">
                                             <label for="bankRedFlagMortgageInLandRecords" class="col-md-8 col-form-label">
-                                                <span class="red-text">18</span> Is there a provision for banks to directly mark "Mortgage" in the Land Records System?
+                                                <span class="red-text">[19]</span> Is there a provision for banks to directly mark "Mortgage" in the Land Records System?
                                             </label>
                                             <div class="col-md-4">
                                                 <div class="form-check form-check-inline">
@@ -844,7 +870,7 @@ const computerizedRevenueCourts = parseInt(document.getElementById('computerized
         }
 
         if (parseInt(computerizedRevenueCourts) > parseInt(totalRevenueCourts)) {
-           alert("S.No. [14] must be equal to or lesser than S.No. [13].");
+           alert("S.No. [15] must be equal to or lesser than S.No. [14].");
            document.getElementById("computerizedRevenueCourts").value = 0;
           }
 

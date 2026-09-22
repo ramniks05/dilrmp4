@@ -283,6 +283,16 @@ public class PdfExporter {
                                                 cell6 = new PdfPCell(new Phrase("(" + (i + 1) + "e)", mediumFont));
                                                 cellAdded = true;
                                         }
+                                        if (lt.get(1) == 6) {
+                                                //v5: Cadastral Maps now has 6 leaf columns
+                                                cell2 = new PdfPCell(new Phrase("(" + (i + 1) + "a)", mediumFont));
+                                                cell3 = new PdfPCell(new Phrase("(" + (i + 1) + "b)", mediumFont));
+                                                cell4 = new PdfPCell(new Phrase("(" + (i + 1) + "c)", mediumFont));
+                                                cell5 = new PdfPCell(new Phrase("(" + (i + 1) + "d)", mediumFont));
+                                                cell6 = new PdfPCell(new Phrase("(" + (i + 1) + "e)", mediumFont));
+                                                cell7 = new PdfPCell(new Phrase("(" + (i + 1) + "f)", mediumFont));
+                                                cellAdded = true;
+                                        }
                                         if (lt.get(1) == 8) {
                                                 cell2 = new PdfPCell(new Phrase("(" + (i + 1) + "a)", mediumFont));
                                                 cell3 = new PdfPCell(new Phrase("(" + (i + 1) + "b)", mediumFont));
@@ -492,6 +502,16 @@ public class PdfExporter {
                                                         cell4 = new PdfPCell(new Phrase("(" + (i + 1) + "c)", mediumFont));
                                                         cell5 = new PdfPCell(new Phrase("(" + (i + 1) + "d)", mediumFont));
                                                         cell6 = new PdfPCell(new Phrase("(" + (i + 1) + "e)", mediumFont));
+                                                        cellAdded = true;
+                                                }
+                                                if (lt.get(1) == 6) {
+                                                        //v5: Cadastral Maps now has 6 leaf columns
+                                                        cell2 = new PdfPCell(new Phrase("(" + (i + 1) + "a)", mediumFont));
+                                                        cell3 = new PdfPCell(new Phrase("(" + (i + 1) + "b)", mediumFont));
+                                                        cell4 = new PdfPCell(new Phrase("(" + (i + 1) + "c)", mediumFont));
+                                                        cell5 = new PdfPCell(new Phrase("(" + (i + 1) + "d)", mediumFont));
+                                                        cell6 = new PdfPCell(new Phrase("(" + (i + 1) + "e)", mediumFont));
+                                                        cell7 = new PdfPCell(new Phrase("(" + (i + 1) + "f)", mediumFont));
                                                         cellAdded = true;
                                                 }
                                                 if (lt.get(1) == 8) {

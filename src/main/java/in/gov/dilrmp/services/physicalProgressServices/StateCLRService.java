@@ -2,6 +2,7 @@ package in.gov.dilrmp.services.physicalProgressServices;
 import in.gov.dilrmp.constants.ReportLabels;
 import in.gov.dilrmp.models.reportDTO.clr.StateClrReportView;
 import in.gov.dilrmp.repositories.physicalProgressRepositories.StateClrReportViewRepository;
+import in.gov.dilrmp.utils.ClrReportV5Enricher;
 import in.gov.dilrmp.utils.NumberFormatterUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,8 @@ public class StateCLRService {
 
     @Autowired
     StateClrReportViewRepository stateClrReportViewRepository;
+    @Autowired
+    ClrReportV5Enricher clrReportV5Enricher;
 
 
     private Logger logger = LoggerFactory.getLogger(StateCLRService.class);
@@ -42,6 +45,7 @@ public class StateCLRService {
         labels.put("RoR", ReportLabels.RoR);
         labels.put("rorComputerized", ReportLabels.ROR_COMPUTERIZED);
         labels.put("computerized", ReportLabels.COMPUTERIZED);
+        labels.put("rorWithCadastralMap", ReportLabels.ROR_WITH_CADASTRAL_MAP); //v5
         labels.put("clrCompleted", ReportLabels.CLR_COMPLETED);
         labels.put("numberOfVillagesWhererCLRCompleted", ReportLabels.NUMBER_OF_VILLAGES_WHERE_CLR_COMPLETED);
         labels.put("numberOfVillages", ReportLabels.NUMBER_OF_VILLAGES);
@@ -73,6 +77,8 @@ public class StateCLRService {
         labels.put("MutationApplicationSubmittedOnline", ReportLabels.MUTATION_APPLICATION_SUBMITTED_ONLINE);
         labels.put("whetherAutoTriggeredMutationFacilityAvailable", ReportLabels.WHETHER_AUTO_TRIGGERED_MUTATION_FACILITY_AVAILABLE);
         labels.put("AutoTriggeredMutationFacilityAvailable", ReportLabels.AUTO_TRIGGERED_MUTATION_FACILITY_AVAILABLE);
+        labels.put("whetherAutoMutationFacilityAvailable", ReportLabels.WHETHER_AUTO_MUTATION_FACILITY_AVAILABLE); //v5
+        labels.put("AutoMutationFacilityAvailable", ReportLabels.AUTO_MUTATION_FACILITY_AVAILABLE); //v5
         labels.put("whetherBanksAuthorizedToCreateClearMortgageChargeInRoR", ReportLabels.WHETHER_BANKS_AUTHORIZED_TO_CREATE_CLEAR_MORTGAGE_CHARGE_IN_ROR);
         labels.put("BanksAuthorizedToCreateClearMortgageChargeInRoR", ReportLabels.BANKS_AUTHORIZED_TO_CREATE_CLEAR_MORTGAGE_CHARGE_IN_ROR);
         labels.put("whetherLandRecordsCheckedOnlineByRevenueCourts", ReportLabels.WHETHER_LAND_RECORDS_BE_CHECKED_ONLINE_BY_REVENUE_COURTS);
@@ -109,6 +115,7 @@ public class StateCLRService {
                     return clr;
                 })
                 .collect(Collectors.toList());
+        clrReportV5Enricher.enrichStateReports(clrList);
         return clrList;
     }
 
@@ -132,6 +139,7 @@ public class StateCLRService {
                     return clr;
                 })
                 .collect(Collectors.toList());
+        clrReportV5Enricher.enrichStateReports(clrList);
         return clrList;
     }
 
@@ -152,7 +160,7 @@ public class StateCLRService {
         if ("DESC".equals(ascDesc)) {
             comparator = comparator.reversed();
         }
-        return stateClrList.stream()
+        List<StateClrReportView> sorted = stateClrList.stream()
                 .filter(clr -> !clr.getLgdCode().equals(999))
                 .map(clr -> {
                     clr.setFormattingTotalRor(NumberFormatterUtil.formatWithCommas(clr.getTotalRor()));
@@ -171,10 +179,13 @@ public class StateCLRService {
                 })
                 .sorted(comparator)
                 .collect(Collectors.toList());
+        clrReportV5Enricher.enrichStateReports(sorted);
+        return sorted;
     }
 
     public List<StateClrReportView> getClrStateDataByStateId(int stateId) {
-
-        return stateClrReportViewRepository.findAllByStateId(stateId);
+        List<StateClrReportView> reports = stateClrReportViewRepository.findAllByStateId(stateId);
+        clrReportV5Enricher.enrichStateReports(reports);
+        return reports;
     }
 }

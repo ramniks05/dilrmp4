@@ -3,6 +3,7 @@ import in.gov.dilrmp.models.reportDTO.MapDigitizationReport.DistrictMapDigitizat
 import in.gov.dilrmp.models.reportDTO.MapDigitizationReport.MapDigitizationReport;
 import in.gov.dilrmp.repositories.physicalProgressRepositories.DistrictMapViewRepository;
 import in.gov.dilrmp.repositories.physicalProgressRepositories.MapDigitizationReportRepository;
+import in.gov.dilrmp.utils.MapDigitizationReportV5Enricher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +17,18 @@ public class DistrictMAPService {
     DistrictMapViewRepository districtMapViewRepository;
     @Autowired
     MapDigitizationReportRepository mapDigitizationReportRepository;
+    @Autowired
+    MapDigitizationReportV5Enricher mapDigitizationReportV5Enricher;
 
     public List<DistrictMapDigitizationReport> getDistrictMAPModelsByStateId(Long stateId) {
-        return districtMapViewRepository.findAllByStateId(stateId);
+        List<DistrictMapDigitizationReport> reports = districtMapViewRepository.findAllByStateId(stateId);
+        mapDigitizationReportV5Enricher.enrichDistrictReports(reports, stateId.intValue());
+        return reports;
     }
 
     public List<MapDigitizationReport> getStateListByStateLgdCode(Long lgdCode) {
-
-        return mapDigitizationReportRepository.findAllByLgdCode(lgdCode);
+        List<MapDigitizationReport> reports = mapDigitizationReportRepository.findAllByLgdCode(lgdCode);
+        mapDigitizationReportV5Enricher.enrichStateReportListForDistrictPage(reports, lgdCode.intValue());
+        return reports;
     }
 }

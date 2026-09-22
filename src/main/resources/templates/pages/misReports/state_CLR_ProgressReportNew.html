@@ -426,7 +426,7 @@
                                         <th rowspan="2" th:text="${labels['totalDistricts']}"></th>
                                         <th rowspan="2" th:text="${labels['totalTehsils']}"></th>
                                         <th rowspan="2" th:text="${labels['totalVillages']}"></th>
-                                        <th colspan="3" th:text="${labels['RoR']}"></th>
+                                        <th colspan="5" th:text="${labels['RoR']}"></th>
                                         <th colspan="2" th:text="${labels['numberOfVillagesWhererCLRCompleted']}"></th>
                                         <th rowspan="2" th:text="${labels['totalNoOfLandOwners']}"></th>
                                         <th colspan="4" th:text="${labels['availabilityOfGenderBasedLandOwnership']}">
@@ -440,6 +440,9 @@
                                             th:text="${labels['whetherMutationApplicationSubmittedOnline']}"></th>
                                         <th colspan="1"
                                             th:text="${labels['whetherAutoTriggeredMutationFacilityAvailable']}"></th>
+                                        <!-- //v5 after Auto-Triggered Mutation -->
+                                        <th colspan="1"
+                                            th:text="${labels['whetherAutoMutationFacilityAvailable']}"></th>
                                         <th colspan="3"
                                             th:text="${labels['whetherBanksAuthorizedToCreateClearMortgageChargeInRoR']}">
                                         </th>
@@ -452,8 +455,11 @@
                                         </th>
                                     </tr>
                                     <tr>
+                                        <!-- //v5 No. of RoR: Total, Computerized, %, with Cadastral Map, % -->
                                         <th th:text="${labels['total']}"></th>
                                         <th th:text="${labels['computerized']}"></th>
+                                        <th th:text="${labels['percentage']}"></th>
+                                        <th th:text="${labels['rorWithCadastralMap']}"></th>
                                         <th th:text="${labels['percentage']}"></th>
                                         <th th:text="${labels['number']}"></th>
                                         <th th:text="${labels['percentage']}"></th>
@@ -461,6 +467,7 @@
                                         <th th:text="${labels['male']}"></th>
                                         <th th:text="${labels['female']}"></th>
                                         <th th:text="${labels['total']}"></th>
+                                        <th th:text="${labels['yesNo']}"></th>
                                         <th th:text="${labels['yesNo']}"></th>
                                         <th th:text="${labels['yesNo']}"></th>
                                         <th th:text="${labels['yesNo']}"></th>
@@ -482,6 +489,8 @@
                                         <td style="text-align: center;">6a</td>
                                         <td style="text-align: center;">6b</td>
                                         <td style="text-align: center;">6c</td>
+                                        <td style="text-align: center;">6d</td>
+                                        <td style="text-align: center;">6e</td>
                                         <td style="text-align: center;">7a</td>
                                         <td style="text-align: center;">7b</td>
                                         <td style="text-align: center;">8</td>
@@ -494,12 +503,13 @@
                                         <td style="text-align: center;">12</td>
                                         <td style="text-align: center;">13</td>
                                         <td style="text-align: center;">14</td>
-                                        <td style="text-align: center;">15a</td>
-                                        <td style="text-align: center;">15b</td>
-                                        <td style="text-align: center;">15c</td>
-                                        <td style="text-align: center;">16</td>
+                                        <td style="text-align: center;">15</td>
+                                        <td style="text-align: center;">16a</td>
+                                        <td style="text-align: center;">16b</td>
+                                        <td style="text-align: center;">16c</td>
                                         <td style="text-align: center;">17</td>
                                         <td style="text-align: center;">18</td>
+                                        <td style="text-align: center;">19</td>
                                     </tr>
                                     </thead>
                                     <thead>
@@ -512,6 +522,8 @@
                                         <td th:text="${grandTotal.formattingTotalRor != null ? grandTotal.formattingTotalRor : 0}" style="font-weight: bold;"></td>
                                         <td th:text="${grandTotal.formattingRorComputerized != null ? grandTotal.formattingRorComputerized : 0}" style="font-weight: bold;"></td>
                                         <td th:text="${grandTotal.rorComputerizedPercent != null ? (grandTotal.rorComputerizedPercent != 0 ? grandTotal.rorComputerizedPercent : 0.0) : 0.0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.formattingRorWithCadastralMap != null ? grandTotal.formattingRorWithCadastralMap : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.rorWithCadastralMapPercent != null ? grandTotal.rorWithCadastralMapPercent : 0.0}" style="font-weight: bold;"></td>
                                         <td th:text="${grandTotal.formattingvillagesClrCompleted != null ? grandTotal.formattingvillagesClrCompleted : 0}" style="font-weight: bold;"></td>
                                         <td th:text="${grandTotal.clrCompletionPercent != null ? (grandTotal.clrCompletionPercent != 0 ? grandTotal.clrCompletionPercent : 0.0) : 0.0}" style="font-weight: bold;"></td>
                                         <td th:text="${grandTotal.formattingTotalLandOwners != null ? grandTotal.formattingTotalLandOwners : 0}" style="font-weight: bold;"></td>
@@ -524,6 +536,7 @@
                                         <td th:text="${grandTotal.digitallySignedRorLegallyValid != null ? grandTotal.digitallySignedRorLegallyValid : 0}" style="font-weight: bold;"></td>
                                         <td th:text="${grandTotal.onlineMutationFacility != null ? grandTotal.onlineMutationFacility : 0}" style="font-weight: bold;"></td>
                                         <td th:text="${grandTotal.autoTriggerMutation != null ? grandTotal.autoTriggerMutation : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.autoMutationFacility != null ? grandTotal.autoMutationFacility : 0}" style="font-weight: bold;"></td>
                                         <td th:text="${grandTotal.bankRedFlagMortgageInLandRecords != null ? grandTotal.bankRedFlagMortgageInLandRecords : 0}" style="font-weight: bold;"></td>
                                         <td th:text="${grandTotal.formattingDistrictsWithBankRedFlagMortgage != null ? grandTotal.formattingDistrictsWithBankRedFlagMortgage : 0}" style="font-weight: bold;"></td>
                                         <td th:text="${grandTotal.formattingBankBranchesWithRedFlagMortgage != null ? grandTotal.formattingBankBranchesWithRedFlagMortgage : 0}" style="font-weight: bold;"></td>
@@ -543,6 +556,8 @@
                                         <td th:text="${report.formattingTotalRor != null ? report.formattingTotalRor : 0}"></td>
                                         <td th:text="${report.formattingRorComputerized != null ? report.formattingRorComputerized : 0}"></td>
                                         <td th:text="${report.rorComputerizedPercent != null ? (report.rorComputerizedPercent != 0 ? report.rorComputerizedPercent : 0.0) : 0.0}"></td>
+                                        <td th:text="${report.formattingRorWithCadastralMap != null ? report.formattingRorWithCadastralMap : 0}"></td>
+                                        <td th:text="${report.rorWithCadastralMapPercent != null ? report.rorWithCadastralMapPercent : 0.0}"></td>
                                         <td th:text="${report.formattingvillagesClrCompleted != null ? report.formattingvillagesClrCompleted : 0}"></td>
                                         <td th:text="${report.clrCompletionPercent != null ? (report.clrCompletionPercent != 0 ? report.clrCompletionPercent : 0.0) : 0.0}"></td>
                                         <td th:text="${report.formattingTotalLandOwners != null ? report.formattingTotalLandOwners : 0}"></td>
@@ -555,6 +570,7 @@
                                         <td th:text="${report.digitallySignedRorLegallyValid != null && report.digitallySignedRorLegallyValid ? 'Yes' : 'No'}"></td>
                                         <td th:text="${report.onlineMutationFacility != null && report.onlineMutationFacility ? 'Yes' : 'No'}"></td>
                                         <td th:text="${report.autoTriggerMutation != null && report.autoTriggerMutation ? 'Yes' : 'No'}"></td>
+                                        <td th:text="${report.autoMutationFacility != null ? report.autoMutationFacility : 'No'}"></td>
                                         <td th:text="${report.bankRedFlagMortgageInLandRecords != null && report.bankRedFlagMortgageInLandRecords ? 'Yes' : 'No'}"></td>
                                         <td th:text="${report.formattingDistrictsWithBankRedFlagMortgage != null ? report.formattingDistrictsWithBankRedFlagMortgage : 0}"></td>
                                         <td th:text="${report.formattingBankBranchesWithRedFlagMortgage != null ? report.formattingBankBranchesWithRedFlagMortgage : 0}"></td>
@@ -573,6 +589,8 @@
                                         <td th:text="${grandTotal.formattingTotalRor != null ? grandTotal.formattingTotalRor : 0}" style="font-weight: bold;"></td>
                                         <td th:text="${grandTotal.formattingRorComputerized != null ? grandTotal.formattingRorComputerized : 0}" style="font-weight: bold;"></td>
                                         <td th:text="${grandTotal.rorComputerizedPercent != null ? (grandTotal.rorComputerizedPercent != 0 ? grandTotal.rorComputerizedPercent : 0.0) : 0.0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.formattingRorWithCadastralMap != null ? grandTotal.formattingRorWithCadastralMap : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.rorWithCadastralMapPercent != null ? grandTotal.rorWithCadastralMapPercent : 0.0}" style="font-weight: bold;"></td>
                                         <td th:text="${grandTotal.formattingvillagesClrCompleted != null ? grandTotal.formattingvillagesClrCompleted : 0}" style="font-weight: bold;"></td>
                                         <td th:text="${grandTotal.clrCompletionPercent != null ? (grandTotal.clrCompletionPercent != 0 ? grandTotal.clrCompletionPercent : 0.0) : 0.0}" style="font-weight: bold;"></td>
                                         <td th:text="${grandTotal.formattingTotalLandOwners != null ? grandTotal.formattingTotalLandOwners : 0}" style="font-weight: bold;"></td>
@@ -585,6 +603,7 @@
                                         <td th:text="${grandTotal.digitallySignedRorLegallyValid != null ? grandTotal.digitallySignedRorLegallyValid : 0}" style="font-weight: bold;"></td>
                                         <td th:text="${grandTotal.onlineMutationFacility != null ? grandTotal.onlineMutationFacility : 0}" style="font-weight: bold;"></td>
                                         <td th:text="${grandTotal.autoTriggerMutation != null ? grandTotal.autoTriggerMutation : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.autoMutationFacility != null ? grandTotal.autoMutationFacility : 0}" style="font-weight: bold;"></td>
                                         <td th:text="${grandTotal.bankRedFlagMortgageInLandRecords != null ? grandTotal.bankRedFlagMortgageInLandRecords : 0}" style="font-weight: bold;"></td>
                                         <td th:text="${grandTotal.formattingDistrictsWithBankRedFlagMortgage != null ? grandTotal.formattingDistrictsWithBankRedFlagMortgage : 0}" style="font-weight: bold;"></td>
                                         <td th:text="${grandTotal.formattingBankBranchesWithRedFlagMortgage != null ? grandTotal.formattingBankBranchesWithRedFlagMortgage : 0}" style="font-weight: bold;"></td>

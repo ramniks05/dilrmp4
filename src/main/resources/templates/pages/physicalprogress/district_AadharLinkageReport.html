@@ -52,7 +52,8 @@
                                     <th rowspan="3" th:text="${labels['districtName']}"></th>
                                     <th rowspan="3" th:text="${labels['totalTehsils']}"></th>
                                     <th colspan="5" th:text="${labels['noOfVillages']}"></th>
-                                    <th colspan="5" th:text="${labels['ror']}"></th>
+                                    <th colspan="7" th:text="${labels['ror']}"></th>
+                                    <th colspan="7" th:text="${labels['landowner']}"></th>
                                 </tr>
                                 <tr>
                                     <th th:text="${labels['total']}"></th>
@@ -62,6 +63,13 @@
                                     <th th:text="${labels['total']}"></th>
                                     <th colspan="2" th:text="${labels['linked_with_aadhaar']}"></th>
                                     <th colspan="2" th:text="${labels['linked_with_mobile_number']}"></th>
+                                    <!-- //v5 Linked with Address -->
+                                    <th colspan="2" th:text="${labels['linked_with_address']}"></th>
+                                    <!-- //v5 No. of Land owners -->
+                                    <th th:text="${labels['total']}"></th>
+                                    <th colspan="2" th:text="${labels['linked_with_aadhaar']}"></th>
+                                    <th colspan="2" th:text="${labels['linked_with_mobile_number']}"></th>
+                                    <th colspan="2" th:text="${labels['linked_with_address']}"></th>
                                 </tr>
                                 <tr>
                                     <th th:text="${labels['number']}"></th>
@@ -70,6 +78,15 @@
                                     <th th:text="${labels['number']}"></th>
                                     <th th:text="${labels['percentage']}"></th>
                                     <th th:text="${labels['number']}"></th>
+                                    <th th:text="${labels['number']}"></th>
+                                    <th th:text="${labels['percentage']}"></th>
+                                    <th th:text="${labels['number']}"></th>
+                                    <th th:text="${labels['percentage']}"></th>
+                                    <th th:text="${labels['number']}"></th>
+                                    <th th:text="${labels['percentage']}"></th>
+                                    <th th:text="${labels['number']}"></th>
+                                    <th th:text="${labels['number']}"></th>
+                                    <th th:text="${labels['percentage']}"></th>
                                     <th th:text="${labels['number']}"></th>
                                     <th th:text="${labels['percentage']}"></th>
                                     <th th:text="${labels['number']}"></th>
@@ -89,6 +106,15 @@
                                     <td style="text-align: center;">8b</td>
                                     <td style="text-align: center;">9a</td>
                                     <td style="text-align: center;">9b</td>
+                                    <td style="text-align: center;">10a</td>
+                                    <td style="text-align: center;">10b</td>
+                                    <td style="text-align: center;">11</td>
+                                    <td style="text-align: center;">12a</td>
+                                    <td style="text-align: center;">12b</td>
+                                    <td style="text-align: center;">13a</td>
+                                    <td style="text-align: center;">13b</td>
+                                    <td style="text-align: center;">14a</td>
+                                    <td style="text-align: center;">14b</td>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -106,6 +132,15 @@
                                     <td th:text="${report.rorLinkedWithAadhaarPercent != null ? (report.rorLinkedWithAadhaarPercent != 0 ? report.rorLinkedWithAadhaarPercent : 0.0) : 0.0}"></td>
                                     <td th:text="${report.rorLinkedWithMobileNumber}"></td>
                                     <td th:text="${report.rorLinkedWithMobileNumberPercent != null ? (report.rorLinkedWithMobileNumberPercent != 0 ? report.rorLinkedWithMobileNumberPercent : 0.0) : 0.0}"></td>
+                                    <td th:text="${report.rorLinkedWithAddress != null ? report.rorLinkedWithAddress : 0}"></td>
+                                    <td th:text="${report.rorLinkedWithAddressPercent != null ? report.rorLinkedWithAddressPercent : 0.0}"></td>
+                                    <td th:text="${report.totalLandOwners != null ? report.totalLandOwners : 0}"></td>
+                                    <td th:text="${report.landOwnersLinkedWithAadhaar != null ? report.landOwnersLinkedWithAadhaar : 0}"></td>
+                                    <td th:text="${report.landOwnersLinkedWithAadhaarPercent != null ? report.landOwnersLinkedWithAadhaarPercent : 0.0}"></td>
+                                    <td th:text="${report.landOwnersLinkedWithMobile != null ? report.landOwnersLinkedWithMobile : 0}"></td>
+                                    <td th:text="${report.landOwnersLinkedWithMobilePercent != null ? report.landOwnersLinkedWithMobilePercent : 0.0}"></td>
+                                    <td th:text="${report.landOwnersLinkedWithAddress != null ? report.landOwnersLinkedWithAddress : 0}"></td>
+                                    <td th:text="${report.landOwnersLinkedWithAddressPercent != null ? report.landOwnersLinkedWithAddressPercent : 0.0}"></td>
                                 </tr>
                                 <tr th:each="grandTotal : ${stateAadhaarData}">
                                     <td></td>
@@ -121,6 +156,15 @@
                                     <td th:text="${grandTotal.rorLinkedWithAadhaarPercent != null ? (grandTotal.rorLinkedWithAadhaarPercent != 0 ? grandTotal.rorLinkedWithAadhaarPercent : 0.0) : 0.0}" style="font-weight: bold;"></td>
                                     <td th:text="${grandTotal.rorLinkedWithMobileNumber}" style="font-weight: bold;"></td>
                                     <td th:text="${grandTotal.rorLinkedWithMobileNumberPercent != null ? (grandTotal.rorLinkedWithMobileNumberPercent != 0 ? grandTotal.rorLinkedWithMobileNumberPercent : 0.0) : 0.0}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.rorLinkedWithAddress != null ? grandTotal.rorLinkedWithAddress : 0}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.rorLinkedWithAddressPercent != null ? grandTotal.rorLinkedWithAddressPercent : 0.0}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.totalLandOwners != null ? grandTotal.totalLandOwners : 0}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.landOwnersLinkedWithAadhaar != null ? grandTotal.landOwnersLinkedWithAadhaar : 0}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.landOwnersLinkedWithAadhaarPercent != null ? grandTotal.landOwnersLinkedWithAadhaarPercent : 0.0}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.landOwnersLinkedWithMobile != null ? grandTotal.landOwnersLinkedWithMobile : 0}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.landOwnersLinkedWithMobilePercent != null ? grandTotal.landOwnersLinkedWithMobilePercent : 0.0}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.landOwnersLinkedWithAddress != null ? grandTotal.landOwnersLinkedWithAddress : 0}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.landOwnersLinkedWithAddressPercent != null ? grandTotal.landOwnersLinkedWithAddressPercent : 0.0}" style="font-weight: bold;"></td>
                                 </tr>
                                 </tbody>
                                 <tfoot>
@@ -138,6 +182,15 @@
                                     <td th:text="${grandTotal.rorLinkedWithAadhaarPercent != null ? (grandTotal.rorLinkedWithAadhaarPercent != 0 ? grandTotal.rorLinkedWithAadhaarPercent : 0.0) : 0.0}" style="font-weight: bold;"></td>
                                     <td th:text="${grandTotal.rorLinkedWithMobileNumber}" style="font-weight: bold;"></td>
                                     <td th:text="${grandTotal.rorLinkedWithMobileNumberPercent != null ? (grandTotal.rorLinkedWithMobileNumberPercent != 0 ? grandTotal.rorLinkedWithMobileNumberPercent : 0.0) : 0.0}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.rorLinkedWithAddress != null ? grandTotal.rorLinkedWithAddress : 0}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.rorLinkedWithAddressPercent != null ? grandTotal.rorLinkedWithAddressPercent : 0.0}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.totalLandOwners != null ? grandTotal.totalLandOwners : 0}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.landOwnersLinkedWithAadhaar != null ? grandTotal.landOwnersLinkedWithAadhaar : 0}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.landOwnersLinkedWithAadhaarPercent != null ? grandTotal.landOwnersLinkedWithAadhaarPercent : 0.0}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.landOwnersLinkedWithMobile != null ? grandTotal.landOwnersLinkedWithMobile : 0}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.landOwnersLinkedWithMobilePercent != null ? grandTotal.landOwnersLinkedWithMobilePercent : 0.0}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.landOwnersLinkedWithAddress != null ? grandTotal.landOwnersLinkedWithAddress : 0}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.landOwnersLinkedWithAddressPercent != null ? grandTotal.landOwnersLinkedWithAddressPercent : 0.0}" style="font-weight: bold;"></td>
                                 </tr>
                                 </tfoot>
                             </table>

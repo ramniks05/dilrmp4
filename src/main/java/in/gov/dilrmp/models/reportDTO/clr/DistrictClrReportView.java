@@ -48,6 +48,12 @@ public class DistrictClrReportView {
     @Column(name = "ror_computerized_percent")
     private BigDecimal rorComputerizedPercent;
 
+    //v5 CLR: RoR with Cadastral Map [6.1]
+    @Transient
+    private Integer rorWithCadastralMap;
+    @Transient
+    private BigDecimal rorWithCadastralMapPercent;
+
     @Column(name = "villages_clr_completed")
     private Integer villagesClrCompleted;
 
@@ -100,6 +106,10 @@ public class DistrictClrReportView {
 
     @Transient
     private String autoTriggerMutation;
+
+    //v5 CLR: Whether Auto-Mutation Facility Available [11]
+    @Transient
+    private String autoMutationFacility;
 
     @Transient
     private String ercmsAvailable;

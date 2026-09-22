@@ -1,0 +1,300 @@
+<div th:fragment="dilrmp-component-expenditure">
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-info">
+                        <div class="card-header" style="background: linear-gradient(to right, #32b4c8 0%, rgb(64 101 142));">
+                            <h3 class="card-title" style="color: #eff3f6; font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a; letter-spacing: 2px;">
+                                DILRMP Expenditure Status
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="componentExpenditureForm" onsubmit="return saveComponentExpenditure(event)">
+                                <div class="table-responsive mb-3">
+                                    <table class="table table-bordered exp-filter-table mb-0">
+                                        <tbody>
+                                        <tr>
+                                            <td class="exp-filter-label"><strong>DILRMP :</strong></td>
+                                            <td class="exp-filter-value">
+                                                <select id="expDilrmpPhase" name="dilrmpPhase" class="form-control form-control-sm exp-filter-select"
+                                                        hx-trigger="change"
+                                                        hx-post="/dolr/dilrmp-expenditure-status/form/load"
+                                                        hx-target="#componentExpenditureTableWrap"
+                                                        hx-include="#expDilrmpPhase, #expStateId, #expFinancialYear"
+                                                        hx-indicator="#componentExpLoading">
+                                                    <option th:each="phase : ${dilrmpPhases}"
+                                                            th:value="${phase}"
+                                                            th:text="${phase}"
+                                                            th:selected="${phase == selectedPhase}">
+                                                    </option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="exp-filter-label"><strong>STATE / UT :</strong></td>
+                                            <td class="exp-filter-value">
+                                                <select id="expStateId" name="stateId" class="form-control form-control-sm exp-filter-select"
+                                                        hx-trigger="change"
+                                                        hx-post="/dolr/dilrmp-expenditure-status/form/load"
+                                                        hx-target="#componentExpenditureTableWrap"
+                                                        hx-include="#expDilrmpPhase, #expStateId, #expFinancialYear"
+                                                        hx-indicator="#componentExpLoading">
+                                                    <option th:each="state : ${states}"
+                                                            th:value="${state.id}"
+                                                            th:text="${state.name}"
+                                                            th:selected="${state.id == selectedStateId}">
+                                                    </option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="exp-filter-label"><strong>Financial Year :</strong></td>
+                                            <td class="exp-filter-value">
+                                                <select id="expFinancialYear" name="financialYear" class="form-control form-control-sm exp-filter-select"
+                                                        hx-trigger="change"
+                                                        hx-post="/dolr/dilrmp-expenditure-status/form/load"
+                                                        hx-target="#componentExpenditureTableWrap"
+                                                        hx-include="#expDilrmpPhase, #expStateId, #expFinancialYear"
+                                                        hx-indicator="#componentExpLoading">
+                                                    <option th:each="fy : ${financialYears}"
+                                                            th:value="${fy}"
+                                                            th:text="${fy}"
+                                                            th:selected="${fy == selectedFinancialYear}">
+                                                    </option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div id="componentExpLoading" class="htmx-indicator text-muted mb-2">
+                                    <i class="fas fa-spinner fa-spin"></i> Loading expenditure data...
+                                </div>
+
+                                <div id="componentExpenditureTableWrap">
+                                    <div th:replace="~{pages/cna/dilrmpComponentExpenditureStatus :: component-expenditure-table}"></div>
+                                </div>
+
+                                <div class="mt-3">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save"></i> Save Expenditure Status
+                                    </button>
+                                </div>
+                            </form>
+
+                            <div id="componentExpSaveMessage" class="mt-3"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        .htmx-indicator { display: none; }
+        .htmx-request .htmx-indicator,
+        .htmx-request.htmx-indicator { display: inline-block; }
+
+        .exp-filter-table {
+            max-width: 520px;
+            background-color: #d9ead3;
+        }
+
+        .exp-filter-table td {
+            vertical-align: middle;
+            border-color: #b6d7a8 !important;
+            padding: 8px 12px;
+        }
+
+        .exp-filter-label {
+            width: 38%;
+            white-space: nowrap;
+        }
+
+        .exp-filter-value {
+            width: 62%;
+        }
+
+        .exp-filter-select {
+            background-color: #fff;
+            border: 1px solid #93c47d;
+            font-weight: 600;
+        }
+
+        #componentExpenditureTable {
+            margin-bottom: 0;
+        }
+
+        #componentExpenditureTable thead th {
+            background-color: #cfe2f3;
+            color: #1a1d26;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 13px;
+            border-color: #9fc5e8 !important;
+        }
+
+        #componentExpenditureTable tbody td {
+            vertical-align: middle;
+            font-size: 13px;
+        }
+
+        #componentExpenditureTable .exp-col-sn {
+            width: 4%;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        #componentExpenditureTable .exp-col-component {
+            width: 34%;
+        }
+
+        #componentExpenditureTable .exp-col-amount {
+            width: 11%;
+        }
+
+        #componentExpenditureTable .exp-col-date {
+            width: 12%;
+        }
+
+        #componentExpenditureTable .exp-revised-cell {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        #componentExpenditureTable input.form-control {
+            font-size: 13px;
+            padding: 4px 8px;
+            height: auto;
+        }
+    </style>
+
+    <script>
+        function computeRevisedSanction(row) {
+            const issued = parseFloat(row.querySelector('.sanction-issued').value) || 0;
+            const cancelled = parseFloat(row.querySelector('.sanction-cancelled').value) || 0;
+            const revised = (issued - cancelled).toFixed(2);
+            row.querySelector('.revised-sanction').textContent = revised === '0.00' && !row.querySelector('.sanction-issued').value && !row.querySelector('.sanction-cancelled').value ? '' : revised;
+        }
+
+        function bindRevisedSanctionCalculations() {
+            document.querySelectorAll('#componentExpenditureTable tbody tr').forEach(function (row) {
+                row.querySelectorAll('.sanction-issued, .sanction-cancelled').forEach(function (input) {
+                    input.removeEventListener('input', input._revisedHandler);
+                    input._revisedHandler = function () { computeRevisedSanction(row); };
+                    input.addEventListener('input', input._revisedHandler);
+                });
+            });
+        }
+
+        function collectComponentRows() {
+            const rows = [];
+            document.querySelectorAll('#componentExpenditureTable tbody tr').forEach(function (row) {
+                rows.push({
+                    serialNo: row.dataset.serialNo,
+                    sanctionIssued: row.querySelector('.sanction-issued').value,
+                    sanctionCancelled: row.querySelector('.sanction-cancelled').value,
+                    fundReleased: row.querySelector('.fund-released').value,
+                    fundReleasedDate: row.querySelector('.fund-released-date').value,
+                    fundBalance: row.querySelector('.fund-balance').value
+                });
+            });
+            return rows;
+        }
+
+        function showComponentExpMessage(type, message) {
+            document.getElementById('componentExpSaveMessage').innerHTML =
+                '<div class="alert alert-' + type + '">' + message + '</div>';
+        }
+
+        function saveComponentExpenditure(event) {
+            event.preventDefault();
+            const payload = {
+                dilrmpPhase: document.getElementById('expDilrmpPhase').value,
+                stateId: document.getElementById('expStateId').value,
+                financialYear: document.getElementById('expFinancialYear').value,
+                rows: collectComponentRows()
+            };
+
+            showComponentExpMessage('info', 'Saving, please wait...');
+
+            fetch('/dolr/dilrmp-expenditure-status/form/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+                .then(function (response) { return response.json(); })
+                .then(function (data) {
+                    if (data.status === 'success') {
+                        showComponentExpMessage('success', data.message);
+                    } else {
+                        showComponentExpMessage('danger', data.message || 'Save failed.');
+                    }
+                })
+                .catch(function () {
+                    showComponentExpMessage('danger', 'Failed to save expenditure status.');
+                });
+
+            return false;
+        }
+
+        document.addEventListener('DOMContentLoaded', bindRevisedSanctionCalculations);
+
+        document.body.addEventListener('htmx:afterSwap', function (evt) {
+            if (evt.detail.target && evt.detail.target.id === 'componentExpenditureTableWrap') {
+                bindRevisedSanctionCalculations();
+            }
+        });
+    </script>
+</div>
+
+<div th:fragment="component-expenditure-table">
+    <div class="table-responsive">
+        <table class="table table-bordered" id="componentExpenditureTable">
+            <thead>
+            <tr>
+                <th class="exp-col-sn">S.no</th>
+                <th class="exp-col-component">Component</th>
+                <th class="exp-col-amount">Sanction Issued (A)</th>
+                <th class="exp-col-amount">Sanction Cancelled (B)</th>
+                <th class="exp-col-amount">Revised Sanction (A-B)</th>
+                <th class="exp-col-amount">Fund Released</th>
+                <th class="exp-col-date">Fund Released (Date)</th>
+                <th class="exp-col-amount">Fund Balance (as on date)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="row : ${componentRows}" th:attr="data-serial-no=${row.serialNo}">
+                <td class="exp-col-sn" th:text="${row.serialNo}">1</td>
+                <td class="exp-col-component" th:text="${row.componentName}">Component</td>
+                <td>
+                    <input type="number" step="0.01" min="0" class="form-control sanction-issued text-right"
+                           th:value="${row.sanctionIssued}" placeholder="0.00" />
+                </td>
+                <td>
+                    <input type="number" step="0.01" min="0" class="form-control sanction-cancelled text-right"
+                           th:value="${row.sanctionCancelled}" placeholder="0.00" />
+                </td>
+                <td class="exp-revised-cell">
+                    <span class="revised-sanction" th:text="${row.revisedSanction}"></span>
+                </td>
+                <td>
+                    <input type="number" step="0.01" min="0" class="form-control fund-released text-right"
+                           th:value="${row.fundReleased}" placeholder="0.00" />
+                </td>
+                <td>
+                    <input type="date" class="form-control fund-released-date"
+                           th:value="${row.fundReleasedDate}" />
+                </td>
+                <td>
+                    <input type="number" step="0.01" min="0" class="form-control fund-balance text-right"
+                           th:value="${row.fundBalance}" placeholder="0.00" />
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

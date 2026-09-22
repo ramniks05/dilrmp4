@@ -1,0 +1,61 @@
+
+
+<section th:fragment="footer">
+  <div sec:authorize="!isAuthenticated()" class="nationalMarks">
+    <a href="https://www.digitalindia.gov.in/" target="_blank"> <img th:src="@{/static/images/digital-india.png}"></a>
+    <a href="https://www.makeinindia.com/home" target="_blank"> <img th:src="@{/static/images/makeinindia.png}"></a>
+    <a href="https://www.india.gov.in/" target="_blank"> <img th:src="@{/static/images/india-gov.png}"></a>
+    <a href="https://igod.gov.in/" target="_blank"> <img th:src="@{/static/images/goidirectory.png}"></a>
+    <a href="https://data.gov.in/" target="_blank"> <img th:src="@{/static/images/data-gov.png}"></a>
+    <a href="https://www.mygov.in/" target="_blank"> <img th:src="@{/static/images/mygov.png}"></a>
+  </div>
+
+  <div class="footer web-content">
+    <div>
+      <a href="https://www.nic.in/" target="_blank"> <img th:src="@{/static/images/nic-logo.png}"></a>
+      <h4>Website Content Managed by</h4>
+      <p> Government of India</p>
+      <p>Ministry of Rural Development</p>
+      <p>Department of Land Resources </p>
+      <p>Designed, Developed and Hosted by</p>
+      <p>National Informatics Centre( NIC )</p>
+    </div>
+    <div>
+      <h4>Quick Links</h4>
+      <a th:href="@{/}">Home</a>
+      <a th:href="@{/userProfile/about-us}"> About Us</a>
+      <a href="https://dilrmp.gov.in/grading/">Dashboard</a>
+      <a th:href="@{/userProfile/contact-us}">Contact Us</a>
+    </div>
+    <div>
+      <h4>DILRMP MIS Programme</h4>
+      <!-- <a target="_blank"  href="https://dilrmp.gov.in/dilrmp">DILRMP</a> -->
+      <a target="_blank"  href="https://dolr.gov.in/">DoLR</a>
+      <a target="_blank"  href="https://larr.dolr.gov.in/">LACRRIS</a>
+      <a target="_blank"  href="https://ngdrs.gov.in/">NGDRS</a>
+      <a target="_blank"  href="https://tejasvi.gov.in/staging/shared/NqsjFOoflcJaZGjUhRtocfIJAKkCielrpDugaYQcDgFbkYLBWlHuBveGtXlcLRCRyozuElhEcOwVVmFlzwnOutfcrl">RCCMS Dashboard</a>
+    </div>
+    <div>
+      <h4>Contact Us for Support</h4>
+      <p>Department of Land Resources</p>
+      <p>Ministry of Rural Development</p>
+      <p> Government of India</p>
+      <p>Kartavya Bhavan-3</p>
+      <p>Dr. Rajendra Prasad Road, New Delhi-110001</p>
+
+      <h3>Phone-011-23063224, </h3>
+      <h3>Email-support-dilrmp[at]gov[dot]in</h3>
+    </div>
+  </div>
+  <div class="footer disclamer" style="padding-top: 60px !important;">
+    <div class="container-fluid" style="margin-top:-44px; ">
+      <!-- <hr style="height:1px;border-width:0;color:gray;background-color:white"> -->
+      <div class="container">
+        <p style="line-height: 18px; text-align: center; font-size: 14px;"> <strong>Disclaimer:  </strong>Data presented in this site has been updated by respective State Governments/UT Administration and Department of Land Resources, Ministry of Rural Development(MoRD), Government of India.
+          Website hosted and maintained by National Informatics Centre.</p>
+        <!-- <strong style="text-align: center;">Total Visitor: 20</strong> -->
+      </div>
+    </div>
+  </div>
+
+</section>

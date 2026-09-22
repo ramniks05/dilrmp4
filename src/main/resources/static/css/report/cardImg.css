@@ -1,0 +1,77 @@
+ .card.card-img-holder .card-img-absolute {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+}
+
+  .hidden {
+    display: none;
+  }
+
+        .count {
+            font-size: 36px;
+            font-weight: bold;
+            color: blue;
+        }
+        .bg-info {
+       background-color: #000000 !important;
+}
+
+.section-heading-box .text-para {
+    font-size: 24px;
+    font-family: 'kalam';
+    color: var(--color-primary);
+    font-weight: 600;
+}
+.bg-gradient-success1 {
+    background: -webkit-gradient(linear, left top, right top, from(#84d9d2), to(#07cdae)) !important;
+    background: linear-gradient(to right, #2d250c, #7bc2b7) !important;
+}
+
+.bg-gradient-successO {
+    background: -webkit-gradient(linear, left top, right top, from(#a3ccac), to(#28a745)) !important;
+    background: linear-gradient(to right, #2d250c, #93d8a2) !important;
+}
+
+.bg-gradient-info1 {
+    background: -webkit-gradient(linear, left top, right top, from(#90caf9), color-stop(99%, #047edf)) !important;
+    background: linear-gradient(to right, #2d250c, #4386bb 99%) !important;
+}
+
+.bg-gradient-danger1 {
+    background: -webkit-gradient(linear, left top, right top, from(#ffbf96), to(#fe7096)) !important;
+    background: linear-gradient(to right, #270508, #fe7096) !important;
+
+}
+.bg-gradient-danger2 {
+    background: -webkit-gradient(linear, left top, right top, from(#ffbf96), to(#fe7096)) !important;
+    background: linear-gradient(to right, #2d250c, #ce768e) !important;
+}
+
+.bg-gradient-danger3 {
+    background: -webkit-gradient(linear, left top, right top, from(#ffbf96), to(#fe7096)) !important;
+    background: linear-gradient(to right, #2d250c, #5e8f99) !important;
+
+
+}
+
+.bg-gradient-danger4 {
+    background: -webkit-gradient(linear, left top, right top, from(#ffbf96), to(#fe7096)) !important;
+    background: linear-gradient(to right, #2d250c, #859fc4) !important;
+
+
+}
+
+
+.bg-gradient-danger5 {
+    background: -webkit-gradient(linear, left top, right top, from(#ffbf96), to(#fe7096)) !important;
+    background: linear-gradient(to right, #2d250c, #f2b079) !important;
+
+}
+
+.bg-gradient-danger6 {
+     background: -webkit-gradient(linear, left top, right top, from(#ffbf96), to(#fe7096)) !important;
+     background: linear-gradient(to right, #2d250c, #e6a772) !important;
+
+}

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/dashboard">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Capacity Building</title>
+    <link th:href="@{/css/report/nakshasoi.css}" rel="stylesheet"/>
+
+  <script type="text/javascript" th:src="@{/static/nlrmpmap/capacityBuilding.js}"></script>
+<style>
+
+
+
+
+
+</style>
+</head>
+
+<div class="content-wrapper " layout:fragment="content">
+    <!-- From Uiverse.io by Smit-Prajapati -->
+    <div class="containerOne">
+
+        <div class="card-header"style="background: linear-gradient(45deg, rgb(16, 137, 211) 0%, rgb(19, 111, 130) 100%);" >
+
+                <div class="heading">  Capacity Building</div>
+
+        </div>
+        <br>
+        <form th:action="@{/ulb/capacity-building}" th:object="${capacityBuilding}" method="post" id="capacityBuildingForm" class="form">
+            <input type="hidden" id="id" th:field="*{id}">
+            <input type="hidden"  th:field="*{nameOfCoE}">
+            <div>
+                <div class="row mb-3">
+                    <div class="col-md-9 col-sm-12 headingOne">
+                        <span style="color:#ab7b75;" >State/UT:</span>
+                            <span class=" col-md-1"  th:text="${stateName}"></span>
+
+
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        <h6 class="heading-section headingOne">
+                            <span style="color:#FA8072;" >Last Update:</span>
+                            <span id="lastUpdateSpan" class=" col-md-1 ">
+                                                       <span th:text="${capacityBuilding.updateOnDate != null ? #temporals.format(capacityBuilding.updateOnDate, 'MMMM dd, yyyy') : 'N/A'}"></span>
+                                                 </span>
+                        </h6>
+
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-12 headingOne" >
+                        <span style="color:#ab7b75;" >Name of CoE:</span>
+                            <span class=" col-md-1" th:text="*{nameOfCoE}"></span>
+
+                    </div>
+                </div>
+
+            </div>
+            <br>
+            <hr style="border-top: 2px solid #FA8072;">
+
+            <br>
+            <div class="row mb-3">
+                <div class="col-md-6 col-sm-12">
+                    <label class="form-label input-group mb-3">[1] Master Trainers trained at NIGST</label>
+                    <input type="text" class="form-control input" th:field="*{nigstMasterTrainers}" readonly>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <label class="form-label input-group mb-3">[2] ULB Level Master trainers Trained at CoE</label>
+                    <input type="text" class="form-control input" th:field="*{coeMasterTrainers}" readonly>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6 col-sm-12">
+                    <label class="form-label input-group mb-3">[3] Total Master Trainers Trained</label>
+                    <input type="text" class="form-control input" th:field="*{totalMasterTrainers}" readonly>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <label class="form-label input-group mb-3">[4] Total No. Field Survey teams sanctioned by DoLR</label>
+                    <input type="text" class="form-control form-control-sm input" id="fieldTeamsSanctioned" th:field="*{fieldTeamsSanctioned}" readonly>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6 col-sm-12">
+                    <label class="form-label input-group mb-3">[5] Field Survey Officer to be trained</label>
+                    <input type="text" class="form-control input" th:field="*{membersTrained}" readonly>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <label class="form-label input-group mb-3">[6] Field Survey Officers trained till Date</label>
+                    <input type="text" class="form-control input" id="membersToBeTrained"
+                           th:field="*{membersToBeTrained}" placeholder="Enter total trained"
+                           onkeyup="validateMembersToBeTrained(this)"
+                           oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                    <span id="membersToBeTrainedError" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6 col-sm-12">
+                    <label class="form-label input-group mb-3">[7] Total No. of Field Survey teams trained till date</label>
+                    <input type="text" class="form-control input" id="fieldTeamsTrained" th:value="${capacityBuilding.fieldTeamsTrained != null ? #numbers.formatDecimal(capacityBuilding.fieldTeamsTrained, 1, 2) : '0.00'}"
+                           readonly>
+                </div>
+                <div class="col-md-6 col-sm-12 ">
+                    <label class="form-label input-group mb-3">[8] Completion Percentage of Field Survey Training (%)</label>
+                    <input type="text" class="form-control input " id="percentageTrained"
+                           th:value="${capacityBuilding.percentageTrained != null ? #numbers.formatDecimal(capacityBuilding.percentageTrained, 1, 2) : '0.00'}"
+                           readonly>
+
+                </div>
+<!--                <div class="col-md-6 col-sm-12">-->
+<!--                    <label class="form-label input-group mb-3">[9] No. of officers trained for NAKSHA Web GIS Portal </label>-->
+<!--                    <input type="text" class="form-control input" th:field="*{officersTrained}" readonly>-->
+<!--                </div>-->
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6 col-sm-12">
+                        <label class="form-label input-group mb-3">[9] No. of officers trained for NAKSHA Web GIS Portal
+                        </label>
+                            <input type="text"
+                                   th:field="*{officersTrained}"
+                                   th:value="${officersTrained}"
+                                   id="officersTrained"
+                                   class="form-control input"
+                                   readonly />
+
+                    </div>
+            </div>
+            <br>
+            <hr style="border-top: 2px solid #FA8072;">
+            <div class="row mt-4">
+                <div class="col-12 d-flex justify-content-center">
+                    <button type="submit"  class=" px-5 py-2 rounded-pill shadow-sm inner" >
+                        <div class="svg-wrapper-1">
+                            <div class="svg-wrapper">
+                                <svg  viewBox="0 0 24 24" width="24" height="24">
+                                    <path fill="none" d="M0 0h24v24H0z"></path>
+                                    <path fill="currentColor" d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <span>Submit</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+        <script>
+
+
+
+    $(document).ready(function () {
+        // your existing form submit logic
+        $('#capacityBuildingForm').submit(function (e) {
+            e.preventDefault();
+            const form = $(this);
+            const formData = new FormData(form[0]);
+
+            $.ajax({
+                type: 'POST',
+                url: form.attr('action'),
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    // update last update date
+                    $.get('/ulb/last-update-date')
+                        .done(function (date) {
+                            $('#lastUpdateSpan').text(date);
+                            showSuccessAlert(data);
+                        })
+                        .fail(function () {
+                            $('#lastUpdateSpan').text('N/A');
+                            showErrorAlert('Error', 'Failed to fetch updated date.');
+                        });
+                },
+                error: function (jqXHR) {
+                    showErrorAlert('Error', jqXHR.responseText || 'Save failed.');
+                }
+            });
+        });
+
+        // ✅ Add this block here for AJAX session expiry check (no global use)
+        $.ajaxSetup({
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+
+        $(document).ajaxError(function (event, xhr) {
+            if (xhr.status === 401 || xhr.status === 403) {
+                Swal.fire({
+                    title: 'Session Expired',
+                    text: 'Your session has expired. Please log in again.',
+                    icon: 'warning',
+                    confirmButtonText: 'Login'
+                }).then(() => {
+                    window.location.href = '/loginPage?sessionExpired';
+                });
+            }
+        });
+
+        // Success alert
+        function showSuccessAlert(msg) {
+            Swal.fire({
+                title: 'Success',
+                text: msg,
+                icon: 'success',
+                confirmButtonText: 'OK',
+                position: 'center'
+            });
+        }
+
+        // Error alert
+        function showErrorAlert(title, text) {
+            Swal.fire({
+                title,
+                text,
+                icon: 'error',
+                confirmButtonText: 'OK',
+                position: 'center'
+            });
+        }
+    });
+</script>
+    </div>
+</div>
+
+</html>
+
+
+

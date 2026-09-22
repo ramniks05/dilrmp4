@@ -1,0 +1,312 @@
+
+<!-- Content Wrapper. Contains page content -->
+<div th:fragment="target-flash-massage">
+    <style>
+   #flashMessageTable tbody tr:hover {
+    background-color: #FFD700; /* Light blue background for hover effect */
+
+    font-weight: bold;
+    }
+    /* Normal button style */
+.btnb {
+    box-shadow: 0 0 15px 1px #6eabc7;
+    background: #0fa4bc;
+    color: #FFF;
+    padding: 10px 30px !important;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+}
+
+/* Button hover effect */
+.btnb:hover {
+    background-color: #8ddfef; /* New color for hover */
+    box-shadow: 0 0 15px 1px #2e6b83; /* Optional: Change the shadow color */
+}
+</style>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-info">
+                        <div class="card-header" style="background: linear-gradient(to right, #32b4c8 0%, rgb(64 101 142));">
+                            <div class="row">
+                                <div class="col-sm-10">
+                                    <h3 class="card-title"  style=" color: #eff3f6; font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a;  letter-spacing: 2px;"> &nbsp; &nbsp; Flash Massage</h3>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <span style="color:red"> * Mandatory Fields</span>
+                            <hr>
+                            <form th:action="@{/dolr/save-flash-message}" method="post" onsubmit="return validateForm()" id="flashMassage" th:object="${flashMessage}"
+                                  hx-target="#content">
+                                <input type="hidden" id="id" th:field="*{id}">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <label class="col-md-2 col-form-label">Select State<span style="color:red"> *</span></label>
+                                            <div class="col-md-6">
+                                                <select name="state.id" class="form-control" hx-trigger="change"
+                                                        hx-post="/dolr/flash-message-data" hx-include="#stateID" id="stateID">
+
+                                                    <!-- Placeholder option -->
+                                                    <option value="00" disabled selected>Select State</option>
+
+                                                    <!-- All State/UTs option -->
+                                                    <option value="999"
+                                                            th:selected="${flashMessage.state == null || (flashMessage.state != null and flashMessage.state.id == 999)}">
+                                                        All State/UTs
+                                                    </option>
+
+                                                    <!-- Actual list of states -->
+                                                    <option th:each="state : ${states}"
+                                                            th:value="${state.id}"
+                                                            th:text="${state.name}"
+                                                            th:selected="${flashMessage.state != null and state.id == flashMessage.state.id}">
+                                                    </option>
+                                                </select>
+
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+
+                                            <label for="message" class="col-md-2 col-form-label">Start date<span style="color:red"> *</span></label>
+                                            <div class="col-md-2">
+                                                <input type="date" id="startDate" name="startDate"
+                                                       th:field="*{stringStartDate}" class="form-control">
+                                            </div>
+
+
+                                            <label for="message" class="col-md-1 col-form-label ms-5" style="margin-left: 8%;"> End date<span style="color:red"> *</span></label>
+                                            <div class="col-md-2">
+                                                <input type="date" id="endDate" name="endDate"
+                                                       th:field="*{stringEndDate}" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <label for="message" class="col-md-2 col-form-label">Enter Flash Message<span style="color:red"> *</span></label>
+                                            <div class="col-md-6">
+                                                <textarea class="form-control" id="message" th:field="*{message}" rows="6" placeholder="Enter your message here..." required></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <button type="submit" class="btnb">Submit</button>
+                                    </div>
+                                </div>
+                                <br>
+                            </form>
+
+
+                            <script>
+   $(document).ready(function () {
+    $('#flashMassage').submit(function (e) {
+        e.preventDefault(); // Prevent the default form submission
+        var form = $(this);
+        var formData = new FormData(form[0]);
+
+
+
+        $.ajax({
+           type: 'POST',
+            url: form.attr('action'),
+            data: formData,
+            processData: false, // Prevent jQuery from automatically transforming the data into a query string
+            contentType: false, // Tell jQuery not to set content type
+            success: function (response) {
+                form[0].reset(); // Reset the form
+                $('#stateID').val('00').change();
+                $('#message').val('');
+                $('#startDate').val('');
+                $('#endDate').val('');
+                showSuccessAlert(response.message); // Show success message
+            },
+            error: function (jqXHR) {
+                form[0].reset(); // Reset the form
+                $('#stateID').val('00').change();
+                $('#message').val('');
+                $('#startDate').val('');
+                $('#endDate').val('');
+                var errorMessage = jqXHR.responseJSON?.message || 'An unexpected error occurred.';
+                showErrorAlert('Error', errorMessage); // Show error message
+            }
+        });
+    });
+
+    function showSuccessAlert(message) {
+        Swal.fire({
+            title: 'Success',
+            text: message,
+            icon: 'success',
+            confirmButtonText: 'OK'
+        });
+    }
+
+    function showErrorAlert(title, message) {
+        Swal.fire({
+            title: title,
+            text: message,
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    }
+});
+</script>                  <hr>
+                            <div class="row">
+                                <div class="col-12">
+                                <h4>Flash Messages</h4>
+
+                                <table class="table table-bordered table-striped" id="flashMessageTable">
+                                    <thead class="table-info" style="background-color: #148fa2;color:#ffff">
+                                    <tr>
+
+                                        <th>S.No</th>
+                                        <th>State/UTs</th>
+                                        <th>Message</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <!-- Data will be populated here via AJAX -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            </div>
+                            <!-- Pagination controls -->
+                            <div id="paginationControls" class="d-flex justify-content-between">
+                                <button id="prevPage" class="btn btn-secondary" disabled>Previous</button>
+                                <button id="nextPage" class="btn btn-secondary" disabled>Next</button>
+                            </div>
+                            <script>
+    $(document).ready(function() {
+        let flashMessages = []; // Array to store all flash messages
+        let currentPage = 1; // Track the current page
+        const rowsPerPage = 5; // Number of rows per page
+
+        // Function to fetch data and populate the table
+        function fetchFlashMessages() {
+            $.ajax({
+                url: '/dolr/get-all-flash-massage',
+                type: 'GET',
+                success: function(response) {
+                    if (response.status === 'success') {
+                        flashMessages = response.flashMessages;
+                        renderTable();
+                    } else {
+                        alert('Failed to load flash messages');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching flash messages:', error);
+                    alert('Error fetching flash messages');
+                }
+            });
+        }
+
+        // Function to render the table based on the current page
+        function renderTable() {
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            const pageMessages = flashMessages.slice(start, end);
+
+            // Empty the table body first
+            $('#flashMessageTable tbody').empty();
+
+            // Loop through the flash messages for the current page
+            pageMessages.forEach(function(flashMessage, index) {
+                var row = `<tr>
+                    <td>${start + index + 1}</td>
+                    <td>${flashMessage.stateName}</td>
+                    <td>${flashMessage.message}</td>
+                    <td>${flashMessage.startDate}</td>
+                    <td>${flashMessage.endDate}</td>
+                    <td>
+                        <!--<button class="btn btn-primary btn-sm" onclick="editFlashMessage(${flashMessage.id})">Edit</button>-->
+                        <button class="btn btn-danger btn-sm" onclick="deleteFlashMessage(${flashMessage.id})">Delete</button>
+                    </td>
+                </tr>`;
+                $('#flashMessageTable tbody').append(row);
+            });
+
+            // Enable/disable pagination buttons based on the current page
+            $('#prevPage').prop('disabled', currentPage === 1);
+            $('#nextPage').prop('disabled', currentPage * rowsPerPage >= flashMessages.length);
+        }
+
+        // Previous page button click event
+        $('#prevPage').click(function() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderTable();
+            }
+        });
+
+        // Next page button click event
+        $('#nextPage').click(function() {
+            if (currentPage * rowsPerPage < flashMessages.length) {
+                currentPage++;
+                renderTable();
+            }
+        });
+
+        // Define deleteFlashMessage globally
+        window.deleteFlashMessage = function(id) {
+                if (confirm('Are you sure you want to delete this flash message?')) {
+                // Send AJAX request to delete the flash message
+                $.ajax({
+                    url: '/dolr/delete-flash-message/' + id,
+                    type: 'POST',
+                    success: function(response) {
+                        alert('Flash message deleted successfully');
+                        fetchFlashMessages(); // Reload the table after deletion
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error deleting flash message:', error);
+                        alert('Failed to delete flash message');
+                    }
+                });
+            }
+        };
+
+        // Search input handler
+        $('#searchInput').on('keyup', function() {
+            const query = $(this).val().toLowerCase();
+            const filteredMessages = flashMessages.filter(function(flashMessage) {
+                return flashMessage.stateName.toLowerCase().includes(query) ||
+                    flashMessage.message.toLowerCase().includes(query);
+            });
+            flashMessages = filteredMessages; // Update the array to the filtered results
+            currentPage = 1; // Reset to first page for filtered results
+            renderTable(); // Render the table with the filtered results
+        });
+
+        // Initial call to fetch and render flash messages
+        fetchFlashMessages();
+    });
+</script>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+

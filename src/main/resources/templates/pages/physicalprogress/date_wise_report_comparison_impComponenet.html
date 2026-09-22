@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/dashboard">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Date-wise Physical Progress Difference Report: Comparison Across All Components</title>
+    <link th:href="@{/css/jquery-ui.css}" rel="stylesheet"/>
+    <style>
+        body {
+            background-color: #F9F9FC;
+            font-family: 'Roboto', sans-serif;
+            font-size: 14px;
+        }
+
+        .select2-container {
+            padding: 0;
+            border: none;
+        }
+
+        h3 {
+            margin-bottom: 0;
+        }
+
+        .card {
+            box-shadow: 0 0 13px 0 rgba(82, 63, 105, .05);
+            background-color: #fafafa;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            padding: 20px;
+        }
+
+
+
+        /* Style for the table */
+        .table {
+            width: 100%;
+            margin-bottom: 1rem;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .table th,
+        .table td {
+            white-space: normal;
+            word-break: break-word;
+        }
+
+        .table-container {
+            width: 100%;
+            max-height: 70vh;
+            overflow-x: auto;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Style for the table header */
+        .table th,
+        .table thead th {
+            text-align: left;
+            background-color: #0994aa;
+            color: #fff;
+            padding: 5px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        /* Style for the table body */
+        .table td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Style for the table striped rows */
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0, 123, 255, 0.05);
+        }
+
+        /* Style for the DataTables display class */
+        .display {
+            width: 100%;
+        }
+
+        #wait {
+            width: 100px;
+            height: 130px;
+            text-align: center;
+            position: fixed;
+            left: 280px;
+            right: 0;
+            top: 40%;
+            z-index: 99;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.43);
+            display: none;
+        }
+
+        #wait img {
+            width: 100%;
+        }
+
+        label {
+            margin-left: 20px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="content-wrapper" layout:fragment="content">
+    <!-- Content Wrapper. Contains page content -->
+    <div th:fragment="date_wise_report_comparison_impComponenet"
+         style="box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;">
+        <!-- Content Header (Page header) -->
+
+
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card card-info">
+                            <div class="card-header" style="background-color: #8ddfef">
+                                <div class="row">
+                                    <div class="col-sm-10">
+                                        <h3 class="card-title"
+                                            style="font-size: 26px; font-family: auto; text-shadow: 2px 2px 4px #576666;  letter-spacing: 2px;">
+                                            Date-wise Physical Progress Difference Report: Comparison Across All
+                                            Components (Data available from October 18,
+                                            2024)</h3>
+                                    </div>
+
+
+                                    <div class="row">
+                                        <a th:href="@{/physcial/report/pdf/date-wise-diffrence}">
+                                            <img th:src="@{/images/pdf.png}" alt="PDF Icon" class="btn-img"
+                                                 width="40" height="40"
+                                                 style="box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;"/>
+                                        </a>
+
+                                        <a th:href="@{/physcial/report/excel/date-wise-diffrence}">
+                                            <img th:src="@{/images/excel.png}" alt="EXCEL Icon" class="btn-img"
+                                                 width="40"
+                                                 height="40"
+                                                 style="box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;"/>
+                                        </a>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="card-body">
+
+                                <div class="row mb-2">
+                                    <div class="col-12">
+                                        <div class="custom-control custom-radio">
+                                            <input type="radio" class="custom-control-input" name="dateOption" id="month" value="monthRange" checked>
+                                            <label class="custom-control-label" for="month">View differences between dates.</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <form class="filter-form">
+                                    <div class="row align-items-end">
+                                        <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                                            <label for="fromMonth" class="font-weight-bold">From</label>
+                                            <div class="input-group" id="monthInput">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                                </div>
+                                                <input type="text" class="form-control" name="fromMonth" id="fromMonth" placeholder="DD/MM/YYYY" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                                            <label for="to" class="font-weight-bold">To</label>
+                                            <div class="input-group" id="monthRangeInput">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                                </div>
+                                                <input type="text" name="toMonth" class="form-control" id="to" placeholder="DD/MM/YYYY" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                                            <label class="font-weight-bold d-block">&nbsp;</label>
+                                            <button type="button" id="searchButton" class="btn btn-info btn-block">Search</button>
+                                        </div>
+                                        <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                                            <label class="font-weight-bold d-block">&nbsp;</label>
+                                            <button type="button" id="clearDates" class="btn btn-secondary btn-block">Clear</button>
+                                        </div>
+                                        <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                                            <label class="font-weight-bold d-block">&nbsp;</label>
+                                            <button type="button" class="btn btn-outline-info btn-block" data-toggle="modal" data-target="#availableDatesModal">View Available Dates</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <script>
+            $(document).ready(function() {
+    // Define the minimum allowed date (October 18, 2024)
+    var initialDate = new Date('2024-10-18');
+
+    var date = new Date();
+    var maxDateTo = new Date(date.getFullYear(), date.getMonth(), date.getDate() - 1);
+    var dataTable;
+
+    const tableContainer = document.getElementById('tableWrapper');
+
+    // Reset date pickers with the correct minDate and maxDate
+    function resetDatePickers() {
+        $('#fromMonth').datepicker('setDate', null)
+                  .datepicker('option', 'minDate', initialDate)
+                  .datepicker('option', 'maxDate', maxDateTo);
+        $('#to').datepicker('setDate', null)
+                .datepicker('option', 'minDate', null)
+                .datepicker('option', 'maxDate', maxDateTo);
+    }
+
+    // Initialize DataTable
+    function initializeDataTable() {
+        if ($.fn.DataTable.isDataTable('#example2')) {
+            $('#example2').DataTable().clear().destroy();
+        }
+        dataTable = $('#example2').DataTable({
+            paging: true,
+            lengthChange: true,
+            searching: true,
+            ordering: true,
+            info: true,
+            autoWidth: false,
+            pageLength: 37,
+                scrollY: '60vh',
+                scrollCollapse: true,
+                scrollX: true,
+        });
+    }
+
+    // Handle date option changes
+    function handleDateOptionChange() {
+              resetDatePickers();
+        initializeDataTable();
+    }
+
+    $('input[type=radio][name=dateOption]').change(handleDateOptionChange);
+    handleDateOptionChange();
+
+    // Set up the 'from' date picker with the enforced minimum date
+    $('#fromMonth').datepicker({
+        autoclose: true,
+        changeMonth: true,
+        changeYear: true,
+        showButtonPanel: true,
+        dateFormat: 'dd/mm/yy',
+        minDate: initialDate,  // Enforce disabling dates before October 18, 2024
+        maxDate: maxDateTo,
+        onClose: function(dateText, inst) {
+            var selectedDate = $(this).datepicker('getDate');
+            if (selectedDate) {
+                selectedDate.setDate(selectedDate.getDate() + 1);
+                $('#to').datepicker('option', 'minDate', selectedDate);
+            }
+        }
+    });
+
+    // Set up the 'to' date picker with a max date
+    $('#to').datepicker({
+        autoclose: true,
+        changeMonth: true,
+        changeYear: true,
+        showButtonPanel: true,
+        dateFormat: 'dd/mm/yy',
+        maxDate: maxDateTo,
+        onClose: function(dateText, inst) {
+            var selectedDate = $(this).datepicker('getDate');
+            if (selectedDate) {
+                selectedDate.setDate(selectedDate.getDate() - 1);
+                $('#fromMonth').datepicker('option', 'maxDate', selectedDate);
+            }
+        }
+    });
+
+   // Fetch data by selected dates
+// Fetch data by selected dates
+function getDataByDate() {
+    $.ajax({
+        url: "/dolr/comparison-report",
+        type: "POST",
+        data: {
+            date1: $("#fromMonth").val(),
+            date2: $("#to").val()
+        },
+        beforeSend: function () {
+            $("#wait").css("display", "block");
+        },
+        success: function (response) {
+            $("#wait").css("display", "none");
+            dataTable.clear().draw();
+
+            var fromMonth = $("#fromMonth").val();
+            var toMonth = $("#to").val();
+            var dateRangeText = `Physical Progress Differences for All Components (${fromMonth} to ${toMonth})`;
+            $("#dateRange").text(dateRangeText);
+
+            if (response && response.length > 0) {
+                const rows = [];
+                let grandTotalRow = null;
+                let indexCounter = 1; // Initialize counter for indexing non-"Total" rows
+
+                // Loop through each item in the response data
+                response.forEach((item) => {
+                    if (item.stateName !== "Grand Total") {
+                        // Add regular rows with continuous index
+                        rows.push([
+                            indexCounter++,
+                            item.stateName,
+                            item.totalTehsilsDiff,
+                            item.totalVillagesDiff,
+                            item.totalRorDiff,
+                            item.rorComputerizedDiff,
+                            item.rorLinkedWithAadhaarDiff,
+                            item.districtsWithGenderBasedOwnershipDiff,
+                            item.villagesClrCompletedDiff,
+                            item.totalCadastralMapsDiff,
+                            item.digitizedCadastralMapsDiff,
+                            item.totalMapsFmbTippansDiff,
+                            item.totalDigitizedMapsFmbTippansDiff,
+                            item.totalDigitizedFmbTippansDiff,
+                            item.villagesLinkedWithRorDiff,
+                            item.villagesGeoreferencedDiff,
+                            item.totalLandParcelsDiff,
+                            item.landParcelsWithUlipnDiff,
+                            item.georeferencedLandParcelsDiff,
+                            item.noOfSroInStateDiff,
+                            item.noOfSroUsingOnlineRegistrationDiff,
+                            item.mrrSanctionedDiff,
+                            item.mrrCompletedDiff,
+                            item.villagesFinalPromulgationDoneDiff,
+                            item.revenueCourtsComputerizedDiff
+                        ]);
+                    } else {
+                        // Prepare the "Total" row without an index and in bold
+                        grandTotalRow = [
+                            "",
+                            `<strong>${item.stateName}</strong>`,
+                            `<strong>${item.totalTehsilsDiff}</strong>`,
+                             `<strong>${item.totalVillagesDiff}</strong>`,
+                            `<strong>${item.totalRorDiff}</strong>`,
+                            `<strong>${item.rorComputerizedDiff}</strong>`,
+                            `<strong>${item.rorLinkedWithAadhaarDiff}</strong>`,
+                            `<strong>${item.districtsWithGenderBasedOwnershipDiff}</strong>`,
+                             `<strong>${item.villagesClrCompletedDiff}</strong>`,
+                             `<strong>${item.totalCadastralMapsDiff}</strong>`,
+                             `<strong>${item.digitizedCadastralMapsDiff}</strong>`,
+                            `<strong>${item.totalMapsFmbTippansDiff}</strong>`,
+                            `<strong>${item.totalDigitizedMapsFmbTippansDiff}</strong>`,
+                            `<strong>${item.totalDigitizedFmbTippansDiff}</strong>`,
+                            `<strong>${item.villagesLinkedWithRorDiff}</strong>`,
+                            `<strong>${item.villagesGeoreferencedDiff}</strong>`,
+                            `<strong>${item.totalLandParcelsDiff}</strong>`,
+                            `<strong>${item.landParcelsWithUlipnDiff}</strong>`,
+                            `<strong>${item.georeferencedLandParcelsDiff}</strong>`,
+                            `<strong>${item.noOfSroInStateDiff}</strong>`,
+                            `<strong>${item.noOfSroUsingOnlineRegistrationDiff}</strong>`,
+                            `<strong>${item.mrrSanctionedDiff}</strong>`,
+                            `<strong>${item.mrrCompletedDiff}</strong>`,
+                            `<strong>${item.villagesFinalPromulgationDoneDiff}</strong>`,
+                            `<strong>${item.revenueCourtsComputerizedDiff}</strong>`
+                        ];
+                    }
+                });
+                // Add regular rows to the DataTable
+                dataTable.rows.add(rows).draw();
+
+                // Add the "Total" row as the last row without an index
+                if (grandTotalRow) {
+                    dataTable.row.add(grandTotalRow).draw();
+                }
+
+                $(".pdf-excel-buttons").css("display", "block");
+            } else {
+                dataTable.clear().draw();
+                console.log("No data found");
+            }
+        },
+        error: function (error) {
+            dataTable.clear().draw();
+            $("#wait").css("display", "none");
+            $(".pdf-excel-buttons").css("display", "none");
+            console.error("Error:", error);
+        }
+    });
+}
+    // Trigger data fetch on Search button click
+    $('#searchButton').click(function (event) {
+        event.preventDefault();
+        getDataByDate();
+    });
+
+    $('#clearDates').click(function (event) {
+        event.preventDefault();
+        resetDatePickers();
+        if (dataTable) {
+            dataTable.clear().draw();
+        }
+        $('#dateRange').text('');
+        $(".pdf-excel-buttons").css("display", "none");
+    });
+    });
+</script>
+<div class="modal fade" id="availableDatesModal" tabindex="-1" role="dialog" aria-labelledby="availableDatesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="border-radius: 12px;">
+            <div class="modal-header" style="background-color: #16aec6; color: #fff; border-top-left-radius: 12px; border-top-right-radius: 12px;">
+                <h5 class="modal-title" id="availableDatesModalLabel">Data Available Dates</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="max-height: 360px; overflow-y: auto;">
+                <div style="margin-bottom: 12px; position: relative;">
+                    <input type="text" id="dateSearchModal" placeholder="Search date e.g. 2024-10" aria-label="Search dates"
+                           style="width: 100%; padding: 8px 36px 8px 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box;"/>
+                    <span style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 18px; color: #888;">🔍</span>
+                </div>
+                <ul id="dateListModal" style="list-style: none; padding: 0; margin: 0;">
+                    <li th:each="date : ${dateList}" style="padding: 10px 12px; border-bottom: 1px solid #eee; color: #333; user-select: text;">
+                        <span th:text="${#dates.format(date, 'yyyy-MM-dd')}"></span>
+                    </li>
+                </ul>
+            </div>
+            <div class="modal-footer" style="border-top: none;">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+  function filterDatesModal() {
+    const input = document.getElementById('dateSearchModal');
+    const filter = input.value.toLowerCase();
+    const list = document.getElementById('dateListModal');
+    const items = list.getElementsByTagName('li');
+
+    for (let i = 0; i < items.length; i++) {
+      const span = items[i].getElementsByTagName('span')[0];
+      const txtValue = span.textContent || span.innerText;
+      items[i].style.display = txtValue.toLowerCase().includes(filter) ? '' : 'none';
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const input = document.getElementById('dateSearchModal');
+    if (input) {
+      input.addEventListener('keyup', filterDatesModal);
+    }
+
+    $('#availableDatesModal').on('hidden.bs.modal', function () {
+      const list = document.getElementById('dateListModal');
+      const items = list.getElementsByTagName('li');
+      const inputField = document.getElementById('dateSearchModal');
+      inputField.value = '';
+      for (let i = 0; i < items.length; i++) {
+        items[i].style.display = '';
+      }
+    });
+  });
+</script>
+<style>
+  #example2 tbody tr:hover {
+    background-color: #FFD700; /* Light blue background for hover effect */
+    font-weight: bold;
+    /* cursor: pointer;  Change cursor to pointer */
+  }
+
+  table, th, td {
+    border: 1px solid white;
+    border-collapse: collapse;
+  }
+</style>
+                            <div id="wait" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); z-index:10000; text-align:center; padding-top:200px;"><img th:src="@{/images/loading.gif}" alt="Loading..." style="width: 100px;
+                   height: 130px; text-align: center; margin: 0 auto;"/><br/>Please Wait...</div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <div class="table-container" id="tableWrapper">
+                                                <table id="example2"
+                                                       class="table table-bordered  table-striped-columns table-success table-striped">
+                                                <thead style="background-color: #4a6c52;; color:#ffff">
+                                                <tr>
+                                                    <th colspan="25">
+                                                        <h4 class="card-title"
+                                                            style="font-size: 24px; font-family: auto; background-color: #6faab1; text-align: center; color: #090a0a; letter-spacing: 2px;">
+                                                            <span id="dateRange"></span>
+                                                            <br>
+                                                        </h4>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <th rowspan="2">S.No.</th>
+                                                    <th rowspan="2">State/UT Name</th>
+                                                    <th rowspan="2">Total Tehsils</th>
+                                                    <th rowspan="2">Total Villages</th>
+                                                    <th colspan="21" style="text-align: center;">Difference</th>
+                                                </tr>
+                                                <tr>
+                                                    <th rowspan="1">Total No. of RoRs</th>
+                                                    <th rowspan="1">No. of RoRs Computerized</th>
+                                                    <th rowspan="1">RoRs Linked with Aadhaar</th>
+                                                    <th rowspan="1">Integration of Land Records (RoRs) with Banks (No.
+                                                        of Districts)
+                                                    </th>
+                                                    <th rowspan="1">CLR Completed Villages</th>
+
+                                                    <th rowspan="1">Total No. of Cadastral Maps</th>
+                                                    <th rowspan="1">No. of Cadastral Maps Digitized</th>
+                                                    <th rowspan="1">Total Mapsheets / FMBs / Tippans (No.)</th>
+                                                    <th rowspan="1">Digitized Mapsheets / FMBs / Tippans (No.)</th>
+                                                    <th rowspan="1">Digitized FMBs + Tippans (No.)</th>
+                                                    <th rowspan="1">Villages with Cadastral Maps Linked with RoRs</th>
+                                                    <th rowspan="1">Villages Having Cadastral Maps / FMBs / Tippans
+                                                        Geo-Referenced
+                                                    </th>
+                                                    <th rowspan="1">Total No. of Land Parcels</th>
+                                                    <th rowspan="1">No. of Land Parcels Assigned ULPIN</th>
+                                                    <th rowspan="1">No. of Geo-Referenced Land Parcel</th>
+
+                                                    <th rowspan="1">Total SROs</th>
+                                                    <th rowspan="1">SROs Computerized</th>
+                                                    <!--                                                    <th rowspan="1">No. of SROs Connected and Integrated with Revenue Offices</th>-->
+
+                                                    <th rowspan="1">Sanctioned Modern Record Rooms</th>
+                                                    <th rowspan="1">Completed Modern Record Rooms</th>
+
+                                                    <th rowspan="1">Survey / Resurvey Completed (Villages)</th>
+                                                    <th rowspan="1">No. of Revenue courts computerized</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="tableBody">
+                                                </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+
+</body>
+
+</html>

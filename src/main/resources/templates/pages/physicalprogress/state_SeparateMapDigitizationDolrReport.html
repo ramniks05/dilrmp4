@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/dashboard">
+
+<head>
+    <meta charset="UTF-8">
+    <title>State Level Map Digitization</title>
+    <link th:href="@{/css/jquery-ui.css}" rel="stylesheet" />
+</head>
+
+<body>
+<div class="content-wrapper" layout:fragment="content" style="box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;">
+    <section class="content" >
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-info">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-sm-10">
+                                <h3 class="card-title"
+                                    style="font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a; letter-spacing: 2px;">
+                                    <span th:text="${labels['reportNameforMapOny']}"></span>
+                                </h3>
+                            </div>
+                            <div class="col-sm-2">
+                                <a th:href="@{/physcial/report/pdf/map-dolr}">
+                                    <img th:src="@{/images/pdf.png}" alt="PDF Icon" class="btn-img" width="40"
+                                         height="40"
+                                         style="box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;"/>
+                                </a>
+                                <a th:href="@{/physcial/report/excel/map-dolr}">
+                                    <img th:src="@{/images/excel.png}" alt="EXCEL Icon" class="btn-img" width="40"
+                                         height="40"
+                                         style="box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;"/>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive text-nowrap">
+                            <table id="example2" class="table table-bordered  table-striped-columns table-success table-striped  table-responsive">
+                                <thead class="card-info wrap-text" style="background-color: #4a6c52; color:#ffff">
+                                <tr>
+                                    <th rowspan="3" th:text="${labels['serialNumber']}"></th>
+                                    <th rowspan="3" th:text="${labels['stateUT']}"></th>
+                                    <th rowspan="3" th:text="${labels['totalDistricts']}"></th>
+                                    <th rowspan="3" th:text="${labels['totalTehsil']}"></th>
+                                    <th colspan="9" th:text="${labels['noOfCadastralMapsFmBsTippans']}"></th>
+                                    <th colspan="3" th:text="${labels['cadastralMapsFmBsTippans']}"></th>
+                                </tr>
+                                <tr>
+                                    <th colspan="3" th:text="${labels['cadastralMaps']}"></th>
+                                    <th colspan="3" th:text="${labels['fmbs']}"></th>
+                                    <th colspan="3" th:text="${labels['tippans']}"></th>
+                                    <th th:text="${labels['total']}"></th>
+                                    <th colspan="2" th:text="${labels['digitized']}"></th>
+                                </tr>
+                                <tr>
+                                    <th th:text="${labels['total']}"></th>
+                                    <th th:text="${labels['digitized']}"></th>
+                                    <th th:text="${labels['percentage']}"></th>
+                                    <th th:text="${labels['total']}"></th>
+                                    <th th:text="${labels['digitized']}"></th>
+                                    <th th:text="${labels['percentage']}"></th>
+                                    <th th:text="${labels['total']}"></th>
+                                    <th th:text="${labels['digitized']}"></th>
+                                    <th th:text="${labels['percentage']}"></th>
+                                    <th th:text="${labels['number']}"></th>
+                                    <th th:text="${labels['number']}"></th>
+                                    <th th:text="${labels['percentage']}"></th>
+
+                                </tr>
+                                <tr style="font-weight: bold;">
+                                    <td style="text-align: center;">1</td>
+                                    <td style="text-align: center;">2</td>
+                                    <td style="text-align: center;">3</td>
+                                    <td style="text-align: center;">4</td>
+                                    <td style="text-align: center;">5a</td>
+                                    <td style="text-align: center;">5b</td>
+                                    <td style="text-align: center;">5c</td>
+                                    <td style="text-align: center;">6a</td>
+                                    <td style="text-align: center;">6b</td>
+                                    <td style="text-align: center;">6c</td>
+                                    <td style="text-align: center;">7a</td>
+                                    <td style="text-align: center;">7b</td>
+                                    <td style="text-align: center;">7c</td>
+                                    <td style="text-align: center;">8</td>
+                                    <td style="text-align: center;">9a</td>
+                                    <td style="text-align: center;">9b</td>
+                                </tr>
+                                </thead>
+
+                                <thead>
+                                <tr th:each="data : ${grandTotal}">
+                                    <td></td>
+                                    <td style="font-weight: bold;">Grand Total</td>
+                                    <td th:text="${data.formattingTotalDistrict}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.formattingTotalTehsils}" style="font-weight: bold;"></td>
+
+                                    <td th:text="${data.formattingtotalCadastralMaps}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.formattingdigitizedCadastralMaps}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.digitizedCadastralMapsPercent}" style="font-weight: bold;"></td>
+
+                                    <td th:text="${data.formattingtotalFmbs}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.formattingdigitizedFmbs}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.digitizedFmbsPercent}" style="font-weight: bold;"></td>
+
+                                    <td th:text="${data.formattingtotalTippans}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.formattingdigitizedTippans}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.digitizedTippansPercent}" style="font-weight: bold;"></td>
+
+                                    <td th:text="${data.formattingtotalMapsFmbTippans}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.formattingtotalDigitizedMapsFmbTippans}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.digitizedMapsFmbTippansPercent}" style="font-weight: bold;"></td>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                <tr th:each="data, iterator : ${reportData}">
+                                    <td th:text="${iterator.count}"></td>
+                                    <td><a th:href="@{/physicalProgressReports/map/district-level/{lgdCode}(lgdCode=${data.lgdCode})}" th:text="${data.stateName}" target="_blank" style="white-space: normal; word-wrap: break-word; overflow-wrap: break-word; display: inline-block; max-width: 150px;"></a></td>
+
+                                    <td th:text="${data.formattingTotalDistrict}"></td>
+                                    <td th:text="${data.formattingTotalTehsils}"></td>
+
+                                    <td th:text="${data.formattingtotalCadastralMaps}"></td>
+                                    <td th:text="${data.formattingdigitizedCadastralMaps}"></td>
+                                    <td th:text="${data.digitizedCadastralMapsPercent}"></td>
+
+                                    <td th:text="${data.formattingtotalFmbs}"></td>
+                                    <td th:text="${data.formattingdigitizedFmbs}"></td>
+                                    <td th:text="${data.digitizedFmbsPercent}"></td>
+
+                                    <td th:text="${data.formattingtotalTippans}"></td>
+                                    <td th:text="${data.formattingdigitizedTippans}"></td>
+                                    <td th:text="${data.digitizedTippansPercent}"></td>
+
+                                    <td th:text="${data.formattingtotalMapsFmbTippans}"></td>
+                                    <td th:text="${data.formattingtotalDigitizedMapsFmbTippans}"></td>
+                                    <td th:text="${data.digitizedMapsFmbTippansPercent}"></td>
+                                </tr>
+                                </tbody>
+
+                                <tfoot>
+                                <tr th:each="data : ${grandTotal}">
+                                    <td></td>
+                                    <td style="font-weight: bold;">Grand Total</td>
+                                    <td th:text="${data.formattingTotalDistrict}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.formattingTotalTehsils}" style="font-weight: bold;"></td>
+
+                                    <td th:text="${data.formattingtotalCadastralMaps}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.formattingdigitizedCadastralMaps}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.digitizedCadastralMapsPercent}" style="font-weight: bold;"></td>
+
+                                    <td th:text="${data.formattingtotalFmbs}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.formattingdigitizedFmbs}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.digitizedFmbsPercent}" style="font-weight: bold;"></td>
+
+                                    <td th:text="${data.formattingtotalTippans}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.formattingdigitizedTippans}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.digitizedTippansPercent}" style="font-weight: bold;"></td>
+
+                                    <td th:text="${data.formattingtotalMapsFmbTippans}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.formattingtotalDigitizedMapsFmbTippans}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.digitizedMapsFmbTippansPercent}" style="font-weight: bold;"></td>
+                                </tr>
+                                </tfoot>
+                            </table>
+                            <script>
+    $(document).ready(function () {
+        $('#ddlSelect').change(function () {
+            var selectedValue = $(this).val();
+            if (selectedValue != '') {
+                $('#ascDropdown').show();
+            } else {
+                $('#ascDropdown').hide();
+            }
+        });
+    });
+    $('#resetButton').click(function () {
+        $('#searchForm')[0].reset();
+        $('#searchForm').trigger('submit');
+    });
+                            </script>
+                            <script>
+    $(document).ready(function () {
+        // Check if DataTable is already initialized on the table
+        if ($.fn.DataTable.isDataTable('#example2')) {
+            // If yes, destroy the existing DataTable instance
+            $('#example2').DataTable().destroy();
+        }
+
+        // Initialize DataTable with your table ID
+        $('#example2').DataTable({
+            // Add additional options if needed
+            paging: true,  // Enable pagination
+            lengthMenu: [10, 25, 50, 100],  // Set page length options
+            pageLength: 37,  // Default page length
+            // Callback function after each draw event
+            drawCallback: function (settings) {
+                var api = this.api();
+                var totalPages = api.page.info().pages;
+                var page = api.page.info().page;
+
+                // Check if it's the last page
+                if (page === totalPages - 1) {
+                    $('#example2 tfoot').show();
+                } else {
+                    $('#example2 tfoot').hide();
+                }
+            }
+        });
+    });
+
+
+
+
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </section>
+</div>
+</body>
+</html>
+
+

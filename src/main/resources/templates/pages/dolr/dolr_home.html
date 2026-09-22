@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/dashboard">
+
+
+<head>
+     <link th:href="@{/css/report/cardImg.css}" rel="stylesheet"/>
+    <script type="text/javascript" th:src="@{/static/js/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/static/nlrmpmap/getDolrDashboardData.js}"></script>
+    <script type="text/javascript" th:src="@{/static/nlrmpmap/highcharts.js}"></script>
+
+
+
+
+
+    <meta charset="UTF-8">
+    <title>DILRMP MIS-4.0</title>
+    <style>
+ .ps-4 {
+    padding-left: 1.5rem !important;
+}
+    .display {
+    width: 100%;
+    }
+ #wait {
+    width: 100px;
+    height: 130px;
+    text-align: center;
+    position: fixed;
+    left: 280px;
+    right: 0;
+    top: 40%;
+    z-index: 99;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.43);
+    display: none;
+    }
+    #wait img {
+    width: 100%;
+    }
+
+    #chartFilters {
+    display: flex;
+    flex-wrap: wrap; /* Allows items to wrap into new rows */
+    /*  gap: 20px; Adds space between each checkbox label */
+    font-family: Arial, sans-serif;
+}
+
+#chartFilters label {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    color: #333;
+    width: calc(33.33% - 20px); /* Ensures 3 items per row, accounting for gap */
+    box-sizing: border-box;
+    transition: color 0.3s ease-in-out;
+}
+
+#chartFilters input[type="checkbox"] {
+    margin-right: 10px;
+    transform: scale(1.2);
+    transition: transform 0.2s ease-in-out;
+}
+
+#chartFilters label:hover {
+    color: #007bff;
+}
+
+#chartFilters label span {
+    font-weight: bold;
+    margin-left: 5px;
+    font-size: 14px;
+}
+
+#chartFilters input[type="checkbox"]:checked {
+    accent-color: #ff7f50;
+}
+
+#chartFilters input[type="checkbox"]:hover {
+    transform: scale(1.3);
+}
+
+
+    </style>
+
+
+
+    <script type="text/javascript">
+
+    </script>
+   </head>
+
+<div class="content-wrapper" layout:fragment="content"
+     style="box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;">
+    <!-- Content Header (Page header) -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-info">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-sm-10">
+                                    <h3 class="card-title"
+                                        style="font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a; letter-spacing: 2px;">
+                                        Master Summary</h3>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+
+                        <div class="card-body">
+
+                            <h3>  Physical Progress </h3>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div id="containerState" style="height: 300px;"></div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div id="villagesDonutChart" style="height: 300px;"></div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div id="dashboardPieChart" style="height: 300px;"></div>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div id="dashboardBarChart" style="height: 400px;"></div>
+                            <div id="chartFilters"></div>
+                             <hr>
+                            <div id="wait">
+                                <img th:src="@{/images/loading.gif}"  />
+                                <br />Please Wait...
+                            </div>
+                            <div class="row">
+
+                                <div class="col-md-3 stretch-card grid-margin">
+
+                                    <div class="card bg-gradient-info1 card-img-holder text-white">
+                                        <div class="card-body">
+                                            <img th:src="@{/images/circle.svg}"
+                                                 class="card-img-absolute" alt="circle-image">
+                                            <h6 class="font-weight-normal mb-3">Total States/UTs
+
+                                               <i
+                                                        class="mdi mdi-chart-line mdi-24px float-right"></i>
+                                            </h6>
+                                            <h3 class="mb-5"><span>36</span>
+                                            </h3>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 stretch-card grid-margin">
+                                    <div class=" card bg-gradient-danger1 card-img-holder text-white">
+                                        <div class="card-body">
+                                            <img th:src="@{/images/circle.svg}"
+                                                 class="card-img-absolute" alt="circle-image">
+                                            <h6 class="font-weight-normal mb-3">Total Districts
+                                                <i class="mdi mdi-diamond mdi-24px float-right"></i>
+                                            </h6>
+                                            <h3 class="mb-5"><span  id="totalDistrict"/></h3>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 stretch-card grid-margin">
+                                    <div class="card bg-gradient-danger2 card-img-holder text-white">
+                                        <div class="card-body">
+                                            <img th:src="@{/images/circle.svg}"
+                                                 class="card-img-absolute" alt="circle-image">
+                                            <h6 class="font-weight-normal mb-3">Total Tehsils
+                                                <i
+                                                        class="mdi mdi-diamond mdi-24px float-right"></i>
+                                            </h6>
+                                            <h3 class="mb-5"id="totalTehsil"></h3>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 stretch-card grid-margin">
+                                    <div class="card bg-gradient-successO card-img-holder text-white">
+                                        <div class="card-body">
+                                            <img th:src="@{/images/circle.svg}"
+                                                 class="card-img-absolute" alt="circle-image">
+                                            <h6 class="font-weight-normal mb-3">Total Villages
+                                                <i class="mdi mdi-bookmark-outline mdi-24px float-right"></i>
+                                            </h6>
+                                            <h3 class="mb-5" id="totalVillage"></h3>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-md-3 stretch-card grid-margin">
+                                    <div class=" card bg-gradient-danger3 card-img-holder text-white">
+                                        <div class="card-body">
+                                            <img th:src="@{/images/circle.svg}"
+                                                 class="card-img-absolute" alt="circle-image">
+                                            <h6 class="font-weight-normal mb-3">Total CLR Completed (Villages)
+                                                <i class="mdi mdi-diamond mdi-24px float-right"></i>
+                                            </h6>
+                                            <h3 class="mb-5" id="villagesComputerizationCompleted"></h3>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 stretch-card grid-margin">
+                                    <div class=" card bg-gradient-danger4 card-img-holder text-white">
+                                        <div class="card-body">
+                                            <img th:src="@{/images/circle.svg}"
+                                                 class="card-img-absolute" alt="circle-image">
+                                            <h6 class="font-weight-normal mb-3">Total Digitized Mapsheets/FMB's/Tippan's
+                                                <i class="mdi mdi-diamond mdi-24px float-right"></i>
+                                            </h6>
+                                            <h3 class="mb-5" id="totalDigitizedMapsFmbTippans"></h3>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-3 stretch-card grid-margin">
+                                    <div class=" card bg-gradient-danger5 card-img-holder text-white">
+                                        <div class="card-body">
+                                            <img th:src="@{/images/circle.svg}"
+                                                 class="card-img-absolute" alt="circle-image">
+                                            <h6 class="font-weight-normal mb-3">Completed Modern Record Room
+                                                <i class="mdi mdi-diamond mdi-24px float-right"></i>
+                                            </h6>
+                                            <h3 class="mb-5" id="mrrCompleted"></h3>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 stretch-card grid-margin">
+                                    <div class=" card bg-gradient-danger6 card-img-holder text-white">
+                                        <div class="card-body">
+                                            <img th:src="@{/images/circle.svg}"
+                                                 class="card-img-absolute" alt="circle-image">
+                                            <h6 class="font-weight-normal mb-3">Total Surveyed Villages
+                                                <i class="mdi mdi-diamond mdi-24px float-right"></i>
+                                            </h6>
+                                            <h3 class="mb-5" id="villagesDroneFlyingCompleted"></h3>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <!-- 2nd Row End -->
+
+                            <!-- 3rd Row Started -->
+                            <div class="row">
+
+                                <div class="col-md-3 stretch-card grid-margin">
+                                    <div class=" card bg-gradient-danger2 card-img-holder text-white">
+                                        <div class="card-body">
+                                            <img th:src="@{/images/circle.svg}"
+                                                 class="card-img-absolute" alt="circle-image">
+                                            <h6 class="font-weight-normal mb-3">Total e-RCCMS Computerized
+                                                <i class="mdi mdi-diamond mdi-24px float-right"></i>
+                                            </h6>
+                                            <h3 class="mb-5"id="revenueCourtsComputerized"></h3>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 stretch-card grid-margin">
+                                    <div class=" card bg-gradient-info1 card-img-holder text-white">
+                                        <div class="card-body">
+                                            <img th:src="@{/images/circle.svg}"
+                                                 class="card-img-absolute" alt="circle-image">
+                                            <h6 class="font-weight-normal mb-3">Total Aadhaar Linked With RoR
+                                                <i class="mdi mdi-diamond mdi-24px float-right"></i>
+                                            </h6>
+                                            <h3 class="mb-5" id="villagesWith100PercentRorLinkedAadhaar"></h3>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-3 stretch-card grid-margin">
+                                    <div class=" card bg-gradient-danger4 card-img-holder text-white">
+                                        <div class="card-body">
+                                            <img th:src="@{/images/circle.svg}"
+                                                 class="card-img-absolute" alt="circle-image">
+                                            <h6 class="font-weight-normal mb-3">Total SRO's Computerized
+                                                <i class="mdi mdi-diamond mdi-24px float-right"></i>
+                                            </h6>
+                                            <h3 class="mb-5" id="totalSro"></h3>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 stretch-card grid-margin">
+                                    <div class=" card bg-gradient-successO card-img-holder text-white">
+                                        <div class="card-body">
+                                            <img th:src="@{/images/circle.svg}"
+                                                 class="card-img-absolute" alt="circle-image">
+                                            <h6 class="font-weight-normal mb-3">Total ULPIN Generated
+                                                <i class="mdi mdi-diamond mdi-24px float-right"></i>
+                                            </h6>
+                                            <h3 class="mb-5" id="villagesWithUlipn"></h3>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                              </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </section>
+</div>
+</body>
+
+</html>

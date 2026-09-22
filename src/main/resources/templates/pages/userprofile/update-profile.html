@@ -1,0 +1,304 @@
+
+
+
+<!-- Content Wrapper. Contains page content -->
+<div th:fragment="update-user-profile">
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card card-info">
+            <div class="card-header" style="background: linear-gradient(to right, #32b4c8 0%, rgb(64 101 142));">
+              <div class="row">
+                <div class="col-sm-10">
+                  <h3 class="card-title"  style=" color: #eff3f6; font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a;  letter-spacing: 2px;"> &nbsp; &nbsp; Update User Profile Details</h3>
+                </div>
+
+              </div>
+            </div>
+            <div class="card-body">
+
+
+              <!-- Corrected URL -->
+
+
+              <span style="color:red"> * Mandatory Fields</span>
+                <hr>
+              <form th:action="@{/userProfile/uprofile}" th:object="${uProfile}" method="post" onsubmit="return validateForm()" id="updateUserProfile">
+
+             <!-- <form hx-post="/userProfile/uprofile" hx-target="#content" hx-swap="innerHTML" th:object="${uProfile}" id="updateUserProfile">-->
+                <input type="hidden" id="id" th:field="*{id}">
+
+                <div class="row">
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label for="fName">Name<span style="color:red"> *</span></label>
+                      <input type="text" class="form-control" id="fName" oncopy="return false;" onpaste="return false;" oncut="return false;" placeholder="Enter First Name" th:field="*{name}" onkeyup="this.value = this.value.replace(/[^\w\s.]/g, '')">
+                      <span style="color:red" id="message_fName"></span>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label for="email">Email<span style="color:red"> *</span></label>
+                      <input type="email" class="form-control" id="email" placeholder="Enter Your Email" th:field="*{email}" onkeyup="if (/<[^>]*>/.test(this.value)) this.value = this.value.replace(/<[^>]*>/g, '')">
+                      <span style="color:red" id="message_email"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label for="officeName">Office Name<span style="color:red"> *</span></label>
+                      <input type="text" class="form-control" id="officeName" placeholder="Enter Your Office Name" th:field="*{officeName}" onkeyup="if (/<[^>]*>/.test(this.value)) this.value = this.value.replace(/<[^>]*>/g, '')">
+                      <span style="color:red" id="message_officeName"></span>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label for="designation">Designation<span style="color:red"> *</span></label>
+                      <input type="text" class="form-control" id="designation" placeholder="Enter Your Designation" th:field="*{designation}" onkeyup="if (/<[^>]*>/.test(this.value)) this.value = this.value.replace(/<[^>]*>/g, '')">
+                      <span style="color:red" id="message_designation"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-6">
+                    <div class="form-group">
+                      <div class="checkbox">
+                          <label for="termAndCondition">Mobile No<span style="color:red"> *</span></label>
+                          <input type="text" class="form-control" id="mobileno" placeholder="Enter Mobile no" th:field="*{mobileNo}"
+                                 maxlength="10" onkeyup="if (/\D/g.test(this.value)) this.value = this.value.replace(/\D/g, '')">
+                          <span style="color:red" id="message_mobileno">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label for="officeAddress">Office Address<span style="color:red"> *</span></label>
+                      <textarea class="form-control" rows="3" id="officeAddress" placeholder="Enter Your Office Address" th:field="*{officeAddress}" onkeyup="if (/<[^>]*>/.test(this.value)) this.value = this.value.replace(/<[^>]*>/g, '')"></textarea>
+                      <span style="color:red" id="message_officeAddress"></span>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <input type="checkbox" id="termAndCondition" value="true" th:field="*{termAndCondition}">
+                                <label for="termAndCondition">Term & Conditions<span style="color:red"> *</span></label>
+                                <span style="color:red" id="message_termAndCondition"></span>
+                            </div>
+                        </div>
+                    </div>
+                  <div class="col-3">
+                    <div class="form-group">
+                      <label for="captcha">Enter Captcha<span style="color:red"> *</span></label>
+                      <input type="text" class="form-control" id="captcha" th:field="*{captcha}" placeholder="Enter Captcha" maxlength="6">
+                      <p th:if="${#fields.hasErrors('captcha')}" th:errorclass="alert-danger" th:errors="*{captcha}"></p>
+                      <span style="color:red" id="message_captcha"></span>
+                    </div>
+                  </div>
+                  <div class="col-3">
+                    <div class="captcha-container">
+                      <img th:src="@{/dilrmp/captcha}" id="captchaImage" alt="CAPTCHA Image" />
+                      <button type="button" id="refreshCaptcha" class="btn btn-link">
+                        <i class="bi bi-arrow-clockwise"></i> Refresh CAPTCHA
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="row">
+                  <div class="col-12">
+                    <button type="submit" class="btn btn-green btn-rounded" style="box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);">Submit</button>
+                  </div>
+                </div>
+              </form>
+
+              <script th:inline="javascript">
+    var contextPath = /*[[${contextPath}]]*/ '';
+    function refreshCaptcha() {
+        $('#captchaImage').attr('src', contextPath + '/dilrmp/captcha?' + new Date().getTime());
+    }
+</script>
+
+              <script>
+    // Click event handler for refreshing CAPTCHA
+    $('#refreshCaptcha').click(function() {
+        refreshCaptcha();
+    });
+
+    function validateUserProfileForm() {
+        var fName = $("#fName").val();
+        var email = $("#email").val();
+        var mobileno = $("#mobileno").val();
+        var officeName = $("#officeName").val();
+        var officeAddress = $("#officeAddress").val();
+        var designation = $("#designation").val();
+        var captcha = $("#captcha").val();
+
+        var bol = true;
+
+        if (fName === '') {
+            $("#message_fName").text("Enter Name");
+            $('#fName').focus().css("background-color", "yellow");
+            return false;
+        } else {
+            $("#message_fName").text("");
+            $('#fName').css("background-color", "white");
+        }
+
+        if (email === '') {
+            $("#message_email").text("Enter E-Mail Id");
+            $('#email').focus().css("background-color", "yellow");
+            return false;
+        } else if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+            $("#message_email").text("Invalid E-Mail Id");
+            $('#email').focus().css("background-color", "yellow");
+            return false;
+        } else {
+            $("#message_email").text("");
+            $('#email').css("background-color", "white");
+        }
+
+        if (mobileno === '' || mobileno.length !== 10) {
+            $("#message_mobileno").text("Enter a valid 10-digit Mobile No.");
+            $('#mobileno').focus().css("background-color", "yellow");
+            return false;
+        } else {
+            $("#message_mobileno").text("");
+            $('#mobileno').css("background-color", "white");
+        }
+
+        if (officeName === '') {
+            $("#message_officeName").text("Enter Your Office Name");
+            $('#officeName').focus().css("background-color", "yellow");
+            return false;
+        } else {
+            $("#message_officeName").text("");
+            $('#officeName').css("background-color", "white");
+        }
+
+        if (designation === '') {
+            $("#message_designation").text("Enter Designation");
+            $('#designation').focus().css("background-color", "yellow");
+            return false;
+        } else {
+            $("#message_designation").text("");
+            $('#designation').css("background-color", "white");
+        }
+
+        if (officeAddress === '') {
+            $("#message_officeAddress").text("Enter Office Address");
+            $('#officeAddress').focus().css("background-color", "yellow");
+            return false;
+        } else {
+            $("#message_officeAddress").text("");
+            $('#officeAddress').css("background-color", "white");
+        }
+
+        if (captcha === '') {
+            $("#message_captcha").text("Enter Captcha");
+            $('#captcha').focus().css("background-color", "yellow");
+            return false;
+        } else {
+            $("#message_captcha").text("");
+            $('#captcha').css("background-color", "white");
+        }
+
+        if (!$('#termAndCondition').is(':checked')) {
+            alert('Please accept the terms and conditions.');
+            $("#message_termAndCondition").text("Please accept the terms and conditions");
+            $('#termAndCondition').focus().css("background-color", "yellow");
+            return false;
+        } else {
+            $("#message_termAndCondition").text("");
+            $('#termAndCondition').css("background-color", "white");
+        }
+
+        return bol;
+    }
+
+
+</script>
+<script>
+  $(document).ready(function() {
+    // Attach submit event listener to the form
+    $('#updateUserProfile').submit(function(e) {
+        e.preventDefault(); // Prevent the default form submission
+
+        var form = $(this);
+        var formData = new FormData(form[0]);
+
+        $.ajax({
+            type: 'POST',
+            url: form.attr('action'),
+            data: formData,
+            processData: false, // Prevent jQuery from automatically transforming the data into a query string
+            contentType: false, // Tell jQuery not to set content type
+            success: function(data) {
+                // Show success message and refresh CAPTCHA
+                showSuccessAlert(data);
+                refreshCaptcha();
+                $('#captcha').val(''); // Clear the CAPTCHA input field
+            },
+            error: function(jqXHR) {
+                // Show error message
+                showErrorAlert('Error', jqXHR.responseText);
+                refreshCaptcha();
+                $('#captcha').val(''); // Clear the CAPTCHA input field
+            }
+        });
+    });
+
+    // Click event for refreshing CAPTCHA
+    $('#refreshCaptcha').click(function() {
+        refreshCaptcha();
+    });
+
+    // Function to refresh CAPTCHA image
+    function refreshCaptcha() {
+        var contextPath = /*[[${contextPath}]]*/ '';
+        $('#captchaImage').attr('src', contextPath + '/dilrmp/captcha?' + new Date().getTime());
+    }
+
+    // Function to display a SweetAlert success message
+    function showSuccessAlert(data) {
+        Swal.fire({
+            title: 'Success',
+            text: data,
+            icon: 'success',
+            confirmButtonText: 'OK'
+        });
+    }
+
+    // Function to display a SweetAlert error message
+    function showErrorAlert(title, text) {
+        Swal.fire({
+            title: title,
+            text: text,
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    }
+});
+
+</script>
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+
+
+

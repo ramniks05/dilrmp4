@@ -1,0 +1,229 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/dashboard">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Naksha For SoI(MAP 1)</title>
+
+  <script type="text/javascript" th:src="@{/static/nlrmpmap/nakshaSoIVendorMonitor.js}"></script>
+  <style>
+    body{background-color:#F9F9FC;font-family: 'Roboto', sans-serif;font-size:14px;}
+        .table-bordered th, .table-bordered td {
+    border: 1px solid #16aec6;
+    }
+
+
+    .display {
+    width: 100%;
+    }
+ #wait {
+    width: 100px;
+    height: 130px;
+    text-align: center;
+    position: fixed;
+    left: 280px;
+    right: 0;
+    top: 40%;
+    z-index: 99;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.43);
+    display: none;
+    }
+    #wait img {
+    width: 100%;
+    }
+
+
+    .bg-dark1 {
+    background-color: #6ab2a4 !important;
+    style="color: #ffffff;"
+}
+
+
+    </style>
+
+  <style>
+
+.row hr {
+    width: 100%;
+     solid #000;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+    border: 0px;
+    border-top: 1.3px solid #1ad8f0;
+
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-title:last-child {
+    text-align: right;
+}
+
+</style>
+
+</head>
+<body>
+<div class="content-wrapper" layout:fragment="content" style="box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;">
+  <!-- Content Header (Page header) -->
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12 d-flex justify-content-center">
+          <!-- Horizontal Form -->
+          <div class="card card-info">
+            <div class="card-header d-flex justify-content-between">
+              <h2 class="card-title align-self-center" style="font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a;  letter-spacing: 2px;">Format 2: Naksha For SoI (MAP 1)</h2>
+
+            </div>
+            <div class="card-body">
+              <div id="wait">
+                <img th:src="@{/images/loading.gif}"  />
+                <br />Please Wait...
+              </div>
+              <form>
+
+
+
+                <div class="row">
+
+                  <hr>
+                  <!-- New Fields -->
+                  <div class="col-md-6 mb-3">
+                    <div class="form-group row">
+                      <label class="col-md-7 col-form-label">
+                        <span class="red-text"></span> State/UT:
+                      </label>
+
+                      <div class="col-md-5">
+
+                        <select class="form-control" id="stateId" name="stateId" onchange="fetchFilteredData();handleStateChange(this.value)">
+                          <option value="" disabled selected>Select State</option>
+                          <option th:each="state : ${states}" th:value="${state.stateId}" th:text="${state.stateName}">
+                          </option>
+                        </select>
+
+
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <div class="form-group row">
+                      <label class="col-md-7 col-form-label">
+                        <span class="red-text"></span> District Name:
+                      </label>
+                      <div class="col-md-5">
+                        <select class="form-control" id="districtId" name="districtId" onchange="fetchFilteredData();handleDistrictChange(this.value);"disabled>
+                          <option value="" disabled selected>Select District</option>
+                        </select>
+
+                      </div>
+                    </div>
+                  </div>
+
+
+                  <div class="col-md-6 mb-3">
+                    <div class="form-group row">
+                      <label class="col-md-7 col-form-label">
+                        <span class="red-text"></span> Name of the ULB:
+                      </label>
+                      <div class="col-md-5">
+                        <select class="form-control" id="ulbId" name="ulbMasterId" onchange="fetchFilteredData()"disabled>
+                          <option value="" disabled selected>Select ULB</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  <hr>
+
+               <!--   <select class="form-control" id="stateId1" name="stateId" onchange="fetchFilteredData();loadDistricts(this.value)">
+                    <option value="" selected>Select State</option>
+                    <option th:each="state : ${states}" th:value="${state.stateId}" th:text="${state.stateName}"></option>
+
+                  </select>
+
+                  <select class="form-control" id="districtId" name="districtId" onchange="fetchFilteredData();loadUlbNames(this.value)" >
+                    <option value="" selected>Select District</option>
+                  </select>
+
+                  <select class="form-control" id="ulbId" name="ulbMasterId" onchange="fetchFilteredData()">
+                    <option value="" selected>Select a district first</option>
+                  </select>-->
+
+
+                </div>
+
+
+              </form>
+
+              <div class="table-responsive">
+                <table id="ulbDetailsTable" class="table table-bordered table-striped table-hover">
+                  <thead class="card-info wrap-text" style="background-color: #4a6c52; color:#ffff">
+                  <tr>
+                    <th> S.No.</th>
+                    <th>State/UT</th>
+                    <th>District Name</th>
+                    <th>Name of the ULB</th>
+                    <th>Sanctioned Area (sq Km)</th>
+                    <th>Fixing Ground Control Points & City Boundaries Completed</th>
+                    <th>Drone Flying Completed Area (in sq Km)</th>
+                    <th>ORI Generated</th>
+                    <th>Feature Extracted</th>
+                    <th>DEM/DSM/DTM Delivered</th>
+                    <th>3D Model Delivered</th>
+                    <th>ORI Handed Over to State</th>
+                    <th>ORI Received Back from State to SoI</th>
+                    <th>ORI Submitted to State After Rectification</th>
+                    <th>SoI QA, QC</th>
+                  </tr>
+                  <tr style="font-weight: bold;">
+                    <td style="text-align: center;">1</td>
+                    <td style="text-align: center;">2</td>
+                    <td style="text-align: center;">3</td>
+                    <td style="text-align: center;">4</td>
+                    <td style="text-align: center;">5</td>
+                    <td style="text-align: center;">6</td>
+                    <td style="text-align: center;">7</td>
+                    <td style="text-align: center;">8</td>
+                    <td style="text-align: center;">9</td>
+                    <td style="text-align: center;">10</td>
+                    <td style="text-align: center;">11</td>
+                    <td style="text-align: center;">12</td>
+                    <td style="text-align: center;">13</td>
+                    <td style="text-align: center;">14</td>
+                    <td style="text-align: center;">15</td>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <!-- Data will be dynamically added here -->
+                  </tbody>
+                </table>
+              </div>
+
+
+            </div>
+
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+  </section>
+</div>
+</body>
+</html>
+
+

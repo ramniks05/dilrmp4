@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="layouts/dashboard">
+
+<head>
+    <meta charset="UTF-8">
+    <title>DILRMP-MIS 4.0</title>
+
+
+    <style>
+
+
+
+
+/*--------------------------------------------------------------
+/** 1. VARIABLES
+--------------------------------------------------------------*/
+
+/* on mobile devices below 600px
+ */
+
+ @media (min-width: 768px) {
+    .g-md-3, .gy-md-3 {
+        --bs-gutter-y: 1rem;
+    }
+}
+@media (min-width: 768px) {
+    .g-md-3, .gx-md-3 {
+        --bs-gutter-x: 1rem;
+    }
+}
+
+.row>* {
+    flex-shrink: 0;
+    width: 100%;
+    max-width: 100%;
+    padding-right: calc(var(--bs-gutter-x)* .5);
+    padding-left: calc(var(--bs-gutter-x)* .5);
+    margin-top: var(--bs-gutter-y);
+}
+@media screen and (max-width: 600px) {
+  :root {
+    --header-height: 100px;
+    --header-height-min: 80px;
+  }
+}
+
+/* Theme Colors */
+:root {
+  --primary-color: #4CC082;
+  --light-primary-color: #E2F3F0;
+  --secondary-color: #EC6C5A;
+  --light-secondary-color: #FFE9E5;
+  --tertiary-color: #FFEED3;
+  --dark-color: #31333A;
+  --light-color: #FFFFFF;
+  --grey-color: #BBC7D4;
+  --light-dark-color: #727272;
+  --light-grey-color: #f5f5f5;
+}
+
+/* Fonts */
+:root {
+  --body-font: 'Inter', sans-serif;
+  --heading-font: 'Inter', sans-serif;
+}
+
+body {
+
+  --bs-link-color: var(--dark-color);
+  --bs-link-hover-color: var(--dark-color);
+
+  --bs-link-color-rgb: 40, 40, 40;
+  --bs-link-hover-color-rgb: 0, 0, 0;
+
+  --bs-light-rgb: 248, 248, 248;
+
+  --bs-font-sans-serif: var(var(--body-font));
+  --bs-body-font-family: var(--bs-font-sans-serif);
+  --bs-body-font-size: 1rem;
+  --bs-body-font-weight: 400;
+  --bs-body-line-height: 1.3rem;
+  --bs-body-color: var(--dark-color);
+
+  --bs-primary: #4CC082;
+  --bs-primary-rgb: 76, 192, 130;
+  --bs-primary-bg-subtle: #E2F3F0;
+
+  --bs-border-color: #F7F7F7;
+
+  --bs-secondary: #EC6C5A;
+  --bs-secondary-rgb: 236, 108, 90;
+  --bs-secondary-bg-subtle: #FFE9E5;
+
+  --bs-tertiary: #f8be60;
+  --bs-tertiary-bg-subtle: #FFEED3;
+
+}
+
+/*----- catergory Section Style -------------------------*/
+.category-paragraph {
+  transition: all 0.3s ease-in;
+}
+
+.primary {
+  background: var(--bs-primary-bg-subtle);
+  transition: all 0.3s ease-in;
+}
+
+.svg-primary {
+  color: var(--primary-color);
+  transition: all 0.3s ease-in;
+}
+
+.primary:hover {
+  background: var(--bs-primary);
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.secondary {
+  background: var(--bs-secondary-bg-subtle);
+  transition: all 0.3s ease-in;
+}
+
+.svg-secondary {
+  color: var(--secondary-color);
+  transition: all 0.3s ease-in;
+}
+
+.secondary:hover {
+  background: var(--bs-secondary);
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.tertiary {
+  background: var(--bs-tertiary-bg-subtle);
+  transition: all 0.3s ease-in;
+}
+
+.svg-tertiary {
+  color: var(--bs-tertiary);
+  transition: all 0.3s ease-in;
+}
+
+.tertiary:hover {
+  background: var(--bs-tertiary);
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.gray {
+  background: #e0e5eb;
+  transition: all 0.3s ease-in;
+}
+
+.svg-gray {
+  color: var(--bs-gray);
+  transition: all 0.3s ease-in;
+}
+
+.gray:hover {
+  background: #1d1a1a;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.primary:hover .svg-primary,
+.primary:hover .category-paragraph,
+.secondary:hover .svg-secondary,
+.secondary:hover .category-paragraph,
+.tertiary:hover .svg-tertiary,
+.tertiary:hover .category-paragraph,
+.gray:hover .svg-gray,
+.gray:hover .category-paragraph {
+  color: var(--light-color);
+}
+
+
+
+@media screen and (max-width: 800px) {
+  .product-box {
+    width: 50%;
+  }
+}
+
+.fw-bold {
+    font-weight:  500!important;
+}
+
+a {
+    color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity, 1));
+    text-decoration: underline;
+}
+
+
+.container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    width: 100%;
+    padding-right: calc(var(--bs-gutter-x)* .5);
+    padding-left: calc(var(--bs-gutter-x)* .5);
+    margin-right: auto;
+    margin-left: auto;
+
+
+
+}
+img, svg {
+    vertical-align: middle;
+}
+.svg-primary {
+    color: var(--primary-color);
+    transition: all 0.3s ease-in;
+}
+.iconContent1 {
+    font-size: 60px;
+    color: #7cbdaa;
+}
+
+.top-boxes {
+    padding-top: 20px;
+    padding-bottom: 12%;
+}
+
+
+    </style>
+</head>
+<body>
+<!-- Content Wrapper. Contains page content -->
+<div class="content" layout:fragment="content">
+
+    <div class="card-header" style="background-color: #8ddfef; text-align: center; padding: 10px;">
+        <div style="display: inline-block; background-color: #ffffff; padding: 10px 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+            <marquee scrollamount="10" style="font-family: Arial, sans-serif; font-size: 16px; color: red; font-weight: bold;">
+                <h4 style="margin: 0;">The new MIS 4.0 was launched on October 15, 2024. All States/UTs are required to complete data entry by the end of this week.</h4>
+            </marquee>
+        </div>
+    </div>
+
+    <section>
+        <div class="container " style="max-width: 75%;">
+
+            <!--<div class="row top-boxes px-4 px-lg-5 mt-4" >
+                <div class="col-lg-12 col-12">
+                    <h4>Contact Us</h4>
+                    <hr>
+                </div>
+            </div>-->
+            <div class="row top-boxes">
+
+                <h3>Contact for DILRMP Technical Support</h3>
+
+            <hr>
+
+            <div class="row g-md-3 mt-2">
+                <div class="col-md-4">
+                    <div class="primary rounded-3 p-4 my-3">
+
+                        <div class="d-flex align-items-center">
+
+
+                            <div class="ps-4">
+                                <h2  class="category-paragraph"  ></h2>
+                                <p class="category-paragraph fw-bold  mb-1">
+                                <div class="text-center category-paragraph fw-bold  mb-1" >
+                                    <h5 class="support-MISheading"> Director</h5>
+                                    <h5 class="fw-bolder">Shri Shyam Kumar</h5><br><br>
+
+                                    Email: shyamkumar[dot]dad[at]gov[dot]in<br>
+                                    Contact No: +91-11-23062456
+                                </div>
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+                <div class="col-md-4">
+                    <div class="secondary rounded-3 p-4 my-3">
+
+                        <div class="d-flex align-items-center">
+
+                            <div class="ps-4">
+
+                                <p class="category-paragraph fw-bold  mb-1">
+                                <div class="text-center category-paragraph fw-bold  mb-1">
+                                    <h5 class="support-MISheading">Technical Support for MIS</h5>
+                                    <h5 class="fw-bolder">
+                                        Dr. Ganesh Khadanga</h5>
+                                    <h6>Scientist-F and HOD</h6><br>
+                                    Email: ganesh[at]nic[dot]in<br>
+                                    Contact No:+91-11-23063224 | +91-11-23063272
+                                </div>
+                                </p>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+
+                </div>
+                <div class="col-md-4">
+                    <div class="tertiary rounded-3 p-4 my-3">
+
+                        <div class="d-flex align-items-center">
+
+                            <div class="ps-4">
+
+                                <p class="category-paragraph fw-bold  mb-1">
+                                <div class="text-center category-paragraph fw-bold  mb-1">
+
+                                    <h5 class="support-MISheading">Technical Support for MIS</h5>
+                                    <h5 class="fw-bolder">
+                                        Ramesh Kumar</h5>
+                                    <h6>Project Manager</h6><br>
+                                    Email: support-dilrmp[at]gov[dot]in<br>
+                                    Contact No:+91-11-23065802
+
+                                </div></p>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+
+</html>

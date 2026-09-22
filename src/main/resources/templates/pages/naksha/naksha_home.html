@@ -1,0 +1,513 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/dashboard">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NAKSHA</title>
+  <script type="text/javascript" th:src="@{/static/js/jquery.min.js}"></script>
+  <script type="text/javascript" th:src="@{/static/nlrmpmap/highcharts.js}"></script>
+  <script type="text/javascript" th:src="@{/static/nlrmpmap/nakshaStateDashboard.js}"></script>
+
+
+  <link rel="stylesheet" th:href="@{/static/css/nakshaStateDashboard.css}" />
+  <style>
+
+table.custom-grid {
+    border-collapse: collapse;
+    width: 100%;
+    background-color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .custom-grid th, .custom-grid td {
+    border: 1px solid #e0e0e0;
+    padding: 8px 12px;
+    text-align: center;
+  }
+
+  .custom-grid thead th {
+        background: linear-gradient(45deg, #FE8A7D, #feb8b0);
+    color: white;
+  }
+
+  .custom-grid .group-header {
+    background-color: #42a5f5;
+  }
+
+  .custom-grid tbody tr:nth-child(even) {
+    background-color: #f5f5f5;
+  }
+
+  /* Highlight on hover */
+  .custom-grid td:hover {
+    background-color: #e3f2fd;
+  }
+
+  .highlight-row td {
+    background-color: #ffebee; !important;
+  }
+
+  .highlight-col {
+    background-color: #ffebee !important;
+  }
+
+  .highlight-row td {
+  background-color: #ffebee; !important; /* darker blue highlight */
+  font-weight: bold;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.highlight-row td {
+  background-color: #ffebee; !important;
+}
+
+/* Darker highlight for the specific cell under mouse */
+td.hover-cell {
+  background-color: #fe8a7d !important;
+  font-weight: bold;
+}
+
+
+.highlight-row {
+  background-color: #e6f7ff;
+}
+.highlight-col {
+  background-color: #f0f0f0;
+}
+.hover-cell {
+  background-color: #b3e5fc;
+  font-weight: bold;
+}
+
+
+.gd-name-hover {
+    font-size: 15px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+.gd-name-hover:hover {
+    background-color: #fe8a7d;
+    <!--font-weight: bold;-->
+    font-size:18px;
+    color: white;
+    cursor: pointer;
+}
+
+.fixed-card strong {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+
+
+.gradient-text1 {
+
+    background: linear-gradient(45deg, #4099ff, #73b4ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    transition: all 0.3s ease;
+}
+
+/* Hover effect on card */
+.fixed-card:hover {
+    background: linear-gradient(45deg, #4099ff, #25558e);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    color: white;
+}
+
+/* Override gradient on hover to plain white */
+.fixed-card:hover .gradient-text {
+    background: none;
+    -webkit-background-clip: border-box;
+    -webkit-text-fill-color: white;
+    background-clip: border-box;
+    color: white;
+}
+
+
+.badge-box {
+    height: 150px;               /* Fixed height */
+    width: 100%;                 /* Takes full width of col-xl-2 (responsive) */
+    background-color: #ffff;   /* Optional background */
+    border: 1px solid #ddd;      /* Optional border */
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    transition: all 0.3s ease;
+}
+
+.badge-box:hover {
+        background: linear-gradient(45deg, #4099ff, #73b4ff);
+    color: white;
+}
+
+.badge-box  h2 {
+    margin-top: 10px;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+
+.sortable:hover {
+    background-color: #d3eaff;
+}
+
+.sortable::after {
+    content: " ⇅";
+    font-size: 20px;
+    color: #ffffff;
+}
+a {
+    color: #2196F3;
+    text-decoration: none;
+    background-color: transparent;
+}
+/* Apply hover effect only when aria-selected is false */
+.nav-link[aria-selected="false"]:hover h6 {
+  color: #2ECC71;           /* Change text color */
+   /* Optional underline */
+  cursor: pointer;          /* Show pointer cursor */
+}
+
+
+.shadow-card {
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25), 0 2px 4px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease-in-out;
+}
+
+
+</style>
+
+</head>
+
+
+
+<div class="content-wrapper" layout:fragment="content" style="box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;">
+  <!-- Content Header (Page header) -->
+  <section class="content">
+    <div class="container-fluid">
+      <!-- Content Wrapper. Contains page content -->
+      <div class="">
+        <div class="col-md-12">
+          <div class="card card-info">
+            <div class="card-header" style="background: linear-gradient(to right, #32b4c8 0%, rgb(64 101 142));">
+              <div class="row">
+                <div class="col-sm-10">
+                  <h3 class="card-title"  style=" color: #eff3f6; font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a;  letter-spacing: 2px;"> &nbsp; &nbsp; DASHBOARD</h3>
+                </div>
+
+              </div>
+            </div>
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+          <div class="container-fluid">
+
+          </div><!-- /.container-fluid -->
+
+          <div class="wrapper">
+            <div>
+              <div>
+                <div>
+                  <div>
+                    <div class="container-fluid">
+                      <div class="row mb-2">
+
+                        <div id="wait">
+                          <img th:src="@{/images/loading.gif}"  />
+                          <br />Please Wait...
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="page-wrapper">
+                      <div class="page-body">
+                        <h4>Naksha For State/UT (Before Publication of Map1)</h4>
+                        <hr style="border-top: 2px solid #1797ff;">
+                        <div class="col-lg-4 col-xl-12 col-sm-6">
+                          <div>
+                            <h5>Name of Nodal Department:</label>
+                              <span class=" col-md-1"style="color: #114f71" id="nodalDepartmentName"></span>
+
+                            </h5>
+                            <br>
+                          </div>
+                        </div>
+                        <div class="row g-3">
+
+                          <div class="col-lg-4 col-xl-2 col-sm-6">
+                            <div class="badge-box bg-c-blue order-card shadow-card text-white text-center p-3">
+                              <h6>Total SPMU Sanctioned Positions</h6>
+                              <h2 id="totalSPMUPositionsSanctioned">
+                                <i class="ti-shopping-cart f-left me-2"></i><strong>0</strong>
+                              </h2>
+                            </div>
+                          </div>
+
+                          <div class="col-lg-4 col-xl-2 col-sm-6">
+                            <div class="badge-box bg-c-pink order-card shadow-card text-white text-center p-3">
+                              <h6>Recruited Professionals for SPMU</h6>
+                              <h2 id="totalProfessionalsRecruited">
+                                <i class="ti-shopping-cart f-left me-2"></i><strong>0</strong>
+                              </h2>
+                            </div>
+                          </div>
+
+                          <div class="col-lg-4 col-xl-2 col-sm-6">
+                            <div class="badge-box bg-c-green order-card shadow-card text-white text-center p-3">
+                              <h6>Teams to be Formed (Sanctioned)</h6>
+                              <h2 id="teamsFormedForsanctioned">
+                                <i class="ti-shopping-cart f-left me-2"></i><strong>0</strong>
+                              </h2>
+                            </div>
+                          </div>
+
+                          <div class="col-lg-4 col-xl-2 col-sm-6">
+                            <div class="badge-box bg-c-yellow order-card shadow-card text-white text-center p-3">
+                              <h6>Teams Formed for Field Survey</h6>
+                              <h2 id="teamsFormedForFieldSurvey">
+                                <i class="ti-shopping-cart f-left me-2"></i><strong>0</strong>
+                              </h2>
+                            </div>
+                          </div>
+
+                          <div class="col-lg-4 col-xl-2 col-sm-6">
+                            <div class="badge-box bg-c-orenge order-card shadow-card text-white text-center p-3">
+                              <h6>Total Rovers Sanctioned</h6>
+                              <h2 id="roversSanctioned">
+                                <i class="ti-shopping-cart f-left me-2"></i><strong>0</strong>
+                              </h2>
+                            </div>
+                          </div>
+
+                          <div class="col-lg-4 col-xl-2 col-sm-6">
+                            <div class="badge-box bg-c-lite-green order-card shadow-card text-white text-center p-3">
+                              <h6>Rovers Procured for Field Survey</h6>
+                              <h2 id="roversProcured">
+                                <i class="ti-shopping-cart f-left me-2"></i><strong>0</strong>
+                              </h2>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="page-body" th:if="${existingData != null}">
+                          <div class="row g-3 mt-4">
+                               <div class="col-lg-4 col-xl-12 col-sm-6">
+                                <h4>Capacity Building</h4>
+                                <hr style="border-top: 2px solid #1797ff;">
+                              </div>
+
+                         <div class="col-lg-4 col-xl-12 col-sm-6">
+                            <div>
+                              <h5>Name of CoE:</label>
+                                <span class=" col-md-1"style="color: #114f71" th:text="${existingData.nameOfCoE}"></span>
+
+                              </h5>
+                              <br>
+                            </div>
+                          </div>
+                            <!-- NIGST Master Trainers -->
+                            <div class="col-lg-4 col-xl-2 col-sm-6 ">
+                                <div class="badge-box  bg-c-blue order-card shadow-card">
+                                <div>
+                                  <h6>NIGST master trainers</h6>
+                                </div>
+                                <div>
+                                  <h2 ><i class="ti-shopping-cart f-left"></i><span><strong th:text="${existingData.nigstMasterTrainers}">0</strong></span></h2>
+                                </div>
+                              </div>
+
+                            </div>
+                            <div class="col-lg-4 col-xl-2 col-sm-6">
+                              <div class="badge-box bg-c-pink order-card shadow-card">
+                                <div >
+                                  <h6>CoE master trainers</h6>
+
+                                </div>
+                                <h2 class="" id="coe"><i class="ti-shopping-cart f-left"></i><span><strong th:text="${existingData.coeMasterTrainers}">0</strong></span></h2>
+                              </div>
+
+                            </div>
+                            <div class="col-lg-4 col-xl-2 col-sm-6">
+
+                              <div class="badge-box bg-c-green order-card shadow-card">
+                                <div>
+                                  <h6>Master trainers</h6>
+
+                                </div>
+                                <h2 class="" id="masterTrainers"><i class="ti-shopping-cart f-left"></i><span><strong th:text="${existingData.totalMasterTrainers}">0</strong></span></h2>
+                              </div>
+
+                            </div>
+                            <div class="col-lg-4 col-xl-2 col-sm-6">
+
+                              <div class="badge-box bg-c-yellow order-card shadow-card">
+                                <div>
+                                  <h6>Field teams (Sanctioned by DoLR)</h6>
+
+                                </div>
+
+                                <h2 class="" id="fieldTeams"><i class="ti-shopping-cart f-left"></i><span><strong th:text="${existingData.fieldTeamsSanctioned}">0</strong></span></h2>
+                              </div>
+
+                            </div>
+                            <div class="col-lg-4 col-xl-2 col-sm-6">
+                              <div class="badge-box bg-c-orenge order-card shadow-card">
+                                <div >
+                                  <h6>Members need to be trained to form field teams</h6>
+
+                                </div>
+                                <h2 class="" id="trainedFieldTeams"><i class="ti-shopping-cart f-left"></i><span><strong th:text="${existingData.membersTrained}">0</strong></span></h2>
+                              </div>
+
+                            </div>
+                            <div class="col-lg-4 col-xl-2 col-sm-6">
+                              <div class="badge-box bg-c-lite-green order-card shadow-card">
+                                <div class="" >
+                                  <h6>Field team members trained till date</h6>
+
+                                </div>
+
+                                <h2 class="" id="trainedTillDate"><i class="ti-shopping-cart f-left"></i><span><strong th:text="${existingData.membersToBeTrained}">0</strong></span></span></h2>
+                              </div>
+
+
+                            </div>
+                        </div>
+
+
+                        </div>
+                        <div class="page-body">
+                          <div class="row g-3 mt-4">
+                            <div class="col-lg-4 col-xl-12 col-sm-6">
+                              <h4>Comparison</h4>
+                              <hr style="border-top: 2px solid #1797ff;">
+                            </div>
+                          <div class="row g-3 mt-4">
+                            <div class="col-md-12 col-lg-2">
+                              <div class="card ">
+                                <div class="card-block text-center order-card shadow-card ">
+                                  <div class="label label-primary ">
+                                    <h4 class="m-t-20">Comparison</h4>
+                                    <h5> <p class="m-b-20">SPMU – Sanctioned Positions vs. Recruited Professionals</p></h5>
+                                  </div>
+                                  <canvas id="donutChart2" height="400" width="1576" style="display: block; height: 200px; width: 788px;"></canvas>
+
+
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-md-6 col-lg-2">
+                              <div class="card">
+                                <div class="card-block text-center order-card shadow-card">
+                                  <div class="label label-primary">
+                                    <h4 class="m-t-20">Comparison</h4>
+                                    <h5><p class="m-b-20">Teams Formed for Sanctioned vs. Field Survey</p></h5>
+                                  </div>
+                                  <canvas id="donutChart3" height="400" width="1576" style="display: block; height: 200px; width: 788px;"></canvas>
+
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-md-6 col-lg-2">
+                              <div class="card">
+                                <div class="card-block text-center order-card shadow-card">
+                                  <div class="label label-primary">
+                                    <h4 class="m-t-20">Comparison</h4>
+                                    <h5><p class="m-b-20">Rovers: Sanctioned vs. Procured for Field Survey</p></h5>
+                                  </div>
+                                  <canvas id="donutChart1" height="400" width="1576" style="display: block; height: 200px; width: 788px;"></canvas>
+
+
+
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="col-md-6 col-lg-6">
+                              <div class="card">
+                                <div class="card-block text-center order-card shadow-card">
+                                  <div class="label label-primary">
+                                    <h4 class="m-t-20">Comparison</h4>
+                                    <p class="m-b-20">Component Summary</p>
+                                  </div>
+                                  <canvas id="barChart" height="220"  style="display: block; height: 200px; width: 788px;"></canvas>
+
+
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                      </div>
+                    </div>
+
+
+                      </div>
+                      <script>
+
+</script>
+                      <script>
+    function updateTime() {
+        const now = new Date();
+
+        // Format: 05 July 2025, 06:45 PM
+        const options = {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
+        };
+
+        const formattedTime = now.toLocaleString('en-US', options);
+        document.getElementById('currentTime').textContent = formattedTime;
+    }
+
+    // Initial call
+    updateTime();
+
+    // Update every second
+    setInterval(updateTime, 1000);
+</script>
+                      <div id="styleSelector">
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+</html>
+
+
+
+
+
+
+
+
+
+

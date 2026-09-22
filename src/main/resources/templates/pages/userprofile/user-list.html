@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>User List</title>
+
+</head>
+
+<body>
+    <div th:fragment="user-list-fragment"
+        style="box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;">
+        <style>
+         #example2 tbody tr:hover {
+            background-color: #FFD700;; /* Light blue background for hover effect */
+
+           font-weight: bold;
+
+            table, th, td {
+           border: 1px solid white;
+         border-collapse: collapse;
+        }
+    </style>
+        <!-- Content Header (Page header) -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card card-info">
+                            <div class="card-header">
+                                <div class="row">
+                                    <div class="col-sm-10">
+                                        <h3 class="card-title"
+                                            style="font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a; letter-spacing: 2px;">
+                                            User List - State/UT: <span th:text="${stateName}">State/UT Name</span>
+                                        </h3>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <a th:href="@{/user/report/pdf/user-list-report}">
+                                                <img th:src="@{/images/pdf.png}" alt="PDF Icon" class="btn-img"
+                                                    width="40" height="40"
+                                                    style="box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;" />
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert alert-success" role="alert" th:text="${success}" th:if="${success}">
+                                </div>
+                                <table id="example2" class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th rowspan="1">S.No</th>
+                                            <th rowspan="1">Role</th>
+                                            <th rowspan="1">User ID</th>
+                                            <th rowspan="1">Name</th>
+                                            <th rowspan="1">Officer Name</th>
+                                            <th rowspan="1">Officer Email ID</th>
+                                            <th rowspan="1">Reset Password</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="user, iterStat : ${userlist}">
+                                            <td th:text="${iterStat.index + 1}"></td>
+                                            <td th:text="${user[2]}"></td>
+                                            <td th:text="${user[3]}"></td>
+                                            <td th:text="${user[4]}"></td>
+                                            <td th:text="${user[5]}"></td>
+                                            <td th:text="${user[6]}"></td>
+                                            <td>
+                                                <form th:action="@{/userProfile/reset-password}" method="post" class="reset-password-form">
+                                                    <input type="hidden" id="userName" name="userName" th:value="${user[3]}" />
+                                                    <button type="submit" class="btn btn-danger btn-sm">Reset Password</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <script>
+                                    $(document).ready(function () {
+                                        $('#example2').DataTable({
+                                            "paging": true,
+                                            "searching": true,
+                                            "ordering": false,
+                                            "info": false,
+                                            "lengthMenu": [10, 25, 50, 100],
+                                            "language": {
+                                                "search": "Filter records:",
+                                                "lengthMenu": "Display _MENU_ records per page",
+                                                "info": "",
+                                                "infoEmpty": "",
+                                                "infoFiltered": ""
+                                            }
+                                        });
+                                    });
+
+$(document).ready(function () {
+    // Attach submit event listener to forms with the class reset-password-form
+    $('.reset-password-form').submit(function (e) {
+        e.preventDefault(); // Prevent default form submission
+
+        var form = $(this); // Current form instance
+        var userName = form.find('input[name="userName"]').val(); // Get the user's name
+
+        // Show a confirmation dialog
+        Swal.fire({
+            title: 'Are you sure?',
+            text: `Do you  want to reset the password for User ID ${userName}?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, reset it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // User confirmed, proceed with form submission via AJAX
+                var formData = new FormData(form[0]);
+                $.ajax({
+                    type: 'POST',
+                    url: form.attr('action'),
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        // Show success message
+                        showSuccessAlert(data);
+
+                    },
+                    error: function (jqXHR) {
+                        // Show error message
+                        showErrorAlert('Error', jqXHR.responseText);
+                    }
+                });
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                // User canceled, do nothing
+                Swal.fire(
+                    'Cancelled',
+                    `The password reset for User ID ${userName} was aborted.`,
+                    'info'
+                );
+            }
+        });
+    });
+
+    // Function to display a SweetAlert success message
+    function showSuccessAlert(data) {
+        Swal.fire({
+            title: 'Success',
+            text: data,
+            icon: 'success',
+            confirmButtonText: 'OK',
+        });
+    }
+
+    // Function to display a SweetAlert error message
+    function showErrorAlert(title, text) {
+        Swal.fire({
+            title: title,
+            text: text,
+            icon: 'error',
+            confirmButtonText: 'OK',
+        });
+    }
+});
+
+                                </script>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+
+</html>

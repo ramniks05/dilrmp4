@@ -1,0 +1,233 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/dashboard">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DILRMP-MIS-4.0</title>
+  <style>
+    body{background-color:#F9F9FC;font-family: 'Roboto', sans-serif;font-size:14px;}
+        .table-bordered th, .table-bordered td {
+    border: 1px solid #16aec6;
+    }
+
+
+
+ .modal__btn {
+  padding: 1rem 1.6rem;
+  border: 1px solid hsla(0, 0%, 100%, .4);
+  border-radius: 100rem;
+
+  color: inherit;
+  background: transparent;
+
+
+  letter-spacing: .2rem;
+
+  transition: .2s;
+  cursor: pointer;
+}
+
+.modal__btn:hover,
+.modal__btn:focus {
+  border-color: hsla(0, 0%, 100%, .6);
+  transform: translateY(-.2rem);
+}
+
+.modal__details {
+  text-align: center;
+
+  margin-bottom: -1rem;
+  padding-bottom: 4rem;
+  border-bottom: 1px solid hsla(0, 0%, 100%, .4);
+}
+
+.link-2:hover,
+.link-2:focus {
+  border-color: hsla(0, 0%, 100%, .6);
+  transform: translateY(-.2rem);
+}
+
+#wait {
+	width: 100px;
+	height: 130px;
+	text-align: center;
+	position: fixed;
+	left: 280px;
+	right: 0;
+	top: 40%;
+	z-index: 99;
+	margin: 0 auto;
+	background: rgba(255, 255, 255, 0.85);
+	border-radius: 20px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.43);
+	display: none;
+}
+
+#wait img {
+	width: 100%;
+}
+    .page-item.active .page-link {
+    z-index: 3;
+    color: #fff;
+    background-color: var(--cyan);
+    border-color: #438893;
+}
+.page-link {
+    position: relative;
+    display: block;
+    padding: 0.5rem 0.75rem;
+    margin-left: -1px;
+    line-height: 1.25;
+    color: #007bff;
+    background-color: #fff;
+    border: 1px solid var(--cyan);
+}
+.button-container>div a {
+    margin-bottom: 10px;
+    display: block;
+}
+#waitVillage {
+	width: 100px;
+	height: 130px;
+	text-align: center;
+	position: fixed;
+	left: 280px;
+	right: 0;
+	top: 40%;
+	z-index: 99;
+	margin: 0 auto;
+	background: rgba(255, 255, 255, 0.85);
+	border-radius: 20px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.43);
+	display: none;
+}
+
+#waitVillage img {
+	width: 100%;
+}
+    .page-item.active .page-link {
+    z-index: 3;
+    color: #fff;
+    background-color: var(--cyan);
+    border-color: #438893;
+}
+
+#waitTeshsil {
+	width: 100px;
+	height: 130px;
+	text-align: center;
+	position: fixed;
+	left: 280px;
+	right: 0;
+	top: 40%;
+	z-index: 99;
+	margin: 0 auto;
+	background: rgba(255, 255, 255, 0.85);
+	border-radius: 20px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.43);
+	display: none;
+}
+
+#waitTeshsil img {
+	width: 100%;
+}
+    .page-item.active .page-link {
+    z-index: 3;
+    color: #fff;
+    background-color: var(--cyan);
+    border-color: #438893;
+}
+
+    </style>
+  <style>
+
+.section-title h2 {
+  text-align: center;
+  padding-bottom: 30px;
+}
+
+.section-title h2 {
+  font-size: 18px;
+  text-transform: uppercase;
+  position: relative;
+  color: #222222;
+}
+
+.section-title h2::before,
+.section-title h2::after {
+  content: "";
+  width: 50px;
+  height: 2px;
+  background: #3498db;
+  display: inline-block;
+}
+
+.section-title h2::before {
+  margin: 0 15px 5px 0;
+}
+
+.section-title h2::after {
+  margin: 0 0 5px 15px;
+}
+</style>
+  <style>
+        .count {
+            font-size: 36px;
+            font-weight: bold;
+            color: blue;
+        }
+        .bg-info {
+    background-color: #32b4c8 !important;
+}
+    </style>
+  <script>
+        $(document).ready(function() {
+            var countElement = $('#count');
+            var count = parseInt(countElement.text());
+            var countNum = 0;
+
+            $({ countNum: countElement.text() }).animate({ countNum: count }, {
+                duration: 20000,
+                easing: 'linear',
+                step: function() {
+                    countElement.text(Math.floor(this.countNum));
+                },
+                complete: function() {
+                    countElement.text(Math.floor(this.countNum));
+                }
+            });
+        });
+    </script>
+</head>
+
+
+
+<div class="content-wrapper" layout:fragment="content" style="box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;">
+  <!-- Content Header (Page header) -->
+  <section class="content">
+    <div class="container-fluid">
+      <!-- Content Wrapper. Contains page content -->
+      <div class="">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+          <div class="container-fluid">
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+</div>
+</html>
+
+
+
+
+
+
+
+
+

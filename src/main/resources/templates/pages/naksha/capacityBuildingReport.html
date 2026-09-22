@@ -1,0 +1,131 @@
+<div th:fragment="capacity-building">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-info">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-sm-10">
+                                <h3 class="card-title"
+                                    style="font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a;  letter-spacing: 2px;">
+                                    Naksha for State/UT Capacity Building Report</h3>
+                            </div>
+                            <div class="col-sm-2">
+                                <a th:href="@{/physcial/report/pdf/capacity-building}"><img th:src="@{/images/pdf.png}" alt="PDF Icon" class="btn-img" width="40" height="40" style="box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;"/></a>
+                                <a th:href="@{/physcial/report/excel/capacity-building}"><img th:src="@{/images/excel.png}" alt="EXCEL Icon" class="btn-img" width="40" height="40" style="box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;"/></a></div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive text-nowrap">
+                            <table id="example2"
+                                   class="table table-bordered  table-striped-columns table-success table-striped  table-responsive">
+                                <thead class="card-info wrap-text" style="background-color: #4a6c52; color:#ffff">
+                                <tr>
+                                    <th rowspan="1" th:text="'S.No.'"></th>
+                                    <th rowspan="1" th:text="'State/UT'"></th>
+                                    <th rowspan="1" th:text="'Name of CoE'"></th>
+                                    <th rowspan="1" th:text="'A) NIGST master trainers '"></th>
+                                    <th rowspan="1" th:text="'B) CoE master trainers'"></th>
+                                    <th rowspan="1" th:text="'C) Total master trainers'"></th>
+                                    <th rowspan="1" th:text="'D) No. of field teams (Sanctioned by DoLR) '"></th>
+                                    <th rowspan="1" th:text="'E) No. of  members need to be trained to form field teams (Field teams x 3)'"></th>
+                                    <th rowspan="1" th:text="'F) Total no. of field team members trained till date.'"></th>
+                                    <th rowspan="1" th:text="'G)  Total No. of Field Teams Trained Formula :(Column F/3)'"></th>
+                                    <th rowspan="1" th:text="'H) Percentage of Field Team trained till date (in %)  (Column G/ D) *100'"></th>
+                                </tr>
+                                <tr style="font-weight: bold;">
+                                    <td style="text-align: center;">1</td>
+                                    <td style="text-align: center;">2</td>
+                                    <td style="text-align: center;">3</td>
+                                    <td style="text-align: center;">4</td>
+                                    <td style="text-align: center;">5</td>
+                                    <td style="text-align: center;">6</td>
+                                    <td style="text-align: center;">7</td>
+                                    <td style="text-align: center;">8</td>
+                                    <td style="text-align: center;">9</td>
+                                    <td style="text-align: center;">10</td>
+                                    <td style="text-align: center;">11</td>
+                                </tr>
+                                </thead>
+                                <thead>
+                                <tr style="font-weight: bold; background-color: #f0f0f0; text-align: center;">
+                                    <td colspan="3" th:text="'Grand Total'"></td>
+                                    <td th:text="${grandTotal[0].GrandTotalNigstMasterTrainers}"></td>
+                                    <td th:text="${grandTotal[0].GrandTotalCoeMasterTrainers}"></td>
+                                    <td th:text="${grandTotal[0].GrandTotalTotalMasterTrainers}"></td>
+                                    <td th:text="${grandTotal[0].GrandTotalFieldTeamsSanctioned}"></td>
+                                    <td th:text="${grandTotal[0].GrandTotalMembersTrained}"></td>
+                                    <td th:text="${grandTotal[0].GrandTotalMembersToBeTrained}"></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr style="word-wrap: break-word; white-space: normal; max-width: 200px;" th:each="entry, iterStat : ${capacityBuilding}">
+                                    <td th:text="${iterStat.index + 1}"></td>
+                                    <td th:text="${entry.state.name}"></td>
+                                    <td th:text="${entry.nameOfCoE != null ? entry.nameOfCoE : 'N/A'}"></td>
+                                    <td th:text="${entry.nigstMasterTrainers != null ? entry.nigstMasterTrainers : 0}"></td>
+                                    <td th:text="${entry.coeMasterTrainers != null ? entry.coeMasterTrainers : 0}"></td>
+                                    <td th:text="${entry.totalMasterTrainers != null ? entry.totalMasterTrainers : 'N/A'}"></td>
+                                    <td th:text="${entry.fieldTeamsSanctioned != null ? entry.fieldTeamsSanctioned : 0}"></td>
+                                    <td th:text="${entry.membersTrained != null ? entry.membersTrained : 0}"></td>
+                                    <td th:text="${entry.membersToBeTrained != null ? entry.membersToBeTrained : 0}"></td>
+                                    <td th:text="${entry.formatedfieldTeamsTrained != null ? entry.formatedfieldTeamsTrained : 0.0}"></td>
+                                    <td th:text="${entry.formatedpercentageTrained != null ? entry.formatedpercentageTrained : 0.0}"></td>
+                                </tr>
+                                </tbody>
+                                <tr style="font-weight: bold; background-color: #f0f0f0; text-align: center;">
+                                    <td colspan="3" th:text="'Grand Total'"></td>
+                                    <td th:text="${grandTotal[0].GrandTotalNigstMasterTrainers}"></td>
+                                    <td th:text="${grandTotal[0].GrandTotalCoeMasterTrainers}"></td>
+                                    <td th:text="${grandTotal[0].GrandTotalTotalMasterTrainers}"></td>
+                                    <td th:text="${grandTotal[0].GrandTotalFieldTeamsSanctioned}"></td>
+                                    <td th:text="${grandTotal[0].GrandTotalMembersTrained}"></td>
+                                    <td th:text="${grandTotal[0].GrandTotalMembersToBeTrained}"></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+
+                            </table>
+                        </div>
+                            <script>
+    $(document).ready(function () {
+        // Check if DataTable is already initialized on the table
+        if ($.fn.DataTable.isDataTable('#example2')) {
+            // If yes, destroy the existing DataTable instance
+            $('#example2').DataTable().destroy();
+        }
+
+        // Initialize DataTable with your table ID
+        $('#example2').DataTable({
+            // Add additional options if needed
+            paging: true,  // Enable pagination
+            lengthMenu: [10, 25, 50, 100],  // Set page length options
+            pageLength: 10,  // Default page length
+            // Callback function after each draw event
+            drawCallback: function (settings) {
+                var api = this.api();
+                var totalPages = api.page.info().pages;
+                var page = api.page.info().page;
+
+                // Check if it's the last page
+                if (page === totalPages - 1) {
+                    $('#example2 tfoot').show();
+                } else {
+                    $('#example2 tfoot').hide();
+                }
+            }
+        });
+    });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </section>
+</div>
+</body>
+</html>

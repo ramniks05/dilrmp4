@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<section th:fragment="header">
+    <style>
+        .circle-img {
+            width: 40px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .header-brand-text h6, .header-brand-text h5 {
+            margin-bottom: 0.15rem;
+        }
+        /* Link to OLD MIS - reference only, centered */
+        .old-mis-ref {
+            color: #0066cc;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .old-mis-ref:hover { color: #004499; text-decoration: underline; }
+        #headerNavCollapse .old-mis-ref-wrap { width: 100%; display: flex; justify-content: center; margin-bottom: 0.5rem; }
+        #headerNavCollapse .old-mis-ref { display: inline-block; text-align: center; }
+        /* Menu: icon first, font +5px */
+        #headerNavCollapse .nav-link {
+            padding: 0.5rem 0.75rem;
+            white-space: nowrap;
+            font-size: 1.4375rem;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+        #headerNavCollapse .nav-link img { order: -1; margin-right: 0.4rem; }
+        #headerNavCollapse .nav-link .nav-icon {
+            width: 26px;
+            height: 26px;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+        #headerNavCollapse .nav-link .circle-img.nav-icon {
+            width: 26px;
+            height: 26px;
+        }
+        /* Mobile only: left-aligned menu, fix collapse show, no scroll to footer */
+        @media (max-width: 991px) {
+            .header-brand-text h6 { font-size: 0.7rem; }
+            .header-brand-text h5 { font-size: 0.75rem; }
+            .navbar .container-fluid { padding-left: 0.75rem; padding-right: 0.75rem; }
+            #headerNavCollapse { margin-top: 0.5rem; border-top: 1px solid #eee; padding-top: 0.5rem; }
+            #headerNavCollapse.show { display: block !important; overflow: visible; }
+            #headerNavCollapse .navbar-nav { margin-left: 0 !important; padding: 0; margin-right: 0; width: 100%; align-items: stretch; }
+            #headerNavCollapse .nav-item { border-bottom: 1px solid #eee; margin: 0; }
+            #headerNavCollapse .nav-item:last-child { border-bottom: none; }
+            #headerNavCollapse .nav-link { padding: 0.65rem 0; padding-left: 0; display: flex; align-items: center; gap: 0.5rem; text-align: left; font-size: 1.4375rem; }
+            #headerNavCollapse .nav-link img { order: -1; }
+            #headerNavCollapse .nav-link img { margin-right: 0.5rem; flex-shrink: 0; }
+        }
+    </style>
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #fff;">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center flex-grow-1 flex-lg-grow-0">
+                <a class="navbar-brand d-flex align-items-center p-0 mr-2" th:href="@{/}">
+                    <img class="homeImg" style="padding: 8px; width: 70px; height: auto;" th:src="@{/static/images/emblum.png}" alt="Government Emblem">
+                </a>
+                <div class="header-brand-text text-sm-start" style="margin-left: 8px;">
+                    <h6 class="fw-bold d-none d-md-block" style="letter-spacing: 0.5px; color:#0c7124;">Government of India (भारत सरकार)</h6>
+                    <h6 class="fw-bold d-none d-md-block" style="letter-spacing: 0.5px; color:#0c7124;">Ministry of Rural Development (ग्रामीण विकास मंत्रालय)</h6>
+                    <h5 class="fw-bold" style="letter-spacing: 0.5px; color:#0c7124; font-size: 0.85rem;">Department of Land Resources</h5>
+                    <h5 class="fw-bold d-none d-sm-block" style="letter-spacing: 0.5px; color:#0c7124; font-size: 0.8rem;">DILRMP-MIS 4.0</h5>
+                </div>
+            </div>
+            <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#headerNavCollapse" aria-controls="headerNavCollapse" aria-expanded="false" aria-label="Toggle menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="headerNavCollapse">
+                <div class="old-mis-ref-wrap">
+                    <a class="old-mis-ref py-2" href="https://dilrmp.gov.in/dilrmpold" target="_blank" rel="noopener">Link to OLD MIS 3.0 (till 14.10.2024)</a>
+                </div>
+
+                <ul class="navbar-nav ml-auto align-items-lg-center">
+                    <li class="nav-item active">
+                        <a class="nav-link d-flex flex-column flex-lg-row align-items-center" th:href="@{/}">
+                            <img class="nav-icon mb-1 mb-lg-0 mr-lg-1" th:src="@{/static/images/material-symbols_home.png}" alt="">
+                            <span>HOME</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" sec:authorize="!isAuthenticated()">
+                        <a class="nav-link d-flex flex-column flex-lg-row align-items-center" th:href="@{/dashboard-chart}">
+                            <img th:src="@{/static/images/chart.jpg}" class="circle-img nav-icon mb-1 mb-lg-0 mr-lg-1" alt="">
+                            <span>Chart</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" sec:authorize="!isAuthenticated()">
+                        <a class="nav-link d-flex flex-column flex-lg-row align-items-center" th:href="@{/naksha-dashboard}">
+                            <img th:src="@{/static/images/naksha-dashboard.png}" class="circle-img nav-icon mb-1 mb-lg-0 mr-lg-1" alt="">
+                            <span>Naksha</span>
+                        </a>
+                    </li>
+                    &ensp;&ensp;
+
+                    <li class="nav-item" sec:authorize="!isAuthenticated()">
+
+                        <a  class="nav-link d-flex flex-column flex-lg-row align-items-center" href="https://wdcpmksymapservice.dolr.gov.in/vias/shared/oxvBnEldKhf26JaTSSy5bMKs4jOoB9bTvTlZV6ul2OhnOgZhzK3YQAUxF9DTaWGrF9fpHc4EtrjEflghciXmPKQWH7" target="_blank" rel="noopener">
+                            <span>RCCMS Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" sec:authorize="!isAuthenticated()">
+                        <a class="nav-link d-flex flex-column flex-lg-row align-items-center" th:href="@{/reports/physical-progress-report}">
+                            <img class="nav-icon mb-1 mb-lg-0 mr-lg-1" th:src="@{/static/images/jam_document.png}" alt="">
+                            <span>Report</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" sec:authorize="!isAuthenticated()">
+                        <a class="nav-link d-flex flex-column flex-lg-row align-items-center" th:href="@{/reports/download-progress-report}">
+                            <img class="nav-icon mb-1 mb-lg-0 mr-lg-1" th:src="@{/static/images/jam_document.png}" alt="">
+                            <span>Download</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" sec:authorize="!isAuthenticated()">
+                        <a class="nav-link d-flex flex-column flex-lg-row align-items-center" id="myBtn" th:href="@{/loginPage}">
+                            <img class="nav-icon mb-1 mb-lg-0 mr-lg-1" th:src="@{/static/images/material-symbols_login-sharp.png}" alt="">
+                            <span>LOGIN</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <a class="nav-link d-flex flex-column flex-lg-row align-items-center" th:href="@{/logout}">
+                            <img class="nav-icon mb-1 mb-lg-0 mr-lg-1" th:src="@{/static/images/material-symbols_login-sharp.png}" alt="">
+                            <span>LOGOUT</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" sec:authorize="!isAuthenticated()">
+                        <a class="nav-link d-flex flex-column flex-lg-row align-items-center" th:href="@{/userProfile/contact-us}">
+                            <img class="nav-icon mb-1 mb-lg-0 mr-lg-1" th:src="@{/static/images/bxs_contact.png}" alt="">
+                            <span>CONTACT</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</section>

@@ -1,0 +1,57 @@
+ #example2 tbody tr:hover {
+    background-color: #FFD700; /* Light blue background for hover effect */
+
+    font-weight: bold;
+    /* cursor: pointer;  Change cursor to pointer */
+   table, th, td {
+  border: 1px solid white;
+  border-collapse: collapse;
+        /* Style for the table header */
+        .table th,
+        .table thead th {
+            text-align: left;
+            background-color: #4a6c52;
+            color: #fff;
+            padding: 5px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        /* Style for the table body */
+        .table td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Style for the table striped rows */
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0, 123, 255, 0.05);
+        }
+
+        /* Style for the DataTables display class */
+        .display {
+            width: 100%;
+        }
+
+        #wait {
+            width: 100px;
+            height: 130px;
+            text-align: center;
+            position: fixed;
+            left: 280px;
+            right: 0;
+            top: 40%;
+            z-index: 99;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.43);
+            display: none;
+        }
+
+        #wait img {
+            width: 100%;
+        }
+
+        label {
+            margin-left: 20px;
+        }

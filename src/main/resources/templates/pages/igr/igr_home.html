@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/dashboard">
+
+<head>
+    <meta charset="UTF-8">
+    <title>DILRMP-IGR-4.0</title>
+    <style>
+    body{background-color:#F9F9FC;font-family: 'Roboto', sans-serif;font-size:14px;}
+        .table-bordered th, .table-bordered td {
+    border: 1px solid #16aec6;
+    }
+    .table-bordered {
+    border: 2px solid #16aec6;;
+    }
+    </style>
+    <style>
+
+.section-title h2 {
+  text-align: center;
+  padding-bottom: 30px;
+}
+
+.section-title h2 {
+  font-size: 18px;
+  text-transform: uppercase;
+  position: relative;
+  color: #222222;
+}
+
+.section-title h2::before,
+.section-title h2::after {
+  content: "";
+  width: 50px;
+  height: 2px;
+  background: #3498db;
+  display: inline-block;
+}
+
+.section-title h2::before {
+  margin: 0 15px 5px 0;
+}
+
+.section-title h2::after {
+  margin: 0 0 5px 15px;
+}
+</style>
+</head>
+
+<div class="content-wrapper" layout:fragment="content" style="box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;">
+    <!-- Content Header (Page header) -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-info">
+                        <div class="card-header" style="background-color: #8ddfef; text-align: center; padding: 10px;">
+                            <div th:if="${flashMessage}" style="display: inline-block; background-color: #ffffff; padding: 10px 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                                <marquee scrollamount="10" style="font-family: Arial, sans-serif; font-size: 16px; color: red; font-weight: bold;">
+                                    <div th:if="${flashMessages != null}">
+                                        <h4 style="margin: 0; display: inline;" th:each="msg, iterStat : ${flashMessages}">
+                                            <span style="color: red;" th:text="${msg}"></span>
+                                            <span th:if="${!iterStat.last}" style="color: blue; padding: 0 5px;">|</span>
+                                        </h4>
+                                    </div>
+                                </marquee>
+                            </div>
+                            <div >
+                                <div class="col-sm-10">
+                                    <h3 class="card-title" style="font-size: 29px; font-family: auto; text-shadow: 2px 2px 4px #090a0a; letter-spacing: 2px;">IGR Summary</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div>
+                                <form th:object="${sroListData}">
+
+                                    <!-- Main content -->
+                                    <div class="content" >
+                                        <div class="row">
+                                            <div class="col-lg-3 col-6">
+                                                <!-- small box -->
+                                                <div class="small-box bg-info" style="background-color: rgb(0, 206, 209) !important;">
+                                                    <div class="inner">
+                                                        <h3 style="font-weight: bold; margin-right: 5px;"
+                                                              th:text="${igrMISDataEntry.numberOfSROsInState}"></h3>
+                                                        </h3>
+                                                        <p>Total <br>Sub Registrar Office's</p>
+                                                    </div>
+                                                    <div class="icon">
+                                                        <i class="ion ion-bag"></i>
+                                                    </div>
+                                                    <a href="#" class="small-box-footer" ><i class="fas fa-arrow-circle-right1"></i></a>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-1 col-6">
+                                            </div>
+                                            <div class="col-lg-3 col-6">
+                                                <!-- small box -->
+                                                <div class="small-box bg-info"  style="background-color:#138d75 !important;">
+
+                                                    <div class="inner">
+                                                        <h3 style="font-weight: bold; margin-right: 5px;"
+                                                            th:text="${igrMISDataEntry.numberOfSROsUsingOnlineRegistration}"></h3></h3>
+                                                        <p>Total<br> No. of Computerized SRO's</p>
+                                                    </div>
+                                                    <div class="icon">
+                                                        <i class="ion ion-person-add"></i>
+                                                    </div>
+                                                    <a href="#"  class="small-box-footer" > <i class="fas fa-arrow-circle-right1"></i></a>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-1.5 col-6">
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </form>
+                            </div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</html>
+
+

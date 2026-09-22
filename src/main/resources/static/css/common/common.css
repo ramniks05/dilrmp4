@@ -1,0 +1,185 @@
+#modalContent {
+    padding: 20px;
+}
+
+/* Style for the table */
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    border-collapse: collapse;
+}
+
+/* Style for the table header */
+.table th,
+.table thead th {
+    text-align: left;
+    background-color: #007bff;
+    color: #fff;
+    padding: 5px;
+    border-bottom: 2px solid #ddd;
+}
+
+/* Style for the table body */
+.table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Style for the table striped rows */
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 123, 255, 0.05);
+}
+
+/* Style for the DataTables display class */
+.display {
+    width: 100%;
+}
+
+/* Style for the modal */
+#userActivityModal {
+    display: none; /* Hide the modal by default */
+}
+
+/* Style for the no activity message */
+#modalContent p {
+    margin: 0;
+    padding: 12px;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+    border-radius: 4px;
+}
+
+
+ .edit-link {
+        color: white;
+        background-color: green;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        display: inline-block;
+        text-decoration: none;
+    }
+
+    .delete-link {
+        color: white;
+        background-color: red;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        display: inline-block;
+        text-decoration: none;
+    }
+ body{background-color:#F9F9FC;font-family: 'Roboto', sans-serif;font-size:14px;}
+        .select2-container {
+            padding: 0;
+            border: none;
+        }
+        h3{margin-bottom:0;}
+        .card{box-shadow: 0 0 13px 0 rgba(82,63,105,.05);background-color: #fafafa;margin-bottom: 20px;border-radius: 4px;padding: 20px;}
+        .select2-choice {
+            display: block;
+            width: 100%;
+            height: calc(1.5em + .75rem + 2px) !important;
+            padding: .375rem .75rem !important;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5 !important;
+            color: #495057;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-radius: .25rem;
+            transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        }
+     .page-item.active .page-link {
+    z-index: 3;
+    color: #fff;
+    background-color: var(--cyan);
+    border-color: #438893;
+}
+.page-link {
+    position: relative;
+    display: block;
+    padding: 0.5rem 0.75rem;
+    margin-left: -1px;
+    line-height: 1.25;
+    color: #007bff;
+    background-color: #fff;
+    border: 1px solid var(--cyan);
+}
+
+.button-container>div a {
+    margin-bottom: 10px;
+    display: block;
+
+
+    }
+.button-container a, .button-container a:hover, .button-container a:focus, .button-container a:active, .button-container a:active:focus {
+    outline: none;
+}
+
+element.style {
+}
+.button-container>div a {
+    margin-bottom: 10px;
+    display: block;
+}
+.button-container a, .button-container a:hover, .button-container a:focus, .button-container a:active, .button-container a:active:focus {
+    outline: none;
+}
+.btn-blue {
+    background: #48A5EA;
+    color: #FFF;
+    padding: 10px 30px !important;
+}
+.btn-rounded {
+    border-radius: 30px;
+}
+.btn {
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.btn-green {
+    background: #0fa4bc;;
+    color: #FFF;
+    padding: 10px 30px !important;
+}
+.table th, .table thead th {
+    text-align: left;
+    background-color: var(--cyan);
+    color: #fff;
+    padding: 5px;
+    border-bottom: 2px solid #ddd;
+}
+
+
+    </style>
+
+    <style>
+    .btn-transparent {
+        background-color: transparent;
+        border: none;
+    }
+
+
+     #wait {
+        	width: 100px;
+        	height: 130px;
+        	text-align: center;
+        	position: fixed;
+        	left: 280px;
+        	right: 0;
+        	top: 40%;
+        	z-index: 99;
+        	margin: 0 auto;
+        	background: rgba(255, 255, 255, 0.85);
+        	border-radius: 20px;
+        	box-shadow: 0 0 10px rgba(0, 0, 0, 0.43);
+        	display: none;
+        }
+
+        #wait img {
+        	width: 100%;
+        }

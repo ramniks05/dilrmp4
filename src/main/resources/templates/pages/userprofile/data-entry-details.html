@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="layouts/dashboard">
+
+<head>
+    <meta charset="UTF-8">
+    <title>User activity log</title>
+    <style>
+     body{background-color:#F9F9FC;font-family: 'Roboto', sans-serif;font-size:14px;}
+
+/* Style for the modal content */
+#modalContent {
+    padding: 20px;
+}
+
+/* Style for the table */
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    border-collapse: collapse;
+}
+
+/* Style for the table header */
+.table th,
+.table thead th {
+    text-align: left;
+    background-color: #0994aa;
+    color: #fff;
+    padding: 5px;
+    border-bottom: 2px solid #ddd;
+}
+
+/* Style for the table body */
+.table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Style for the table striped rows */
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 123, 255, 0.05);
+}
+
+/* Style for the DataTables display class */
+.display {
+    width: 100%;
+}
+
+/* Style for the modal */
+#userActivityModal {
+    display: none; /* Hide the modal by default */
+}
+
+/* Style for the no activity message */
+#modalContent p {
+    margin: 0;
+    padding: 12px;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+    border-radius: 4px;
+}
+
+
+#wait {
+	width: 200px;
+	height: 230px;
+	text-align: center;
+	position: fixed;
+	left: 280px;
+	right: 0;
+	top: 40%;
+	z-index: 99;
+	margin: 0 auto;
+	background: rgba(255, 255, 255, 0.85);
+	border-radius: 20px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.43);
+	display: none;
+}
+
+#wait img {
+	width: 100%;
+}
+
+    </style>
+
+
+</head>
+
+<body>
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper" layout:fragment="content" style="box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;">
+    <!-- Content Header (Page header) -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-info">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-sm-10">
+
+                                    <h3 class="card-title" style="font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a;  letter-spacing: 2px;">User activity log</h3>
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <a th:href="@{/report/userlog}">
+                                        <img th:src="@{/images/pdf.png}" alt="PDF Icon" class="btn-img"  width="40" height="40"
+                                             style="box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;"/>
+                                    </a>
+                                </div>
+
+                            </div>
+                        </div><!-- /.container-fluid -->
+                        <div class="card-body">
+
+                        <div class="card-body">
+
+                            <table id="example1" class="table table-bordered table-striped">
+                                <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Roll</th>
+                                    <th>State/UT</th>
+<!--                                    <th>IP Address</th>-->
+                                    <th>Last Login Date/Time</th>
+                                    <th>Last Logout Date/Time</th>
+                                    <th>Activity</th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="entry : ${userLoginLogoutTimes}">
+                                    <td><span th:text="${entry.key}"> </span></td>
+                                    <td><span th:text="${entry.value[0]}">  </span></td>
+                                    <td><span th:text="${entry.value[1]}">  </span></td>
+<!--                                    <td><span th:text="${entry.value[2]}">  </span></td>-->
+                                    <td><span th:text="${entry.value[3]}">  </span></td>
+                                    <td><span th:text="${entry.value[4]}">  </span></td>
+
+
+
+
+
+
+
+
+
+
+
+
+                                    <td><span th:text="${entry.value[5]}"/>,  &nbsp &nbsp &nbsp
+                                       <!-- <span id="clickSpan" class="clickable" th:text="${entry.value[6]}">Click me</span-->
+                                      <!--  <a id="clickSpan" class="clickable" th:href="@{'getUserActivity/' + ${entry.value[6]}}" onclick="handleClick(this)">More Details</a></td>-->
+
+                                    </td>
+
+                                </tr>
+                                </tbody>
+
+                            </table>
+
+
+
+
+                            <div class="row">
+                                <div class="xyz">
+                                    <div class="modal fade" id="userActivityModal" tabindex="-1" role="dialog"
+                                         aria-labelledby="modalLabel" aria-hidden="true">
+                                        <div class="modal-dialog dashboardPopup" style="width: 70%; max-width: 70%;">
+                                            <div class="modal-content">
+                                                <div class="modal-header" style="flex-direction: column-reverse;">
+                                                    <button type="button" class="close" data-dismiss="modal">
+                                                        <span class="glyphicon glyphicon-remove-circle"></span>
+                                                    </button>
+                                                    <h3 class="modal-title" id="userActivityModalLabel">User Activity</h3>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="table-responsive">
+                                                        <div id="modalContent"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <div class="btn-group" role="group" aria-label="group button">
+                                                    <div class="" role="group">
+                                                        <button type="button" class="btn btn-info ncltBtn backBtn"
+                                                                data-dismiss="modal" role="button" >Close</button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+
+
+
+                            <div class="modal fade" id="userActivityModal1" tabindex="-1" role="dialog" aria-labelledby="userActivityModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-lg" role="document">
+                                    <div class="modal-content">
+
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="userActivityModalLabel2">User Activity</h5>
+                                            <button type="button" class="close glyphicon glyphicon-remove-circle" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body table-responsive" id="modalContent1">
+                                            <!-- Table content will be added here -->
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div id="wait">
+
+                                <img th:src="@{/images/loading.gif}"  />
+                               <!-- <img src='/images/loading.gif' />--> <br />Please Wait...
+                            </div>
+                        </div>
+
+                    </div>
+                        <!--<span id="clickSpan" class="clickable" th:text="${entry.value[6]}">Click me</span>-->
+
+                        <!-- Add this script after including jQuery -->
+
+
+
+
+
+
+
+
+
+                        <!-- The Modal -->
+                        <div id="myModal" class="modal">
+                            <div class="modal-content">
+                                <span class="close" onclick="closeModal()">&times;</span>
+                                <h2>Result</h2>
+                                <div id="result"></div>
+                            </div>
+                        </div>
+                </div>
+
+
+                        <script>
+    $(document).ready(function () {
+
+     // Check if DataTable is already initialized on the table
+        if ($.fn.DataTable.isDataTable('#example1')) {
+            // If yes, destroy the existing DataTable instance
+            $('#example1').DataTable().destroy();
+        }
+
+        // Initialize DataTable with your table ID
+        $('#example1').DataTable({
+            // Add additional options if needed
+            paging: true,  // Enable pagination
+            lengthMenu: [10, 25, 50, 100],  // Set page length options
+            pageLength: 10  // Default page length
+        });
+    });
+</script>
+
+                        <script>
+
+
+function handleClick(element) {
+    // Prevent the default behavior of the anchor tag
+    event.preventDefault();
+
+    // Make AJAX request to the endpoint
+    $.ajax({
+        type: 'POST',
+        url: $(element).attr('href'),
+         beforeSend: function () {
+	                $("#wait").css("display", "block");
+	            },
+        success: function (data) {
+            $("#wait").css("display", "none");
+            // Handle the successful response, assuming it's an array of UserActivityBean
+            displayUserActivityModal(data);
+        },
+        error: function (xhr, textStatus, errorThrown) {
+            if (xhr.status == 404) {
+             $("#wait").css("display", "none");
+                  // If 404 Not Found, display a message in the modal
+                 $('#modalContent').empty().append('<p>No user activity found.</p>');
+                $('#userActivityModal').modal('show');
+
+            } else {
+                console.error('Error fetching user activity:', textStatus, errorThrown);
+            }
+        }
+    });
+}
+
+
+
+
+  function displayUserActivityModal(userActivityData) {
+    var modalContent = $('#modalContent');
+    modalContent.empty();
+
+    if (userActivityData.length > 0) {
+        var table = $('<table class="table table-bordered table-striped">').addClass('display').appendTo(modalContent);
+
+        // Append table header
+        var thead = $('<thead>').appendTo(table);
+        var headerRow = $('<tr>').appendTo(thead);
+        headerRow.append('<th>ID</th>');
+        headerRow.append('<th>User Login History</th>');
+        headerRow.append('<th>Activity</th>');
+        headerRow.append('<th>Active Time</th>');
+
+        // Append table body
+        var tbody = $('<tbody>').appendTo(table);
+        $.each(userActivityData, function (index, userActivity) {
+            var row = $('<tr>').appendTo(tbody);
+            row.append('<td>' + userActivity.id + '</td>');
+            row.append('<td>' + userActivity.name + '</td>');
+            row.append('<td>' + userActivity.activity + '</td>');
+            row.append('<td>' + userActivity.activeTime + '</td>');
+        });
+
+      // Initialize DataTable with pageLength set to 2
+    table.DataTable({
+        pageLength: 2
+    });
+
+        // Show the modal
+        $('#userActivityModal').modal('show');
+    } else {
+        modalContent.append('<p>No user activity found.</p>');
+    }
+}
+
+
+    // Event listener to close the modal
+    $('#closeModalButton').on('click', function () {
+        $('#userActivityModal').hide();
+    });
+
+</script>
+
+
+                        <!-- /.card-body -->
+                    </div>
+                </div>
+            </div>
+                    <!-- /.card -->
+        </section>
+    </div>
+</body>
+
+</html>

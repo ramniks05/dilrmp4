@@ -1,0 +1,37 @@
+<div class="navbar-upper visitor-top-bar" th:fragment="top-header" style="background-color: #8ddfef; display: flex !important; visibility: visible !important;">
+    <style>
+        .visitor-top-bar { display: flex !important; visibility: visible !important; }
+        .visitor-strip { color: #0c7124; }
+        .visitor-badge { display: inline-flex !important; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 20px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.15); font-weight: 600; font-size: 0.95rem; white-space: nowrap; color: #0c7124; border: 1px solid rgba(12,113,36,0.3); }
+        .visitor-badge .visitor-icon { width: 22px; height: 22px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: rgba(12,113,36,0.15); border-radius: 50%; font-size: 12px; }
+        .visitor-badge .visitor-value { color: #0c7124 !important; font-weight: 700; }
+        .visitor-badge .visitor-label { color: #0c7124; }
+        .visitor-group { display: inline-flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .visitor-group-label { font-weight: 600; font-size: 0.9rem; color: #0c7124; margin-right: 2px; }
+        @media (max-width: 768px) {
+            .visitor-top-bar { display: flex !important; visibility: visible !important; height: auto !important; min-height: 44px; padding: 8px 10px; flex-wrap: wrap; }
+            .visitor-top-bar .navbar-upper2 { display: flex !important; flex-wrap: wrap; gap: 8px; justify-content: center; }
+            .visitor-badge { padding: 5px 10px; font-size: 0.85rem; gap: 5px; }
+            .visitor-badge .visitor-icon { width: 18px; height: 18px; font-size: 10px; }
+            .visitor-top-bar .aazadi, .visitor-top-bar .g20 { max-height: 28px; width: auto; }
+        }
+    </style>
+    <div class="navbar-upper1"></div>
+    <div class="navbar-upper2 navbar-upper1 visitor-strip">
+        <a href="https://amritmahotsav.nic.in/" target="_blank" rel="noopener"><img class="aazadi" th:src="@{/static/images/Item.png}" alt="Amrit Mahotsav" style="max-height: 32px; width: auto;"></a>
+        <a href="https://www.g20.in/en/" target="_blank" rel="noopener"><img class="g20" th:src="@{/static/images/Item (1).png}" alt="G20" style="max-height: 32px; width: auto;"></a>
+        <span class="visitor-group">
+            <span class="visitor-group-label d-none d-md-inline">Visitors</span>
+            <span class="visitor-badge" title="Users currently online (one per browser)">
+                <span class="visitor-icon" aria-hidden="true">🟢</span>
+                <span class="visitor-label d-none d-sm-inline">Online:</span>
+                <span class="visitor-value" th:text="${session.onlineVisitors != null ? session.onlineVisitors : 0}">0</span>
+            </span>
+            <span class="visitor-badge" title="Total visitors (first visit count)">
+                <span class="visitor-icon" aria-hidden="true">👥</span>
+                <span class="visitor-label d-none d-sm-inline">Total:</span>
+                <span class="visitor-value" th:text="${session.totalVisitorsFormatted != null ? session.totalVisitorsFormatted : '0'}">0</span>
+            </span>
+        </span>
+    </div>
+</div>

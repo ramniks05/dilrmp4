@@ -1,0 +1,352 @@
+<div th:fragment="dilrmp-expenditure-status">
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-info">
+                        <div class="card-header" style="background: linear-gradient(to right, #32b4c8 0%, rgb(64 101 142));">
+                            <h3 class="card-title" style="color: #eff3f6; font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a; letter-spacing: 2px;">
+                                CNA Bank Balance Report - DILRMP Expenditure Status
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="expenditureUploadForm" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <label for="expenditureExcelFile">Select Excel File (.xlsx) - DILRMP Expenditure Status format</label>
+                                    <input type="file" id="expenditureExcelFile" name="file" class="form-control" accept=".xlsx" required />
+                                    <small class="form-text text-muted">Multiple uploads are allowed for different as on dates. Duplicate report dates are not allowed.</small>
+                                </div>
+                                <button type="button" id="uploadExpenditureReport" class="btn btn-primary">Upload</button>
+                            </form>
+
+                            <div id="expenditureUploadMessage" class="mt-3"></div>
+
+                            <hr>
+
+                            <p class="text-muted small">Search by report date from Excel title, e.g. <strong>DILRMP Expenditure Status as on 09.06.2026</strong>.</p>
+                            <div th:if="${!#lists.isEmpty(availableReportDates)}" class="mb-3">
+                                <strong>Available report dates:</strong>
+                                <span th:each="reportDate, stat : ${availableReportDates}">
+                                    <span th:text="${#temporals.format(reportDate, 'dd.MM.yyyy')}"></span><span th:if="${!stat.last}">, </span>
+                                </span>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h4>View Report</h4>
+                                    <div class="card card-outline card-secondary">
+                                        <div class="card-header"><strong>Search by Report As On Date</strong></div>
+                                        <div class="card-body">
+                                            <p class="text-muted small">Shows report matching the Excel as on date (e.g. 09.06.2026).</p>
+                                            <div class="form-group">
+                                                <label for="expAsOnDate">Report As On Date</label>
+                                                <input type="date" id="expAsOnDate" class="form-control" />
+                                            </div>
+                                            <button type="button" id="viewExpAsOnDateReport" class="btn btn-info">View Report</button>
+                                            <button type="button" id="viewExpLatestReport" class="btn btn-secondary ml-2">View Latest Upload</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h4>Delete Report</h4>
+                                    <div class="card card-outline card-danger">
+                                        <div class="card-header"><strong>Delete Report</strong></div>
+                                        <div class="card-body">
+                                            <p class="text-muted small">Delete by report as on date, or remove the latest upload.</p>
+                                            <div class="form-group">
+                                                <label for="expDeleteDate">Report As On Date</label>
+                                                <input type="date" id="expDeleteDate" class="form-control" />
+                                            </div>
+                                            <button type="button" id="deleteExpByDateReport" class="btn btn-danger">Delete Report</button>
+                                            <button type="button" id="deleteExpLatestReport" class="btn btn-outline-danger ml-2">Delete Latest Upload</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="expReportFilterMessage" class="mt-3"></div>
+                            <div id="expDeleteMessage" class="mt-3"></div>
+
+                            <hr>
+
+                            <h4 id="expReportTitle" th:text="${reportTitle}">DILRMP Expenditure Status</h4>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped" id="expReportTable">
+                                    <thead>
+                                    <tr>
+                                        <th>S.No</th>
+                                        <th>State Name</th>
+                                        <th th:text="|Release by Center (${financialYear})|">Release by Center (FY-2026-27)</th>
+                                        <th th:text="${openingBalanceHeader}">CNA Opening Balance</th>
+                                        <th style="background-color: #fff3cd;" th:text="${expenditureLabel1}">Expenditure in April</th>
+                                        <th style="background-color: #fff3cd;" th:text="${expenditureLabel2}">Expenditure in May</th>
+                                        <th style="background-color: #fff3cd;" th:text="${expenditureLabel3}">Expenditure in June</th>
+                                        <th style="background-color: #ffc107;" th:text="${totalExpenditureHeader}">Total Expenditure till</th>
+                                        <th th:text="${cnaBalanceHeader}">CNA Balance</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="expReportTableBody">
+                                    <tr th:if="${#lists.isEmpty(reports)}">
+                                        <td colspan="9" class="text-center">No records uploaded yet. Upload an Excel file in DILRMP Expenditure Status format.</td>
+                                    </tr>
+                                    <tr th:each="report, stat : ${reports}">
+                                        <td th:text="${report.serialNo != null ? report.serialNo : stat.count}"></td>
+                                        <td th:text="${report.stateName}"></td>
+                                        <td th:text="${report.releaseByCenter}"></td>
+                                        <td th:text="${report.cnaOpeningBalance}"></td>
+                                        <td th:text="${report.expenditureApril}"></td>
+                                        <td th:text="${report.expenditureMay}"></td>
+                                        <td th:text="${report.expenditureJune}"></td>
+                                        <td th:text="${report.totalExpenditure}"></td>
+                                        <td th:text="${report.cnaBalance}"></td>
+                                    </tr>
+                                    <tr th:if="${!#lists.isEmpty(reports)}" class="font-weight-bold" style="background-color: #f8f9fa;">
+                                        <td></td>
+                                        <td>TOTAL</td>
+                                        <td th:text="${totals.releaseByCenter}"></td>
+                                        <td th:text="${totals.cnaOpeningBalance}"></td>
+                                        <td th:text="${totals.expenditureApril}"></td>
+                                        <td th:text="${totals.expenditureMay}"></td>
+                                        <td th:text="${totals.expenditureJune}"></td>
+                                        <td th:text="${totals.totalExpenditure}" style="background-color: #ffc107;"></td>
+                                        <td th:text="${totals.cnaBalance}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script th:inline="javascript">
+        (function () {
+            const defaultFinancialYear = /*[[${financialYear}]]*/ 'FY-2026-27';
+            const defaultExpenditureLabel1 = /*[[${expenditureLabel1}]]*/ 'Expenditure in April';
+            const defaultExpenditureLabel2 = /*[[${expenditureLabel2}]]*/ 'Expenditure in May';
+            const defaultExpenditureLabel3 = /*[[${expenditureLabel3}]]*/ 'Expenditure in June';
+            const defaultOpeningBalanceHeader = /*[[${openingBalanceHeader}]]*/ 'CNA Opening Balance';
+            const defaultTotalExpenditureHeader = /*[[${totalExpenditureHeader}]]*/ 'Total Expenditure till';
+            const defaultCnaBalanceHeader = /*[[${cnaBalanceHeader}]]*/ 'CNA Balance';
+
+            function showMessage(target, type, message) {
+                $(target).html('<div class="alert alert-' + type + '">' + message + '</div>');
+            }
+
+            function updateTableHeaders(headerData) {
+                const fy = (headerData && headerData.financialYear) || defaultFinancialYear;
+                const headerRow = $("#expReportTable thead tr");
+                headerRow.find("th").eq(2).text("Release by Center (" + fy + ")");
+                headerRow.find("th").eq(3).text((headerData && headerData.openingBalanceHeader) || defaultOpeningBalanceHeader);
+                headerRow.find("th").eq(4).text((headerData && headerData.expenditureLabel1) || defaultExpenditureLabel1);
+                headerRow.find("th").eq(5).text((headerData && headerData.expenditureLabel2) || defaultExpenditureLabel2);
+                headerRow.find("th").eq(6).text((headerData && headerData.expenditureLabel3) || defaultExpenditureLabel3);
+                headerRow.find("th").eq(7).text((headerData && headerData.totalExpenditureHeader) || defaultTotalExpenditureHeader);
+                headerRow.find("th").eq(8).text((headerData && headerData.cnaBalanceHeader) || defaultCnaBalanceHeader);
+            }
+
+            function renderReportTable(reports, totals) {
+                const tbody = $("#expReportTableBody");
+                tbody.empty();
+
+                if (!reports || reports.length === 0) {
+                    tbody.append('<tr><td colspan="9" class="text-center">No records found for selected criteria.</td></tr>');
+                    return;
+                }
+
+                reports.forEach(function (report) {
+                    tbody.append(
+                        '<tr>' +
+                        '<td>' + (report.serialNo || '') + '</td>' +
+                        '<td>' + (report.stateName || '') + '</td>' +
+                        '<td>' + (report.releaseByCenter || '0.00') + '</td>' +
+                        '<td>' + (report.cnaOpeningBalance || '0.00') + '</td>' +
+                        '<td>' + (report.expenditureApril || '0.00') + '</td>' +
+                        '<td>' + (report.expenditureMay || '0.00') + '</td>' +
+                        '<td>' + (report.expenditureJune || '0.00') + '</td>' +
+                        '<td>' + (report.totalExpenditure || '0.00') + '</td>' +
+                        '<td>' + (report.cnaBalance || '0.00') + '</td>' +
+                        '</tr>'
+                    );
+                });
+
+                if (totals) {
+                    tbody.append(
+                        '<tr class="font-weight-bold" style="background-color: #f8f9fa;">' +
+                        '<td></td><td>TOTAL</td>' +
+                        '<td>' + (totals.releaseByCenter || '0.00') + '</td>' +
+                        '<td>' + (totals.cnaOpeningBalance || '0.00') + '</td>' +
+                        '<td>' + (totals.expenditureApril || '0.00') + '</td>' +
+                        '<td>' + (totals.expenditureMay || '0.00') + '</td>' +
+                        '<td>' + (totals.expenditureJune || '0.00') + '</td>' +
+                        '<td style="background-color: #ffc107;">' + (totals.totalExpenditure || '0.00') + '</td>' +
+                        '<td>' + (totals.cnaBalance || '0.00') + '</td>' +
+                        '</tr>'
+                    );
+                }
+            }
+
+            function handleReportResponse(response) {
+                if (!response || response.status !== "success") {
+                    $("#expReportTitle").text("DILRMP Expenditure Status");
+                    renderReportTable([]);
+                    showMessage("#expReportFilterMessage", "danger",
+                        (response && response.message) ? response.message : "Failed to load report.");
+                    return;
+                }
+
+                const reports = response.reports || [];
+                $("#expReportTitle").text(response.reportTitle || "DILRMP Expenditure Status");
+                updateTableHeaders(response);
+                renderReportTable(reports, response.totals);
+
+                if (reports.length === 0) {
+                    showMessage("#expReportFilterMessage", "warning", response.message || "No records found.");
+                } else if (response.message) {
+                    showMessage("#expReportFilterMessage", "warning", response.message);
+                } else {
+                    showMessage("#expReportFilterMessage", "success", reports.length + " record(s) found.");
+                }
+            }
+
+            function bindExpenditureReportEvents() {
+                $(document).off("click.expReport", "#uploadExpenditureReport");
+                $(document).off("click.expReport", "#viewExpAsOnDateReport");
+                $(document).off("click.expReport", "#viewExpLatestReport");
+                $(document).off("click.expReport", "#deleteExpByDateReport");
+                $(document).off("click.expReport", "#deleteExpLatestReport");
+
+                $(document).on("click.expReport", "#uploadExpenditureReport", function () {
+                    const fileInput = $("#expenditureExcelFile")[0];
+                    if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+                        showMessage("#expenditureUploadMessage", "danger", "Please select an Excel file.");
+                        return;
+                    }
+
+                    const formData = new FormData();
+                    formData.append("file", fileInput.files[0]);
+                    showMessage("#expenditureUploadMessage", "info", "Uploading, please wait...");
+
+                    $.ajax({
+                        url: "/dolr/dilrmp-expenditure-status/upload",
+                        type: "POST",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        dataType: "json",
+                        success: function (response) {
+                            if (!response || response.status !== "success") {
+                                showMessage("#expenditureUploadMessage", "danger",
+                                    (response && response.message) ? response.message : "Upload failed.");
+                                return;
+                            }
+                            showMessage("#expenditureUploadMessage", "success", response.message);
+                            htmx.ajax("GET", "/dolr/dilrmp-expenditure-status", "#content");
+                        },
+                        error: function (xhr) {
+                            let message = "Failed to upload Excel file.";
+                            if (xhr.responseJSON && xhr.responseJSON.message) {
+                                message = xhr.responseJSON.message;
+                            }
+                            showMessage("#expenditureUploadMessage", "danger", message);
+                        }
+                    });
+                });
+
+                $(document).on("click.expReport", "#viewExpAsOnDateReport", function () {
+                    const asOnDate = $("#expAsOnDate").val();
+                    if (!asOnDate) {
+                        showMessage("#expReportFilterMessage", "danger", "Please select As On Date.");
+                        return;
+                    }
+                    showMessage("#expReportFilterMessage", "info", "Loading report, please wait...");
+                    $.ajax({
+                        url: "/dolr/dilrmp-expenditure-status/report/as-on-date",
+                        type: "POST",
+                        data: { asOnDate: asOnDate },
+                        dataType: "json",
+                        success: handleReportResponse,
+                        error: function (xhr) {
+                            $("#expReportTitle").text("DILRMP Expenditure Status");
+                            renderReportTable([]);
+                            showMessage("#expReportFilterMessage", "danger",
+                                (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : "Failed to load report.");
+                        }
+                    });
+                });
+
+                $(document).on("click.expReport", "#viewExpLatestReport", function () {
+                    htmx.ajax("GET", "/dolr/dilrmp-expenditure-status", "#content");
+                });
+
+                $(document).on("click.expReport", "#deleteExpByDateReport", function () {
+                    const reportAsOnDate = $("#expDeleteDate").val();
+                    if (!reportAsOnDate) {
+                        showMessage("#expDeleteMessage", "danger", "Please select the report as on date to delete.");
+                        return;
+                    }
+                    if (!confirm("Delete DILRMP Expenditure Status report for as on date " + reportAsOnDate + "?")) {
+                        return;
+                    }
+                    showMessage("#expDeleteMessage", "info", "Deleting, please wait...");
+                    $.ajax({
+                        url: "/dolr/dilrmp-expenditure-status/delete/by-date",
+                        type: "POST",
+                        data: { reportAsOnDate: reportAsOnDate },
+                        dataType: "json",
+                        success: function (response) {
+                            if (!response || response.status !== "success") {
+                                showMessage("#expDeleteMessage", "danger",
+                                    (response && response.message) ? response.message : "Delete failed.");
+                                return;
+                            }
+                            showMessage("#expDeleteMessage", "success", response.message);
+                            htmx.ajax("GET", "/dolr/dilrmp-expenditure-status", "#content");
+                        },
+                        error: function (xhr) {
+                            const message = (xhr.responseJSON && xhr.responseJSON.message)
+                                ? xhr.responseJSON.message : "Failed to delete upload.";
+                            showMessage("#expDeleteMessage", "danger", message);
+                        }
+                    });
+                });
+
+                $(document).on("click.expReport", "#deleteExpLatestReport", function () {
+                    if (!confirm("Delete all records from the latest upload?")) {
+                        return;
+                    }
+                    showMessage("#expDeleteMessage", "info", "Deleting, please wait...");
+                    $.ajax({
+                        url: "/dolr/dilrmp-expenditure-status/delete/latest",
+                        type: "POST",
+                        dataType: "json",
+                        success: function (response) {
+                            if (!response || response.status !== "success") {
+                                showMessage("#expDeleteMessage", "danger",
+                                    (response && response.message) ? response.message : "Delete failed.");
+                                return;
+                            }
+                            showMessage("#expDeleteMessage", "success", response.message);
+                            htmx.ajax("GET", "/dolr/dilrmp-expenditure-status", "#content");
+                        },
+                        error: function (xhr) {
+                            const message = (xhr.responseJSON && xhr.responseJSON.message)
+                                ? xhr.responseJSON.message : "Failed to delete latest upload.";
+                            showMessage("#expDeleteMessage", "danger", message);
+                        }
+                    });
+                });
+            }
+
+            $(document).ready(bindExpenditureReportEvents);
+
+            document.body.addEventListener("htmx:afterSwap", function (evt) {
+                if (evt.detail.target && evt.detail.target.id === "content"
+                    && document.getElementById("viewExpAsOnDateReport")) {
+                    bindExpenditureReportEvents();
+                }
+            });
+        })();
+    </script>
+</div>

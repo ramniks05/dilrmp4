@@ -1,0 +1,20 @@
+body{background-color:#F9F9FC;font-family: 'Roboto', sans-serif;font-size:14px;}
+.table-bordered th, .table-bordered td {
+    border: 1px solid #16aec6;
+}
+.table-bordered {
+    border: 2px solid #16aec6;;
+}
+
+.table thead th {
+    text-align: center;
+    vertical-align: inherit;
+    border-bottom: 1px solid #16aec6;
+}
+
+.wrap-text {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    max-width: 140px;
+}

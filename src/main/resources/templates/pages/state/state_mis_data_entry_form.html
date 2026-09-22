@@ -1,0 +1,917 @@
+<div th:fragment="state-mis-data">
+
+   <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- Horizontal Form -->
+                    <div class="card card-info">
+                        <div class="card-header">
+                            <h3 class="card-title">State MIS Data Entry Form</h3>
+                        </div>
+
+
+<!--                        <div id="message">-->
+<!--                            <div th:if="${message}" class="alert alert-success" th:text="${message}"-->
+<!--                                id="auto-close-message"></div>-->
+<!--                        </div>-->
+                        <div class="card-body">
+                            <form th:action="@{/state/state-mis-data/save}"th:object="${stateMISDataEntry}" method="post" onsubmit="return validateForm()" id="stateMisDataForm">
+
+                           <!-- <form th:object="${stateMISDataEntry}" hx-post="/state/state-mis-data/save" method="post" hx-target="#content" onsubmit="return handleSubmit(event)">-->
+                                <input type="hidden" th:field="*{id}" />
+                                <input type="hidden" th:field="*{version}" />
+
+
+
+                                <div class="row">
+
+                                    <!-- Last Updated Date -->
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <label class="col-md-8 col-form-label">
+                                                <span class="red-text"></span> Last Updated Date:
+                                            </label>
+                                            <div class="col-md-4">
+                                                <span th:text="${stateMISDataEntry.created_date}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- State Website URL -->
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <label for="stateWebsiteUrl" class="col-md-8 col-form-label">
+                                                <span class="red-text">[1]</span> Name of the State website
+                                                (URL) where online RoR/ Land Records are available:
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input type="text" id="stateWebsiteUrl" name="stateWebsiteUrl"
+                                                    th:field="*{stateWebsiteUrl}" class="form-control" maxlength="100"
+                                                    oncopy="return false;" onpaste="return false;" oncut="return false;"
+                                                    required>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Mobile App Availability -->
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <label for="mobileAppAvailable" class="col-md-8 col-form-label">
+                                                <span class="red-text">[2]</span> Whether Mobile Application for accessing online RoR/Land Records is available:
+                                            </label>
+                                            <div class="col-md-4">
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="mobileAppAvailableYes" name="mobileAppAvailable"
+                                                           th:field="*{mobileAppAvailable}" value="true" class="form-check-input" required>
+                                                    <label for="mobileAppAvailableYes" class="form-check-label">Yes</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="mobileAppAvailableNo" name="mobileAppAvailable"
+                                                           th:field="*{mobileAppAvailable}" value="false" class="form-check-input"
+                                                           th:checked="${mobileAppAvailable == null || !mobileAppAvailable}">
+                                                    <label for="mobileAppAvailableNo" class="form-check-label">No</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Mobile App Name -->
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <label for="mobileAppName" class="col-md-8 col-form-label">
+                                                <span class="red-text">[3]</span> If yes, Name of Mobile Application:
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input type="text" id="mobileAppName" name="mobileAppName"
+                                                       th:field="*{mobileAppName}" class="form-control" maxlength="100"
+                                                       oncopy="return false;" onpaste="return false;" oncut="return false;"
+                                                       th:attr="disabled=${mobileAppAvailable != true}">
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <!-- Cadastral Maps Portal URL -->
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <label for="cadastralMapsPortalUrl" class="col-md-8 col-form-label">
+                                                <span class="red-text">[4]</span> Name and URL of Cadastral Maps
+                                                portal/ link:
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input type="text" id="cadastralMapsPortalUrl"
+                                                    name="cadastralMapsPortalUrl" th:field="*{cadastralMapsPortalUrl}"
+                                                    class="form-control" oncopy="return false;" onpaste="return false;"
+                                                    oncut="return false;" required>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <!-- RoRs Available Online -->
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <label for="rorAvailableOnline" class="col-md-8 col-form-label">
+                                                <span class="red-text">[5]</span> Are RoRs available online for
+                                                public to download:
+                                            </label>
+                                            <div class="col-md-4">
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="rorAvailableOnlineYes"
+                                                        name="rorAvailableOnline" th:field="*{rorAvailableOnline}"
+                                                        value="true" class="form-check-input">
+                                                    <label for="rorAvailableOnlineYes"
+                                                        class="form-check-label">Yes</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="rorAvailableOnlineNo"
+                                                        name="rorAvailableOnline" th:field="*{rorAvailableOnline}"
+                                                        value="false" class="form-check-input"
+                                                        th:checked="${rorAvailableOnline == null || !rorAvailableOnline}">
+                                                    <label for="rorAvailableOnlineNo"
+                                                        class="form-check-label">No</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+
+
+                                    <!-- Digitally Signed RoRs -->
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <label for="digitallySignedRorAvailable" class="col-md-8 col-form-label">
+                                                <span class="red-text">[6]</span> Are digitally signed RoRs
+                                                available online for public:
+                                            </label>
+                                            <div class="col-md-4">
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="digitallySignedRorAvailableYes"
+                                                        name="digitallySignedRorAvailable"
+                                                        th:field="*{digitallySignedRorAvailable}" value="true"
+                                                        class="form-check-input">
+                                                    <label for="digitallySignedRorAvailableYes"
+                                                        class="form-check-label">Yes</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="digitallySignedRorAvailableNo"
+                                                        name="digitallySignedRorAvailable"
+                                                        th:field="*{digitallySignedRorAvailable}" value="false"
+                                                        class="form-check-input"
+                                                        th:checked="${digitallySignedRorAvailable == null || !digitallySignedRorAvailable}">
+                                                    <label for="digitallySignedRorAvailableNo"
+                                                        class="form-check-label">No</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Digitally Signed RoRs Satae -->
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <label for="digitallySignedRorAvailable" class="col-md-8 col-form-label">
+                                                <span class="red-text">[7]</span> Are digitally signed RoRs
+                                                legally valid in the State:
+                                            </label>
+                                            <div class="col-md-4">
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="digitallySignedLegallyStateYes"
+                                                           name="digitallySignedRorLegallyValid"
+                                                           th:field="*{digitallySignedRorLegallyValid}" value="true"
+                                                           class="form-check-input">
+                                                    <label for="digitallySignedLegallyStateYes"
+                                                           class="form-check-label">Yes</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="digitallySignedLegallyStateNo"
+                                                           name="digitallySignedRorLegallyValid"
+                                                           th:field="*{digitallySignedRorLegallyValid}" value="false"
+                                                           class="form-check-input"
+                                                           th:checked="${digitallySignedRorLegallyValid == null || !digitallySignedRorLegallyValid}">
+                                                    <label for="digitallySignedLegallyStateNo"
+                                                           class="form-check-label">No</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+
+
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <label for="onlineMutationFacility" class="col-md-8 col-form-label">
+                                                <span class="red-text">[8]</span> Is online facility available
+                                                in the State to apply for mutation:
+                                            </label>
+                                            <div class="col-md-4">
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="onlineMutationFacilityYes"
+                                                        name="onlineMutationFacility"
+                                                        th:field="*{onlineMutationFacility}" value="true"
+                                                        class="form-check-input">
+                                                    <label for="onlineMutationFacilityYes"
+                                                        class="form-check-label">Yes</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="onlineMutationFacilityNo"
+                                                        name="onlineMutationFacility"
+                                                        th:field="*{onlineMutationFacility}" value="false"
+                                                        class="form-check-input"
+                                                        th:checked="${onlineMutationFacility == null || !onlineMutationFacility}">
+                                                    <label for="onlineMutationFacilityNo"
+                                                        class="form-check-label">No</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <label for="landRecordsOnlineFromRegistrationSystem"
+                                                class="col-md-8 col-form-label">
+                                                <span class="red-text">[9]</span> Can Land Records be checked
+                                                online from Registration System:
+                                            </label>
+                                            <div class="col-md-4">
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="landRecordsOnlineFromRegistrationSystemYes"
+                                                        name="landRecordsOnlineFromRegistrationSystem"
+                                                        th:field="*{landRecordsOnlineFromRegistrationSystem}"
+                                                        value="true" class="form-check-input">
+                                                    <label for="landRecordsOnlineFromRegistrationSystemYes"
+                                                        class="form-check-label">Yes</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="landRecordsOnlineFromRegistrationSystemNo"
+                                                        name="landRecordsOnlineFromRegistrationSystem"
+                                                        th:field="*{landRecordsOnlineFromRegistrationSystem}"
+                                                        value="false" class="form-check-input"
+                                                        th:checked="${landRecordsOnlineFromRegistrationSystem == null || !landRecordsOnlineFromRegistrationSystem}">
+                                                    <label for="landRecordsOnlineFromRegistrationSystemNo"
+                                                        class="form-check-label">No</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <label for="autoTriggerMutation" class="col-md-8 col-form-label">
+                                                <span class="red-text">[10]</span> Is facility of auto-trigger
+                                                mutation available in the State:
+                                            </label>
+                                            <div class="col-md-4">
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="autoTriggerMutationYes"
+                                                        name="autoTriggerMutation" th:field="*{autoTriggerMutation}"
+                                                        value="true" class="form-check-input">
+                                                    <label for="autoTriggerMutationYes"
+                                                        class="form-check-label">Yes</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="autoTriggerMutationNo"
+                                                        name="autoTriggerMutation" th:field="*{autoTriggerMutation}"
+                                                        value="false" class="form-check-input"
+                                                        th:checked="${autoTriggerMutation == null || !autoTriggerMutation}">
+                                                    <label for="autoTriggerMutationNo"
+                                                        class="form-check-label">No</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <label for="eRCMSAvailable" class="col-md-8 col-form-label">
+                                                <span class="red-text">[11]</span> Whether e-Revenue Court Management System is available:
+                                            </label>
+                                            <div class="col-md-4">
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="eRCMSAvailableYes" name="eRCMSAvailable"
+                                                           th:field="*{eRCMSAvailable}" value="true"
+                                                           class="form-check-input" required>
+                                                    <label for="eRCMSAvailableYes" class="form-check-label">Yes</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="eRCMSAvailableNo" name="eRCMSAvailable"
+                                                           th:field="*{eRCMSAvailable}" value="false"
+                                                           class="form-check-input"
+                                                           th:checked="${eRCMSAvailable == null || !eRCMSAvailable}">
+                                                    <label for="eRCMSAvailableNo" class="form-check-label">No</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <label for="eRCMSNameUrl" class="col-md-8 col-form-label">
+                                                <span class="red-text">[12]</span> If yes, Name and URL of e-RCMS:
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input type="text" id="eRCMSNameUrl" name="eRCMSNameUrl"
+                                                       th:field="*{eRCMSNameUrl}" class="form-control" maxlength="100"
+                                                       oncopy="return false;" onpaste="return false;" oncut="return false;"
+                                                       th:attr="disabled=${eRCMSAvailable != true}">
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <label for="totalRevenueCourts" class="col-md-8 col-form-label">
+                                                <span class="red-text">[13]</span> Total number of Revenue
+                                                Courts in the State:
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input type="number" id="totalRevenueCourts" name="totalRevenueCourts"
+                                                    th:field="*{totalRevenueCourts}" class="form-control" required
+                                                    min="0" oninput="validateRevenueNumbers()" onchange="validateAndResetField()">
+                                                <small id="totalRevenueError" class="text-danger"></small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <label for="computerizedRevenueCourts" class="col-md-8 col-form-label">
+                                                <span class="red-text">[14]</span> Of this, number of Revenue
+                                                Courts computerized:
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input type="number" id="computerizedRevenueCourts"
+                                                    name="computerizedRevenueCourts"
+                                                    th:field="*{computerizedRevenueCourts}" class="form-control"
+                                                    required min="0" oninput="validateRevenueNumbers()" onchange="validateAndResetField()">
+                                                <small id="computerizedError" class="text-danger"></small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h5>[15] Have the below mentioned Processes of Revenue Courts been made
+                                        online?</h5>
+
+                                    <div class="row">
+                                        <!-- Sub-question (i) -->
+                                        <div class="col-md-12">
+                                            <div class="form-group row">
+                                                <label for="affidavitFilingOnline" class="col-md-8 col-form-label">
+                                                    <span class="red-text">(i)</span> Filing of affidavits and
+                                                    attached documents:
+                                                </label>
+                                                <div class="col-md-4">
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" id="affidavitFilingOnlineYes"
+                                                            name="affidavitFilingOnline"
+                                                            th:field="*{affidavitFilingOnline}" value="true"
+                                                            class="form-check-input">
+                                                        <label for="affidavitFilingOnlineYes"
+                                                            class="form-check-label">Yes</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" id="affidavitFilingOnlineNo"
+                                                            name="affidavitFilingOnline"
+                                                            th:field="*{affidavitFilingOnline}" value="false"
+                                                            class="form-check-input"
+                                                            th:checked="${affidavitFilingOnline == null || !affidavitFilingOnline}">
+                                                        <label for="affidavitFilingOnlineNo"
+                                                            class="form-check-label">No</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Sub-question (ii) -->
+                                        <div class="col-md-12">
+                                            <div class="form-group row">
+                                                <label for="causeListGenerationOnline" class="col-md-8 col-form-label">
+                                                    <span class="red-text">(ii)</span> Generation of Cause list:
+                                                </label>
+                                                <div class="col-md-4">
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" id="causeListGenerationOnlineYes"
+                                                            name="causeListGenerationOnline"
+                                                            th:field="*{causeListGenerationOnline}" value="true"
+                                                            class="form-check-input">
+                                                        <label for="causeListGenerationOnlineYes"
+                                                            class="form-check-label">Yes</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" id="causeListGenerationOnlineNo"
+                                                            name="causeListGenerationOnline"
+                                                            th:field="*{causeListGenerationOnline}" value="false"
+                                                            class="form-check-input"
+                                                            th:checked="${causeListGenerationOnline == null || !causeListGenerationOnline}">
+                                                        <label for="causeListGenerationOnlineNo"
+                                                            class="form-check-label">No</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Sub-question (iii) -->
+                                        <div class="col-md-12">
+                                            <div class="form-group row">
+                                                <label for="noticeToDefendantsOnline" class="col-md-8 col-form-label">
+                                                    <span class="red-text">(iii)</span> Notice to defendants
+                                                    (intimation through email/ mobile/ whatsapp messages):
+                                                </label>
+                                                <div class="col-md-4">
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" id="noticeToDefendantsOnlineYes"
+                                                            name="noticeToDefendantsOnline"
+                                                            th:field="*{noticeToDefendantsOnline}" value="true"
+                                                            class="form-check-input">
+                                                        <label for="noticeToDefendantsOnlineYes"
+                                                            class="form-check-label">Yes</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" id="noticeToDefendantsOnlineNo"
+                                                            name="noticeToDefendantsOnline"
+                                                            th:field="*{noticeToDefendantsOnline}" value="false"
+                                                            class="form-check-input"
+                                                            th:checked="${noticeToDefendantsOnline == null || !noticeToDefendantsOnline}">
+                                                        <label for="noticeToDefendantsOnlineNo"
+                                                            class="form-check-label">No</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Sub-question (iv) -->
+                                        <div class="col-md-12">
+                                            <div class="form-group row">
+                                                <label for="counterAffidavitFilingOnline"
+                                                    class="col-md-8 col-form-label">
+                                                    <span class="red-text">(iv)</span> Filing of counter
+                                                    affidavits and attached documents:
+                                                </label>
+                                                <div class="col-md-4">
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" id="counterAffidavitFilingOnlineYes"
+                                                            name="counterAffidavitFilingOnline"
+                                                            th:field="*{counterAffidavitFilingOnline}" value="true"
+                                                            class="form-check-input">
+                                                        <label for="counterAffidavitFilingOnlineYes"
+                                                            class="form-check-label">Yes</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" id="counterAffidavitFilingOnlineNo"
+                                                            name="counterAffidavitFilingOnline"
+                                                            th:field="*{counterAffidavitFilingOnline}" value="false"
+                                                            class="form-check-input"
+                                                            th:checked="${counterAffidavitFilingOnline == null || !counterAffidavitFilingOnline}">
+                                                        <label for="counterAffidavitFilingOnlineNo"
+                                                            class="form-check-label">No</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Sub-question (v) -->
+                                        <div class="col-md-12">
+                                            <div class="form-group row">
+                                                <label for="proceedingsTypingDirectlyOnline"
+                                                    class="col-md-8 col-form-label">
+                                                    <span class="red-text">(v)</span> Proceedings (Typing
+                                                    directly into the System and not merely by scanning the
+                                                    print outs):
+                                                </label>
+                                                <div class="col-md-4">
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" id="proceedingsTypingDirectlyOnlineYes"
+                                                            name="proceedingsTypingDirectlyOnline"
+                                                            th:field="*{proceedingsTypingDirectlyOnline}" value="true"
+                                                            class="form-check-input">
+                                                        <label for="proceedingsTypingDirectlyOnlineYes"
+                                                            class="form-check-label">Yes</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" id="proceedingsTypingDirectlyOnlineNo"
+                                                            name="proceedingsTypingDirectlyOnline"
+                                                            th:field="*{proceedingsTypingDirectlyOnline}" value="false"
+                                                            class="form-check-input"
+                                                            th:checked="${proceedingsTypingDirectlyOnline == null || !proceedingsTypingDirectlyOnline}">
+                                                        <label for="proceedingsTypingDirectlyOnlineNo"
+                                                            class="form-check-label">No</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Sub-question (vi) -->
+                                        <div class="col-md-12">
+                                            <div class="form-group row">
+                                                <label for="uploadingRevenueCourtOrdersOnline"
+                                                    class="col-md-8 col-form-label">
+                                                    <span class="red-text">(vi)</span> Uploading Revenue Court
+                                                    orders/ proceedings on the web portal and/or send by
+                                                    email/mobile/whatsapp messages:
+                                                </label>
+                                                <div class="col-md-4">
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" id="uploadingRevenueCourtOrdersOnlineYes"
+                                                            name="uploadingRevenueCourtOrdersOnline"
+                                                            th:field="*{uploadingRevenueCourtOrdersOnline}" value="true"
+                                                            class="form-check-input">
+                                                        <label for="uploadingRevenueCourtOrdersOnlineYes"
+                                                            class="form-check-label">Yes</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" id="uploadingRevenueCourtOrdersOnlineNo"
+                                                            name="uploadingRevenueCourtOrdersOnline"
+                                                            th:field="*{uploadingRevenueCourtOrdersOnline}"
+                                                            value="false" class="form-check-input"
+                                                            th:checked="${uploadingRevenueCourtOrdersOnline == null || !uploadingRevenueCourtOrdersOnline}">
+                                                        <label for="uploadingRevenueCourtOrdersOnlineNo"
+                                                            class="form-check-label">No</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Sub-question (vii) -->
+
+                                    </div>
+                                    <!-- Question (vii) -->
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <label for="landRecordsOnlineFromRevenueCourtSystem"
+                                                class="col-md-8 col-form-label">
+                                                <span class="red-text">(vii)</span> Is filing of a case
+                                                mentioned/ red-flagged in the Land Records System directly from
+                                                the Revenue Court System:
+                                            </label>
+                                            <div class="col-md-4">
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="landRecordsOnlineFromRevenueCourtSystemYes"
+                                                        name="landRecordsOnlineFromRevenueCourtSystem"
+                                                        th:field="*{landRecordsOnlineFromRevenueCourtSystem}"
+                                                        value="true" class="form-check-input">
+                                                    <label for="landRecordsOnlineFromRevenueCourtSystemYes"
+                                                        class="form-check-label">Yes</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="landRecordsOnlineFromRevenueCourtSystemNo"
+                                                        name="landRecordsOnlineFromRevenueCourtSystem"
+                                                        th:field="*{landRecordsOnlineFromRevenueCourtSystem}"
+                                                        value="false" class="form-check-input"
+                                                        th:checked="${landRecordsOnlineFromRevenueCourtSystem == null || !landRecordsOnlineFromRevenueCourtSystem}">
+                                                    <label for="landRecordsOnlineFromRevenueCourtSystemNo"
+                                                        class="form-check-label">No</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Question (viii) -->
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <label for="revenueCourtProceedingsPaperless"
+                                                class="col-md-8 col-form-label">
+                                                <span class="red-text">(viii)</span> Can Land Records be checked
+                                                online from Revenue Court System:
+                                            </label>
+                                            <div class="col-md-4">
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="revenueCourtProceedingsPaperlessYes"
+                                                        name="revenueCourtProceedingsPaperless"
+                                                        th:field="*{revenueCourtProceedingsPaperless}" value="true"
+                                                        class="form-check-input">
+                                                    <label for="revenueCourtProceedingsPaperlessYes"
+                                                        class="form-check-label">Yes</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="revenueCourtProceedingsPaperlessNo"
+                                                        name="revenueCourtProceedingsPaperless"
+                                                        th:field="*{revenueCourtProceedingsPaperless}" value="false"
+                                                        class="form-check-input"
+                                                        th:checked="${revenueCourtProceedingsPaperless == null || !revenueCourtProceedingsPaperless}">
+                                                    <label for="revenueCourtProceedingsPaperlessNo"
+                                                        class="form-check-label">No</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Question 16 -->
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <label for="landRecordsOnlineForCivilCourts"
+                                                class="col-md-8 col-form-label">
+                                                <span class="red-text">16</span> Has the Revenue Court
+                                                proceedings been made completely paperless or is option?:
+                                            </label>
+                                            <div class="col-md-4">
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="landRecordsOnlineForCivilCourtsYes"
+                                                        name="landRecordsOnlineForCivilCourts"
+                                                        th:field="*{landRecordsOnlineForCivilCourts}" value="true"
+                                                        class="form-check-input">
+                                                    <label for="landRecordsOnlineForCivilCourtsYes"
+                                                        class="form-check-label">Yes</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="landRecordsOnlineForCivilCourtsNo"
+                                                        name="landRecordsOnlineForCivilCourts"
+                                                        th:field="*{landRecordsOnlineForCivilCourts}" value="false"
+                                                        class="form-check-input"
+                                                        th:checked="${landRecordsOnlineForCivilCourts == null || !landRecordsOnlineForCivilCourts}">
+                                                    <label for="landRecordsOnlineForCivilCourtsNo"
+                                                        class="form-check-label">No</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Question 17 -->
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <label for="caseFilingRedFlaggedInLandRecordsFromCivilCourts"
+                                                class="col-md-8 col-form-label">
+                                                <span class="red-text">17</span> Can Land Records be checked
+                                                online by Civil Courts (through eCourts System):
+                                            </label>
+                                            <div class="col-md-4">
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio"
+                                                        id="caseFilingRedFlaggedInLandRecordsFromCivilCourtsYes"
+                                                        name="caseFilingRedFlaggedInLandRecordsFromCivilCourts"
+                                                        th:field="*{caseFilingRedFlaggedInLandRecordsFromCivilCourts}"
+                                                        value="true" class="form-check-input">
+                                                    <label for="caseFilingRedFlaggedInLandRecordsFromCivilCourtsYes"
+                                                        class="form-check-label">Yes</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio"
+                                                        id="caseFilingRedFlaggedInLandRecordsFromCivilCourtsNo"
+                                                        name="caseFilingRedFlaggedInLandRecordsFromCivilCourts"
+                                                        th:field="*{caseFilingRedFlaggedInLandRecordsFromCivilCourts}"
+                                                        value="false" class="form-check-input"
+                                                        th:checked="${caseFilingRedFlaggedInLandRecordsFromCivilCourts == null || !caseFilingRedFlaggedInLandRecordsFromCivilCourts}">
+                                                    <label for="caseFilingRedFlaggedInLandRecordsFromCivilCourtsNo"
+                                                        class="form-check-label">No</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                <div class="col-md-12">
+                                    <div class="form-group row">
+                                        <label for="caseFilingRedFlaggedInLandRecords" class="col-md-8 col-form-label">
+                                            <span class="red-text">(i)</span> If yes, is filing of a case in civil courts mentioned/ red-flagged in the Land Records System directly from the e-Courts System?:
+                                        </label>
+                                        <div class="col-md-4">
+                                            <div class="form-check form-check-inline">
+                                                <input type="radio" id="caseFilingRedFlaggedInLandRecordsYes" name="caseFilingRedFlaggedInLandRecords"
+                                                       th:field="*{caseFilingRedFlaggedInLandRecords}" value="true"
+                                                       class="form-check-input">
+                                                <label for="bankRedFlagMortgageInLandRecordsYes" class="form-check-label">Yes</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input type="radio" id="caseFilingRedFlaggedInLandRecordsNo" name="caseFilingRedFlaggedInLandRecords"
+                                                       th:field="*{caseFilingRedFlaggedInLandRecords}" value="false"
+                                                       class="form-check-input"
+                                                       th:checked="${caseFilingRedFlaggedInLandRecords == null || !caseFilingRedFlaggedInLandRecords}">
+                                                <label for="caseFilingRedFlaggedInLandRecordsNo" class="form-check-label">No</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <label for="bankRedFlagMortgageInLandRecords" class="col-md-8 col-form-label">
+                                                <span class="red-text">18</span> Is there a provision for banks to directly mark "Mortgage" in the Land Records System?
+                                            </label>
+                                            <div class="col-md-4">
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="bankRedFlagMortgageInLandRecordsYes" name="bankRedFlagMortgageInLandRecords"
+                                                           th:field="*{bankRedFlagMortgageInLandRecords}" value="true"
+                                                           class="form-check-input" required>
+                                                    <label for="bankRedFlagMortgageInLandRecordsYes" class="form-check-label">Yes</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="bankRedFlagMortgageInLandRecordsNo" name="bankRedFlagMortgageInLandRecords"
+                                                           th:field="*{bankRedFlagMortgageInLandRecords}" value="false"
+                                                           class="form-check-input"
+                                                           th:checked="${bankRedFlagMortgageInLandRecords == null || !bankRedFlagMortgageInLandRecords}">
+                                                    <label for="bankRedFlagMortgageInLandRecordsNo" class="form-check-label">No</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <label for="districtsWithBankRedFlagMortgage" class="col-md-8 col-form-label">
+                                                <span class="red-text">i</span> If yes, in how many districts:
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input type="number" id="districtsWithBankRedFlagMortgage"
+                                                       name="districtsWithBankRedFlagMortgage"
+                                                       th:field="*{districtsWithBankRedFlagMortgage}" class="form-control"
+                                                       required min="0"
+                                                       th:attr="disabled=${bankRedFlagMortgageInLandRecords != true}">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <label for="bankBranchesWithRedFlagMortgage" class="col-md-8 col-form-label">
+                                                <span class="red-text">ii</span> And, in how many bank branches:
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input type="number" id="bankBranchesWithRedFlagMortgage"
+                                                       name="bankBranchesWithRedFlagMortgage"
+                                                       th:field="*{bankBranchesWithRedFlagMortgage}" class="form-control"
+                                                       required min="0"
+                                                       th:attr="disabled=${bankRedFlagMortgageInLandRecords != true}">
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+
+
+                                <!-- Submit Button -->
+                                <div class="d-flex justify-content-center mt-4">
+
+
+                                    <button type="submit"
+                                        class="btn btn-primary btn-lg px-4 py-2 rounded-pill shadow-sm hover-shadow">
+                                        Save
+                                    </button>
+                                </div>
+                            </form>
+
+
+
+                        </div>
+                    </div>
+
+
+
+                    <script>
+function toggleFieldBasedOnRadio(radioId, inputId) {
+    const radio = document.getElementById(radioId);
+    const inputField = document.getElementById(inputId);
+    if (radio && radio.checked) {
+        inputField.removeAttribute('disabled');
+    } else {
+        inputField.setAttribute('disabled', 'true');
+    }
+
+}
+
+
+function toggleFieldsBasedOnRadio(radioId, fieldIds) {
+    const radio = document.getElementById(radioId);
+    fieldIds.forEach(function (inputId) {
+        const inputField = document.getElementById(inputId);
+        if (radio && radio.checked) {
+            inputField.removeAttribute('disabled');
+        } else {
+            inputField.setAttribute('disabled', 'true');
+        }
+    });
+}
+
+function initializeToggleField() {
+    // Set initial state
+    toggleFieldBasedOnRadio('mobileAppAvailableYes', 'mobileAppName');
+    toggleFieldBasedOnRadio('eRCMSAvailableYes', 'eRCMSNameUrl');
+
+    // Add change event listeners
+    document.getElementById('mobileAppAvailableYes').addEventListener('change', function() {
+        toggleFieldBasedOnRadio('mobileAppAvailableYes', 'mobileAppName');
+    });
+    document.getElementById('mobileAppAvailableNo').addEventListener('change', function() {
+        toggleFieldBasedOnRadio('mobileAppAvailableYes', 'mobileAppName');
+    });
+    document.getElementById('eRCMSAvailableYes').addEventListener('change', function() {
+        toggleFieldBasedOnRadio('eRCMSAvailableYes', 'eRCMSNameUrl');
+    });
+    document.getElementById('eRCMSAvailableNo').addEventListener('change', function() {
+        toggleFieldBasedOnRadio('eRCMSAvailableYes', 'eRCMSNameUrl');
+    });
+
+
+    toggleFieldsBasedOnRadio('bankRedFlagMortgageInLandRecordsYes', ['districtsWithBankRedFlagMortgage', 'bankBranchesWithRedFlagMortgage']);
+
+    // Event listeners for radio buttons to toggle fields
+    document.getElementById('bankRedFlagMortgageInLandRecordsYes').addEventListener('change', function() {
+        toggleFieldsBasedOnRadio('bankRedFlagMortgageInLandRecordsYes', ['districtsWithBankRedFlagMortgage', 'bankBranchesWithRedFlagMortgage']);
+    });
+    document.getElementById('bankRedFlagMortgageInLandRecordsNo').addEventListener('change', function() {
+        toggleFieldsBasedOnRadio('bankRedFlagMortgageInLandRecordsYes', ['districtsWithBankRedFlagMortgage', 'bankBranchesWithRedFlagMortgage']);
+    });
+}
+
+
+// Run when page is fully loaded or HTMX content is loaded
+document.addEventListener('DOMContentLoaded', initializeToggleField);
+document.addEventListener('htmx:load', initializeToggleField);
+
+
+
+
+
+
+
+function validateAndResetField(){
+
+const totalRevenueCourts = parseInt(document.getElementById('totalRevenueCourts').value || 0);
+const computerizedRevenueCourts = parseInt(document.getElementById('computerizedRevenueCourts').value || 0);
+
+      if (totalRevenueCourts === '' || totalRevenueCourts === null) {
+        document.getElementById("totalRevenueCourts").value = 0;
+        }
+
+       if (computerizedRevenueCourts === '' || computerizedRevenueCourts === null) {
+        document.getElementById("computerizedRevenueCourts").value = 0;
+        }
+
+        if (parseInt(computerizedRevenueCourts) > parseInt(totalRevenueCourts)) {
+           alert("S.No. [14] must be equal to or lesser than S.No. [13].");
+           document.getElementById("computerizedRevenueCourts").value = 0;
+          }
+
+}
+
+</script>
+
+
+                    <script>
+  $(document).ready(function() {
+    // Attach submit event listener to the form
+    $('#stateMisDataForm').submit(function(e) {
+        e.preventDefault(); // Prevent the default form submission
+        var form = $(this);
+        var formData = new FormData(form[0]);
+        $.ajax({
+            type: 'POST',
+            url: form.attr('action'),
+            data: formData,
+            processData: false, // Prevent jQuery from automatically transforming the data into a query string
+            contentType: false, // Tell jQuery not to set content type
+            success: function(data) {
+                // Show success message and refresh CAPTCHA
+                showSuccessAlert(data);
+
+
+            },
+            error: function(jqXHR) {
+                // Show error message
+                  showErrorAlert('Error', jqXHR.responseText);
+
+            }
+        });
+    });
+
+
+
+
+    // Function to display a SweetAlert success message
+    function showSuccessAlert(data) {
+        Swal.fire({
+            title: 'Success',
+            text: data,
+            icon: 'success',
+            confirmButtonText: 'OK',
+            position: 'center'
+        });
+    }
+
+    // Function to display a SweetAlert error message
+    function showErrorAlert(title, text) {
+        Swal.fire({
+            title: title,
+            text: text,
+            icon: 'error',
+            confirmButtonText: 'OK',
+            position: 'center'
+        });
+    }
+});
+
+</script>
+
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>

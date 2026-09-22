@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/dashboard">
+
+<head>
+  <meta charset="UTF-8">
+  <title>DILRMP-MIS 4.0</title>
+
+  <script type="text/javascript" th:src="@{/static/js/jquery.min.js}"></script>
+  <script type="text/javascript" th:src="@{/static/nlrmpmap/dashboardChart.js}"></script>
+  <script type="text/javascript" th:src="@{/static/nlrmpmap/highcharts.js}"></script>
+
+
+
+
+
+
+
+  <style>
+         .ps-4 {
+    padding-left: 1.5rem !important;
+}
+
+.gy-xxl-5{--bs-gutter-y:3rem}}.table{--bs-table-color:var(--bs-body-color);--bs-table-bg:transparent;--bs-table-border-color:var(--bs-border-color);--bs-table-accent-bg:transparent;--bs-table-striped-color:var(--bs-body-color);--bs-table-striped-bg:rgba(0, 0, 0, 0.05);--bs-table-active-color:var(--bs-body-color);--bs-table-active-bg:rgba(0, 0, 0, 0.1);--bs-table-hover-color:var(--bs-body-color);--bs-table-hover-bg:rgba(0, 0, 0, 0.075);width:100%;margin-bottom:1rem;color:var(--bs-table-color);vertical-align:top;border-color:var(--bs-table-border-color)}.table>:not(caption)>*>*{padding:.5rem .5rem;background-color:var(--bs-table-bg);border-bottom-width:var(--bs-border-width);box-shadow:inset 0 0 0 9999px var(--bs-table-accent-bg)}.table>tbody{vertical-align:inherit}.table>thead{vertical-align:bottom}.table-group-divider{border-top:calc(var(--bs-border-width) * 2) solid currentcolor}.caption-top{caption-side:top}.table-sm>:not(caption)>*>*{padding:.25rem .25rem}.table-bordered>:not(caption)>*{border-width:var(--bs-border-width) 0}.table-bordered>:not(caption)>*>*{border-width:0 var(--bs-border-width)}.table-borderless>:not(caption)>*>*{border-bottom-width:0}.table-borderless>:not(:first-child){border-top-width:0}.table-striped>tbody>tr:nth-of-type(odd)>*{--bs-table-accent-bg:var(--bs-table-striped-bg);color:var(--bs-table-striped-color)}.table-striped-columns>:not(caption)>tr>:nth-child(2n){--bs-table-accent-bg:var(--bs-table-striped-bg);color:var(--bs-table-striped-color)}.table-active{--bs-table-accent-bg:var(--bs-table-active-bg);color:var(--bs-table-active-color)}.table-hover>tbody>tr:hover>*{--bs-table-accent-bg:var(--bs-table-hover-bg);color:var(--bs-table-hover-color)}.table-primary{--bs-table-color:#000;--bs-table-bg:#cfe2ff;--bs-table-border-color:#bacbe6;--bs-table-striped-bg:#c5d7f2;--bs-table-striped-color:#000;--bs-table-active-bg:#bacbe6;--bs-table-active-color:#000;--bs-table-hover-bg:#bfd1ec;--bs-table-hover-color:#000;color:var(--bs-table-color);border-color:var(--bs-table-border-color)}.table-secondary{--bs-table-color:#000;--bs-table-bg:#e2e3e5;--bs-table-border-color:#cbccce;--bs-table-striped-bg:#d7d8da;--bs-table-striped-color:#000;--bs-table-active-bg:#cbccce;--bs-table-active-color:#000;--bs-table-hover-bg:#d1d2d4;--bs-table-hover-color:#000;color:var(--bs-table-color);border-color:var(--bs-table-border-color)}.table-success{--bs-table-color:#000;--bs-table-bg:#d1e7dd;--bs-table-border-color:#bcd0c7;--bs-table-striped-bg:#c7dbd2;--bs-table-striped-color:#000;--bs-table-active-bg:#bcd0c7;--bs-table-active-color:#000;--bs-table-hover-bg:#c1d6cc;--bs-table-hover-color:#000;color:var(--bs-table-color);border-color:var(--bs-table-border-color)}
+
+
+    .bg-sky {
+    background-color: #51d4d4 !important;
+}
+
+.bg-dark {
+  background-color: #343a40 !important;
+}
+
+.bg-dark,
+.bg-dark>a {
+  color: #51d4d4 !important;
+}
+
+.bg-dark.btn:hover {
+  border-color: #51d4d4;
+  color: #51d4d4;
+}
+
+
+
+        .top-boxes p {
+            margin-bottom: 1px;
+        }
+
+        .card-tools .fa-minus {
+            margin-right: 0;
+        }
+
+        .legend-container {
+            list-style: none;
+            margin: 0 0 25px;
+            padding: 0 0 0 15px;
+            margin-top: -8%;
+        }
+
+        .scrolepopup {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .small-box>.inner {
+            min-height: 130px;
+        }
+
+        .esriControlsBR {
+            display: none !important;
+        }
+
+        .popup,
+        .popup1,
+        .popup2,
+        .popup3,
+        .popup4,
+        .popup5 {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 9999;
+        }
+
+        #popupTitle {
+            margin-bottom: 20px;
+        }
+
+        .close-btn {
+            font-size: 24px;
+            float: right;
+            color: red;
+            margin-right: 20px;
+            cursor: pointer;
+        }
+
+        .linkable-color {
+            color: blue;
+        }
+
+        .header-link {
+            color: blue;
+            text-decoration: none;
+        }
+
+        .header-link:hover {
+            text-decoration: underline;
+        }
+
+        .active-box {
+            z-index: 10;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transform: scale(1.05);
+            transition: all 0.3s ease-in-out;
+
+        }
+
+        .active-box.bg-success {
+            background-color: #28a745 !important;
+
+        }
+
+        .active-box.bg-primary {
+            background-color: #007bff !important;
+        }
+
+        /* Full-screen overlay for GIF */
+        #gifOverlay {
+            position: fixed;
+            /* Fixed position to cover the entire screen */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            /* Semi-transparent background */
+            display: flex;
+            /* Center the GIF */
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            /* Ensure it's on top of other elements */
+            display: none;
+            /* Initially hidden */
+        }
+
+        #gifOverlay img {
+            width: 150px;
+            /* Adjust size as needed */
+            height: auto;
+        }
+ }
+
+
+    .display {
+    width: 100%;
+    }
+ #wait {
+    width: 100px;
+    height: 130px;
+    text-align: center;
+    position: fixed;
+    left: 280px;
+    right: 0;
+    top: 40%;
+    z-index: 99;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.43);
+    display: none;
+    }
+    #wait img {
+    width: 100%;
+    }
+
+
+    .bg-dark1 {
+    background-color: #6ab2a4 !important;
+    style="color: #ffffff;"
+}
+
+
+
+
+  #user_table tbody tr:hover {
+    background-color: #8ddfef; /* Light blue background for hover effect */
+
+    font-weight: bold;
+
+   table, th, td {
+  border: 1px solid white;
+  border-collapse: collapse;
+   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+
+.card-title {
+    font-size: 26px;
+    font-family: auto;
+    text-shadow: 2px 3px 4px #e2eded;
+    letter-spacing: 2px;
+    text-align: center; /* Centers the text */
+    width: 100%; /* Full width */
+    height: auto; /* Adjusts height automatically */
+    display: flex;
+    justify-content: center; /* Centers horizontally */
+    align-items: center; /* Centers vertically */
+    margin-bottom: 15px; /* Adds gap below */
+    padding: 10px; /* Adds spacing inside */
+}
+
+    </style>
+
+
+  <style>
+
+
+
+
+
+/*--------------------------------------------------------------
+/** 1. VARIABLES
+--------------------------------------------------------------*/
+
+/* on mobile devices below 600px
+ */
+@media screen and (max-width: 600px) {
+  :root {
+    --header-height: 100px;
+    --header-height-min: 80px;
+  }
+}
+
+/* Theme Colors */
+:root {
+  --primary-color: #4CC082;
+  --light-primary-color: #E2F3F0;
+  --secondary-color: #EC6C5A;
+  --light-secondary-color: #FFE9E5;
+  --tertiary-color: #FFEED3;
+  --dark-color: #31333A;
+  --light-color: #FFFFFF;
+  --grey-color: #BBC7D4;
+  --light-dark-color: #727272;
+  --light-grey-color: #f5f5f5;
+}
+
+/* Fonts */
+:root {
+  --body-font: 'Inter', sans-serif;
+  --heading-font: 'Inter', sans-serif;
+}
+
+body {
+
+  --bs-link-color: var(--dark-color);
+  --bs-link-hover-color: var(--dark-color);
+
+  --bs-link-color-rgb: 40, 40, 40;
+  --bs-link-hover-color-rgb: 0, 0, 0;
+
+  --bs-light-rgb: 248, 248, 248;
+
+  --bs-font-sans-serif: var(var(--body-font));
+  --bs-body-font-family: var(--bs-font-sans-serif);
+  --bs-body-font-size: 1rem;
+  --bs-body-font-weight: 400;
+  --bs-body-line-height: 1.3rem;
+  --bs-body-color: var(--dark-color);
+
+  --bs-primary: #4CC082;
+  --bs-primary-rgb: 76, 192, 130;
+  --bs-primary-bg-subtle: #E2F3F0;
+
+  --bs-border-color: #F7F7F7;
+
+  --bs-secondary: #EC6C5A;
+  --bs-secondary-rgb: 236, 108, 90;
+  --bs-secondary-bg-subtle: #FFE9E5;
+
+  --bs-tertiary: #f8be60;
+  --bs-tertiary-bg-subtle: #FFEED3;
+
+}
+
+/*----- catergory Section Style -------------------------*/
+.category-paragraph {
+  transition: all 0.3s ease-in;
+}
+
+.primary {
+  background: var(--bs-primary-bg-subtle);
+  transition: all 0.3s ease-in;
+}
+
+.svg-primary {
+  color: var(--primary-color);
+  transition: all 0.3s ease-in;
+}
+
+.primary:hover {
+  background: var(--bs-primary);
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.secondary {
+  background: var(--bs-secondary-bg-subtle);
+  transition: all 0.3s ease-in;
+}
+
+.svg-secondary {
+  color: var(--secondary-color);
+  transition: all 0.3s ease-in;
+}
+
+.secondary:hover {
+  background: var(--bs-secondary);
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.tertiary {
+  background: var(--bs-tertiary-bg-subtle);
+  transition: all 0.3s ease-in;
+}
+
+.svg-tertiary {
+  color: var(--bs-tertiary);
+  transition: all 0.3s ease-in;
+}
+
+.tertiary:hover {
+  background: var(--bs-tertiary);
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.gray {
+  background: #dbf2f7;
+  transition: all 0.3s ease-in;
+
+}
+
+.svg-gray {
+  color: var(--bs-gray);
+  transition: all 0.3s ease-in;
+}
+
+.gray:hover {
+  background: #8ddfef;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.primary:hover .svg-primary,
+.primary:hover .category-paragraph,
+.secondary:hover .svg-secondary,
+.secondary:hover .category-paragraph,
+.tertiary:hover .svg-tertiary,
+.tertiary:hover .category-paragraph,
+.gray:hover .svg-gray,
+.gray:hover .category-paragraph {
+  color: var(--light-color);
+}
+
+
+
+
+.fw-bold {
+    font-weight:  700!important;
+
+}
+
+a {
+    color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity, 1));
+    text-decoration: underline;
+}
+
+p {
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    unicode-bidi: isolate;
+}
+.container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    width: 100%;
+    padding-right: calc(var(--bs-gutter-x)* .5);
+    padding-left: calc(var(--bs-gutter-x)* .5);
+    margin-right: auto;
+    margin-left: auto;
+
+
+
+}
+img, svg {
+    vertical-align: middle;
+}
+.svg-primary {
+    color: var(--primary-color);
+    transition: all 0.3s ease-in;
+}
+.iconContent1 {
+    font-size: 60px;
+    color: #7cbdaa;
+
+}
+.iconContent2 {
+    font-size: 60px;
+    color: #dca605;
+}
+.iconContent3 {
+    font-size: 60px;
+    color: #db4646;
+}
+
+.iconContent4 {
+    font-size: 60px;
+    color: #24b8d0;
+}
+
+
+
+
+#example6 {
+    --bs-table-bg: #9defff;
+    --bs-table-striped-bg: #85def0;
+}
+.table-success th, .table-success td, .table-success thead th, .table-success tbody+tbody {
+    border-color: #31613c;
+}
+
+
+#example5 tbody tr:hover,
+#example6 tbody tr:hover {
+    background-color: #FFD700;
+    font-weight: bold;
+     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+/* Table, th, and td border styling */
+table, th, td {
+    border: 1px solid white;
+    border-collapse: collapse;
+}
+
+.banner-ad .banner-content .categories {
+    font-family: 'Garamond';
+    font-size: 37px;
+    text-transform: capitalize;
+    color: var(--dark-color);
+}
+
+ .line-height-lg {
+        line-height: 2.8;
+    }
+    </style>
+</head>
+
+<body>
+<div id="dashboard-content" style="display: none;">
+  <div class="content-wrapper" style=" background-color: #ffffff; margin-left:0px !important;min-height:0px !important" layout:fragment="content">
+    <div class="card-header" style="background-color: #8ddfef; text-align: center; padding: 10px;">
+      <div style="display: inline-block; background-color: #ffffff; padding: 10px 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+        <marquee scrollamount="10" style="font-family: Arial, sans-serif; font-size: 16px; color: red; font-weight: bold;">
+          <h4 style="margin: 0;">The new MIS 4.0 was launched on October 15, 2024. All States/UTs are required to complete data entry by the end of this week.</h4>
+        </marquee>
+      </div>
+    </div>
+
+
+
+
+    <section class="content">
+      <div class="container-fluid">
+
+        <div id="wait">
+          <img th:src="@{/images/loading.gif}"  />
+          <br />Please Wait...
+        </div>
+        <div class="row px-4 px-lg-12 ">
+        </div>
+        <div class="row px-4 px-lg-12 ">
+          <div class="col-md-12">
+            <h3 class="card-title"
+                style="font-size: 26px; font-family: auto; text-shadow: 2px 3px 4px #e2eded;
+    letter-spacing: 2px; text-align: center; width: 100%; height: auto;
+    display: flex; justify-content: center; align-items: center; margin-bottom: 15px; padding: 10px;">
+              Digital India Land Records Modernization Programme-MIS 4.0 Dashboard
+            </h3>
+
+
+          </div>
+        </div>
+        <hr>
+        <div class="row px-4 px-lg-12 ">
+        </div>
+
+
+
+
+
+        <!-- Loader -->
+        <div id="gifOverlay">
+          <img th:src="@{/static/images/loading.gif}" alt="Loading..."> <!-- Replace with your GIF path -->
+        </div>
+        <div class="row px-4 px-lg-5 ">
+          <div class="col-md-12">
+            <div class="card" >
+              <div class="card-header" >
+                <form >
+                  <div class="form-group row">
+                    <label  class="col-sm-2 col-form-label">Select State/UT:</label>
+                    <div class="col-sm-6">
+                      <select class="form-control" id="stateId" name="stateId" onchange="fetchStateData();" required style="max-height: 120px; overflow-y: auto;">
+
+                        <option th:each="state : ${stateList}"
+                                th:value="${state.id}"
+                                th:text="${state.name}"
+                                th:selected="${state.id == 24}">
+                        </option>
+
+                      </select>
+                    </div>
+                  </div>
+                </form>
+                <div id="stateColumnChart" style="height: 500px; width: 100%;"></div>
+               </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="row px-4 px-lg-5 ">
+          <div class="col-md-12">
+            <div class="card" >
+              <div class="card-header" >
+                <form >
+                  <div class="form-group row">
+                    <label  class="col-sm-2 col-form-label">Select Physical Components:</label>
+                    <div class="col-sm-6">
+                      <select id="fieldSelector" class="form-control">
+                        <option value="0">CLR Completed Villages</option>
+                        <option value="1">Digitized Mapsheets/FMBs/Tippans</option>
+                        <option value="2">Villages with Cadastral Maps linked With RoR</option>
+                        <option value="3">SRO Computerized</option>
+                        <option value="4">Completed Modern Record Room</option>
+                      </select>
+                    </div>
+                  </div>
+                </form>
+                <div id="allStatesColumnChart" style="height: 600px; width: 100%;"></div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="row px-4 px-lg-5 ">
+          <div class="col-md-6">
+            <div class="card" >
+              <div class="card-header" >
+
+                <div id="container" style="width: 100%; height: 400px;"></div>
+
+              </div>
+
+            </div>
+          </div>
+          <div class="col-md-6">
+
+            <div class="card">
+              <div class="card-header">
+              <div id="villagesDonutChart" style="width: 100%; height: 400px;">
+                  <div id="containerState" style="width: 100%; height: 400px;"></div> <!-- Pie Chart Container -->
+                </div>
+              </div>
+
+              </div>
+
+
+
+          </div>
+
+        </div>
+
+
+        <div class="row px-4 px-lg-5 ">
+          <div class="col-md-12">
+            <div class="card" >
+              <div id="allStatesLineChart" style="width: 100%; height: 500px;"></div>
+             <!-- <div id="allStatesColumnChart" style="width: 100%; height: 500px;"></div>-->
+
+            </div>
+          </div>
+        </div>
+
+       <div class="row px-4 px-lg-5 ">
+          <div class="col-md-6">
+            <div class="card" >
+
+              <div class="col-sm-10">
+                <h3 class="card-title"
+                    style="font-size: 26px;font-family: auto;text-shadow: 2px 3px 4px #e2eded;letter-spacing: 2px;">
+                  Top 5 States/UTs</h3>
+              </div>
+              <div class="card-header" >
+                <!-- Container for Top 5 States Bar Chart -->
+                <!-- Container for Top 5 States Line Chart -->
+                <div id="top5StatesLineChart"></div>
+                <hr>
+                <div id="top5StatesBarChart"></div>
+                <hr>
+                <div id="top5StatesPieChart_0" ></div>
+                <hr>
+                 <div id="top5StatesPieChart_1"></div>
+                <hr>
+
+                <div class="col-md-12">
+                <div id="top5StatesPieChart_2"></div>
+
+                </div>
+                <hr>
+                <div class="col-md-12">
+                <div id="top5StatesPieChart_3"></div>
+                </div>
+                <hr>
+
+                <div id="top5StatesPieChart_4"></div>
+                <hr>
+
+              </div>
+            </div>
+          </div>
+           <div class="col-md-6">
+                <div class="card" >
+                  <div class="col-sm-10">
+                    <h3 class="card-title"
+                        style="font-size: 26px;font-family: auto;text-shadow: 2px 3px 4px #e2eded;letter-spacing: 2px;">
+                      Bottom 5 States/UTs</h3>
+                  </div>
+                  <div class="card-header" >
+
+                  <div id="bottom5StatesLineChart"></div>
+                    <hr>
+                  <div id="bottom5StatesBarChart"></div>
+                    <hr>
+
+                  <div id="bottom5StatesPieChart_0"></div>
+                    <hr>
+                  <div id="bottom5StatesPieChart_1"></div>
+                    <hr>
+                  <div id="bottom5StatesPieChart_2"></div>
+                    <hr>
+                  <div id="bottom5StatesPieChart_3"></div>
+                    <hr>
+                  <div id="bottom5StatesPieChart_4"></div>
+                    <hr>
+                  </div>
+                </div>
+              </div>
+        </div>
+
+
+    </section>
+
+        </div>
+
+    </section>
+  </div>
+</div>
+</body>
+
+</html>

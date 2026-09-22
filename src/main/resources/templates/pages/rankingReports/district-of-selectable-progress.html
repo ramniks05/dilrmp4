@@ -1,0 +1,352 @@
+
+<div th:fragment="district-of-selectable-progress">
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card card-info">
+            <div class="card-header">
+              <div class="row">
+                <div class="col-sm-10">
+                  <h3 class="card-title" id="progressHeading"
+                      style="font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a; letter-spacing: 2px;">
+                    List of Districts where Physical progress is equal to or more than <span
+                          id="enteredPercentageDisplay"></span>%</h3>
+                </div>
+
+           <!--     <div class="col-sm-2">
+                                 <a id="pdfLink"
+                     href="/dolr/districtOfSelectableProgressReport"
+                     hx-get="/show-loading-message"
+                     hx-target="#content"
+                     hx-trigger="click"
+                     hx-indicator="#loadingSpinner">
+                    <img th:src="@{/images/pdf.png}" alt="PDF Icon" class="btn-img" width="40"
+                         height="40"
+                         style="box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;" />
+                  </a>
+
+                </div>-->
+
+
+              </div>
+            </div>
+            <div class="card-body">
+              <style>
+        body {
+            background-color: #F9F9FC;
+            font-family: 'Roboto', sans-serif;
+            font-size: 14px;
+        }
+
+        .table-bordered th,
+        .table-bordered td {
+            border: 1px solid #16aec6;
+        }
+
+        .table-bordered {
+            border: 2px solid #16aec6;
+            ;
+        }
+
+        .hidden-column {
+            display: none;
+        }
+
+        .checkbox-container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .column {
+            box-sizing: border-box;
+            padding: 0 10px;
+            flex: 1 0 33.33%;
+        }
+
+        .col-3 {
+            margin-top: 10px;
+            flex: 1 0 25%;
+        }
+    </style>
+              <fieldset>
+                <legend><h5>Choose Desired Parameter for Display:</h5></legend>
+
+
+
+
+                <div class="checkbox-container">
+                  <div class="row">
+                    <div class="col-sm-4" style="margin-bottom: 0.8rem;">
+                      <input type="checkbox" id="clrpercent" name="clrpercent"> CLR Completed Villages (%)
+                    </div>
+                    <div class="col-sm-4" style="margin-bottom: 0.8rem;">
+                      <input type="checkbox" id="digitizedmapspercent" name="digitizedmapspercent"> MapSheets Digitized (%)
+                    </div>
+                    <div class="col-sm-4" style="margin-bottom: 0.8rem;">
+                      <input type="checkbox" id="cadastralmapslinkedtororpercent" name="cadastralmapslinkedtororpercent"> Cadastral Maps Linked With ROR (%)
+                    </div>
+                    <div class="col-sm-4" style="margin-bottom: 0.8rem;">
+                      <input type="checkbox" id="banklinkagepercent" name="banklinkagepercent"> Village Linked to Bank (%)
+                    </div>
+                    <div class="col-sm-4" style="margin-bottom: 0.8rem;">
+                      <input type="checkbox" id="clrcompletedaadharpercent" name="clrcompletedaadharpercent"> Villages with RoR Linked to Aadhar (%)
+                    </div>
+                    <div class="col-sm-4" style="margin-bottom: 0.8rem;">
+                      <input type="checkbox" id="srocomputrizedpercent" name="srocomputrizedpercent"> SRO Computerized (%)
+                    </div>
+                    <div class="col-sm-4" style="margin-bottom: 0.8rem;">
+                      <input type="checkbox" id="sroinreragllrpercent" name="sroinreragllrpercent"> SRO Integrated With Land Records (%)
+                    </div>
+                    <div class="col-sm-4" style="margin-bottom: 0.8rem;">
+                      <input type="checkbox" id="revenuecourtlinkedtehsils" name="revenuecourtlinkedtehsils"> Revenue Office linked with Revenue Courts (%)
+                    </div>
+                    <div class="col-sm-4" style="margin-bottom: 0.8rem;">
+                      <input type="checkbox" id="mrrcompletedpercent" name="mrrcompletedpercent"> Modern Record Room (%)
+                    </div>
+                    <div class="col-sm-12">
+                      <label><input type="checkbox" id="allselect" name="allselect"> Select All</label>
+                    </div>
+                  </div>
+                  <div class="col-sm-2">
+                    <input type="radio" name="comparison" id="graterthan"
+                           value="graterthan">
+                    <label for="graterthan">Greater
+                      than equal to</label>
+                  </div>
+                  <div class="col-sm-2">
+
+                    <input type="radio" name="comparison" id="lessthan" value="lessthan">
+                    <label for="lessthan">Less than equal to</label>
+                  </div>
+
+                  <div class="col-sm-12">
+                    <label for="percentage">Enter Percentage:( Greater than 0 and less than or equal to 100 )</label>
+                    <input type="text" placeholder="Enter Percentage here" maxlength="3"
+                           onkeyup="if (/\D/g.test(this.value)) this.value = this.value.replace(/\D/g, '')"
+                           class="custom-input" id="percentage">
+
+                  </div>
+                </div>
+                <div class="input-group mt-2">
+                </div>
+                <div class="input-group mt-2">
+                  <button type="button" class="btn btn-primary" onclick="submitForm()">
+                    Submit
+                  </button>
+                </div>
+                <hr>
+
+              </fieldset>
+            </div>
+            <div class="card-body">
+              <div class="alert alert-success" role="alert" th:text="${success}" th:if="${success}">
+              </div>
+              <div class="table-responsive text-nowrap">
+                <table id="example2" class="table table-bordered table-striped">
+                  <thead class="card-info" style="background-color: #91c9d2;">
+                  <tr>
+                    <th class="hidden-column s-no1">S.No.</th>
+                    <th class="hidden-column state-ut">State/UT Name</th>
+                    <th class="hidden-column district-name">District Name</th>
+                    <th class="hidden-column clrpercent">CLR Completed Villages (%)</th>
+                    <th class="hidden-column digitizedmapspercent">MapSheets Digitized (%)</th>
+                    <th class="hidden-column cadastralmapslinkedtororpercent">Cadastral Maps
+                      Linked With ROR (%)</th>
+                    <th class="hidden-column banklinkagepercent">Village Linked to Bank (%)
+                    </th>
+                    <th class="hidden-column clrcompletedaadharpercent">Villages with RoR
+                      Linked to Aadhar (%)</th>
+                    <th class="hidden-column srocomputrizedpercent">SRO Computerized (%)
+                    </th>
+                    <th class="hidden-column sroinreragllrpercent">SRO Integrated With Land
+                      Records (%)</th>
+                    <th class="hidden-column revenuecourtlinkedtehsils">Revenue Office
+                      linked with Revenue Courts (%)</th>
+                    <th class="hidden-column mrrcompletedpercent">Modern Record Room (%)
+                    </th>
+                  </tr>
+                  <tr>
+                    <th class="hidden-column s-no1">(1)</th>
+                    <th class="hidden-column state-ut">(2)</th>
+                    <th class="hidden-column district-name">(3)</th>
+                    <th class="hidden-column clrpercent">(4)</th>
+                    <th class="hidden-column digitizedmapspercent">(5)</th>
+                    <th class="hidden-column cadastralmapslinkedtororpercent">(6)</th>
+                    <th class="hidden-column banklinkagepercent">(7)</th>
+                    <th class="hidden-column clrcompletedaadharpercent">(8)</th>
+                    <th class="hidden-column srocomputrizedpercent">(9)</th>
+                    <th class="hidden-column sroinreragllrpercent">(10)</th>
+                    <th class="hidden-column revenuecourtlinkedtehsils">(11)</th>
+                    <th class="hidden-column mrrcompletedpercent">(12)</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr th:each="district,iterator : ${districts}">
+                    <td class="hidden-column s-no" th:text="${iterator.count}"></td>
+                    <td class="hidden-column state-ut" th:text="${district.name}"></td>
+                    <td class="hidden-column district-name" th:text="${district.district_name}"></td>
+                    <td class="hidden-column clrpercent"
+                        th:text="${district.villagesComputerizationCompletedPercent}">
+                    </td>
+                    <td class="hidden-column digitizedmapspercent"
+                        th:text="${district.digitizedMapsFmbTippansPercent}"></td>
+                    <td class="hidden-column cadastralmapslinkedtororpercent"
+                        th:text="${district.villagesLinkedWithRoRPercent}"></td>
+                    <td class="hidden-column banklinkagepercent"
+                        th:text="${district.rorBankPercent}"></td>
+                    <td class="hidden-column clrcompletedaadharpercent"
+                        th:text="${district.rorLinkedWithAadhaarPercent}"></td>
+                    <td class="hidden-column srocomputrizedpercent"
+                        th:text="${district.sroComputerizedPercent}">
+                    </td>
+                    <td class="hidden-column sroinreragllrpercent"
+                        th:text="${district.sroLrPercent}">
+                    </td>
+                    <td class="hidden-column revenuecourtlinkedtehsils"
+                        th:text="${district.totalRevenueCourtsPercent}"></td>
+                    <td class="hidden-column mrrcompletedpercent"
+                        th:text="${district.mrrCompletedOutOfTotalSanctionedPercent}"></td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <script>
+                                    function submitForm() {
+                                        if ($(".checkbox-container input[type=checkbox]:checked").length === 0) {
+                                            $('.s-no, .s-no1, .state-ut, .district-name, .pdf, .digitizedmapspercent,.clrpercent,.cadastralmapslinkedtororpercent,.banklinkagepercent,.clrcompletedaadharpercent,.srocomputrizedpercent,.sroinreragllrpercent,.revenuecourtlinkedtehsils,.mrrcompletedpercent').hide();
+                                            alert("Please select at least one checkbox.");
+                                            return;
+                                        }
+
+                                        var enterPercentage = $("#percentage").val();
+                                        var numericPercentage = parseFloat(enterPercentage);
+
+                                        if (isNaN(numericPercentage)) {
+                                            alert("Please enter a valid numeric percentage.");
+                                            return;
+                                        }
+                                        var radioClickedComp = $('input[name="comparison"]:checked').val();
+                                        if (radioClickedComp === undefined) {
+                                            alert("Please select radio button.");
+                                            return;
+                                        }
+
+                                        if (numericPercentage > 0 && numericPercentage <= 100 && radioClickedComp === "graterthan") {
+
+                                            $('.checkbox-container input[type="checkbox"]').each(function () {
+                                                var checkboxName = $(this).attr('name');
+                                                $('.s-no, .s-no1, .state-ut, .district-name, .pdf').hide();
+                                                $('#example2 tbody tr').each(function () {
+                                                    var genralValue = parseFloat($(this).find('.' + checkboxName).text());
+                                                    if (genralValue < numericPercentage) {
+                                                        $(this).show();
+                                                    }
+                                                });
+                                            });
+
+                                            $(".checkbox-container input[type=checkbox]:checked").each(function () {
+                                                var checkboxName = $(this).attr("name");
+                                                $('.' + checkboxName).show();
+                                                $('.s-no, .s-no1, .state-ut, .district-name, .pdf').show();
+                                                $('#example2 tbody tr').each(function () {
+                                                    var genralValue = parseFloat($(this).find('.' + checkboxName).text());
+                                                    if (genralValue < numericPercentage) {
+                                                        $(this).hide();
+                                                        updateSerialNumbers()
+                                                    }
+                                                });
+                                            });
+
+                                            $(".checkbox-container input[type=checkbox]:not(:checked)").each(function () {
+                                                var checkboxName = $(this).attr("name");
+                                                $('.' + checkboxName).hide();
+                                            });
+
+                                            $("#enteredPercentageDisplay").text(enterPercentage);
+                                        } else {
+
+
+                                            $('.checkbox-container input[type="checkbox"]').each(function () {
+                                                var checkboxName = $(this).attr('name');
+                                                $('.s-no, .s-no1, .state-ut, .district-name, .pdf').hide();
+                                                $('#example2 tbody tr').each(function () {
+                                                    var genralValue = parseFloat($(this).find('.' + checkboxName).text());
+                                                    if (genralValue > numericPercentage) {
+                                                        $(this).show();
+
+                                                    }
+                                                });
+                                            });
+
+                                            $(".checkbox-container input[type=checkbox]:checked").each(function () {
+                                                var checkboxName = $(this).attr("name");
+                                                $('.' + checkboxName).show();
+                                                $('.s-no, .s-no1, .state-ut, .district-name, .pdf').show();
+                                                $('#example2 tbody tr').each(function () {
+                                                    var genralValue = parseFloat($(this).find('.' + checkboxName).text());
+                                                    if (genralValue > numericPercentage) {
+                                                        $(this).hide();
+                                                        updateSerialNumbers()
+                                                    }
+                                                });
+                                            });
+
+                                            $(".checkbox-container input[type=checkbox]:not(:checked)").each(function () {
+                                                var checkboxName = $(this).attr("name");
+                                                $('.' + checkboxName).hide();
+                                            });
+                                        }
+                                    }
+
+
+                                    $(".checkbox-container input[type=checkbox]:not(#allselect)").change(function () {
+                                        if (!$(this).prop("checked")) {
+                                            $("#allselect").prop("checked", false);
+                                        }
+                                    });
+
+                                    $("#allselect").change(function () {
+                                        $(".checkbox-container input[type=checkbox]").prop("checked", $(this).is(":checked"));
+                                    });
+
+                                    function updateSerialNumbers() {
+
+                                        var visibleRows = $('tr:not([style*="display: none;"])');
+                                        visibleRows.each(function (index) {
+
+                                            $(this).find('.s-no').text(index - 1);
+                                        });
+                                    }
+
+
+                                    $('#pdfLink').click(function (e) {
+                                        e.preventDefault();
+
+                                        var url = $(this).attr('href');
+                                        var selectedNames = getSelectedCheckboxNames();
+                                        var inputData = $('#percentage').val();
+                                        var inputDataLess = $('input[name="comparison"]:checked').val();
+
+                                        var serializedNames = encodeURIComponent(selectedNames.join(','));
+                                        var finalUrl = url + '?selectedNames=' + serializedNames + '&inputData=' + inputData + '&inputDataLess=' + inputDataLess;
+
+
+                                        window.location.href = finalUrl;
+                                    });
+                                    function getSelectedCheckboxNames() {
+                                        var selectedCheckboxNames = [];
+                                        $('input[type="checkbox"]:checked').each(function () {
+                                            selectedCheckboxNames.push($(this).attr('name'));
+                                        });
+                                        return selectedCheckboxNames;
+                                    }
+                                </script>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

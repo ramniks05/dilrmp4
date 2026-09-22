@@ -1,0 +1,254 @@
+<div th:fragment="naksha-report-vender">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-info">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md-10">
+                                <h3 class="card-title"
+                                    style="font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a;  letter-spacing: 2px;">
+                                    Format 2: Naksha For SoI (MAP 1)</h3>
+                            </div>
+                            <div class="col-md-2">
+                                <a th:href="@{/physcial/report/pdf/naksha-vender}"><img th:src="@{/images/pdf.png}"
+                                                                                        alt="PDF Icon" class="btn-img"
+                                                                                        width="40" height="40"
+                                                                                        style="box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;"/></a>
+                                <a th:href="@{/physcial/report/excel/naksha-vender}"><img th:src="@{/images/excel.png}"
+                                                                                          alt="EXCEL Icon"
+                                                                                          class="btn-img"
+                                                                                          width="40" height="40"
+                                                                                          style="box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;"/></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive text-nowrap">
+                            <table id="example2"
+                                   class="table table-bordered  table-striped-columns table-success table-striped  table-responsive">
+                                <thead class="card-info wrap-text" style="background-color: #4a6c52; color:#ffff">
+                                <tr>
+                                    <th rowspan="3" th:text="'S.No.'"></th>
+                                    <th rowspan="3" th:text="'Name of the Geospatial Directorate'"></th>
+                                    <th rowspan="3" th:text="'Email of the Geospatial Directorate'"></th>
+                                    <th rowspan="3" th:text="'Zone'"></th>
+                                    <th rowspan="3" th:text="'State'"></th>
+                                    <th rowspan="3" th:text="'District Name'"></th>
+                                    <th rowspan="3" th:text="'Name of ULB/Town'"></th>
+                                    <th rowspan="3" th:text="'Third Party Agency'"></th>
+                                    <th rowspan="3" th:text="'Technology'"></th>
+                                    <th rowspan="3" th:text="'GD/Wing'"></th>
+                                    <th rowspan="3" th:text="'Package'"></th>
+                                    <th rowspan="3" th:text="'DoLR Sanctioned Area'"></th>
+                                    <th rowspan="3" th:text="'Buffer Area by states for Data Acquisition (Area in sq.km.)'"></th>
+                                    <th rowspan="3" th:text="'Last Updated Time/ Date by GD'"></th>
+                                    <th colspan="3" rowspan="2" th:text="'Grid Completion'"></th>
+                                    <th colspan="13" th:text="'Aerial Data Acquisition'"></th>
+
+                                </tr>
+                                <tr>
+
+                                    <th colspan="12" th:text="'Cumulative Completed (Area in sq.km. / Completed Percentage / Completion Status: Completed / Under Process / Not Started)'"></th>
+<!--                                    <th colspan="4" th:text="'Percentage Completed'"></th>-->
+                                    <th rowspan="2" th:text="'Remarks'"></th>
+                                </tr>
+                                <tr>
+                                    <th th:text="'Total No. of 1:2k Grid'"></th>
+                                    <th th:text="'Grids Completed Last Week'"></th>
+                                    <th th:text="'Total Grids Completed'"></th>
+
+                                    <th th:text="'Tech 1 Nadir (Area in sq.km.)'"></th>
+                                    <th th:text="'Tech 1 Nadir (%)'"></th>
+                                    <th th:text="'Completion Status'"></th>
+
+                                    <th th:text="'Tech 2 Oblique (Area in sq.km.)'"></th>
+                                    <th th:text="'Tech 2 Oblique (%)'"></th>
+                                    <th th:text="'Completion Status'"></th>
+
+                                    <th th:text="'Tech 3 Oblique  (Area in sq.km.)'"></th>
+                                    <th th:text="'Tech 3 Oblique (%)'"></th>
+                                    <th th:text="'Completion Status '"></th>
+
+                                    <th th:text="'Tech 3 Lidar Sensor (Area in sq.km)'">
+                                    <th th:text="'Tech 3 Lidar Sensor (%)'"></th>
+                                    <th th:text="'Completion Status'"></th>
+                                </tr>
+                                <tr style="font-weight: bold;">
+                                    <td style="text-align: center;">1</td>
+                                    <td style="text-align: center;">2</td>
+                                    <td style="text-align: center;">3</td>
+                                    <td style="text-align: center;">4</td>
+                                    <td style="text-align: center;">5</td>
+                                    <td style="text-align: center;">6</td>
+                                    <td style="text-align: center;">7</td>
+                                    <td style="text-align: center;">8</td>
+                                    <td style="text-align: center;">9</td>
+                                    <td style="text-align: center;">10</td>
+                                    <td style="text-align: center;">11</td>
+                                    <td style="text-align: center;">12</td>
+                                    <td style="text-align: center;">13</td>
+                                    <td style="text-align: center;">14</td>
+                                    <td style="text-align: center;">15</td>
+                                    <td style="text-align: center;">16</td>
+                                    <td style="text-align: center;">17</td>
+                                    <td style="text-align: center;">18</td>
+                                    <td style="text-align: center;">19</td>
+                                    <td style="text-align: center;">20</td>
+                                    <td style="text-align: center;">21</td>
+                                    <td style="text-align: center;">22</td>
+                                    <td style="text-align: center;">23</td>
+                                    <td style="text-align: center;">24</td>
+                                    <td style="text-align: center;">25</td>
+                                    <td style="text-align: center;">26</td>
+                                    <td style="text-align: center;">27</td>
+                                    <td style="text-align: center;">28</td>
+                                    <td style="text-align: center;">29</td>
+                                    <td style="text-align: center;">30</td>
+                                </tr>
+                                </thead>
+                                <thead>
+                                <tr style="font-weight: bold; background-color: #f0f0f0;">
+                                    <td colspan="11" th:text="'Grand Total'"></td>
+                                    <td th:text="${grandTotal[0].grandTotalSanctionedArea != null ? grandTotal[0].grandTotalSanctionedArea : '0.00'}"></td>
+                                    <td th:text="${grandTotal[0].grandTotalBufferAreaDataAcquisition != null ? #numbers.formatDecimal(grandTotal[0].grandTotalBufferAreaDataAcquisition, 1, 2) : '0.00'}"></td>
+                                    <td></td>
+                                    <td th:text="${grandTotal[0].grandTotalTotalGrids != null ? grandTotal[0].grandTotalTotalGrids : '0'}"></td>
+                                    <td th:text="${grandTotal[0].grandTotalGridsCompletedLastWeek != null ? grandTotal[0].grandTotalGridsCompletedLastWeek : '0'}"></td>
+                                    <td th:text="${grandTotal[0].grandTotalTotalGridsCompleted != null ? grandTotal[0].grandTotalTotalGridsCompleted : '0'}"></td>
+
+                                    <td th:text="${grandTotal[0].grandTotalTech1Cumulative != null ? grandTotal[0].grandTotalTech1Cumulative : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td th:text="${grandTotal[0].grandTotalTech2Cumulative != null ? grandTotal[0].grandTotalTech2Cumulative : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td th:text="${grandTotal[0].grandTotalTech3Cumulative != null ? grandTotal[0].grandTotalTech3Cumulative : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td th:text="${grandTotal[0].grandTotaltech3LidarSensor != null ? grandTotal[0].grandTotaltech3LidarSensor : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                </thead>
+                                <tbody style="word-wrap: break-word; white-space: normal; max-width: 200px;">
+                                <tr th:each="entry, iterStat : ${nakshaMISDataEntries}">
+                                    <td th:text="${iterStat.index + 1}"></td>
+                                    <td th:text="${entry.officerName} ?: 'NA'"></td>
+                                    <td th:text="${entry.gdEmail} ?: 'NA'"></td>
+                                    <td th:text="${entry.zoneName} ?: 'NA'"></td>
+                                    <td th:text="${entry.stateName} ?: 'NA'"></td>
+                                    <td th:text="${entry.district_Name} ?: 'NA'"></td>
+                                    <td th:text="${entry.ulbName} ?: 'NA'"></td>
+                                    <td th:text="${entry.contractor} ?: 'NA'"></td>
+                                    <td th:text="${entry.technology} ?: 'NA'"></td>
+                                    <td th:text="${entry.gdwing} ?: 'NA'"></td>
+                                    <td th:text="${entry.soipackage} ?: 'NA'"></td>
+                                    <td th:text="${entry.sanctionedArea != null} ? ${#numbers.formatDecimal(entry.sanctionedArea, 1, 2)} : '0.00'"></td>
+                                    <td th:text="${entry.bufferAreaDataAcquisition != null ? #numbers.formatDecimal(entry.bufferAreaDataAcquisition, 1, 2) : '0.00'}"></td>
+                                    <td th:text="${entry.updateOnDate != null} ? ${#dates.format(entry.updateOnDate, 'HH:mm/yyyy-MM-dd ')} : 'NA'"></td>
+                                    <td th:text="${entry.totalGrids != null} ? ${entry.totalGrids} : '0'"></td>
+                                    <td th:text="${entry.gridsCompletedLastWeek != null} ? ${entry.gridsCompletedLastWeek} : '0'"></td>
+                                    <td th:text="${entry.totalGridsCompleted != null} ? ${entry.totalGridsCompleted} : '0'"></td>
+
+                                    <td th:text="${entry.tech1Cumulative != null and entry.tech1Cumulative != 0} ? ${#numbers.formatDecimal(entry.tech1Cumulative, 1, 2)} : '0.00'"></td>
+                                    <td th:text="${entry.tech1Percentage != null} ? ${#numbers.formatDecimal(entry.tech1Percentage, 1, 2)} + '%' : '0.00%'"></td>
+                                    <td th:text="${entry.techStatus == 1 ? 'Not Started' : (entry.techStatus == 2 ? 'Under Process' : (entry.techStatus == 3 ? 'Completed' : ''))}"></td>
+
+                                    <td th:text="${entry.tech2Cumulative != null and entry.tech2Cumulative != 0} ? ${#numbers.formatDecimal(entry.tech2Cumulative, 1, 2)} : '0.00'"></td>
+                                    <td th:text="${entry.tech2Percentage != null} ? ${#numbers.formatDecimal(entry.tech2Percentage, 1, 2)} + '%' : '0.00%'"></td>
+                                    <td th:text="${entry.tech2ObliqueStatus == 1 ? 'Not Started' : (entry.tech2ObliqueStatus == 2 ? 'Under Process' : (entry.tech2ObliqueStatus == 3 ? 'Completed' : ''))}"></td>
+
+                                    <td th:text="${entry.tech3Cumulative != null and entry.tech3Cumulative != 0} ? ${#numbers.formatDecimal(entry.tech3Cumulative, 1, 2)} : '0.00'"></td>
+                                    <td th:text="${entry.tech3Percentage != null} ? ${#numbers.formatDecimal(entry.tech3Percentage, 1, 2)} + '%' : '0.00%'"></td>
+                                    <td th:text="${entry.tech3ObliqueStatus == 1 ? 'Not Started' : (entry.tech3ObliqueStatus == 2 ? 'Under Process' : (entry.tech3ObliqueStatus == 3 ? 'Completed' : ''))}"></td>
+
+                                    <td th:text="${entry.tech3LidarSensor != null and entry.tech3LidarSensor != 0} ? ${#numbers.formatDecimal(entry.tech3LidarSensor, 1, 2)} : '0.00'"></td>
+                                    <td th:text="${entry.tech3LidarSensorPercentage != null and entry.tech3LidarSensorPercentage != 0} ? ${#numbers.formatDecimal(entry.tech3LidarSensorPercentage, 1, 2)} : '0.00'"></td>
+                                    <td th:text="${entry.tech3LidarSensorStatus == 1 ? 'Not Started' : (entry.tech3LidarSensorStatus == 2 ? 'Under Process' : (entry.tech3LidarSensorStatus == 3 ? 'Completed' : ''))}"></td>
+
+<!--                                    <td th:text="${entry.aerialAcquisirionRemark} ?: ''"></td>-->
+                                    <td>
+                                       <span th:if="${entry.aerialAcquisirionRemark != null and !#strings.isEmpty(entry.aerialAcquisirionRemark)}">
+                                       <button onclick="toggleRemark(this)" style="background: none; border: none; cursor: pointer;">👁️</button>
+                                       <span class="remark-full" style="display: none;" th:text="${entry.aerialAcquisirionRemark}"></span></span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                                <tbody>
+                                <tr style="font-weight: bold; background-color: #f0f0f0;">
+                                    <td colspan="11" th:text="'Grand Total'"></td>
+                                    <td th:text="${grandTotal[0].grandTotalSanctionedArea != null ? grandTotal[0].grandTotalSanctionedArea : '0.00'}"></td>
+                                    <td th:text="${grandTotal[0].grandTotalBufferAreaDataAcquisition != null ? #numbers.formatDecimal(grandTotal[0].grandTotalBufferAreaDataAcquisition, 1, 2) : '0.00'}"></td>
+                                    <td></td>
+                                    <td th:text="${grandTotal[0].grandTotalTotalGrids != null ? grandTotal[0].grandTotalTotalGrids : '0'}"></td>
+                                    <td th:text="${grandTotal[0].grandTotalGridsCompletedLastWeek != null ? grandTotal[0].grandTotalGridsCompletedLastWeek : '0'}"></td>
+                                    <td th:text="${grandTotal[0].grandTotalTotalGridsCompleted != null ? grandTotal[0].grandTotalTotalGridsCompleted : '0'}"></td>
+
+                                    <td th:text="${grandTotal[0].grandTotalTech1Cumulative != null ? grandTotal[0].grandTotalTech1Cumulative : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td th:text="${grandTotal[0].grandTotalTech2Cumulative != null ? grandTotal[0].grandTotalTech2Cumulative : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td th:text="${grandTotal[0].grandTotalTech3Cumulative != null ? grandTotal[0].grandTotalTech3Cumulative : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td th:text="${grandTotal[0].grandTotaltech3LidarSensor != null ? grandTotal[0].grandTotaltech3LidarSensor : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <script>
+    function toggleRemark(button) {
+        const remarkFull = button.nextElementSibling;
+        const isVisible = remarkFull.style.display === 'inline';
+
+        remarkFull.style.display = isVisible ? 'none' : 'inline';
+        button.textContent = isVisible ? '👁️' : '🙈';
+    }
+</script>
+                            <script>
+    $(document).ready(function () {
+        // Check if DataTable is already initialized on the table
+        if ($.fn.DataTable.isDataTable('#example2')) {
+            // If yes, destroy the existing DataTable instance
+            $('#example2').DataTable().destroy();
+        }
+
+        // Initialize DataTable with your table ID
+        $('#example2').DataTable({
+            // Add additional options if needed
+            paging: true,  // Enable pagination
+            lengthMenu: [10, 25, 50, 100],  // Set page length options
+            pageLength: 25,  // Default page length
+            // Callback function after each draw event
+            drawCallback: function (settings) {
+                var api = this.api();
+                var totalPages = api.page.info().pages;
+                var page = api.page.info().page;
+
+                // Check if it's the last page
+                if (page === totalPages - 1) {
+                    $('#example2 tfoot').show();
+                } else {
+                    $('#example2 tfoot').hide();
+                }
+            }
+        });
+    });
+
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </section>
+</div>
+</body>
+</html>

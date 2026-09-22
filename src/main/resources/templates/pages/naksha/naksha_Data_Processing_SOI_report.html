@@ -1,0 +1,454 @@
+<div th:fragment="soi-data-processing">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-info">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md-10">
+                                <h3 class="card-title"
+                                    style="font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a;  letter-spacing: 2px;">
+                                    Format 2: Map 1 (SoI) – Data Processing, QA/QC Details, and Feature Extraction</h3>
+                            </div>
+                            <div class="col-md-2">
+                                <!--                                <a th:href="@{/physcial/report/pdf/naksha-vender-data-processing}"><img th:src="@{/images/pdf.png}"-->
+                                <!--                                                                                        alt="PDF Icon" class="btn-img"-->
+                                <!--                                                                                        width="40" height="40"-->
+                                <!--                                                                                        style="box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;"/></a>-->
+                                <a th:href="@{/physcial/report/excel/naksha-vender-data-processing}"><img
+                                        th:src="@{/images/excel.png}"
+                                        alt="EXCEL Icon" class="btn-img"
+                                        width="40" height="40"
+                                        style="box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;"/></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive text-nowrap">
+                            <table id="example2"
+                                   class="table table-bordered  table-striped-columns table-success table-striped  table-responsive">
+                                <thead class="card-info wrap-text" style="background-color: #4a6c52; color:#ffff">
+                                <tr>
+                                    <th rowspan="2" th:text="'S.No.'"></th>
+                                    <th rowspan="2" th:text="'Name of the Geospatial Directorate'"></th>
+                                    <th rowspan="2" th:text="'Email of the Geospatial Directorate'"></th>
+                                    <th rowspan="2" th:text="'Zone'"></th>
+                                    <th rowspan="2" th:text="'State'"></th>
+                                    <th rowspan="2" th:text="'District Name'"></th>
+                                    <th rowspan="2" th:text="'Name of ULB/Town'"></th>
+
+                                    <th colspan="6" th:text="'Data Processing (Vendor ORI Submission & GD QA/QC Review)'"></th>
+                                    <th colspan="6" th:text="'Data Processing (Vendor DSM Submission & GD QA/QC Review)'"></th>
+                                    <th colspan="6" th:text="'Data Processing (Vendor DTM Submission & GD QA/QC Review)'"></th>
+                                    <th colspan="6" th:text="'Data Processing (Vendor Submission & GD QA/QC of 3D Mesh Models for Tech 2 & 3)'"></th>
+                                    <th colspan="12" th:text="'2D Feature Extraction (Vendor Submission & GD QA/QC Review)'"></th>
+                                    <th colspan="6" th:text="'3D Feature Extraction (Vendor Submission & GD QA/QC Review)'"></th>
+
+                                    <th rowspan="2" th:text="'Fixing Ground Control Points & City Boundaries (Quantity)'"></th>
+                                    <th rowspan="2" th:text="'ORI Received Back from State (Yes/No)'"></th>
+                                    <th rowspan="2" th:text="'ORI Submitted to state after Rectification (Yes/No)'"></th>
+                                    <th rowspan="2" th:text="'Last Updated Time/ Date by GD'"></th>
+                                    <th rowspan="2" th:text="'Remarks'"></th>
+                                </tr>
+
+                                <tr>
+                                    <th th:text="'(ORI Submitted by vendor for QA/QC) Cumulative Area Completed'"></th>
+                                    <th th:text="'(ORI Submitted by vendor for QA/QC) Cumulative Percentage Completed'"></th>
+                                    <th th:text="'Completion Status (Completed / Under Process / Not Started)'"></th>
+
+                                    <th th:text="'QA/QC of ORI Cumulative Area Completed'"></th>
+                                    <th th:text="'QA/QC of ORI Percentage Completed'"></th>
+                                    <th th:text="'Completion Status (Completed / Under Process / Not Started)'"></th>
+
+
+                                    <th th:text="'(DSM Submitted by vendor for QA/QC) Cumulative Area Completed'"></th>
+                                    <th th:text="'(DSM Submitted by vendor for QA/QC) Percentage Completed'"></th>
+                                    <th th:text="'Completion Status (Completed / Under Process / Not Started)'"></th>
+
+                                    <th th:text="'QA/QC of DSM Cumulative Area Completed'"></th>
+                                    <th th:text="'QA/QC of DSM Percentage Completed'"></th>
+                                    <th th:text="'Completion Status (Completed / Under Process / Not Started)'"></th>
+
+                                    <th th:text="'(DTM Submitted by vendor for QA/QC) Cumulative Area Completed'"></th>
+                                    <th th:text="'(DTM Submitted by vendor for QA/QC) Percentage Completed'"></th>
+                                    <th th:text="'Completion Status (Completed / Under Process / Not Started)'"></th>
+
+                                    <th th:text="'QA/QC of DTM Cumulative Area Completed'"></th>
+                                    <th th:text="'QA/QC of DTM Percentage Completed'"></th>
+                                    <th th:text="'Completion Status (Completed / Under Process / Not Started)'"></th>
+
+                                    <th th:text="'(3D Mesh Model Submitted by vendor for QA/QC) Cumulative Completed'"></th>
+                                    <th th:text="'(3D Mesh Model Submitted by vendor for QA/QC) Percentage Completed'"></th>
+                                    <th th:text="'Completion Status (Completed / Under Process / Not Started)'"></th>
+
+                                    <th th:text="'QA/QC of 3D Mesh Cumulative Area Completed'"></th>
+                                    <th th:text="'QA/QC of 3D Mesh Percentage Completed'"></th>
+                                    <th th:text="'Completion Status (Completed / Under Process / Not Started)'"></th>
+
+                                    <!-- 2D Feature Extraction -->
+                                    <th th:text="'(2D Feature Extraction on ORI) Cumulative Area Completed'"></th>
+                                    <th th:text="'(2D Feature Extraction on ORI) Percentage Completed'"></th>
+                                    <th th:text="'Completion Status (Completed / Under Process / Not Started)'"></th>
+
+                                    <th th:text="'(QA/QC of 2D Feature Extraction on ORI) Cumulative Area Completed'"></th>
+                                    <th th:text="'(QA/QC of 2D Feature Extraction on ORI) Percentage Completed'"></th>
+                                    <th th:text="'Completion Status (Completed / Under Process / Not Started)'"></th>
+
+                                    <!-- 2D Feature Extraction Stereo Mode -->
+                                    <th th:text="'(2D Feature Extraction in Stereo Mode) Cumulative Area Completed'"></th>
+                                    <th th:text="'(2D Feature Extraction in Stereo Mode) Percentage Completed'"></th>
+                                    <th th:text="'Completion Status (Completed / Under Process / Not Started)'"></th>
+
+                                    <th th:text="'(QA/QC of 2D Feature Extraction in Stereo Mode) Cumulative Area Completed'"></th>
+                                    <th th:text="'(QA/QC of 2D Feature Extraction in Stereo Mode) Percentage Completed'"></th>
+                                    <th th:text="'Completion Status (Completed / Under Process / Not Started)'"></th>
+
+                                    <!-- 3D Feature Extraction -->
+                                    <th th:text="'3D Feature Extraction Submitted for QA/QC Cumulative Area Completed'"></th>
+                                    <th th:text="'3D Feature Extraction Submitted for QA/QC Percentage Completed'"></th>
+                                    <th th:text="'Completion Status (Completed / Under Process / Not Started)'"></th>
+
+                                    <th th:text="'QA/QC of 3D Feature Extraction Cumulative Area Completed'"></th>
+                                    <th th:text="'QA/QC of 3D Feature Extraction Percentage Completed'"></th>
+                                    <th th:text="'Completion Status (Completed / Under Process / Not Started)'"></th>
+                                </tr>
+                                <tr style="font-weight: bold; text-align: center;">
+                                    <td>1</td>
+                                    <td>2</td>
+                                    <td>3</td>
+                                    <td>4</td>
+                                    <td>5</td>
+                                    <td>6</td>
+                                    <td>7</td>
+                                    <td>8</td>
+                                    <td>9</td>
+                                    <td>10</td>
+                                    <td>11</td>
+                                    <td>12</td>
+                                    <td>13</td>
+                                    <td>14</td>
+                                    <td>15</td>
+                                    <td>16</td>
+                                    <td>17</td>
+                                    <td>18</td>
+                                    <td>19</td>
+                                    <td>20</td>
+                                    <td>21</td>
+                                    <td>22</td>
+                                    <td>23</td>
+                                    <td>24</td>
+                                    <td>25</td>
+                                    <td>26</td>
+                                    <td>27</td>
+                                    <td>28</td>
+                                    <td>29</td>
+                                    <td>30</td>
+                                    <td>31</td>
+                                    <td>32</td>
+                                    <td>33</td>
+                                    <td>34</td>
+                                    <td>35</td>
+                                    <td>36</td>
+                                    <td>37</td>
+                                    <td>38</td>
+                                    <td>39</td>
+                                    <td>40</td>
+                                    <td>41</td>
+                                    <td>42</td>
+                                    <td>43</td>
+                                    <td>44</td>
+                                    <td>45</td>
+                                    <td>46</td>
+                                    <td>47</td>
+                                    <td>48</td>
+                                    <td>49</td>
+                                    <td>50</td>
+                                    <td>51</td>
+                                    <td>52</td>
+                                    <td>53</td>
+                                    <td>54</td>
+                                </tr>
+                                </thead>
+                                <thead>
+                                <tr style="font-weight: bold; background-color: #f0f0f0;">
+                                    <td colspan="7" th:text="'Grand Total'"></td>
+                                    <!-- Grand Total - ORI Data Processing -->
+                                    <td th:text="${grandTotal[0].grandTotalSeparateOriDataProcessingCumulative != null ? #numbers.formatDecimal(grandTotal[0].grandTotalSeparateOriDataProcessingCumulative, 1, 2) : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <!-- Grand Total - QA/QC ORI -->
+                                    <td th:text="${grandTotal[0].grandTotalSeparateOriQaqcDataProcessingCumulative != null ? #numbers.formatDecimal(grandTotal[0].grandTotalSeparateOriQaqcDataProcessingCumulative, 1, 2) : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <!-- Grand Total - DSM -->
+                                    <td th:text="${grandTotal[0].grandTotalDsmDataProcessingCumulative != null ? #numbers.formatDecimal(grandTotal[0].grandTotalDsmDataProcessingCumulative, 1, 2) : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <!-- Grand Total - QA/QC DSM -->
+                                    <td th:text="${grandTotal[0].grandTotalDsmDataProcessingQaqcCumulative != null ? #numbers.formatDecimal(grandTotal[0].grandTotalDsmDataProcessingQaqcCumulative, 1, 2) : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <!-- Grand Total - DTM -->
+                                    <td th:text="${grandTotal[0].grandTotalDtmDataProcessingCumulative != null ? #numbers.formatDecimal(grandTotal[0].grandTotalDtmDataProcessingCumulative, 1, 2) : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <!-- Grand Total - QA/QC DTM -->
+                                    <td th:text="${grandTotal[0].grandTotalDtmDataProcessingQaqcCumulative != null ? #numbers.formatDecimal(grandTotal[0].grandTotalDtmDataProcessingQaqcCumulative, 1, 2) : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <!-- Grand Total - 3D Mesh -->
+                                    <td th:text="${grandTotal[0].grandTotalMeshDataProcessingCumulative != null ? #numbers.formatDecimal(grandTotal[0].grandTotalMeshDataProcessingCumulative, 1, 2) : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <!-- Grand Total - QA/QC 3D Mesh -->
+                                    <td th:text="${grandTotal[0].grandTotalMeshDataProcessingQaqcCumulative != null ? #numbers.formatDecimal(grandTotal[0].grandTotalMeshDataProcessingQaqcCumulative, 1, 2) : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <!-- Grand Total - Feature Extraction ORI -->
+                                    <td th:text="${grandTotal[0].grandTotalFeatureExtractionOriCumulativeCompleted != null ? #numbers.formatDecimal(grandTotal[0].grandTotalFeatureExtractionOriCumulativeCompleted, 1, 2) : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <!-- Grand Total - Feature Extraction QA/QC ORI -->
+                                    <td th:text="${grandTotal[0].grandTotalFeatureExtractionOriQaqcCumulativeCompleted != null ? #numbers.formatDecimal(grandTotal[0].grandTotalFeatureExtractionOriQaqcCumulativeCompleted, 1, 2) : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <!-- Grand Total - Feature Extraction Stereomode -->
+                                    <td th:text="${grandTotal[0].grandTotaltwoDFeatextrStereomodeCumulative != null ? #numbers.formatDecimal(grandTotal[0].grandTotaltwoDFeatextrStereomodeCumulative, 1, 2) : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <!-- Grand Total - Feature Extraction QA/QC Stereomode -->
+                                    <td th:text="${grandTotal[0].grandTotaltwoDFeatextrStereomodeCumulativeQaQc != null ? #numbers.formatDecimal(grandTotal[0].grandTotaltwoDFeatextrStereomodeCumulativeQaQc, 1, 2) : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <!-- Grand Total - 3D  Feature Extraction  -->
+                                    <td th:text="${grandTotal[0].grandTotalthreeDFeatextrCumulative != null ? #numbers.formatDecimal(grandTotal[0].grandTotalthreeDFeatextrCumulative, 1, 2) : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <!-- Grand Total - 3D  Feature Extraction  QA/QC -->
+                                    <td th:text="${grandTotal[0].grandTotalthreeDFeatextrCumulativeQaQc != null ? #numbers.formatDecimal(grandTotal[0].grandTotalthreeDFeatextrCumulativeQaQc, 1, 2) : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <!-- Grand Total - Total GC -->
+                                    <td th:text="${grandTotal[0].grandTotalTotalGC != null ? grandTotal[0].grandTotalTotalGC : '0'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                <tr style="word-wrap: break-word; white-space: normal; max-width: 200px;"
+                                    th:each="entry, iterStat : ${nakshaMISDataEntries}">
+                                    <td th:text="${iterStat.index + 1}"></td>
+                                    <td th:text="${entry.officerName} ?: 'NA'"></td>
+                                    <td th:text="${entry.gdEmail} ?: 'NA'"></td>
+                                    <td th:text="${entry.zoneName} ?: 'NA'"></td>
+                                    <td th:text="${entry.stateName} ?: 'NA'"></td>
+                                    <td th:text="${entry.district_Name} ?: 'NA'"></td>
+                                    <td th:text="${entry.ulbName} ?: 'NA'"></td>
+                                    <!-- Data Processing - ORI -->
+                                    <td th:text="${entry.separateOriDataProcessingCumulative != null} ? ${#numbers.formatDecimal(entry.separateOriDataProcessingCumulative, 1, 2)} : '0.00'"></td>
+                                    <td th:text="${entry.separateOriDataProcessingPercentage != null and entry.separateOriDataProcessingPercentage != 'null' and entry.separateOriDataProcessingPercentage != '' ? #numbers.formatDecimal(entry.separateOriDataProcessingPercentage, 1, 2) + '%' : '0.00%'}"></td>
+                                    <td th:text="${entry.oriCumulativestatus == 1 ? 'Not Started' : (entry.oriCumulativestatus == 2 ? 'Under Process' : (entry.oriCumulativestatus == 3 ? 'Completed' : ''))}"></td>
+
+                                    <!-- Data Processing - QA/QC Data Processing (ORI)  -->
+                                    <td th:text="${entry.separateOriQaqcDataProcessingCumulative != null} ? ${#numbers.formatDecimal(entry.separateOriQaqcDataProcessingCumulative, 1, 2)} : '0.00'"></td>
+                                    <td th:text="${entry.separateOriQaqcDataProcessingPercentage != null and entry.separateOriQaqcDataProcessingPercentage != 'null' and entry.separateOriQaqcDataProcessingPercentage != '' ? #numbers.formatDecimal(entry.separateOriQaqcDataProcessingPercentage, 1, 2) + '%' : '0.00%'}"></td>
+                                    <td th:text="${entry.oriCumulativeQaQcStatus == 1 ? 'Not Started' : (entry.oriCumulativeQaQcStatus == 2 ? 'Under Process' : (entry.oriCumulativeQaQcStatus == 3 ? 'Completed' : ''))}"></td>
+
+                                    <!-- Data Processing - DSM -->
+                                    <td th:text="${entry.dsmDataProcessingCumulative != null} ? ${#numbers.formatDecimal(entry.dsmDataProcessingCumulative, 1, 2)} : '0.00'"></td>
+                                    <td th:text="${entry.dsmDataProcessingPercentage != null and entry.dsmDataProcessingPercentage != 'null' and entry.dsmDataProcessingPercentage != '' ? #numbers.formatDecimal(entry.dsmDataProcessingPercentage, 1, 2) + '%' : '0.00%'}"></td>
+                                    <td th:text="${entry.dsmSubmissionStatus == 1 ? 'Not Started' : (entry.dsmSubmissionStatus == 2 ? 'Under Process' : (entry.dsmSubmissionStatus == 3 ? 'Completed' : ''))}"></td>
+
+                                    <!-- QA/QC fields for Data Acquisition (DSM)  -->
+                                    <td th:text="${entry.dsmDataProcessingQaqcCumulative != null} ? ${#numbers.formatDecimal(entry.dsmDataProcessingQaqcCumulative, 1, 2)} : '0.00'"></td>
+                                    <td th:text="${entry.dsmDataProcessingQaqcPercentage != null and entry.dsmDataProcessingQaqcPercentage != 'null' and entry.dsmDataProcessingQaqcPercentage != '' ? #numbers.formatDecimal(entry.dsmDataProcessingQaqcPercentage, 1, 2) + '%' : '0.00%'}"></td>
+                                    <td th:text="${entry.dsmSubmissionQaQcStatus == 1 ? 'Not Started' : (entry.dsmSubmissionQaQcStatus == 2 ? 'Under Process' : (entry.dsmSubmissionQaQcStatus == 3 ? 'Completed' : ''))}"></td>
+
+                                    <!-- Data Processing - DTM -->
+                                    <td th:text="${entry.dtmDataProcessingCumulative != null} ? ${#numbers.formatDecimal(entry.dtmDataProcessingCumulative, 1, 2)} : '0.00'"></td>
+                                    <td th:text="${entry.dtmDataProcessingPercentage != null and entry.dtmDataProcessingPercentage != 'null' and entry.dtmDataProcessingPercentage != '' ? #numbers.formatDecimal(entry.dtmDataProcessingPercentage, 1, 2) + '%' : '0.00%'}"></td>
+                                    <td th:text="${entry.dtmSubmissionStatus == 1 ? 'Not Started' : (entry.dtmSubmissionStatus == 2 ? 'Under Process' : (entry.dtmSubmissionStatus == 3 ? 'Completed' : ''))}"></td>
+
+                                    <!-- QA/QC fields for Data Acquisition (DTM)  -->
+                                    <td th:text="${entry.dtmDataProcessingQaqcCumulative != null} ? ${#numbers.formatDecimal(entry.dtmDataProcessingQaqcCumulative, 1, 2)} : '0.00'"></td>
+                                    <td th:text="${entry.dtmDataProcessingQaqcPercentage != null and entry.dtmDataProcessingQaqcPercentage != 'null' and entry.dtmDataProcessingQaqcPercentage != '' ? #numbers.formatDecimal(entry.dtmDataProcessingQaqcPercentage, 1, 2) + '%' : '0.00%'}"></td>
+                                    <td th:text="${entry.dtmSubmissionQaQcStatus == 1 ? 'Not Started' : (entry.dtmSubmissionQaQcStatus == 2 ? 'Under Process' : (entry.dtmSubmissionQaQcStatus == 3 ? 'Completed' : ''))}"></td>
+
+                                    <!-- Data Processing - 3D mesh -->
+                                    <td th:text="${entry.meshDataProcessingCumulative != null} ? ${#numbers.formatDecimal(entry.meshDataProcessingCumulative, 1, 2)} : '0.00'"></td>
+                                    <td th:text="${entry.meshDataProcessingPercentage != null and entry.meshDataProcessingPercentage != 'null' and entry.meshDataProcessingPercentage != '' ? #numbers.formatDecimal(entry.meshDataProcessingPercentage, 1, 2) + '%' : '0.00%'}"></td>
+                                    <td th:text="${entry.threedMeshModelStatus == 1 ? 'Not Started' : (entry.threedMeshModelStatus == 2 ? 'Under Process' : (entry.threedMeshModelStatus == 3 ? 'Completed' : ''))}"></td>
+
+                                    <!-- QA/QC 3D mesh  -->
+                                    <td th:text="${entry.meshDataProcessingQaqcCumulative != null} ? ${#numbers.formatDecimal(entry.meshDataProcessingQaqcCumulative, 1, 2)} : '0.00'"></td>
+                                    <td th:text="${entry.meshDataProcessingQaqcPercentage != null and entry.meshDataProcessingQaqcPercentage != 'null' and entry.meshDataProcessingQaqcPercentage != '' ? #numbers.formatDecimal(entry.meshDataProcessingQaqcPercentage, 1, 2) + '%' : '0.00%'}"></td>
+                                    <td th:text="${entry.threedMeshModelQaQcStatus == 1 ? 'Not Started' : (entry.threedMeshModelQaQcStatus == 2 ? 'Under Process' : (entry.threedMeshModelQaQcStatus == 3 ? 'Completed' : ''))}"></td>
+
+                                    <!--2d FEATURE EXTRACTION ORI -->
+                                    <td th:text="${entry.featureExtractionOriCumulativeCompleted != null} ? ${#numbers.formatDecimal(entry.featureExtractionOriCumulativeCompleted, 1, 2)} : '0.00'"></td>
+                                    <td th:text="${entry.featureExtractionOriPercentageCompleted != null and entry.featureExtractionOriPercentageCompleted != 'null' and entry.featureExtractionOriPercentageCompleted != '' ? #numbers.formatDecimal(entry.featureExtractionOriPercentageCompleted, 1, 2) + '%' : '0.00%'}"></td>
+                                    <td th:text="${entry.twoDfeatureextractionStatus == 1 ? 'Not Started' : (entry.twoDfeatureextractionStatus == 2 ? 'Under Process' : (entry.twoDfeatureextractionStatus == 3 ? 'Completed' : ''))}"></td>
+
+                                    <!-- 2d FEATURE EXTRACTION and there QA/QC ORI-->
+                                    <td th:text="${entry.featureExtractionOriQaqcCumulativeCompleted != null} ? ${#numbers.formatDecimal(entry.featureExtractionOriQaqcCumulativeCompleted, 1, 2)} : '0.00'"></td>
+                                    <td th:text="${entry.featureExtractionOriQaqcPercentageCompleted != null and entry.featureExtractionOriQaqcPercentageCompleted != 'null' and entry.featureExtractionOriQaqcPercentageCompleted != '' ? #numbers.formatDecimal(entry.featureExtractionOriQaqcPercentageCompleted, 1, 2) + '%' : '0.00%'}"></td>
+                                    <td th:text="${entry.twoDfeatureextractionQaQcStatus == 1 ? 'Not Started' : (entry.twoDfeatureextractionQaQcStatus == 2 ? 'Under Process' : (entry.twoDfeatureextractionQaQcStatus == 3 ? 'Completed' : ''))}"></td>
+
+                                    <!--2d FEATURE EXTRACTION Stereo Mode -->
+                                    <td th:text="${entry.twoDFeatextrStereomodeCumulative != null} ? ${#numbers.formatDecimal(entry.twoDFeatextrStereomodeCumulative, 1, 2)} : '0.00'"></td>
+                                    <td th:text="${entry.twoDFeatextrStereomodePercentage != null and entry.twoDFeatextrStereomodePercentage != 'null' and entry.twoDFeatextrStereomodePercentage != '' ? #numbers.formatDecimal(entry.twoDFeatextrStereomodePercentage, 1, 2) + '%' : '0.00%'}"></td>
+                                    <td th:text="${entry.twoDFeatextrStereomodeStatus == 1 ? 'Not Started' : (entry.twoDFeatextrStereomodeStatus == 2 ? 'Under Process' : (entry.twoDFeatextrStereomodeStatus == 3 ? 'Completed' : ''))}"></td>
+
+                                    <!-- 2d FEATURE EXTRACTION and there QA/QC Stereo Mode-->
+                                    <td th:text="${entry.twoDFeatextrStereomodeCumulativeQaQc != null} ? ${#numbers.formatDecimal(entry.twoDFeatextrStereomodeCumulativeQaQc, 1, 2)} : '0.00'"></td>
+                                    <td th:text="${entry.twoDFeatextrStereomodePercentageQaQc != null and entry.twoDFeatextrStereomodePercentageQaQc != 'null' and entry.twoDFeatextrStereomodePercentageQaQc != '' ? #numbers.formatDecimal(entry.featureExtractionOriQaqcPercentageCompleted, 1, 2) + '%' : '0.00%'}"></td>
+                                    <td th:text="${entry.twoDFeatextrStereomodeQaQcStatus == 1 ? 'Not Started' : (entry.twoDFeatextrStereomodeQaQcStatus == 2 ? 'Under Process' : (entry.twoDFeatextrStereomodeQaQcStatus == 3 ? 'Completed' : ''))}"></td>
+
+                                    <!-- 3D FEATURE EXTRACTION  fields  -->
+                                    <td th:text="${entry.threeDFeatextrCumulative != null} ? ${#numbers.formatDecimal(entry.threeDFeatextrCumulative, 1, 2)} : '0.00'"></td>
+                                    <td th:text="${entry.threeDFeatextrPercentage != null and entry.threeDFeatextrPercentage != 'null' and entry.threeDFeatextrPercentage != '' ? #numbers.formatDecimal(entry.threeDFeatextrPercentage, 1, 2) + '%' : '0.00%'}"></td>
+                                    <td th:text="${entry.threeDFeatextrStatus == 1 ? 'Not Started' : (entry.threeDFeatextrStatus == 2 ? 'Under Process' : (entry.threeDFeatextrStatus == 3 ? 'Completed' : ''))}"></td>
+
+                                    <!-- 3D FEATURE EXTRACTION  QA/QC fields -->
+                                    <td th:text="${entry.threeDFeatextrCumulativeQaQc != null} ? ${#numbers.formatDecimal(entry.threeDFeatextrCumulativeQaQc, 1, 2)} : '0.00'"></td>
+                                    <td th:text="${entry.threeDDFeatextrPercentageQaQc != null and entry.threeDDFeatextrPercentageQaQc != 'null' and entry.threeDDFeatextrPercentageQaQc != '' ? #numbers.formatDecimal(entry.threeDDFeatextrPercentageQaQc, 1, 2) + '%' : '0.00%'}"></td>
+                                    <td th:text="${entry.threeDFeatextrQaQcStatus == 1 ? 'Not Started' : (entry.threeDFeatextrQaQcStatus == 2 ? 'Under Process' : (entry.threeDFeatextrQaQcStatus == 3 ? 'Completed' : ''))}">
+
+                                    <td th:text="${entry.totalGC != null} ? ${entry.totalGC} : '0'"></td>
+                                    <td th:text="${entry.oriReceivedBack != null and entry.oriReceivedBack ? 'Yes' : 'No' }"></td>
+                                    <td th:text="${entry.oriSubmittedToState != null and entry.oriSubmittedToState ? 'Yes' : 'No' }"></td>
+                                    <td th:text="${entry.updateOnDate != null} ? ${#dates.format(entry.updateOnDate, 'HH:mm/yyyy-MM-dd ')} : 'NA'"></td>
+                                    <td>
+                                       <span th:if="${entry.remark != null and !#strings.isEmpty(entry.remark)}">
+                                       <button onclick="toggleRemark(this)" style="background: none; border: none; cursor: pointer;">👁️</button>
+                                       <span class="remark-full" style="display: none;" th:text="${entry.remark}"></span></span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                                <tbody>
+                                <tr style="font-weight: bold; background-color: #f0f0f0;">
+                                    <td colspan="7" th:text="'Grand Total'"></td>
+                                    <!-- Grand Total - ORI Data Processing -->
+                                    <td th:text="${grandTotal[0].grandTotalSeparateOriDataProcessingCumulative != null ? #numbers.formatDecimal(grandTotal[0].grandTotalSeparateOriDataProcessingCumulative, 1, 2) : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <!-- Grand Total - QA/QC ORI -->
+                                    <td th:text="${grandTotal[0].grandTotalSeparateOriQaqcDataProcessingCumulative != null ? #numbers.formatDecimal(grandTotal[0].grandTotalSeparateOriQaqcDataProcessingCumulative, 1, 2) : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <!-- Grand Total - DSM -->
+                                    <td th:text="${grandTotal[0].grandTotalDsmDataProcessingCumulative != null ? #numbers.formatDecimal(grandTotal[0].grandTotalDsmDataProcessingCumulative, 1, 2) : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <!-- Grand Total - QA/QC DSM -->
+                                    <td th:text="${grandTotal[0].grandTotalDsmDataProcessingQaqcCumulative != null ? #numbers.formatDecimal(grandTotal[0].grandTotalDsmDataProcessingQaqcCumulative, 1, 2) : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <!-- Grand Total - DTM -->
+                                    <td th:text="${grandTotal[0].grandTotalDtmDataProcessingCumulative != null ? #numbers.formatDecimal(grandTotal[0].grandTotalDtmDataProcessingCumulative, 1, 2) : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <!-- Grand Total - QA/QC DTM -->
+                                    <td th:text="${grandTotal[0].grandTotalDtmDataProcessingQaqcCumulative != null ? #numbers.formatDecimal(grandTotal[0].grandTotalDtmDataProcessingQaqcCumulative, 1, 2) : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <!-- Grand Total - 3D Mesh -->
+                                    <td th:text="${grandTotal[0].grandTotalMeshDataProcessingCumulative != null ? #numbers.formatDecimal(grandTotal[0].grandTotalMeshDataProcessingCumulative, 1, 2) : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <!-- Grand Total - QA/QC 3D Mesh -->
+                                    <td th:text="${grandTotal[0].grandTotalMeshDataProcessingQaqcCumulative != null ? #numbers.formatDecimal(grandTotal[0].grandTotalMeshDataProcessingQaqcCumulative, 1, 2) : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <!-- Grand Total - Feature Extraction ORI -->
+                                    <td th:text="${grandTotal[0].grandTotalFeatureExtractionOriCumulativeCompleted != null ? #numbers.formatDecimal(grandTotal[0].grandTotalFeatureExtractionOriCumulativeCompleted, 1, 2) : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <!-- Grand Total - Feature Extraction QA/QC ORI -->
+                                    <td th:text="${grandTotal[0].grandTotalFeatureExtractionOriQaqcCumulativeCompleted != null ? #numbers.formatDecimal(grandTotal[0].grandTotalFeatureExtractionOriQaqcCumulativeCompleted, 1, 2) : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <!-- Grand Total - Feature Extraction Stereomode -->
+                                    <td th:text="${grandTotal[0].grandTotaltwoDFeatextrStereomodeCumulative != null ? #numbers.formatDecimal(grandTotal[0].grandTotaltwoDFeatextrStereomodeCumulative, 1, 2) : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <!-- Grand Total - Feature Extraction QA/QC Stereomode -->
+                                    <td th:text="${grandTotal[0].grandTotaltwoDFeatextrStereomodeCumulativeQaQc != null ? #numbers.formatDecimal(grandTotal[0].grandTotaltwoDFeatextrStereomodeCumulativeQaQc, 1, 2) : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <!-- Grand Total - 3D  Feature Extraction  -->
+                                    <td th:text="${grandTotal[0].grandTotalthreeDFeatextrCumulative != null ? #numbers.formatDecimal(grandTotal[0].grandTotalthreeDFeatextrCumulative, 1, 2) : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <!-- Grand Total - 3D  Feature Extraction  QA/QC -->
+                                    <td th:text="${grandTotal[0].grandTotalthreeDFeatextrCumulativeQaQc != null ? #numbers.formatDecimal(grandTotal[0].grandTotalthreeDFeatextrCumulativeQaQc, 1, 2) : '0.00'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <!-- Grand Total - Total GC -->
+                                    <td th:text="${grandTotal[0].grandTotalTotalGC != null ? grandTotal[0].grandTotalTotalGC : '0'}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                </tbody>
+
+                            </table>
+                            <script>
+    function toggleRemark(button) {
+        const remarkFull = button.nextElementSibling;
+        const isVisible = remarkFull.style.display === 'inline';
+
+        remarkFull.style.display = isVisible ? 'none' : 'inline';
+        button.textContent = isVisible ? '👁️' : '🙈';
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        // Check if DataTable is already initialized on the table
+        if ($.fn.DataTable.isDataTable('#example2')) {
+            // If yes, destroy the existing DataTable instance
+            $('#example2').DataTable().destroy();
+        }
+
+        // Initialize DataTable with your table ID
+        $('#example2').DataTable({
+            // Add additional options if needed
+            paging: true,  // Enable pagination
+            lengthMenu: [10, 25, 50, 100],  // Set page length options
+            pageLength: 25,  // Default page length
+            // Callback function after each draw event
+            drawCallback: function (settings) {
+                var api = this.api();
+                var totalPages = api.page.info().pages;
+                var page = api.page.info().page;
+
+                // Check if it's the last page
+                if (page === totalPages - 1) {
+                    $('#example2 tfoot').show();
+                } else {
+                    $('#example2 tfoot').hide();
+                }
+            }
+        });
+    });
+
+
+
+
+
+
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </section>
+</div>
+</body>
+</html>

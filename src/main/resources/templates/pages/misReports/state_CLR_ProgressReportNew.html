@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/dashboard">
+<head>
+    <meta charset="UTF-8">
+    <title>State Level CLR</title>
+    <link th:href="@{/css/report/report.css}" rel="stylesheet"/>
+    <style>
+        /* Sticky columns styling */
+        .table-responsive {
+            position: relative;
+            overflow-x: auto;
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+
+        .table th:nth-child(1),
+        .table td:nth-child(1) {
+            position: sticky;
+            left: 0;
+            z-index: 5;
+            background-color: #4a6c52;
+            color: #ffff;
+            border-right: 2px solid #ddd;
+        }
+        
+        .table td:nth-child(1) {
+            background-color: #f8f9fa;
+            color: #000;
+        }
+        
+
+        .table th:nth-child(2),
+        .table td:nth-child(2) {
+            position: sticky;
+            left: 60px; /* Will be dynamically adjusted by JavaScript */
+            z-index: 5;
+            background-color: #4a6c52;
+            color: #ffff;
+            border-right: 2px solid #ddd;
+        }
+        
+        .table td:nth-child(2) {
+            background-color: #f8f9fa;
+            color: #000;
+        }
+        
+
+        .table thead tr:first-child {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .table thead tr:first-child th:nth-child(1),
+        .table thead tr:first-child th:nth-child(2) {
+            position: sticky;
+            left: 0;
+            z-index: 15;
+            background-color: #4a6c52;
+            color: #ffff;
+            border-right: 2px solid #ddd;
+        }
+        
+        .table thead tr:first-child th:nth-child(2) {
+            left: 60px; /* Will be dynamically adjusted by JavaScript */
+        }
+        
+
+        .table thead tr:last-child {
+            position: sticky;
+            top: 60px; /* Position below the main header row */
+            z-index: 8;
+        }
+        
+        .table thead tr:last-child th:nth-child(1),
+        .table thead tr:last-child td:nth-child(1) {
+            position: sticky;
+            left: 0;
+            z-index: 12;
+            background-color: #4a6c52;
+            color: #ffff;
+            border-right: 2px solid #ddd;
+        }
+        
+        .table thead tr:last-child th:nth-child(2),
+        .table thead tr:last-child td:nth-child(2) {
+            position: sticky;
+            left: 60px; /* Will be dynamically adjusted by JavaScript */
+            z-index: 12;
+            background-color: #4a6c52;
+            color: #ffff;
+            border-right: 2px solid #ddd;
+        }
+        
+        /* Grand total row styling */
+        .grand-total-row td {
+           background-color: #ffffff;
+            color: #000;
+        }
+        /* Top grand total row (inside thead) should match data row style */
+        thead .grand-total-row td {
+            background-color: #ffffff;
+            color: #000;
+        }
+        
+        /* Override sticky column styling for Grand Total row in thead */
+        thead .grand-total-row td:nth-child(1),
+        thead .grand-total-row td:nth-child(2) {
+            background-color: #ffffff !important;
+            color: #000 !important;
+        }
+        /* Footer grand total row (inside tfoot) should match data row style */
+        tfoot .grand-total-row td {
+            background-color: #ffffff;
+            color: #000;
+        }
+        
+        /* Ensure proper styling for sticky columns */
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            white-space: nowrap;
+        }
+        
+        /* Enable text wrapping for State Name column (2nd column) */
+        .table th:nth-child(2),
+        .table td:nth-child(2) {
+            white-space: normal !important;
+            word-wrap: break-word;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            max-width: 150px;
+            min-width: 100px;
+        }
+        
+        /* Mobile responsive adjustments for State Name column */
+        @media screen and (max-width: 768px) {
+            .table th:nth-child(2),
+            .table td:nth-child(2) {
+                max-width: 120px;
+                min-width: 80px;
+            }
+        }
+        
+        /* Enable text wrapping for all columns except frozen ones */
+        .table th:not(:nth-child(1)):not(:nth-child(2)),
+        .table td:not(:nth-child(1)):not(:nth-child(2)) {
+            white-space: normal !important;
+            word-wrap: break-word;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            max-width: 150px;
+            min-width: 100px;
+        }
+        
+        /* Special wrapping for longer descriptive columns */
+        .table th:nth-child(n+15):nth-child(-n+26),
+        .table td:nth-child(n+15):nth-child(-n+26) {
+            white-space: normal !important;
+            word-wrap: break-word;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            max-width: 140px;
+            min-width: 90px;
+            vertical-align: top;
+        }
+        
+        /* Compact columns for Yes/No and percentage columns */
+        .table th:nth-child(8),
+        .table td:nth-child(8),
+        .table th:nth-child(10),
+        .table td:nth-child(10),
+        .table th:nth-child(n+15):nth-child(-n+25),
+        .table td:nth-child(n+15):nth-child(-n+25) {
+            max-width: 100px;
+            min-width: 70px;
+        }
+        
+        /* Very compact for simple Yes/No columns */
+        .table th:nth-child(n+16):nth-child(-n+20),
+        .table td:nth-child(n+16):nth-child(-n+20),
+        .table th:nth-child(n+24):nth-child(-n+26),
+        .table td:nth-child(n+24):nth-child(-n+26) {
+            max-width: 80px;
+            min-width: 60px;
+        }
+        
+        .table th {
+            background-color: #4a6c52;
+            color: #ffff;
+        }
+        
+
+        .table th:nth-child(1),
+        .table td:nth-child(1),
+        .table th:nth-child(2),
+        .table td:nth-child(2),
+        .table thead tr:first-child th:nth-child(1),
+        .table thead tr:first-child th:nth-child(2),
+        .table thead tr:last-child th:nth-child(1),
+        .table thead tr:last-child td:nth-child(1),
+        .table thead tr:last-child th:nth-child(2),
+        .table thead tr:last-child td:nth-child(2) {
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        
+        /* Ensure table body rows have proper background */
+        .table tbody tr:nth-child(even) td {
+            background-color: #f8f9fa;
+        }
+        
+        .table tbody tr:nth-child(odd) td {
+            background-color: #ffffff;
+        }
+        
+
+        .table tfoot tr td:nth-child(1),
+        .table tfoot tr td:nth-child(2) {
+            position: sticky;
+            left: 0;
+            z-index: 10;
+            background-color: #ffffff;
+            color: #000;
+            border-right: 2px solid #ddd;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        
+        .table tfoot tr td:nth-child(2) {
+            left: 60px; /* Will be dynamically adjusted by JavaScript */
+        }
+
+        /* Highlight only the third data row */
+        .table tbody tr:nth-child(3) td {
+            background-color: #fff3cd;
+            color: #000;
+        }
+        /* Override sticky first two columns for the third row */
+        .table tbody tr:nth-child(3) td:nth-child(1),
+        .table tbody tr:nth-child(3) td:nth-child(2) {
+            background-color: #fff3cd;
+            color: #000;
+        }
+
+        /* Wrap and width for 'Whether RoR Available Online for Download' column */
+        .wrap-col-ror-online {
+            white-space: normal;
+            word-break: break-word;
+            overflow-wrap: anywhere;
+            max-width: 140px;
+        }
+ 
+        /* Target Yes/No columns to wrap and constrain width */
+        #example2 thead tr:last-child th:nth-child(16),
+        #example2 tbody tr td:nth-child(16),
+        #example2 tfoot tr td:nth-child(16),
+        #example2 thead tr:last-child th:nth-child(17),
+        #example2 tbody tr td:nth-child(17),
+        #example2 tfoot tr td:nth-child(17),
+        #example2 thead tr:last-child th:nth-child(18),
+        #example2 tbody tr td:nth-child(18),
+        #example2 tfoot tr td:nth-child(18),
+        #example2 thead tr:last-child th:nth-child(19),
+        #example2 tbody tr td:nth-child(19),
+        #example2 tfoot tr td:nth-child(19),
+        #example2 thead tr:last-child th:nth-child(20),
+        #example2 tbody tr td:nth-child(20),
+        #example2 tfoot tr td:nth-child(20),
+        #example2 thead tr:last-child th:nth-child(21),
+        #example2 tbody tr td:nth-child(21),
+        #example2 tfoot tr td:nth-child(21),
+        #example2 thead tr:last-child th:nth-child(22),
+        #example2 tbody tr td:nth-child(22),
+        #example2 tfoot tr td:nth-child(22),
+        #example2 thead tr:last-child th:nth-child(23),
+        #example2 tbody tr td:nth-child(23),
+        #example2 tfoot tr td:nth-child(23),
+        #example2 thead tr:last-child th:nth-child(24),
+        #example2 tbody tr td:nth-child(24),
+        #example2 tfoot tr td:nth-child(24),
+        #example2 thead tr:last-child th:nth-child(25),
+        #example2 tbody tr td:nth-child(25),
+        #example2 tfoot tr td:nth-child(25),
+        #example2 thead tr:last-child th:nth-child(26),
+        #example2 tbody tr td:nth-child(26),
+        #example2 tfoot tr td:nth-child(26) {
+            white-space: normal !important;
+            word-break: break-word;
+            overflow-wrap: anywhere;
+            max-width: 100px;
+            width: 100px;
+        }
+
+        /* Wrap header labels for columns 10 through 18 on both header rows */
+        #example2 thead tr:first-child th:nth-child(n+10):nth-child(-n+18) {
+            white-space: normal !important;
+            word-break: break-word;
+            overflow-wrap: anywhere;
+            max-width: 100px;
+            width: 100px;
+        }
+        
+        /* Mouse drag functionality styles */
+        .table-responsive {
+            user-select: none; /* Prevent text selection while dragging */
+            scroll-behavior: smooth;
+        }
+        
+        /* Only apply grab cursor to table content, not DataTables controls */
+        .table-responsive table {
+            cursor: grab !important;
+        }
+        
+        .table-responsive table.active {
+            cursor: grabbing !important;
+        }
+        
+        /* Ensure DataTables controls have normal cursor */
+        .dataTables_wrapper .dataTables_length,
+        .dataTables_wrapper .dataTables_filter,
+        .dataTables_wrapper .dataTables_info,
+        .dataTables_wrapper .dataTables_processing,
+        .dataTables_wrapper .dataTables_paginate {
+            cursor: default !important;
+        }
+        
+        .dataTables_wrapper .dataTables_length select,
+        .dataTables_wrapper .dataTables_filter input,
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            cursor: pointer !important;
+        }
+        
+        /* Override cursor for table elements only */
+        .table-responsive table,
+        .table-responsive tbody,
+        .table-responsive thead,
+        .table-responsive tr,
+        .table-responsive td,
+        .table-responsive th {
+            cursor: inherit !important;
+        }
+        
+    </style>
+</head>
+<body>
+<div layout:fragment="content"
+     style="box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;">
+    <!-- Content Header (Page header) -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-info">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-sm-10">
+                                    <h3 class="card-title"
+                                        style="font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a; letter-spacing: 2px;">
+                                        <span th:text="${labels['reportName']}"></span>
+                                    </h3>
+                                </div>
+                                <div class="col-sm-2">
+                                    <a th:href="@{/physcial/report/pdf/clr}">
+                                        <img th:src="@{/images/pdf.png}" alt="PDF Icon" class="btn-img" width="40"
+                                             height="40"
+                                             style="box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;"/>
+                                    </a>
+
+
+                                    <a th:href="@{/physcial/report/excel/clr}">
+                                        <img th:src="@{/images/excel.png}" alt="EXCEL Icon" class="btn-img" width="40"
+                                             height="40"
+                                             style="box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;"/>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+
+                            <a th:href="@{/reports/physical-progress-report}" class="btn btn-primary" style="font-size: 13px;">
+                                ← Back
+                            </a>
+                            <form th:action="@{/physicalProgressReports/clr/sorting-clr}" method="post" id="searchForm">
+                                <div class="form-group mt-3">
+                                    <div class="form-outline ms-3" style="width: 20%;">
+                                        <label for="ddlSelect">Select Field For Sorting:</label>
+                                        <select id="ddlSelect" name="parameter" class="form-control"
+                                                onchange="toggleSortDropdown()">
+                                            <option value="state">Select Sort Type</option>
+                                        <option value="Computerized">RoR Computerized (%)</option>
+                                        <option value="clrCompleted">Villages Where CLR Completed (%)</option>
+                                            <option value="genLOwnershipDist">Number of Districts with Gender-Based Land Ownership Availability (RoR)</option>
+                                            <option value="genLOwnershipTotal">Total Availability of Gender-Based Land Ownership (RoR)</option>
+                                            <!-- Add more options if needed -->
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group mt-3" id="ascDropdown" style="display: none;">
+                                    <div class="form-outline ms-3" style="width: 20%;">
+                                        <label for="ddlAscDesc">Select ASC or DESC:</label>
+                                        <select id="ddlAscDesc" name="ascDesc" class="form-control">
+                                            <option value="ASC">Ascending Order</option>
+                                            <option value="DESC">Descending Order</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="input-group mt-2">
+                                    <button type="submit" class="btn btn-primary" style="font-size: 16px;">
+                                        Sort
+                                    </button>
+                                </div>
+                            </form>
+                            <div class="table-responsive text-nowrap">
+                                <table id="example2" class="table table-bordered card-info wrap-text table-striped-columns table-success table-striped table-responsive">
+                                    <thead class="card-info wrap-text" style="background-color: #4a6c52; color:#ffff">
+                                    <tr>
+                                        <th rowspan="2" th:text="${labels['serialNumber']}"></th>
+                                        <th rowspan="2" th:text="${labels['stateUT']}"></th>
+                                        <th rowspan="2" th:text="${labels['totalDistricts']}"></th>
+                                        <th rowspan="2" th:text="${labels['totalTehsils']}"></th>
+                                        <th rowspan="2" th:text="${labels['totalVillages']}"></th>
+                                        <th colspan="3" th:text="${labels['RoR']}"></th>
+                                        <th colspan="2" th:text="${labels['numberOfVillagesWhererCLRCompleted']}"></th>
+                                        <th rowspan="2" th:text="${labels['totalNoOfLandOwners']}"></th>
+                                        <th colspan="4" th:text="${labels['availabilityOfGenderBasedLandOwnership']}">
+                                        </th>
+                                        <th colspan="1" th:text="${labels['whetherRoRAvailableOnline']}"></th>
+                                        <th colspan="1" th:text="${labels['whetherDigitallySignedRoRAvailableOnline']}">
+                                        </th>
+                                        <th colspan="1" th:text="${labels['whetherDigitallySignedRoRLegallyValid']}">
+                                        </th>
+                                        <th colspan="1"
+                                            th:text="${labels['whetherMutationApplicationSubmittedOnline']}"></th>
+                                        <th colspan="1"
+                                            th:text="${labels['whetherAutoTriggeredMutationFacilityAvailable']}"></th>
+                                        <th colspan="3"
+                                            th:text="${labels['whetherBanksAuthorizedToCreateClearMortgageChargeInRoR']}">
+                                        </th>
+                                        <th colspan="1" th:text="${labels['whetherLandRecordsCheckedOnlineBySRO']}">
+                                        </th>
+                                        <th colspan="1"
+                                            th:text="${labels['whetherLandRecordsCheckedOnlineByRevenueCourts']}"></th>
+                                        <th colspan="1"
+                                            th:text="${labels['whetherLandRecordsCheckedOnlineByCivilECourtsSystem']}">
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th th:text="${labels['total']}"></th>
+                                        <th th:text="${labels['computerized']}"></th>
+                                        <th th:text="${labels['percentage']}"></th>
+                                        <th th:text="${labels['number']}"></th>
+                                        <th th:text="${labels['percentage']}"></th>
+                                        <th th:text="${labels['numberOfDistrictsWhereAvailable']}"></th>
+                                        <th th:text="${labels['male']}"></th>
+                                        <th th:text="${labels['female']}"></th>
+                                        <th th:text="${labels['total']}"></th>
+                                        <th th:text="${labels['yesNo']}"></th>
+                                        <th th:text="${labels['yesNo']}"></th>
+                                        <th th:text="${labels['yesNo']}"></th>
+                                        <th th:text="${labels['yesNo']}"></th>
+                                        <th th:text="${labels['yesNo']}"></th>
+                                        <th th:text="${labels['yesNo']}"></th>
+                                        <th th:text="${labels['numberOfDistrictAuthorized']}"></th>
+                                        <th th:text="${labels['numberOfBankBranchAuthorized']}"></th>
+                                        <th th:text="${labels['yesNo']}"></th>
+                                        <th th:text="${labels['yesNo']}"></th>
+                                        <th th:text="${labels['yesNo']}"></th>
+                                    </tr>
+                                    <tr style="font-weight: bold;">
+                                        <td style="text-align: center;">1</td>
+                                        <td style="text-align: center;">2</td>
+                                        <td style="text-align: center;">3</td>
+                                        <td style="text-align: center;">4</td>
+                                        <td style="text-align: center;">5</td>
+                                        <td style="text-align: center;">6a</td>
+                                        <td style="text-align: center;">6b</td>
+                                        <td style="text-align: center;">6c</td>
+                                        <td style="text-align: center;">7a</td>
+                                        <td style="text-align: center;">7b</td>
+                                        <td style="text-align: center;">8</td>
+                                        <td style="text-align: center;">9a</td>
+                                        <td style="text-align: center;">9b</td>
+                                        <td style="text-align: center;">9c</td>
+                                        <td style="text-align: center;">9d</td>
+                                        <td style="text-align: center;">10</td>
+                                        <td style="text-align: center;">11</td>
+                                        <td style="text-align: center;">12</td>
+                                        <td style="text-align: center;">13</td>
+                                        <td style="text-align: center;">14</td>
+                                        <td style="text-align: center;">15a</td>
+                                        <td style="text-align: center;">15b</td>
+                                        <td style="text-align: center;">15c</td>
+                                        <td style="text-align: center;">16</td>
+                                        <td style="text-align: center;">17</td>
+                                        <td style="text-align: center;">18</td>
+                                    </tr>
+                                    </thead>
+                                    <thead>
+                                    <tr class="grand-total-row" th:each="grandTotal : ${grandTotal}" th:if="${grandTotal.stateId == 999}">
+                                        <td></td>
+                                        <td th:text="${grandTotal.stateName}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.formattingTotalDistrict != null ? grandTotal.formattingTotalDistrict : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.formattingTotalTehsils != null ? grandTotal.formattingTotalTehsils : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.formattingTotalVillages != null ? grandTotal.formattingTotalVillages : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.formattingTotalRor != null ? grandTotal.formattingTotalRor : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.formattingRorComputerized != null ? grandTotal.formattingRorComputerized : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.rorComputerizedPercent != null ? (grandTotal.rorComputerizedPercent != 0 ? grandTotal.rorComputerizedPercent : 0.0) : 0.0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.formattingvillagesClrCompleted != null ? grandTotal.formattingvillagesClrCompleted : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.clrCompletionPercent != null ? (grandTotal.clrCompletionPercent != 0 ? grandTotal.clrCompletionPercent : 0.0) : 0.0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.formattingTotalLandOwners != null ? grandTotal.formattingTotalLandOwners : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.districtsWithGenderBasedOwnership != null ? grandTotal.districtsWithGenderBasedOwnership : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.formattingTotalMaleLandOwners != null ? grandTotal.formattingTotalMaleLandOwners : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.formattingTotalFemaleLandOwners != null ? grandTotal.formattingTotalFemaleLandOwners : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.formattingTotalOwners != null ? grandTotal.formattingTotalOwners : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.rorAvailableOnline != null ? grandTotal.rorAvailableOnline : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.digitallySignedRorAvailable != null ? grandTotal.digitallySignedRorAvailable : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.digitallySignedRorLegallyValid != null ? grandTotal.digitallySignedRorLegallyValid : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.onlineMutationFacility != null ? grandTotal.onlineMutationFacility : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.autoTriggerMutation != null ? grandTotal.autoTriggerMutation : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.bankRedFlagMortgageInLandRecords != null ? grandTotal.bankRedFlagMortgageInLandRecords : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.formattingDistrictsWithBankRedFlagMortgage != null ? grandTotal.formattingDistrictsWithBankRedFlagMortgage : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.formattingBankBranchesWithRedFlagMortgage != null ? grandTotal.formattingBankBranchesWithRedFlagMortgage : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.landRecordsOnlineFromRegistrationSystem != null ? grandTotal.landRecordsOnlineFromRegistrationSystem : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.revenueCourtProceedingsPaperless != null ? grandTotal.revenueCourtProceedingsPaperless : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.caseFilingRedFlaggedInLandRecordsFromCivilCourts != null ? grandTotal.caseFilingRedFlaggedInLandRecordsFromCivilCourts : 0}" style="font-weight: bold;"></td>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="report, status : ${stateClrList}"
+                                        th:if="${report != null && report.stateId != 999}">
+                                        <td th:text="${status.count}"></td>
+                                        <td><a th:href="@{/physicalProgressReports/clr/district-level/{stateId}(stateId=${report.stateId})}" th:text="${report.stateName}" target="_blank"></a></td>
+                                        <td th:text="${report.formattingTotalDistrict != null ? report.formattingTotalDistrict : 0}"></td>
+                                        <td th:text="${report.formattingTotalTehsils != null ? report.formattingTotalTehsils : 0}"></td>
+                                        <td th:text="${report.formattingTotalVillages != null ? report.formattingTotalVillages : 0}"></td>
+                                        <td th:text="${report.formattingTotalRor != null ? report.formattingTotalRor : 0}"></td>
+                                        <td th:text="${report.formattingRorComputerized != null ? report.formattingRorComputerized : 0}"></td>
+                                        <td th:text="${report.rorComputerizedPercent != null ? (report.rorComputerizedPercent != 0 ? report.rorComputerizedPercent : 0.0) : 0.0}"></td>
+                                        <td th:text="${report.formattingvillagesClrCompleted != null ? report.formattingvillagesClrCompleted : 0}"></td>
+                                        <td th:text="${report.clrCompletionPercent != null ? (report.clrCompletionPercent != 0 ? report.clrCompletionPercent : 0.0) : 0.0}"></td>
+                                        <td th:text="${report.formattingTotalLandOwners != null ? report.formattingTotalLandOwners : 0}"></td>
+                                        <td th:text="${report.districtsWithGenderBasedOwnership != null ? report.districtsWithGenderBasedOwnership : 0}"></td>
+                                        <td th:text="${report.formattingTotalMaleLandOwners != null ? report.formattingTotalMaleLandOwners : 0}"></td>
+                                        <td th:text="${report.formattingTotalFemaleLandOwners != null ? report.formattingTotalFemaleLandOwners : 0}"></td>
+                                        <td th:text="${report.formattingTotalOwners != null ? report.formattingTotalOwners : 0}"></td>
+                                        <td th:text="${report.rorAvailableOnline != null && report.rorAvailableOnline ? 'Yes' : 'No'}"></td>
+                                        <td th:text="${report.digitallySignedRorAvailable != null && report.digitallySignedRorAvailable ? 'Yes' : 'No'}"></td>
+                                        <td th:text="${report.digitallySignedRorLegallyValid != null && report.digitallySignedRorLegallyValid ? 'Yes' : 'No'}"></td>
+                                        <td th:text="${report.onlineMutationFacility != null && report.onlineMutationFacility ? 'Yes' : 'No'}"></td>
+                                        <td th:text="${report.autoTriggerMutation != null && report.autoTriggerMutation ? 'Yes' : 'No'}"></td>
+                                        <td th:text="${report.bankRedFlagMortgageInLandRecords != null && report.bankRedFlagMortgageInLandRecords ? 'Yes' : 'No'}"></td>
+                                        <td th:text="${report.formattingDistrictsWithBankRedFlagMortgage != null ? report.formattingDistrictsWithBankRedFlagMortgage : 0}"></td>
+                                        <td th:text="${report.formattingBankBranchesWithRedFlagMortgage != null ? report.formattingBankBranchesWithRedFlagMortgage : 0}"></td>
+                                        <td th:text="${report.landRecordsOnlineFromRegistrationSystem != null && report.landRecordsOnlineFromRegistrationSystem ? 'Yes' : 'No'}"></td>
+                                        <td th:text="${report.revenueCourtProceedingsPaperless != null && report.revenueCourtProceedingsPaperless ? 'Yes' : 'No'}"></td>
+                                        <td th:text="${report.caseFilingRedFlaggedInLandRecordsFromCivilCourts != null && report.caseFilingRedFlaggedInLandRecordsFromCivilCourts ? 'Yes' : 'No'}"></td>
+                                    </tr>
+                                    </tbody>
+                                    <tfoot>
+                                    <tr class="grand-total-row" th:each="grandTotal : ${grandTotal}" th:if="${grandTotal.stateId == 999}">
+                                        <td></td>
+                                        <td th:text="${grandTotal.stateName}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.formattingTotalDistrict != null ? grandTotal.formattingTotalDistrict : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.formattingTotalTehsils != null ? grandTotal.formattingTotalTehsils : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.formattingTotalVillages != null ? grandTotal.formattingTotalVillages : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.formattingTotalRor != null ? grandTotal.formattingTotalRor : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.formattingRorComputerized != null ? grandTotal.formattingRorComputerized : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.rorComputerizedPercent != null ? (grandTotal.rorComputerizedPercent != 0 ? grandTotal.rorComputerizedPercent : 0.0) : 0.0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.formattingvillagesClrCompleted != null ? grandTotal.formattingvillagesClrCompleted : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.clrCompletionPercent != null ? (grandTotal.clrCompletionPercent != 0 ? grandTotal.clrCompletionPercent : 0.0) : 0.0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.formattingTotalLandOwners != null ? grandTotal.formattingTotalLandOwners : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.districtsWithGenderBasedOwnership != null ? grandTotal.districtsWithGenderBasedOwnership : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.formattingTotalMaleLandOwners != null ? grandTotal.formattingTotalMaleLandOwners : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.formattingTotalFemaleLandOwners != null ? grandTotal.formattingTotalFemaleLandOwners : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.formattingTotalOwners != null ? grandTotal.formattingTotalOwners : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.rorAvailableOnline != null ? grandTotal.rorAvailableOnline : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.digitallySignedRorAvailable != null ? grandTotal.digitallySignedRorAvailable : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.digitallySignedRorLegallyValid != null ? grandTotal.digitallySignedRorLegallyValid : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.onlineMutationFacility != null ? grandTotal.onlineMutationFacility : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.autoTriggerMutation != null ? grandTotal.autoTriggerMutation : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.bankRedFlagMortgageInLandRecords != null ? grandTotal.bankRedFlagMortgageInLandRecords : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.formattingDistrictsWithBankRedFlagMortgage != null ? grandTotal.formattingDistrictsWithBankRedFlagMortgage : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.formattingBankBranchesWithRedFlagMortgage != null ? grandTotal.formattingBankBranchesWithRedFlagMortgage : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.landRecordsOnlineFromRegistrationSystem != null ? grandTotal.landRecordsOnlineFromRegistrationSystem : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.revenueCourtProceedingsPaperless != null ? grandTotal.revenueCourtProceedingsPaperless : 0}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.caseFilingRedFlaggedInLandRecordsFromCivilCourts != null ? grandTotal.caseFilingRedFlaggedInLandRecordsFromCivilCourts : 0}" style="font-weight: bold;"></td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                            <script>
+                                function toggleSortDropdown() {
+                                    var ddlSelect = document.getElementById("ddlSelect");
+                                    var ascDropdown = document.getElementById("ascDropdown");
+                                    if (ddlSelect.value === "Computerized" || ddlSelect.value === "clrCompleted") {
+                                        ascDropdown.style.display = "block";
+                                    } else {
+                                        ascDropdown.style.display = "none";
+                                    }
+                                }
+                            </script>
+                            <script>
+                                $(document).ready(function () {
+                                    $('#ddlSelect').change(function () {
+                                        var selectedValue = $(this).val();
+                                        if (selectedValue != '') {
+                                            $('#ascDropdown').show();
+                                        } else {
+                                            $('#ascDropdown').hide();
+                                        }
+                                    });
+                                });
+                                $('#resetButton').click(function () {
+                                    $('#searchForm')[0].reset();
+                                    $('#searchForm').trigger('submit');
+                                });
+
+
+                            </script>
+                            <script>
+                                $(document).ready(function () {
+                                    if ($.fn.DataTable.isDataTable('#example2')) {
+                                        $('#example2').DataTable().destroy();
+                                    }
+
+                                    $('#example2').DataTable({
+                                        paging: true,
+                                        lengthMenu: [5, 10, 15, 20, 25, 30, 36, 50, 100],
+                                        pageLength: 36,
+                                        drawCallback: function () {
+                                            var api = this.api();
+                                            var info = api.page.info();
+                                            if (info.page === info.pages - 1) {
+                                                $('#example2 tfoot').show();
+                                            } else {
+                                                $('#example2 tfoot').hide();
+                                            }
+                                        }
+                                    });
+
+                                    // Initialize generic frozen columns (first 2 columns, first 3 header rows sticky, include footer)
+                                    if (window.freezeTableColumns) {
+                                        freezeTableColumns('#example2', {
+                                            columns: 2,
+                                            headerStickyRows: [0, 1, 2],
+                                            footerSticky: true
+                                        });
+                                    }
+
+                                    // Mouse drag functionality for horizontal scrolling
+                                    let isDown = false;
+                                    let startX;
+                                    let scrollLeft;
+                                    const tableContainer = $('.table-responsive')[0];
+                                    const tableElement = $('#example2')[0];
+
+                                    if (!tableContainer || !tableElement) {
+                                        console.log('Table container or table element not found');
+                                        return;
+                                    }
+
+                                    // Mouse down event - only on table content, not DataTables controls
+                                    $(tableElement).on('mousedown', function(e) {
+                                        // Only handle left mouse button
+                                        if (e.which !== 1) return;
+                                        
+                                        // Check if clicking on DataTables controls
+                                        if ($(e.target).closest('.dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_paginate').length > 0) {
+                                            return; // Don't interfere with DataTables controls
+                                        }
+                                        
+                                        isDown = true;
+                                        tableElement.classList.add('active');
+                                        startX = e.pageX - tableContainer.offsetLeft;
+                                        scrollLeft = tableContainer.scrollLeft;
+                                        
+                                        e.preventDefault(); // Prevent text selection
+                                    });
+
+                                    // Mouse leave event
+                                    $(tableElement).on('mouseleave', function() {
+                                        isDown = false;
+                                        tableElement.classList.remove('active');
+                                    });
+
+                                    // Mouse up event
+                                    $(tableElement).on('mouseup', function() {
+                                        isDown = false;
+                                        tableElement.classList.remove('active');
+                                    });
+
+                                    // Mouse move event
+                                    $(tableElement).on('mousemove', function(e) {
+                                        if (!isDown) return;
+                                        e.preventDefault();
+                                        const x = e.pageX - tableContainer.offsetLeft;
+                                        const walk = (x - startX) * 1.5; // Scroll speed multiplier
+                                        tableContainer.scrollLeft = scrollLeft - walk;
+                                    });
+
+                                    console.log('Mouse drag functionality initialized for state CLR table');
+                                    console.log('Table container:', tableContainer);
+                                    console.log('Table element:', tableElement);
+                                });
+
+                            </script>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+    <script th:src="@{/js/freeze-columns.js}"></script>
+</body>
+</html>

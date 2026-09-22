@@ -1,0 +1,690 @@
+<div th:fragment="igr-mis-data">
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <!-- Horizontal Form -->
+          <div class="card card-info">
+            <div class="card-header">
+              <h3 class="card-title">IGR MIS Data Entry Form</h3>
+            </div>
+
+<!--            <div id="message">-->
+<!--              <div th:if="${message}" class="alert alert-success" th:text="${message}" id="auto-close-message"></div>-->
+<!--            </div>-->
+            <div class="card-body">
+              <form th:action="@{/igr/igr-mis-data/save}" th:object="${igrMISDataEntry}"  method="post" hx-target="#content" id="igrMisDataForm">
+                <input type="hidden" th:field="*{id}" />
+                <input type="hidden" th:field="*{version}" />
+
+
+
+                <div class="row">
+
+                  <!-- Last Updated Date -->
+                  <div class="col-md-12 mb-3">
+                    <div class="form-group row">
+                      <label class="col-md-8 col-form-label">
+                        <span class="red-text"></span> Last Updated Date:
+                      </label>
+                      <div class="col-md-4">
+                        <span th:text="${igrMISDataEntry.updateOnDate}"></span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Number of SROs in the State -->
+                  <div class="col-md-12 mb-3">
+                    <div class="form-group row">
+                      <label for="numberOfSROsInState" class="col-md-8 col-form-label">
+                        <span class="red-text">[1]</span> Number of SROs in the State:
+                      </label>
+                      <div class="col-md-4">
+                        <input type="number" id="numberOfSROsInState" name="numberOfSROsInState"
+                          th:field="*{numberOfSROsInState}" class="form-control"  min="0"
+                          oninput="validateSRONumbers()" onchange="validateAndResetField()">
+                        <small id="stateError" class="text-danger"></small>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Number of SROs using Online Registration -->
+                  <div class="col-md-12 mb-3">
+                    <div class="form-group row">
+                      <label for="numberOfSROsUsingOnlineRegistration" class="col-md-8 col-form-label">
+                        <span class="red-text">[2]</span> Number of SROs using online registration application:
+                      </label>
+                      <div class="col-md-4">
+                        <input type="number" id="numberOfSROsUsingOnlineRegistration"
+                          name="numberOfSROsUsingOnlineRegistration" th:field="*{numberOfSROsUsingOnlineRegistration}"
+                          class="form-control"  min="0" value="0" oninput="validateSRONumbers()" onchange="validateAndResetField()">
+                        <small id="registrationError" class="text-danger"></small>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Legacy Records Available From Year (SRO) -->
+                  <div class="col-md-12 mb-3">
+                    <div class="form-group row">
+                      <label for="legacyRecordsAvailableFromYearSRO" class="col-md-8 col-form-label">
+                        <span class="red-text">[3]</span> Year from which Legacy Records digitized and available for
+                        search by SRO official:
+                      </label>
+                      <div class="col-md-4">
+                        <input type="date" id="legacyRecordsAvailableFromYearSRO"
+                          name="legacyRecordsAvailableFromYearSRO" th:field="*{legacyRecordsAvailableFromYearSRODate}"
+                          class="form-control">
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Legacy Records Available From Year (Public) -->
+                  <div class="col-md-12 mb-3">
+                    <div class="form-group row">
+                      <label for="legacyRecordsAvailableFromYearPublic" class="col-md-8 col-form-label">
+                        <span class="red-text">[4]</span> Year from which Legacy Records digitized and available for
+                        search by public:
+                      </label>
+                      <div class="col-md-4">
+                        <input type="date" id="legacyRecordsAvailableFromYearPublic"
+                          name="legacyRecordsAvailableFromYearPublic"
+                          th:field="*{legacyRecordsAvailableFromYearPublicDate}" class="form-control">
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Standard Deed Templates Available -->
+                  <div class="col-md-12 mb-3">
+                    <div class="form-group row">
+                      <label for="standardDeedTemplatesAvailable" class="col-md-8 col-form-label">
+                        <span class="red-text">[5]</span> Are standard deed templates available in Registration System
+                        with option to customize/ generate auto-deeds:
+                      </label>
+                      <div class="col-md-4">
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="standardDeedTemplatesAvailableYes"
+                            name="standardDeedTemplatesAvailable" th:field="*{standardDeedTemplatesAvailable}"
+                            value="true" class="form-check-input">
+                          <label for="standardDeedTemplatesAvailableYes" class="form-check-label">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="standardDeedTemplatesAvailableNo"
+                            name="standardDeedTemplatesAvailable" th:field="*{standardDeedTemplatesAvailable}"
+                            value="false" class="form-check-input"
+                            th:checked="${standardDeedTemplatesAvailable == null || !standardDeedTemplatesAvailable}">
+                          <label for="standardDeedTemplatesAvailableNo" class="form-check-label">No</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Circle Rates Visible to Public -->
+                  <div class="col-md-12 mb-3">
+                    <div class="form-group row">
+                      <label for="circleRatesVisibleToPublic" class="col-md-8 col-form-label">
+                        <span class="red-text">[6]</span> Are circle rates made visible to public on Registration
+                        System:
+                      </label>
+                      <div class="col-md-4">
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="circleRatesVisibleToPublicYes" name="circleRatesVisibleToPublic"
+                            th:field="*{circleRatesVisibleToPublic}" value="true" class="form-check-input">
+                          <label for="circleRatesVisibleToPublicYes" class="form-check-label">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="circleRatesVisibleToPublicNo" name="circleRatesVisibleToPublic"
+                            th:field="*{circleRatesVisibleToPublic}" value="false" class="form-check-input"
+                            th:checked="${circleRatesVisibleToPublic == null || !circleRatesVisibleToPublic}">
+                          <label for="circleRatesVisibleToPublicNo" class="form-check-label">No</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Automatic Fee Calculation -->
+                  <div class="col-md-12 mb-3">
+                    <div class="form-group row">
+                      <label for="automaticFeeCalculation" class="col-md-8 col-form-label">
+                        <span class="red-text">[7]</span> Is fee calculation done automatically by Registration System
+                        once property details are filled:
+                      </label>
+                      <div class="col-md-4">
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="automaticFeeCalculationYes" name="automaticFeeCalculation"
+                            th:field="*{automaticFeeCalculation}" value="true" class="form-check-input">
+                          <label for="automaticFeeCalculationYes" class="form-check-label">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="automaticFeeCalculationNo" name="automaticFeeCalculation"
+                            th:field="*{automaticFeeCalculation}" value="false" class="form-check-input"
+                            th:checked="${automaticFeeCalculation == null || !automaticFeeCalculation}">
+                          <label for="automaticFeeCalculationNo" class="form-check-label">No</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Integration with e-Stamp System -->
+                  <div class="col-md-12 mb-3">
+                    <div class="form-group row">
+                      <label for="integrationWithEStampSystem" class="col-md-8 col-form-label">
+                        <span class="red-text">[8]</span> Is Registration System integrated with e-Stamp System to
+                        make online payment:
+                      </label>
+                      <div class="col-md-4">
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="integrationWithEStampSystemYes" name="integrationWithEStampSystem"
+                            th:field="*{integrationWithEStampSystem}" value="true" class="form-check-input">
+                          <label for="integrationWithEStampSystemYes" class="form-check-label">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="integrationWithEStampSystemNo" name="integrationWithEStampSystem"
+                            th:field="*{integrationWithEStampSystem}" value="false" class="form-check-input"
+                            th:checked="${integrationWithEStampSystem == null || !integrationWithEStampSystem}">
+                          <label for="integrationWithEStampSystemNo" class="form-check-label">No</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Refund Option Available -->
+                  <div class="col-md-12 mb-3">
+                    <div class="form-group row">
+                      <label for="refundOptionAvailable" class="col-md-8 col-form-label">
+                        <span class="red-text">[9]</span> Is option available for refund of paid fees directly into
+                        bank account of party, if registration is not proceeded with:
+                      </label>
+                      <div class="col-md-4">
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="refundOptionAvailableYes" name="refundOptionAvailable"
+                            th:field="*{refundOptionAvailable}" value="true" class="form-check-input">
+                          <label for="refundOptionAvailableYes" class="form-check-label">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="refundOptionAvailableNo" name="refundOptionAvailable"
+                            th:field="*{refundOptionAvailable}" value="false" class="form-check-input"
+                            th:checked="${refundOptionAvailable == null || !refundOptionAvailable}">
+                          <label for="refundOptionAvailableNo" class="form-check-label">No</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+
+
+                  <div class="col-md-12 mb-3">
+                    <div class="form-group row">
+                      <label for="uploadSupportingDocumentsOption" class="col-md-8 col-form-label">
+                        <span class="red-text">[10]</span> Is option available in Registration System to upload supporting documents?
+                      </label>
+                      <div class="col-md-4">
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="uploadSupportingDocumentsOptionYes" name="uploadSupportingDocumentsOption"
+                                 th:field="*{uploadSupportingDocumentsOption}" value="true" class="form-check-input">
+                          <label for="uploadSupportingDocumentsOptionYes" class="form-check-label">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="uploadSupportingDocumentsOptionNo" name="uploadSupportingDocumentsOption"
+                                 th:field="*{uploadSupportingDocumentsOption}" value="false" class="form-check-input"
+                                 th:checked="${uploadSupportingDocumentsOption == null || !uploadSupportingDocumentsOption}">
+                          <label for="uploadSupportingDocumentsOptionNo" class="form-check-label">No</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Online Verification of Documents -->
+                  <div class="col-md-12 mb-3">
+                    <div class="form-group row">
+                      <label for="onlineVerificationOfDocuments" class="col-md-8 col-form-label">
+                        <span class="red-text">[11]</span> Is facility of online verification of documents available
+                        in Registration System:
+                      </label>
+                      <div class="col-md-4">
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="onlineVerificationOfDocumentsYes" name="onlineVerificationOfDocuments"
+                            th:field="*{onlineVerificationOfDocuments}" value="true" class="form-check-input">
+                          <label for="onlineVerificationOfDocumentsYes" class="form-check-label">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="onlineVerificationOfDocumentsNo" name="onlineVerificationOfDocuments"
+                            th:field="*{onlineVerificationOfDocuments}" value="false" class="form-check-input"
+                            th:checked="${onlineVerificationOfDocuments == null || !onlineVerificationOfDocuments}">
+                          <label for="onlineVerificationOfDocumentsNo" class="form-check-label">No</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Signatures Obtained Digitally -->
+                  <div class="col-md-12 mb-3">
+                    <div class="form-group row">
+                      <label for="signaturesObtainedDigitally" class="col-md-8 col-form-label">
+                        <span class="red-text">[12]</span> Are signatures obtained from parties (and witnesses)
+                        through digital pen and pad or is it taken physically on paper?
+                      </label>
+                      <div class="col-md-4">
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="signaturesObtainedDigitallyYes" name="signaturesObtainedDigitally"
+                            th:field="*{signaturesObtainedDigitally}" value="true" class="form-check-input">
+                          <label for="signaturesObtainedDigitallyYes" class="form-check-label">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="signaturesObtainedDigitallyNo" name="signaturesObtainedDigitally"
+                            th:field="*{signaturesObtainedDigitally}" value="false" class="form-check-input"
+                            th:checked="${signaturesObtainedDigitally == null || !signaturesObtainedDigitally}">
+                          <label for="signaturesObtainedDigitallyNo" class="form-check-label">No</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Digital Signature Enabled for SRO -->
+                  <div class="col-md-12 mb-3">
+                    <div class="form-group row">
+                      <label for="digitalSignatureEnabledForSRO" class="col-md-8 col-form-label">
+                        <span class="red-text">[13]</span> Is digital signature enabled in Registration System for
+                        SRO?
+                      </label>
+                      <div class="col-md-4">
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="digitalSignatureEnabledForSROYes" name="digitalSignatureEnabledForSRO"
+                            th:field="*{digitalSignatureEnabledForSRO}" value="true" class="form-check-input">
+                          <label for="digitalSignatureEnabledForSROYes" class="form-check-label">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="digitalSignatureEnabledForSRONo" name="digitalSignatureEnabledForSRO"
+                            th:field="*{digitalSignatureEnabledForSRO}" value="false" class="form-check-input"
+                            th:checked="${digitalSignatureEnabledForSRO == null || !digitalSignatureEnabledForSRO}">
+                          <label for="digitalSignatureEnabledForSRONo" class="form-check-label">No</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- e-KYC Option Available -->
+                  <div class="col-md-12 mb-3">
+                    <div class="form-group row">
+                      <label for="eKYCOptionAvailable" class="col-md-8 col-form-label">
+                        <span class="red-text">[14]</span> Is option of e-KYC available in Registration System?
+                      </label>
+                      <div class="col-md-4">
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="eKYCOptionAvailableYes" name="eKYCOptionAvailable"
+                            th:field="*{eKYCOptionAvailable}" value="true" class="form-check-input">
+                          <label for="eKYCOptionAvailableYes" class="form-check-label">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="eKYCOptionAvailableNo" name="eKYCOptionAvailable"
+                            th:field="*{eKYCOptionAvailable}" value="false" class="form-check-input"
+                            th:checked="${eKYCOptionAvailable == null || !eKYCOptionAvailable}">
+                          <label for="eKYCOptionAvailableNo" class="form-check-label">No</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Video Conferencing Option Available -->
+                  <div class="col-md-12 mb-3">
+                    <div class="form-group row">
+                      <label for="videoConferencingOptionAvailable" class="col-md-8 col-form-label">
+                        <span class="red-text">[15]</span> Is option available in Registration System for
+                        video-conferencing with parties?
+                      </label>
+                      <div class="col-md-4">
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="videoConferencingOptionAvailableYes"
+                            name="videoConferencingOptionAvailable" th:field="*{videoConferencingOptionAvailable}"
+                            value="true" class="form-check-input">
+                          <label for="videoConferencingOptionAvailableYes" class="form-check-label">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="videoConferencingOptionAvailableNo"
+                            name="videoConferencingOptionAvailable" th:field="*{videoConferencingOptionAvailable}"
+                            value="false" class="form-check-input"
+                            th:checked="${videoConferencingOptionAvailable == null || !videoConferencingOptionAvailable}">
+                          <label for="videoConferencingOptionAvailableNo" class="form-check-label">No</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Home Visit Module Available -->
+                  <div class="col-md-12 mb-3">
+                    <div class="form-group row">
+                      <label for="homeVisitModuleAvailable" class="col-md-8 col-form-label">
+                        <span class="red-text">[16]</span> Is Home Visit module available in Registration System?
+                      </label>
+                      <div class="col-md-4">
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="homeVisitModuleAvailableYes" name="homeVisitModuleAvailable"
+                            th:field="*{homeVisitModuleAvailable}" value="true" class="form-check-input">
+                          <label for="homeVisitModuleAvailableYes" class="form-check-label">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="homeVisitModuleAvailableNo" name="homeVisitModuleAvailable"
+                            th:field="*{homeVisitModuleAvailable}" value="false" class="form-check-input"
+                            th:checked="${homeVisitModuleAvailable == null || !homeVisitModuleAvailable}">
+                          <label for="homeVisitModuleAvailableNo" class="form-check-label">No</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Automatic Email Notifications -->
+                  <div class="col-md-12 mb-3">
+                    <div class="form-group row">
+                      <label for="automaticEmailNotifications" class="col-md-8 col-form-label">
+                        <span class="red-text">[17]</span> Are email/ messages sent automatically to parties regarding
+                        important events in the registration process?
+                      </label>
+                      <div class="col-md-4">
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="automaticEmailNotificationsYes" name="automaticEmailNotifications"
+                            th:field="*{automaticEmailNotifications}" value="true" class="form-check-input">
+                          <label for="automaticEmailNotificationsYes" class="form-check-label">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="automaticEmailNotificationsNo" name="automaticEmailNotifications"
+                            th:field="*{automaticEmailNotifications}" value="false" class="form-check-input"
+                            th:checked="${automaticEmailNotifications == null || !automaticEmailNotifications}">
+                          <label for="automaticEmailNotificationsNo" class="form-check-label">No</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Digital Format Registered Documents -->
+                  <div class="col-md-12 mb-3">
+                    <div class="form-group row">
+                      <label for="digitalFormatRegisteredDocuments" class="col-md-8 col-form-label">
+                        <span class="red-text">[18]</span> Are registered documents sent automatically in digital
+                        format (portal/ email/ WhatsApp) to parties concerned?
+                      </label>
+                      <div class="col-md-4">
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="digitalFormatRegisteredDocumentsYes"
+                            name="digitalFormatRegisteredDocuments" th:field="*{digitalFormatRegisteredDocuments}"
+                            value="true" class="form-check-input">
+                          <label for="digitalFormatRegisteredDocumentsYes" class="form-check-label">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="digitalFormatRegisteredDocumentsNo"
+                            name="digitalFormatRegisteredDocuments" th:field="*{digitalFormatRegisteredDocuments}"
+                            value="false" class="form-check-input"
+                            th:checked="${digitalFormatRegisteredDocuments == null || !digitalFormatRegisteredDocuments}">
+                          <label for="digitalFormatRegisteredDocumentsNo" class="form-check-label">No</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Online Grievance Redressal System -->
+                  <div class="col-md-12 mb-3">
+                    <div class="form-group row">
+                      <label for="onlineGrievanceRedressalSystem" class="col-md-8 col-form-label">
+                        <span class="red-text">[19]</span> Is there a provision for an online Grievance redressal
+                        system in the Registration System?
+                      </label>
+                      <div class="col-md-4">
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="onlineGrievanceRedressalSystemYes"
+                            name="onlineGrievanceRedressalSystem" th:field="*{onlineGrievanceRedressalSystem}"
+                            value="true" class="form-check-input">
+                          <label for="onlineGrievanceRedressalSystemYes" class="form-check-label">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="onlineGrievanceRedressalSystemNo"
+                            name="onlineGrievanceRedressalSystem" th:field="*{onlineGrievanceRedressalSystem}"
+                            value="false" class="form-check-input"
+                            th:checked="${onlineGrievanceRedressalSystem == null || !onlineGrievanceRedressalSystem}">
+                          <label for="onlineGrievanceRedressalSystemNo" class="form-check-label">No</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Fetch Property Details from Land Records -->
+                  <div class="col-md-12 mb-3">
+                    <div class="form-group row">
+                      <label for="fetchPropertyDetailsFromLandRecords" class="col-md-8 col-form-label">
+                        <span class="red-text">[20]</span> Is the option available in Registration System to fetch
+                        property details from Land Records System (with system-generated proof)?
+                      </label>
+                      <div class="col-md-4">
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="fetchPropertyDetailsFromLandRecordsYes"
+                            name="fetchPropertyDetailsFromLandRecords" th:field="*{fetchPropertyDetailsFromLandRecords}"
+                            value="true" class="form-check-input">
+                          <label for="fetchPropertyDetailsFromLandRecordsYes" class="form-check-label">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="fetchPropertyDetailsFromLandRecordsNo"
+                            name="fetchPropertyDetailsFromLandRecords" th:field="*{fetchPropertyDetailsFromLandRecords}"
+                            value="false" class="form-check-input"
+                            th:checked="${fetchPropertyDetailsFromLandRecords == null || !fetchPropertyDetailsFromLandRecords}">
+                          <label for="fetchPropertyDetailsFromLandRecordsNo" class="form-check-label">No</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Auto-Trigger Mutation Available -->
+                  <div class="col-md-12 mb-3">
+                    <div class="form-group row">
+                      <label for="autoTriggerMutationAvailable" class="col-md-8 col-form-label">
+                        <span class="red-text">[21]</span> Does the Registration System have the facility of
+                        auto-trigger mutation (in specific cases)?
+                      </label>
+                      <div class="col-md-4">
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="autoTriggerMutationAvailableYes" name="autoTriggerMutationAvailable"
+                            th:field="*{autoTriggerMutationAvailable}" value="true" class="form-check-input">
+                          <label for="autoTriggerMutationAvailableYes" class="form-check-label">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="autoTriggerMutationAvailableNo" name="autoTriggerMutationAvailable"
+                            th:field="*{autoTriggerMutationAvailable}" value="false" class="form-check-input"
+                            th:checked="${autoTriggerMutationAvailable == null || !autoTriggerMutationAvailable}">
+                          <label for="autoTriggerMutationAvailableNo" class="form-check-label">No</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Revenue Court Case Red-Flagged -->
+                  <div class="col-md-12 mb-3">
+                    <div class="form-group row">
+                      <label for="revenueCourtCaseRedFlagged" class="col-md-8 col-form-label">
+                        <span class="red-text">[22]</span> Is pendency of revenue court case mentioned/ red-flagged in
+                        the Registration System (automatically from RCCMS software)?
+                      </label>
+                      <div class="col-md-4">
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="revenueCourtCaseRedFlaggedYes" name="revenueCourtCaseRedFlagged"
+                            th:field="*{revenueCourtCaseRedFlagged}" value="true" class="form-check-input">
+                          <label for="revenueCourtCaseRedFlaggedYes" class="form-check-label">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="revenueCourtCaseRedFlaggedNo" name="revenueCourtCaseRedFlagged"
+                            th:field="*{revenueCourtCaseRedFlagged}" value="false" class="form-check-input"
+                            th:checked="${revenueCourtCaseRedFlagged == null || !revenueCourtCaseRedFlagged}">
+                          <label for="revenueCourtCaseRedFlaggedNo" class="form-check-label">No</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Masking Sensitive Details in Registered Deeds -->
+                  <div class="col-md-12 mb-3">
+                    <div class="form-group row">
+                      <label for="maskingSensitiveDetailsInRegisteredDeeds" class="col-md-8 col-form-label">
+                        <span class="red-text">[23]</span> Are Aadhaar, PAN, and fingerprint details masked on the
+                        Registered Deeds in the System during storage (implementation of AI Nibhrit solution)?
+                      </label>
+                      <div class="col-md-4">
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="maskingSensitiveDetailsInRegisteredDeedsYes"
+                            name="maskingSensitiveDetailsInRegisteredDeeds"
+                            th:field="*{maskingSensitiveDetailsInRegisteredDeeds}" value="true"
+                            class="form-check-input">
+                          <label for="maskingSensitiveDetailsInRegisteredDeedsYes" class="form-check-label">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="maskingSensitiveDetailsInRegisteredDeedsNo"
+                            name="maskingSensitiveDetailsInRegisteredDeeds"
+                            th:field="*{maskingSensitiveDetailsInRegisteredDeeds}" value="false"
+                            class="form-check-input"
+                            th:checked="${maskingSensitiveDetailsInRegisteredDeeds == null || !maskingSensitiveDetailsInRegisteredDeeds}">
+                          <label for="maskingSensitiveDetailsInRegisteredDeedsNo" class="form-check-label">No</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Store Documents in Digilocker -->
+                  <div class="col-md-12 mb-3">
+                    <div class="form-group row">
+                      <label for="storeDocumentsInDigilocker" class="col-md-8 col-form-label">
+                        <span class="red-text">[24]</span> Is there a facility to store Registered documents in
+                        Digilocker?
+                      </label>
+                      <div class="col-md-4">
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="storeDocumentsInDigilockerYes" name="storeDocumentsInDigilocker"
+                            th:field="*{storeDocumentsInDigilocker}" value="true" class="form-check-input">
+                          <label for="storeDocumentsInDigilockerYes" class="form-check-label">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input type="radio" id="storeDocumentsInDigilockerNo" name="storeDocumentsInDigilocker"
+                            th:field="*{storeDocumentsInDigilocker}" value="false" class="form-check-input"
+                            th:checked="${storeDocumentsInDigilocker == null || !storeDocumentsInDigilocker}">
+                          <label for="storeDocumentsInDigilockerNo" class="form-check-label">No</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div th:if="${message != null}"
+                       id="flash-message"
+                       class="alert"
+                       th:classappend="${messageType == 'success'} ? 'alert-success' : 'alert-danger'">
+                    <span th:text="${message}"></span>
+                  </div>
+                  <!-- Submit Button -->
+                  <div class="col-md-12 d-flex justify-content-center mt-4">
+                    <button type="submit"
+                      class="btn btn-primary btn-lg px-4 py-2 rounded-pill shadow-sm hover-shadow">Save</button>
+                  </div>
+
+                </div>
+
+
+              </form>
+            </div>
+            <script>
+        // Hide the message after 10 seconds
+        setTimeout(function() {
+            document.getElementById('flash-message').style.display = 'none';
+        }, 10000);
+
+        </script>
+
+            <script>
+  function validateSRONumbers() {
+    const numberOfSROsInState = parseInt(document.getElementById('numberOfSROsInState').value || 0);
+    const numberOfSROsUsingOnlineRegistration = parseInt(document.getElementById('numberOfSROsUsingOnlineRegistration').value || 0);
+
+    // Reset error messages
+    document.getElementById('stateError').textContent = '';
+    document.getElementById('registrationError').textContent = '';
+
+    // If the second field exceeds the first, reset it to 0 and display an error message
+    if (numberOfSROsUsingOnlineRegistration > numberOfSROsInState) {
+      document.getElementById('numberOfSROsUsingOnlineRegistration').value = 0;
+      document.getElementById('registrationError').textContent = 'Number of SROs using online registration cannot exceed the total number of SROs in the state.';
+    }
+  }
+</script>
+            <script>
+    $(document).ready(function() {
+      // Store the original value when the page loads
+      window.originalNumberOfSROsInState = document.getElementById('numberOfSROsInState').value;
+       window.originalNumberOfSROsUsingOnlineRegistration = document.getElementById('numberOfSROsUsingOnlineRegistration').value;
+    });
+
+    function validateAndResetField() {
+      let inputField = document.getElementById('numberOfSROsInState');
+       let inputField1 = document.getElementById('numberOfSROsUsingOnlineRegistration');
+      if (inputField.value.trim() === '') {
+        // Reset to original value if the field is empty
+        inputField.value = window.originalNumberOfSROsInState;
+      }
+       if (inputField1.value.trim() === '') {
+        // Reset to original value if the field is empty
+        inputField1.value = window.originalNumberOfSROsUsingOnlineRegistration;
+      }
+    }
+  </script>
+
+
+            <script>
+  $(document).ready(function() {
+    // Attach submit event listener to the form
+    $('#igrMisDataForm').submit(function(e) {
+        e.preventDefault(); // Prevent the default form submission
+        var form = $(this);
+        var formData = new FormData(form[0]);
+        $.ajax({
+            type: 'POST',
+            url: form.attr('action'),
+            data: formData,
+            processData: false, // Prevent jQuery from automatically transforming the data into a query string
+            contentType: false, // Tell jQuery not to set content type
+            success: function(data) {
+                // Show success message and refresh CAPTCHA
+
+                showSuccessAlert(data);
+
+
+            },
+            error: function(jqXHR) {
+                // Show error message
+
+                showErrorAlert('Error', jqXHR.responseText);
+
+            }
+        });
+    });
+
+
+
+
+    // Function to display a SweetAlert success message
+    function showSuccessAlert(data) {
+        Swal.fire({
+            title: 'Success',
+            text: data,
+            icon: 'success',
+            confirmButtonText: 'OK'
+        });
+    }
+
+    // Function to display a SweetAlert error message
+    function showErrorAlert(title, text) {
+        Swal.fire({
+            title: title,
+            text: text,
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    }
+});
+
+</script>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </section>
+</div>

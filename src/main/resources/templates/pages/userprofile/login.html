@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/dashboard1">
+
+<head>
+    <meta charset="UTF-8">
+    <title>DILRMP-MIS-4.0-login</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script type="text/javascript" th:src="@{/static/dilrmp/physical-monitoring/cryptoJs.min.js}"></script>
+
+
+    <style>
+        .flex-message {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #007bff;
+            margin-bottom: 20px;
+            font-size: 17px;
+            /*color: #8B008B;*/
+            color: 	#FFFFFF;
+            font-weight: 500;
+            overflow: hidden;
+        }
+
+        .flex-message p {
+            margin: 0;
+            animation: marquee 25s linear infinite;
+        }
+
+        @keyframes marquee {
+            0% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        .nato-text {
+    font-family: var(--font-nato);
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 30px;
+    color: #000;
+    margin-bottom: 0.0rem;
+}
+.shadow-box {
+    box-shadow: 0px 3px 6px #00000029;
+    margin-top: 5rem;
+    margin-bottom: 5rem;
+}
+
+.btn-link:hover {
+    color: #ffffff;
+    text-decoration: none;
+
+}
+.btn-primary {
+    color: #fff;
+    background-color: #8ddfef;
+    border-color: #36d0e9;
+    box-shadow: none;
+}
+
+.btn-link {
+    font-weight: 400;
+    color: #4db1c1;
+    text-decoration: none;
+}
+button:hover {
+    background-color: #8ddfef;
+}
+
+
+
+    </style>
+
+    <script>
+        jQuery.noConflict();
+        $(document).ready(function () {
+            $('#pwd').attr('autocomplete', 'new-password');
+            var passwordEntered = false;
+            function hashAndSet(valueSelector, oneTimeTokenSelector) {
+                var oneTimeToken = "";
+                var value = $(valueSelector).val();
+                oneTimeToken = $(oneTimeTokenSelector).val();
+                var combinedValue = CryptoJS.SHA256(CryptoJS.SHA256(value) + oneTimeToken);
+                var hashedValue = combinedValue;
+                $(valueSelector).val(hashedValue);
+            }
+            $('#pwd').on('blur', function () {
+                if (passwordEntered) {
+                    hashAndSet('#pwd', '#oneTimeToken');
+                    passwordEntered = false;
+                }
+            });
+            //
+            $('#pwd').on('input', function () {
+                passwordEntered = true;
+            });
+            //
+            $(document).on('click', function (event) {
+                if (!$(event.target).closest('#pwd').length) {
+                    $('#pwd').trigger('blur');
+                }
+            });
+            jQuery('#refreshCaptcha').click(function () {
+
+                $('#captchaImage').attr('src', 'dilrmp/captcha?' + new Date().getTime());
+
+            });
+
+            $('#login').submit(function (event) {
+                var userName = $("#loginIdRead").val();
+                var captcha = $("#captcha").val();
+                var captcha1 = $("#captcha").val();
+
+                var pwd = $("#password_show_for_otp").val();
+                var pwd1 = $("#pwd").val();
+                var bol = false;
+
+                if (userName != '') {
+                    $("#invalidotp").text("");
+                    $('#loginIdRead').css({
+                        "background-color": "white"
+                    });
+                    bol = true;
+                } else {
+                    $("#invalidotp").text("Please Enter Username");
+                    $('#loginIdRead').css({
+                        "background-color": "yellow"
+                    });
+                    $('#loginIdRead').focus();
+
+                    bol = false;
+                    return bol;
+                }
+
+                if (pwd1 != '') {
+                    $("#invalidotp").text("");
+                    $('#pwd').css({
+                        "background-color": "white"
+                    });
+                    bol = true;
+                } else {
+                    $("#invalidotp").text("Please Enter Password");
+                    $('#pwd').css({
+                        "background-color": "yellow"
+                    });
+                    $('#pwd').focus();
+
+                    bol = false;
+                    return bol;
+                }
+
+                if (captcha != '') {
+                    if (captcha.length == 6) {
+                        $("#invalidotp").text("");
+                        $('#captcha').css({
+                            "background-color": "white"
+                        });
+                        bol = true;
+                    } else {
+                        $("#invalidotp").text("Please Enter 6 digit Captcha");
+                        $('#captcha').css({
+                            "background-color": "yellow"
+                        });
+                        $('#captcha').focus();
+
+                        bol = false;
+                        return bol;
+                    }
+                } else {
+                    $("#invalidotp").text("Please Enter Captcha");
+                    $('#captcha').css({
+                        "background-color": "yellow"
+                    });
+                    $('#captcha').focus();
+                    bol = false;
+                    return bol;
+
+                }
+                event.preventDefault();
+                $(this).unbind('submit').submit();
+            });
+        });
+    </script>
+
+    <script th:inline="javascript">
+        // AJAX request to fetch and update the token
+        $("#myBtn").on("click", function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: "token",
+                type: "GET",
+                success: function (data) {
+                    $("#oneTimeToken").val(data);
+                },
+                error: function (error) {
+                    console.error("Error fetching token:", error);
+                }
+            });
+        });
+    </script>
+</head>
+
+<body>
+<!-- Content Wrapper. Contains page content -->
+<div class="content" layout:fragment="content">
+
+    <section id="top-nav" class="bg-secondary">
+
+<!--        <div class="card-header" style="background-color: #8ddfef; text-align: center;">-->
+<!--            <marquee>-->
+<!--                <h4 style="text-align: center; color:#000;">-->
+<!--                    New User ID 's  available in respective State/UT Login  /  नई उपयोगकर्ता आईडी संबंधित राज्य/केंद्र शासित प्रदेश लॉगिन पर उपलब्ध है-->
+<!--                </h4>-->
+<!--            </marquee>-->
+
+<!--        </div>-->
+
+        <div class="card-header" style="background-color: #8ddfef; text-align: center; padding: 10px;">
+            <div style="display: inline-block; background-color: #ffffff; padding: 10px 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                <marquee scrollamount="10" style="font-family: Arial, sans-serif; font-size: 16px; color: red; font-weight: bold;">
+                    <h4 style="margin: 4px;">New User ID 's  available in respective State/UT Login  /  नई उपयोगकर्ता आईडी संबंधित राज्य/केंद्र शासित प्रदेश लॉगिन पर उपलब्ध है</h4>
+                </marquee>
+            </div>
+        </div>
+    </section>
+
+    <div class="row justify-content-center" >
+        <div class="card text-center col-md-4 mt-3 col-sm-10 p-0 shadow-box" >
+            <div class="card-header p-0">
+                <h2>Login Page</h2>
+            </div>
+
+            <div th:if="${param.error}">
+                <p style="color: red;" th:text="${param.error}"></p>
+            </div>
+<!--            <div th:if="${param.error}">-->
+<!--                <p style="color: red;">Invalid Credentials! Please try again.</p>-->
+<!--            </div>-->
+
+            <div th:if="${param.errorCaptcha}">
+                <p style="color: red;">Invalid Captcha! Please try again</p>
+            </div>
+
+
+            <div th:if="${message!= null}" class="alert alert-danger" role="alert">
+                <span th:text="${message}"></span>
+            </div>
+
+            <div th:if="${session.error}">
+                <p style="color: red;" th:text="${session.error}"></p>
+            </div>
+            <div class="card-body">
+                <p class="card-tittle">
+                <form th:action="@{/login}" method="post" id="login" autocomplete="off">
+
+                    <input id="oneTimeToken" type="hidden" name="oneTimeToken" th:value="${token}" />
+                <div class="input-group mb-3">
+                    <label class="nato-text"> User ID</label>
+
+                </div>
+
+                    <div class="input-group mb-3">
+
+                        <input type="text" id="loginIdRead" name="username" class="form-control"
+                               placeholder="Username" autocomplete="off">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-envelope"></span>
+                            </div>
+                        </div>
+                    </div>
+                <div class="input-group mb-3">
+                    <label class="nato-text">
+                        Password
+                    </label>
+
+                </div>
+                    <div class="input-group mb-3">
+                        <input type="password" id="pwd" name="password" class="form-control" placeholder="Password"
+                               autocomplete="off">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                    <span id="password_show_button" class="input-group-addon"><i class="fa fa-eye"
+                                                                                                 aria-hidden="true"></i></span>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="mb-3">
+                        <input type="text" id="captcha" name="captcha" class="form-control"
+                               placeholder="Enter CAPTCHA" maxlength="6">
+                    </div>
+                    <div class="mb-3 row align-items-center">
+                        <div class="col-auto">
+                            <img th:src="@{/dilrmp/captcha}" id="captchaImage" alt="CAPTCHA Image" />
+                        </div>
+                        <div class="col-auto">
+                            <button type="button" id="refreshCaptcha" class="btn btn-link">
+                                <i class="bi bi-arrow-clockwise"></i> Refresh CAPTCHA
+                            </button>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <button type="submit" class="btn btn-primary btn-block">Login</button>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+</body>
+
+</html>

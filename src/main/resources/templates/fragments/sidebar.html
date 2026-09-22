@@ -1,0 +1,442 @@
+
+<!-- Main Sidebar Container -->
+<aside class="main-sidebar sidebar-dark-primary elevation-4" th:fragment="sidebar" th:if="${session.redirectURL != 'daysSincePasswordChange'}">
+
+    <!-- Brand Logo -->
+    <a href="#" class="brand-link">
+        <span class="brand-text font-weight-light">DILRMP</span>
+    </a>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                data-accordion="false">
+                <li class="nav-item" sec:authorize="!hasRole('ROLE_STATEULB')">
+                    <a th:href="@{'/'+ ${session.redirectURL}}" class="nav-link">
+                        <i class="nav-icon fas fa-tachometer-alt"></i>
+                        <p>
+                            Dashboard
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item" sec:authorize=" hasRole('ROLE_SGO')">
+                    <a href="/sgo/monitor"  class="nav-link">
+                        <i class="fa fa-user"></i>
+                        <p>Naksha MIS SoI Data Monitor </p>
+                    </a>
+                </li>
+
+                <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN') || hasRole('ROLE_SGO')">
+                    <a href="#" class="nav-link">
+                        <i class="fa-brands fa-accusoft"></i>
+                        <p>
+                            Reports
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+
+                    <!-- State Start -->
+                    <ul class="nav nav-treeview nav-sidebar" sec:authorize="hasRole('ROLE_NIC') || hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN')" >
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-edit"></i>
+                                <p>
+                                    Ranking Reports
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+
+
+                                <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN')">
+                                    <a href="#" hx-get="/dolr/grading-states" hx-target="#content" hx-swap="innerHTML" hx-push-url="false"  class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Grading Of States/UTs</p>
+                                    </a>
+
+                                </li>
+                                <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN') ">
+                                    <a href="#" hx-get="/dolr/grading-district" hx-target="#content" hx-swap="innerHTML" hx-push-url="false"  class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Grading Of Districts</p>
+                                    </a>
+                                </li>
+
+
+
+                                <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN') ">
+                                    <a href="#" hx-get="/dolr/district-of-selectable-progress" hx-target="#content" hx-swap="innerHTML" hx-push-url="false"   class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Districts Of Selectable Progress</p>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN') ">
+                                    <a href="#" hx-get="/dolr/district-of-selectable-ranking-report" hx-target="#content" hx-swap="innerHTML"hx-push-url="false"   class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Districts Of Selectable Progress To and From</p>
+                                    </a>
+
+                                </li>
+
+                            </ul>
+
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview nav-sidebar" sec:authorize="hasRole('ROLE_NIC') || hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN')">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-edit"></i>
+                                <p>
+                                    Indicators Reports
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR')  || hasRole('ROLE_ADMIN') ">
+                                    <a href="#" hx-get="/dolr/state-all-kpi" hx-target="#content" hx-swap="innerHTML" hx-push-url="false"  class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>State/UT: Indicator Report</p>
+                                    </a>
+
+                                </li>
+                                <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN') ">
+                                    <a href="#" hx-get="/dolr/district-all-kpi" hx-target="#content" hx-swap="innerHTML" hx-push-url="false"  class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>State and District : Indicator Report</p>
+                                    </a>
+
+                                </li>
+
+                            </ul>
+
+                        </li>
+                    </ul>
+
+                    <ul class="nav nav-treeview nav-sidebar" sec:authorize="hasRole('ROLE_NIC') || hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN')">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-edit"></i>
+                                <p>
+                                    Consolidated Reports
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+
+                                <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN')">
+                                    <a href="#" hx-get="/current-status/national_profile" hx-target="#content" hx-swap="innerHTML" hx-push-url="false"   class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>National Profile</p>
+                                    </a>
+
+                                </li>
+
+
+                                <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN')">
+                                    <a class="nav-link" href="#" hx-get="/current-status/state_profile"
+                                       hx-swap="innerHTML" hx-target="#content" hx-push-url="false" >
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>State Profile</p>
+                                    </a>
+
+                                </li>
+
+                                <!--                                <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR')">-->
+                                <!--                                    <a href="#" hx-get="/current-status/district_profile" hx-target="#content" hx-swap="innerHTML"  class="nav-link">-->
+                                <!--                                        <i class="far fa-circle nav-icon"></i>-->
+                                <!--                                        <p>District Profile</p>-->
+                                <!--                                    </a>-->
+
+                                <!--                                </li>-->
+
+<!--                                <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') ">-->
+<!--                                    <a class="nav-link" href="#" hx-get="/oomf/create"-->
+<!--                                       hx-swap="innerHTML" hx-target="#content" hx-push-url="true" >-->
+<!--                                        <i class="far fa-circle nav-icon"></i>-->
+<!--                                        <p>OOMF Physical Report</p>-->
+<!--                                    </a>-->
+<!--                                </li>-->
+
+<!--                                <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN') ">-->
+<!--                                    <a href="#" hx-get="/dolr/omf-report" hx-target="#content" hx-swap="innerHTML" hx-push-url="false"  class="nav-link">-->
+<!--                                        <i class="far fa-circle nav-icon"></i>-->
+<!--                                        <p>OOMF Report</p>-->
+<!--                                    </a>-->
+
+<!--                                </li>-->
+
+                                <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN')">
+                                    <a href="#" hx-get="/dolr/data-entry" hx-target="#content" hx-swap="innerHTML" hx-push-url="false"  class="nav-link">
+                                        <i class="fa fa-user"></i>
+                                        <p>OOMF Target Data Entry Form</p>
+                                    </a>
+
+                                </li>
+
+                            </ul>
+
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview nav-sidebar" sec:authorize="hasRole('ROLE_ADMIN') || hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN')">
+
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-edit"></i>
+                                <p>
+                                    Comparison Reports
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+
+
+                                <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN') ">
+                                    <a href="#" hx-get="/dolr/date-wise-report" hx-target="#content" hx-swap="innerHTML" hx-push-url="false"  class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Date-wise Report</p>
+                                    </a>
+
+                                </li>
+                                <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN') ">
+                                    <a href="#" hx-get="/dolr/date-wise-report-comparison" hx-target="#content" hx-swap="innerHTML" hx-push-url="false"  class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Date-wise Report Comparison</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN') ">
+                                    <a href="#" hx-get="/dolr/date-wise-report-comparison-impComponenet" hx-target="#content" hx-swap="innerHTML" hx-push-url="false"  class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Date-wise Comparison Report for All Components</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN') ">
+                                    <a th:href="@{/dolr/state-level}"   class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Map Digitization Report</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+
+                    </ul>
+                    <ul class="nav nav-treeview nav-sidebar" sec:authorize="hasRole('ROLE_ADMIN') || hasRole('ROLE_DOLR') || hasRole('ROLE_SGO')">
+                        <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-edit"></i>
+                            <p>
+                                Naksha Reports
+                                <i class="fas fa-angle-left right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN') || hasRole('ROLE_SGO')">
+                                <a href="#" hx-get="/dolr/naksha-report" hx-target="#content" hx-swap="innerHTML" hx-push-url="false"  class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Naksha For State/UT</p>
+                                </a>
+                            </li>
+                        </ul>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN') || hasRole('ROLE_SGO')">
+                                    <a href="#" hx-get="/dolr/capacity-building" hx-target="#content" hx-swap="innerHTML" hx-push-url="false"  class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Naksha For State/UT Capacity Building</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN') || hasRole('ROLE_SGO') ">
+                                <a href="#" hx-get="/dolr/naksha-report-vender" hx-target="#content" hx-swap="innerHTML" hx-push-url="false"  class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Naksha For SoI</p>
+                                </a>
+                            </li>
+                        </ul>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN') || hasRole('ROLE_SGO') ">
+                                    <a href="#" hx-get="/dolr/naksha-report-data-processing" hx-target="#content" hx-swap="innerHTML" hx-push-url="false"  class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Map 1 (SoI) – Processing and QA/QC</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ROLE_STATE')">
+                    <a href="#" hx-get="/userProfile/user-list" hx-target="#content" hx-swap="innerHTML" hx-push-url="false"  class="nav-link">
+                        <i class="fa fa-user"></i>
+                        <p>User Management</p>
+                    </a>
+
+                </li>
+
+
+
+                <li class="nav-item" sec:authorize="hasRole('ROLE_STATE') || hasRole('ROLE_DISTRICT')  || hasRole('ROLE_ADC')">
+                    <a href="#" hx-get="/state/district-mis-data/form" hx-target="#content" hx-swap="innerHTML" hx-push-url="false"  class="nav-link">
+                        <i class="fa fa-user"></i>
+                        <p>District MIS Data Entry</p>
+                    </a>
+
+                </li>
+
+                <li class="nav-item" sec:authorize="hasRole('ROLE_STATE')">
+                    <a href="#" hx-get="/state/state-mis-data/form" hx-target="#content" hx-swap="innerHTML" hx-push-url="false"  class="nav-link">
+                        <i class="fa fa-user"></i>
+                        <p>State MIS Data Entry</p>
+                    </a>
+
+                </li>
+
+
+                <li class="nav-item" sec:authorize="hasRole('ROLE_STATE')|| hasRole('ROLE_IGR')">
+                    <a href="#" hx-get="/igr/igr-mis-data/form" hx-target="#content" hx-swap="innerHTML" hx-push-url="false"  class="nav-link">
+                        <i class="fa fa-user"></i>
+                        <p>IGR MIS Data Entry</p>
+                    </a>
+
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ROLE_STATEULB')">
+                    <a href="/ulb/ulb-naksha-mis-data/form"  class="nav-link">
+                        <i class="fa fa-user"></i>
+                        <p>Naksha MIS Data Entry</p>
+                    </a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ROLE_STATEULB')">
+                    <a href="/ulb/capacity-building/form"  class="nav-link">
+                        <i class="fa fa-user"></i>
+                        <p>Capacity Building Data Entry</p>
+                    </a>
+                </li>
+
+                <li class="nav-item" sec:authorize="hasRole('ROLE_STATEULB')">
+                    <a href="/ulb/ulb-gt-mis-data/form"  class="nav-link">
+                        <i class="fa fa-user"></i>
+                        <p>Ground Truthing Data Entry</p>
+                    </a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ROLE_STATEULB')">
+                    <a href="/ulb/iec-activity/form"  class="nav-link">
+                        <i class="fa fa-user"></i>
+                        <p>IEC Activities Data Entry</p>
+                    </a>
+                </li>
+                <li class="nav-item" sec:authorize=" hasRole('ROLE_GD')">
+                    <a href="/ulb/naksha-mis-venderdata/form"  class="nav-link">
+                        <i class="fa fa-user"></i>
+                        <p>Naksha MIS SoI Data Entry</p>
+                    </a>
+                </li>
+
+
+                <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN') ">
+                    <a href="#" hx-get="/userProfile/reset-password" hx-target="#content" hx-swap="innerHTML"hx-push-url="false" class="nav-link">
+                        <i class="fa fa-key"></i>
+                        <p>Reset Password</p>
+                    </a>
+
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN') ">
+                    <a href="#" hx-get="/dolr/get-timeline-backup" hx-target="#content" hx-swap="innerHTML"hx-push-url="false" class="nav-link">
+                        <i class="fa fa-key"></i>
+                        <p>Timeline Backup</p>
+                    </a>
+
+                </li>
+
+
+                <li class="nav-item" sec:authorize="hasRole('ROLE_STATE')|| hasRole('ROLE_DISTRICT')|| hasRole('ROLE_TEHSIL')">
+
+                    <a href="#" hx-get="/userProfile/update-profile" hx-target="#content" hx-swap="innerHTML"hx-push-url="false"  class="nav-link">
+                        <i class="fa fa-user"></i>
+                        <p>Update Profile</p>
+                    </a>
+                </li>
+
+                 <li class="nav-item">
+                  <a href="#" hx-get="/userProfile/change-password" hx-target="#content" hx-swap="innerHTML"hx-push-url="false"  class="nav-link">
+                        <i class="fa fa-key"></i>
+                     <p>Change Password</p>
+                  </a>
+
+               </li>
+                <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN') ">
+                    <a href="#" hx-get="/dolr/flash-massage" hx-target="#content" hx-swap="innerHTML" hx-push-url="false" class="nav-link">
+                        <i class="fa fa-drivers-license"></i>
+                        <p>Create Flash Messages</p>
+                    </a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN') ">
+                    <a href="#" hx-get="/dolr/district-mis-permissions" hx-target="#content" hx-swap="innerHTML" hx-push-url="false" class="nav-link">
+                        <i class="fas fa-lock-open"></i>
+                        <p>District MIS Entry Permissions</p>
+                    </a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN')">
+                    <a href="#" hx-get="/dolr/cna-bank-balance" hx-target="#content" hx-swap="innerHTML" hx-push-url="false" class="nav-link">
+                        <i class="fas fa-file-excel"></i>
+                        <p>CNA Bank Balance Report</p>
+                    </a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN')">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-chart-bar"></i>
+                        <p>
+                            DILRMP Expenditure Status
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN')">
+                            <a href="#" hx-get="/dolr/dilrmp-expenditure-status/form" hx-target="#content" hx-swap="innerHTML" hx-push-url="false" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Expenditure Status Form</p>
+                            </a>
+                        </li>
+                        <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN')">
+                            <a href="#" hx-get="/dolr/dilrmp-expenditure-status" hx-target="#content" hx-swap="innerHTML" hx-push-url="false" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>CNA Bank Balance Report</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a th:href="@{/logout}" class="nav-link">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <p>Log Out</p>
+                    </a>
+                </li>
+
+            </ul>
+            </ul>
+        </nav>
+
+        <!-- Loader -->
+        <div id="loader" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN') " style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); z-index:10000; text-align:center; padding-top:200px;">
+
+            <img th:src="@{/images/loading.gif}" alt="Loading..."style="width: 100px;
+                   height: 130px; text-align: center; margin: 0 auto;"/>
+            <br />Please Wait...
+        </div>
+
+        <script>
+    // Show loader when HTMX makes a request
+    document.body.addEventListener('htmx:beforeRequest', function() {
+        document.getElementById("loader").style.display = "block";
+    });
+
+    // Hide loader after HTMX request is loaded
+    document.body.addEventListener('htmx:afterOnLoad', function() {
+        document.getElementById("loader").style.display = "none";
+    });
+</script>
+        <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+</aside>

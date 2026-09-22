@@ -1,0 +1,70 @@
+<div class="content-wrapper" th:fragment="~{user-list-fragment}" style="box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;">
+    <!-- Content Header (Page header) -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-info">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-sm-10">
+
+                                    <h3 class="card-title" style="font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a;  letter-spacing: 2px;">User List</h3>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <!--                                        <a th:href="@{/master/report/pdf/masterData}">-->
+                                        <!--                                            <img th:src="@{/images/pdf.png}" alt="PDF Icon" class="btn-img"  width="40" height="40"-->
+                                        <!--                                                 style="box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;"/>-->
+                                        <!--                                        </a>-->
+                                    </div>
+
+                                    <div class="col-sm-2">
+
+                                        <!--                                        <a th:href="@{/master/report/excel/masterData}">-->
+                                        <!--                                            <img th:src="@{/images/excel.png}" alt="EXCEL Icon" class="btn-img"  width="40" height="40"-->
+                                        <!--                                                 style="box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;"/>-->
+                                        <!--                                        </a>-->
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-success" role="alert" th:text="${success}" th:if="${success}"></div>
+                            <table id="example2" class="table table-bordered table-striped">
+                                <thead>
+                                <tr>
+                                    <th rowspan="1">S.No</th>
+                                    <th rowspan="1">Role</th>
+                                    <th rowspan="1">User ID</th>
+                                    <th rowspan="1">Name</th>
+                                    <th rowspan="1">Officer Name</th>
+                                    <th rowspan="1">Officer Email ID</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="user, iterStat : ${userlist}">
+                                    <td th:text="${iterStat.index + 1}"></td>
+                                    <td th:text="${user[2]}"></td>
+                                    <td th:text="${user[3]}"></td>
+                                    <td th:text="${user[4]}"></td>
+                                    <td th:text="${user[5]}"></td>
+                                    <td th:text="${user[6]}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+
+
+

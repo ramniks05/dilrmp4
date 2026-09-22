@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/dashboard">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Month Wise Physical Progress Report</title>
+  <link th:href="@{/css/jquery-ui.css}" rel="stylesheet" />
+
+  <style>
+        body {
+            background-color: #F9F9FC;
+            font-family: 'Roboto', sans-serif;
+            font-size: 14px;
+        }
+
+        .select2-container {
+            padding: 0;
+            border: none;
+        }
+
+        h3 {
+            margin-bottom: 0;
+        }
+
+        .card {
+            box-shadow: 0 0 13px 0 rgba(82, 63, 105, .05);
+            background-color: #fafafa;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            padding: 20px;
+        }
+
+        .select2-choice {
+            display: block;
+            width: 100%;
+            height: calc(1.5em + .75rem + 2px) !important;
+            padding: .375rem .75rem !important;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5 !important;
+            color: #495057;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-radius: .25rem;
+            transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+        }
+
+        /* Style for the table */
+        .table {
+            width: 100%;
+            margin-bottom: 1rem;
+            border-collapse: collapse;
+        }
+
+        /* Style for the table header */
+        .table th,
+        .table thead th {
+            text-align: left;
+            background-color: #0994aa;
+            color: #fff;
+            padding: 5px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        /* Style for the table body */
+        .table td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Style for the table striped rows */
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0, 123, 255, 0.05);
+        }
+
+        /* Style for the DataTables display class */
+        .display {
+            width: 100%;
+        }
+
+        #wait {
+            width: 100px;
+            height: 130px;
+            text-align: center;
+            position: fixed;
+            left: 280px;
+            right: 0;
+            top: 40%;
+            z-index: 99;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.43);
+            display: none;
+        }
+
+        #wait img {
+            width: 100%;
+        }
+
+        label {
+            margin-left: 20px;
+        }
+
+    </style>
+</head>
+
+<body>
+<!-- Content Wrapper. Contains page content -->
+<div th:fragment="date_wise_report" style="box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;">
+  <!-- Content Header (Page header) -->
+  <style>
+  #example2 tbody tr:hover {
+    background-color: #FFD700; /* Light blue background for hover effect */
+
+    font-weight: bold;
+    /* cursor: pointer;  Change cursor to pointer */
+   table, th, td {
+  border: 1px solid white;
+  border-collapse: collapse;
+}
+
+
+}
+
+
+</style>
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card card-info">
+            <div class="card-header" style="background-color: #8ddfef">
+              <div class="row">
+                <div class="col-sm-10" >
+                  <h3 class="card-title"
+                      style="font-size: 26px; font-family: auto; text-shadow: 2px 2px 4px #576666;  letter-spacing: 2px;">
+                    Physical Progress  Report (Data available from October 18, 2024)</h3>
+                </div>
+
+
+                <div class="row">
+                  <div class="col-sm-6">
+                    <a th:href="@{/physcial/report/pdf/date-wise}">
+                      <img th:src="@{/images/pdf.png}" alt="PDF Icon" class="btn-img"
+                           width="40" height="40"
+                           style="box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;" />
+                    </a>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <!-- Your existing HTML code for date inputs -->
+                <div class="col-sm-8">
+                  <div class="form-group">
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <!-- Checkboxes for Month and Month Range -->
+                <div class="col-sm-8">
+                  <div class="form-group">
+                    <label>
+                      <input type="radio" name="dateOption" id="month" value="monthRange" checked> View actual data/progress.
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <!-- Input fields for Month and Month Range -->
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <div class="row">
+                      &nbsp; &nbsp;<label>From:</label>  &nbsp;
+                      <div class="col-sm-4">
+                        <div class="input-group" id="monthInput">
+                          <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="far fa-calendar-alt"></i>
+                </span>
+                          </div>
+                          <input type="text" class="form-control" name="fromMonth" id="from" placeholder="DD/MM/YYYY">
+                        </div>
+                      </div>
+                      <div class="col-sm-2">
+                        <button id="searchButton" class="btn btn-info">Search</button>
+                      </div>
+                      <div class="col-sm-4">
+
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <script>
+    // Define the minimum allowed date (October 18, 2024)
+    var initialDate = new Date('2024-10-18');
+
+    var date = new Date();
+    var maxDateTo = new Date(date.getFullYear(), date.getMonth(), date.getDate() - 1);
+    var dataTable;
+
+    // Reset date pickers with the correct minDate and maxDate
+    function resetDatePickers() {
+        $('#from').datepicker('setDate', null)
+                  .datepicker('option', 'minDate', initialDate)
+                  .datepicker('option', 'maxDate', maxDateTo);
+        $('#to').datepicker('setDate', null)
+                .datepicker('option', 'minDate', null)
+                .datepicker('option', 'maxDate', maxDateTo);
+    }
+
+    // Initialize DataTable
+    function initializeDataTable() {
+        if ($.fn.DataTable.isDataTable('#example2')) {
+            $('#example2').DataTable().clear().destroy();
+        }
+        dataTable = $('#example2').DataTable({
+            paging: true,
+            lengthChange: true,
+            searching: true,
+            ordering: true,
+            info: true,
+            autoWidth: false,
+            pageLength: 37,
+        });
+    }
+
+    // Handle date option changes
+    function handleDateOptionChange() {
+        var selectedOption = $('input[type=radio][name=dateOption]:checked').val();
+        $("#to, #from").val("");
+        if (selectedOption == 'month') {
+            $('#monthInput').show();
+            $('#monthRangeInput').hide();
+        } else if (selectedOption == 'monthRange') {
+            $('#monthInput').show();
+            $('#monthRangeInput').show();
+        }
+        resetDatePickers();
+        initializeDataTable();
+    }
+
+    $('input[type=radio][name=dateOption]').change(handleDateOptionChange);
+    handleDateOptionChange();
+
+    // Set up the 'from' date picker with the enforced minimum date
+    $('#from').datepicker({
+        autoclose: true,
+        changeMonth: true,
+        changeYear: true,
+        showButtonPanel: true,
+        dateFormat: 'dd/mm/yy',
+        minDate: initialDate,  // Enforce disabling dates before October 18, 2024
+        maxDate: maxDateTo,
+        onClose: function(dateText, inst) {
+            var selectedDate = $(this).datepicker('getDate');
+            if (selectedDate) {
+                selectedDate.setDate(selectedDate.getDate() + 1);
+                $('#to').datepicker('option', 'minDate', selectedDate);
+            }
+        }
+    });
+
+    // Set up the 'to' date picker with a max date
+    $('#to').datepicker({
+        autoclose: true,
+        changeMonth: true,
+        changeYear: true,
+        showButtonPanel: true,
+        dateFormat: 'dd/mm/yy',
+        maxDate: maxDateTo,
+        onClose: function(dateText, inst) {
+            var selectedDate = $(this).datepicker('getDate');
+            if (selectedDate) {
+                selectedDate.setDate(selectedDate.getDate() - 1);
+                $('#from').datepicker('option', 'maxDate', selectedDate);
+            }
+        }
+    });
+
+    // Fetch data by selected dates
+function getDataByDate() {
+    $.ajax({
+        url: "/dolr/comparison-report",
+        type: "POST",
+        data: {
+            date1: $("#from").val(),
+            date2: $("#to").val()
+        },
+        beforeSend: function () {
+            $("#wait").css("display", "block");
+        },
+        success: function (response) {
+            $("#wait").css("display", "none");
+            dataTable.clear().draw();
+
+            var fromMonth = $("#from").val();
+            var dateRangeText = `Date Wise Physical Progress Report As on (${fromMonth})`;
+            console.log("dateRangeText " + dateRangeText);
+            $("#dateRange").text(dateRangeText);
+
+            if (response && response.length > 0) {
+                const rows = [];
+                let grandTotalRow = null;
+                let indexCounter = 1; // Initialize counter for indexing non-"Grand Total" rows
+
+                // Loop through each item in the response data
+                response.forEach((item) => {
+                    if (item.stateName !== "Grand Total") {
+                        // Add regular rows with continuous index
+                        rows.push([
+                            indexCounter++,
+                            item.stateName,
+                            item.totalTehsilsDiff,
+                            item.totalVillagesDiff,
+                            item.noOfSroInStateDiff,
+                            item.villagesClrCompletedDiff,
+                            item.totalMapsFmbTippansDiff,
+                            item.totalDigitizedMapsFmbTippansDiff,
+                            item.villagesLinkedWithRorDiff,
+                            item.noOfSroUsingOnlineRegistrationDiff,
+                            item.mrrSanctionedDiff,
+                            item.mrrCompletedDiff,
+                            item.villagesFinalPromulgationDoneDiff
+                        ]);
+                    } else {
+                        // Prepare the "Grand Total" row without an index
+                        grandTotalRow = [
+                            "",
+                            `<strong>${item.stateName}</strong>`,
+                            `<strong>${item.totalTehsilsDiff}</strong>`,
+                            `<strong>${item.totalVillagesDiff}</strong>`,
+                            `<strong>${item.noOfSroInStateDiff}</strong>`,
+                            `<strong>${item.villagesClrCompletedDiff}</strong>`,
+                            `<strong>${item.totalMapsFmbTippansDiff}</strong>`,
+                            `<strong>${item.totalDigitizedMapsFmbTippansDiff}</strong>`,
+                            `<strong>${item.villagesLinkedWithRorDiff}</strong>`,
+                            `<strong>${item.noOfSroUsingOnlineRegistrationDiff}</strong>`,
+                            `<strong>${item.mrrSanctionedDiff}</strong>`,
+                            `<strong>${item.mrrCompletedDiff}</strong>`,
+                            `<strong>${item.villagesFinalPromulgationDoneDiff}</strong>`
+                        ];
+                    }
+                });
+
+                // Add regular rows to the DataTable
+                dataTable.rows.add(rows).draw();
+
+                // Add the "Grand Total" row as the very last row
+                if (grandTotalRow) {
+                    dataTable.row.add(grandTotalRow).draw();
+                }
+
+                $(".pdf-excel-buttons").css("display", "block");
+            } else {
+                dataTable.clear().draw();
+                console.log("No data found");
+            }
+        },
+        error: function (error) {
+            $("#wait").css("display", "none");
+            $(".pdf-excel-buttons").css("display", "none");
+            dataTable.clear().draw();
+            console.error("Error:", error);
+        }
+    });
+}
+
+
+
+    // Trigger data fetch on Search button click
+    $('#searchButton').click(getDataByDate);
+</script>
+
+
+
+
+            <div id="wait"  style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); z-index:10000; text-align:center; padding-top:200px;">
+
+              <img th:src="@{/images/loading.gif}" alt="Loading..."style="width: 100px;
+                   height: 130px; text-align: center; margin: 0 auto;"/>
+              <br />Please Wait...
+            </div>
+
+            <div class="card-body">
+
+
+              <div class="row" >
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <table id="example2" class="table table-bordered  table-striped-columns table-success table-striped  table-responsive">
+                      <thead style="background-color: #4a6c52; color:#ffff">
+                      <tr>
+                        <th colspan="14" >
+                          <h4 class="card-title"
+                              style="font-size: 24px; font-family:background-color: #6faab1; auto;text-align: center;  #090a0a; letter-spacing: 2px;">
+                            <span id="dateRange"></span>
+                            <br>
+                          </h4>
+                        </th>
+                      </tr>
+                      <tr>
+
+                        <th rowspan="2">S.No.</th>
+                        <th rowspan="2">State/UT Name</th>
+                        <th rowspan="2">Total Tehsil</th>
+                        <th rowspan="2">Total villages</th>
+                        <th rowspan="2">Total SROs</th>
+
+                      </tr>
+                      <tr >
+                        <th rowspan="1">CLR Completed Villages</th>
+                        <th rowspan="1"> Total Mapsheets/FMBs/Tippans (No.)</th>
+                        <th rowspan="1">Digitized Mapsheets/FMBs/Tippans (No.)</th>
+                        <th rowspan="1">Villages with Cadastral Maps linked With RoR</th>
+                        <th rowspan="1">SRO Computerized</th>
+                         <!--<th rowspan="1">SRO Integrated With Land Records(No.)</th>-->
+                        <th rowspan="1">Sanctioned Modern Record Room</th>
+                        <th rowspan="1">Completed Modern Record Room</th>
+                        <th rowspan="1">Survey/Resurvey Completed (village)</th>
+                      </tr>
+                      </thead>
+                      <tbody id="tableBody" >
+
+                      </tbody>
+                    </table>
+                    <script>
+
+                    </script>
+
+
+                  </div>
+                </div>
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+
+</body>
+
+</html>

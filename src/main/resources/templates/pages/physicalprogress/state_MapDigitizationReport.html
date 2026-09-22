@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/dashboard">
+
+<head>
+    <meta charset="UTF-8">
+    <title>State Level Map Digitization</title>
+    <link th:href="@{/css/report/report.css}" rel="stylesheet"/>
+    <style>
+        /* Sticky columns styling */
+        .table-responsive {
+            position: relative;
+            overflow-x: auto;
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        /* Make first two columns sticky */
+        .table th:nth-child(1),
+        .table td:nth-child(1) {
+            position: sticky;
+            left: 0;
+            z-index: 5;
+            background-color: #4a6c52;
+            color: #ffff;
+            border-right: 2px solid #ddd;
+        }
+        
+        .table td:nth-child(1) {
+            background-color: #f8f9fa;
+            color: #000;
+        }
+        
+        /* Second column sticky positioning */
+        .table th:nth-child(2),
+        .table td:nth-child(2) {
+            position: sticky;
+            left: 60px; /* Will be dynamically adjusted by JavaScript */
+            z-index: 5;
+            background-color: #4a6c52;
+            color: #ffff;
+            border-right: 2px solid #ddd;
+        }
+        
+        .table td:nth-child(2) {
+            background-color: #f8f9fa;
+            color: #000;
+        }
+        
+        /* Main header row sticky positioning */
+        .table thead tr:first-child {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .table thead tr:first-child th:nth-child(1),
+        .table thead tr:first-child th:nth-child(2) {
+            position: sticky;
+            left: 0;
+            z-index: 15;
+            background-color: #4a6c52;
+            color: #ffff;
+            border-right: 2px solid #ddd;
+        }
+        
+        .table thead tr:first-child th:nth-child(2) {
+            left: 60px; /* Will be dynamically adjusted by JavaScript */
+        }
+        
+        /* Column number header row sticky */
+        .table thead tr:last-child {
+            position: sticky;
+            top: 60px; /* Position below the main header row */
+            z-index: 8;
+        }
+        
+        .table thead tr:last-child th:nth-child(1),
+        .table thead tr:last-child td:nth-child(1) {
+            position: sticky;
+            left: 0;
+            top: 60px;
+            z-index: 12;
+            background-color: #4a6c52;
+            color: #ffff;
+            border-right: 2px solid #ddd;
+        }
+        
+        .table thead tr:last-child th:nth-child(2),
+        .table thead tr:last-child td:nth-child(2) {
+            position: sticky;
+            left: 60px; /* Will be dynamically adjusted by JavaScript */
+            top: 60px;
+            z-index: 12;
+            background-color: #4a6c52;
+            color: #ffff;
+            border-right: 2px solid #ddd;
+        }
+        
+        /* Grand total row styling */
+        .grand-total-row td {
+           background-color: #f8f9fa;
+            color: #000;
+        }
+        /* Top grand total row (inside thead) should match header color */
+        thead .grand-total-row td {
+            background-color: #f8f9fa;
+            color: #000;
+        }
+        /* Footer grand total row (inside tfoot) should match last row style */
+        tfoot .grand-total-row td {
+            background-color: #f8f9fa;
+            color: #000;
+        }
+        
+        /* Ensure grand total rows in frozen columns have consistent styling */
+        .grand-total-row td:nth-child(1),
+        .grand-total-row td:nth-child(2) {
+            background-color: #f8f9fa;
+            color: #000;
+        }
+        
+        /* Ensure proper styling for sticky columns */
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            white-space: nowrap;
+        }
+        
+        /* Enable text wrapping for State Name column (2nd column) */
+        .table th:nth-child(2),
+        .table td:nth-child(2) {
+            white-space: normal !important;
+            word-wrap: break-word;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            max-width: 150px;
+            min-width: 100px;
+        }
+        
+        /* Mobile responsive adjustments for State Name column */
+        @media screen and (max-width: 768px) {
+            .table th:nth-child(2),
+            .table td:nth-child(2) {
+                max-width: 120px;
+                min-width: 80px;
+            }
+        }
+        
+        /* Enable text wrapping for all columns except frozen ones */
+        .table th:not(:nth-child(1)):not(:nth-child(2)),
+        .table td:not(:nth-child(1)):not(:nth-child(2)) {
+            white-space: normal !important;
+            word-wrap: break-word;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            max-width: 150px;
+            min-width: 100px;
+        }
+        
+        /* Special wrapping for long descriptive columns */
+        .table th:nth-child(31),
+        .table td:nth-child(31) {
+            white-space: normal !important;
+            word-wrap: break-word;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            max-width: 200px;
+            min-width: 150px;
+            vertical-align: top;
+        }
+        
+        /* Compact columns for numbers and percentages */
+        .table th:nth-child(n+5):nth-child(-n+30),
+        .table td:nth-child(n+5):nth-child(-n+30) {
+            white-space: normal !important;
+            word-wrap: break-word;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            max-width: 120px;
+            min-width: 80px;
+            vertical-align: top;
+        }
+        
+        /* Very compact for percentage columns */
+        .table th:nth-child(7),
+        .table td:nth-child(7),
+        .table th:nth-child(10),
+        .table td:nth-child(10),
+        .table th:nth-child(13),
+        .table td:nth-child(13),
+        .table th:nth-child(16),
+        .table td:nth-child(16),
+        .table th:nth-child(18),
+        .table td:nth-child(18) {
+            max-width: 80px;
+            min-width: 60px;
+        }
+        
+        .table th {
+            background-color: #4a6c52;
+            color: #ffff;
+        }
+        
+        /* Shadow effect for frozen columns */
+        .table th:nth-child(1),
+        .table td:nth-child(1),
+        .table th:nth-child(2),
+        .table td:nth-child(2),
+        .table thead tr:first-child th:nth-child(1),
+        .table thead tr:first-child th:nth-child(2),
+        .table thead tr:last-child th:nth-child(1),
+        .table thead tr:last-child td:nth-child(1),
+        .table thead tr:last-child th:nth-child(2),
+        .table thead tr:last-child td:nth-child(2) {
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        
+        /* Ensure table body rows have proper background */
+        .table tbody tr:nth-child(even) td {
+            background-color: #f8f9fa;
+        }
+        
+        .table tbody tr:nth-child(odd) td {
+            background-color: #ffffff;
+        }
+        
+        /* Data rows - ensure first two columns stay sticky during vertical scroll */
+        .table tbody tr td:nth-child(1),
+        .table tbody tr td:nth-child(2) {
+            position: sticky;
+            z-index: 12;
+            border-right: 2px solid #ddd;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        
+        .table tbody tr td:nth-child(1) {
+            left: 0;
+            background-color: #f8f9fa;
+            color: #000;
+        }
+        
+        .table tbody tr td:nth-child(2) {
+            left: 60px; /* Will be dynamically adjusted by JavaScript */
+            background-color: #f8f9fa;
+            color: #000;
+        }
+
+        /* Footer frozen columns implementation */
+        .table tfoot tr td:nth-child(1),
+        .table tfoot tr td:nth-child(2) {
+            position: sticky;
+            left: 0;
+            z-index: 10;
+            background-color: #f8f9fa;
+            color: #000;
+            border-right: 2px solid #ddd;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        
+        .table tfoot tr td:nth-child(2) {
+            left: 60px; /* Will be dynamically adjusted by JavaScript */
+        }
+        
+        /* Grand total row styling */
+        .grand-total-row td {
+           background-color: #ffffff;
+            color: #000;
+        }
+        /* Top grand total row (inside thead) should match data row style */
+        thead .grand-total-row td {
+            background-color: #ffffff;
+            color: #000;
+        }
+        
+        /* Override sticky column styling for Grand Total row in thead */
+        thead .grand-total-row td:nth-child(1),
+        thead .grand-total-row td:nth-child(2) {
+            background-color: #ffffff !important;
+            color: #000 !important;
+        }
+        /* Footer grand total row (inside tfoot) should match data row style */
+        tfoot .grand-total-row td {
+            background-color: #ffffff;
+            color: #000;
+        }
+        
+        /* Mouse drag functionality styles */
+        .table-responsive {
+            user-select: none; /* Prevent text selection while dragging */
+            scroll-behavior: smooth;
+        }
+        
+        /* Only apply grab cursor to table content, not DataTables controls */
+        .table-responsive table {
+            cursor: grab !important;
+        }
+        
+        .table-responsive table.active {
+            cursor: grabbing !important;
+        }
+        
+        /* Ensure DataTables controls have normal cursor */
+        .dataTables_wrapper .dataTables_length,
+        .dataTables_wrapper .dataTables_filter,
+        .dataTables_wrapper .dataTables_info,
+        .dataTables_wrapper .dataTables_processing,
+        .dataTables_wrapper .dataTables_paginate {
+            cursor: default !important;
+        }
+        
+        .dataTables_wrapper .dataTables_length select,
+        .dataTables_wrapper .dataTables_filter input,
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            cursor: pointer !important;
+        }
+        
+        /* Override cursor for table elements only */
+        .table-responsive table,
+        .table-responsive tbody,
+        .table-responsive thead,
+        .table-responsive tr,
+        .table-responsive td,
+        .table-responsive th {
+            cursor: inherit !important;
+        }
+    </style>
+</head>
+
+<body>
+<div layout:fragment="content"
+     style="box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;">
+    <section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-info">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-sm-10">
+                                <h3 class="card-title"
+                                    style="font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a; letter-spacing: 2px;">
+                                    <span th:text="${labels['reportName']}"></span>
+                                </h3>
+                            </div>
+                            <div class="col-sm-2">
+                                <a th:href="@{/physcial/report/pdf/map}">
+                                    <img th:src="@{/images/pdf.png}" alt="PDF Icon" class="btn-img" width="40"
+                                         height="40"
+                                         style="box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;"/>
+                                </a>
+                                <a th:href="@{/physcial/report/excel/map}">
+                                    <img th:src="@{/images/excel.png}" alt="EXCEL Icon" class="btn-img" width="40"
+                                         height="40"
+                                         style="box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;"/>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <a th:href="@{/reports/physical-progress-report}" class="btn btn-primary" style="font-size: 13px;">
+                            ← Back
+                        </a>
+                        <form th:action="@{/physicalProgressReports/map/sorting-map}" method="post" id="searchForm">
+                            <div class="form-group mt-3">
+                                <div class="form-outline ms-3" style="width: 20%;">
+                                    <label for="ddlSelect">Select Field For Sorting:</label>
+                                    <select id="ddlSelect" name="parameter" class="form-control"
+                                            onchange="toggleSortDropdown()">
+                                        <option value="state">Select Sort Type</option>
+                                        <option value="digitizedMaps">Cadastral Maps Digitized Maps (%)</option>
+                                        <option value="cft_digitizedMaps">Cadastral Maps + FMBs + Tippans Digitized(%)</option>
+                                        <option value="villageLinkRoR">Cadastral Maps linked to RoR Villages (%)</option>
+                                        <!-- Add more options if needed -->
+                                        <option value="GeoReferencedCadMapsFMBsTipp">Geo-referenced cadastral maps + FMBs + Tippans (%)</option>
+                                        <option value="GeoReferencedCadMapsFMBsTippVillages">Geo-referenced cadastral maps / FMBs / Tippans - No. of villages (%)</option>
+                                        <option value="ULPINassignedVillage">ULPIN-assigned number of villages (%)</option>
+                                        <option value="GeoReferencedLandPar">Geo-referenced number of land parcels (%)</option>
+                                        <option value="ULPINassignedLandPar">ULPIN-assigned number of land parcels (%)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group mt-3" id="ascDropdown" style="display: none;">
+                                <div class="form-outline ms-3" style="width: 20%;">
+                                    <label for="ddlAscDesc">Select ASC or DESC:</label>
+                                    <select id="ddlAscDesc" name="ascDesc" class="form-control">
+                                        <option value="ASC">Ascending Order</option>
+                                        <option value="DESC">Descending Order</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="input-group mt-2">
+                                <button type="submit" class="btn btn-primary" style="font-size: 16px;">
+                                    Sort
+                                </button>
+                            </div>
+                        </form>
+                        <div class="table-responsive text-nowrap">
+                            <table id="example2" class="table table-bordered  table-striped-columns table-success table-striped  table-responsive">
+                                <thead class="card-info wrap-text" style="background-color: #4a6c52; color:#ffff">
+                                <tr>
+                                    <th rowspan="3" th:text="${labels['serialNumber']}"></th>
+                                    <th rowspan="3" th:text="${labels['stateUT']}"></th>
+                                    <th rowspan="3" th:text="${labels['totalDistricts']}"></th>
+                                    <th rowspan="3" th:text="${labels['totalTehsil']}"></th>
+                                    <th colspan="9" th:text="${labels['noOfCadastralMapsFmBsTippans']}"></th>
+                                    <th colspan="5" th:text="${labels['cadastralMapsFmBsTippans']}"></th>
+                                    <th colspan="7" th:text="${labels['numberOfVillages']}"></th>
+                                    <th colspan="5" th:text="${labels['noOfLandParcels']}"></th>
+                                    <th rowspan="2" th:text="${labels['noOfDistrictWhereCadastalMAPfmbTippanpdatedShowingCurrentOwnership']}"></th>
+                                </tr>
+                                <tr>
+                                    <th colspan="3" th:text="${labels['cadastralMaps']}"></th>
+                                    <th colspan="3" th:text="${labels['fmbs']}"></th>
+                                    <th colspan="3" th:text="${labels['tippans']}"></th>
+                                    <th th:text="${labels['total']}"></th>
+                                    <th colspan="2" th:text="${labels['digitized']}"></th>
+                                    <th colspan="2" th:text="${labels['geoReferenced']}"></th>
+                                    <th th:text="${labels['total']}"></th>
+                                    <th colspan="2" th:text="${labels['cadastralMapsFmBsTippansLinkedToRor']}"></th>
+                                    <th colspan="2"
+                                        th:text="${labels['cadastralMapsFmBsTippansGeoReferenced']}"></th>
+                                    <th colspan="2" th:text="${labels['ulpinAssigned']}"></th>
+                                    <th th:text="${labels['total']}"></th>
+                                    <th colspan="2" th:text="${labels['geoReferenced']}"></th>
+                                    <th colspan="2" th:text="${labels['ulpinAssigned']}"></th>
+                                </tr>
+                                <tr>
+                                    <th th:text="${labels['total']}"></th>
+                                    <th th:text="${labels['digitized']}"></th>
+                                    <th th:text="${labels['percentage']}"></th>
+                                    <th th:text="${labels['total']}"></th>
+                                    <th th:text="${labels['digitized']}"></th>
+                                    <th th:text="${labels['percentage']}"></th>
+                                    <th th:text="${labels['total']}"></th>
+                                    <th th:text="${labels['digitized']}"></th>
+                                    <th th:text="${labels['percentage']}"></th>
+                                    <th th:text="${labels['number']}"></th>
+                                    <th th:text="${labels['number']}"></th>
+                                    <th th:text="${labels['percentage']}"></th>
+                                    <th th:text="${labels['number']}"></th>
+                                    <th th:text="${labels['percentage']}"></th>
+                                    <th th:text="${labels['number']}"></th>
+                                    <th th:text="${labels['number']}"></th>
+                                    <th th:text="${labels['percentage']}"></th>
+                                    <th th:text="${labels['number']}"></th>
+                                    <th th:text="${labels['percentage']}"></th>
+                                    <th th:text="${labels['number']}"></th>
+                                    <th th:text="${labels['percentage']}"></th>
+                                    <th th:text="${labels['number']}"></th>
+                                    <th th:text="${labels['number']}"></th>
+                                    <th th:text="${labels['percentage']}"></th>
+                                    <th th:text="${labels['number']}"></th>
+                                    <th th:text="${labels['percentage']}"></th>
+                                    <th th:text="${labels['number']}"></th>
+                                </tr>
+                                <tr style="font-weight: bold;">
+                                    <td style="text-align: center;">1</td>
+                                    <td style="text-align: center;">2</td>
+                                    <td style="text-align: center;">3</td>
+                                    <td style="text-align: center;">4</td>
+                                    <td style="text-align: center;">5a</td>
+                                    <td style="text-align: center;">5b</td>
+                                    <td style="text-align: center;">5c</td>
+                                    <td style="text-align: center;">6a</td>
+                                    <td style="text-align: center;">6b</td>
+                                    <td style="text-align: center;">6c</td>
+                                    <td style="text-align: center;">7a</td>
+                                    <td style="text-align: center;">7b</td>
+                                    <td style="text-align: center;">7c</td>
+                                    <td style="text-align: center;">8</td>
+                                    <td style="text-align: center;">9a</td>
+                                    <td style="text-align: center;">9b</td>
+                                    <td style="text-align: center;">10a</td>
+                                    <td style="text-align: center;">10b</td>
+                                    <td style="text-align: center;">11</td>
+                                    <td style="text-align: center;">12a</td>
+                                    <td style="text-align: center;">12b</td>
+                                    <td style="text-align: center;">13a</td>
+                                    <td style="text-align: center;">13b</td>
+                                    <td style="text-align: center;">14a</td>
+                                    <td style="text-align: center;">14b</td>
+                                    <td style="text-align: center;">15</td>
+                                    <td style="text-align: center;">16a</td>
+                                    <td style="text-align: center;">16b</td>
+                                    <td style="text-align: center;">17a</td>
+                                    <td style="text-align: center;">17b</td>
+                                    <td style="text-align: center;">18</td>
+                                </tr>
+                                </thead>
+
+                                <thead>
+                                <tr class="grand-total-row" th:each="data : ${grandTotal}">
+                                    <td></td>
+                                    <td style="font-weight: bold;">Grand Total</td>
+                                    <td th:text="${data.formattingTotalDistrict}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.formattingTotalTehsils}" style="font-weight: bold;"></td>
+
+                                    <td th:text="${data.formattingtotalCadastralMaps}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.formattingdigitizedCadastralMaps}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.digitizedCadastralMapsPercent}" style="font-weight: bold;"></td>
+
+                                    <td th:text="${data.formattingtotalFmbs}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.formattingdigitizedFmbs}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.digitizedFmbsPercent}" style="font-weight: bold;"></td>
+
+                                    <td th:text="${data.formattingtotalTippans}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.formattingdigitizedTippans}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.digitizedTippansPercent}" style="font-weight: bold;"></td>
+
+                                    <td th:text="${data.formattingtotalMapsFmbTippans}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.formattingtotalDigitizedMapsFmbTippans}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.digitizedMapsFmbTippansPercent}" style="font-weight: bold;"></td>
+
+                                    <td th:text="${data.formattinggeoreferencedMaps}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.georeferencedMapsPercent}" style="font-weight: bold;"></td>
+
+                                    <td th:text="${data.formattingTotalVillages}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.formattingvillagesLinkedWithRor}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.villagesLinkedWithRorPercent != null ? (data.villagesLinkedWithRorPercent != 0 ? data.villagesLinkedWithRorPercent : 0.0) : 0.0}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.formattingvillagesGeoreferenced}" style="font-weight: bold;"></td>
+
+                                    <td th:text="${data.VillagesGeoreferencedPercent != null ? (data.VillagesGeoreferencedPercent != 0 ? data.VillagesGeoreferencedPercent : 0.0) : 0.0}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.formattingvillagesWithUlipn}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.villagesWithUlipnPercent != null ? (data.villagesWithUlipnPercent != 0 ? data.villagesWithUlipnPercent : 0.0) : 0.0}" style="font-weight: bold;"></td>
+
+                                    <td th:text="${data.formattingtotalLandParcels}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.formattinggeoreferencedLandParcels}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.georeferencedLandParcelsPercent}" style="font-weight: bold;"></td>
+
+                                    <td th:text="${data.formattinglandParcelsWithUlipn}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.landParcelsWithUlipnPercent}" style="font-weight: bold;"></td>
+
+                                    <td th:text="${data.mapsUpdatedBasedOnMutation ?: 0}" style="font-weight: bold;"></td>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                <tr th:each="data, iterator : ${reportData}">
+                                    <td th:text="${iterator.count}"></td>
+                                    <td><a th:href="@{/physicalProgressReports/map/district-level/{lgdCode}(lgdCode=${data.lgdCode})}" th:text="${data.stateName}" target="_blank"></a></td>
+
+                                    <td th:text="${data.formattingTotalDistrict}"></td>
+                                    <td th:text="${data.formattingTotalTehsils}"></td>
+
+                                    <td th:text="${data.formattingtotalCadastralMaps}"></td>
+                                    <td th:text="${data.formattingdigitizedCadastralMaps}"></td>
+                                    <td th:text="${data.digitizedCadastralMapsPercent}"></td>
+
+                                    <td th:text="${data.formattingtotalFmbs}"></td>
+                                    <td th:text="${data.formattingdigitizedFmbs}"></td>
+                                    <td th:text="${data.digitizedFmbsPercent}"></td>
+
+                                    <td th:text="${data.formattingtotalTippans}"></td>
+                                    <td th:text="${data.formattingdigitizedTippans}"></td>
+                                    <td th:text="${data.digitizedTippansPercent}"></td>
+
+                                    <td th:text="${data.formattingtotalMapsFmbTippans}"></td>
+                                    <td th:text="${data.formattingtotalDigitizedMapsFmbTippans}"></td>
+                                    <td th:text="${data.digitizedMapsFmbTippansPercent}"></td>
+
+                                    <td th:text="${data.formattinggeoreferencedMaps}"></td>
+                                    <td th:text="${data.georeferencedMapsPercent}"></td>
+
+                                    <td th:text="${data.formattingTotalVillages}"></td>
+                                    <td th:text="${data.formattingvillagesLinkedWithRor}"></td>
+                                    <td th:text="${data.villagesLinkedWithRorPercent != null ? (data.villagesLinkedWithRorPercent != 0 ? data.villagesLinkedWithRorPercent : 0.0) : 0.0}"></td>
+                                    <td th:text="${data.formattingvillagesGeoreferenced}"></td>
+                                    <td th:text="${data.VillagesGeoreferencedPercent != null ? (data.VillagesGeoreferencedPercent != 0 ? data.VillagesGeoreferencedPercent : 0.0) : 0.0}"></td>
+                                    <td th:text="${data.formattingvillagesWithUlipn}"></td>
+                                    <td th:text="${data.villagesWithUlipnPercent != null ? (data.villagesWithUlipnPercent != 0 ? data.villagesWithUlipnPercent : 0.0) : 0.0}"></td>
+
+                                    <td th:text="${data.formattingtotalLandParcels}"></td>
+                                    <td th:text="${data.formattinggeoreferencedLandParcels}"></td>
+                                    <td th:text="${data.georeferencedLandParcelsPercent}"></td>
+
+                                    <td th:text="${data.formattinglandParcelsWithUlipn}"></td>
+                                    <td th:text="${data.landParcelsWithUlipnPercent}"></td>
+                                    <td th:text="${data.mapsUpdatedBasedOnMutation}">
+                                </tr>
+                                </tbody>
+
+                                <tfoot>
+                                <tr class="grand-total-row" th:each="data : ${grandTotal}">
+                                    <td></td>
+                                    <td style="font-weight: bold;">Grand Total</td>
+                                    <td th:text="${data.formattingTotalDistrict}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.formattingTotalTehsils}" style="font-weight: bold;"></td>
+
+                                    <td th:text="${data.formattingtotalCadastralMaps}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.formattingdigitizedCadastralMaps}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.digitizedCadastralMapsPercent}" style="font-weight: bold;"></td>
+
+                                    <td th:text="${data.formattingtotalFmbs}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.formattingdigitizedFmbs}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.digitizedFmbsPercent}" style="font-weight: bold;"></td>
+
+                                    <td th:text="${data.formattingtotalTippans}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.formattingdigitizedTippans}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.digitizedTippansPercent}" style="font-weight: bold;"></td>
+
+                                    <td th:text="${data.formattingtotalMapsFmbTippans}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.formattingtotalDigitizedMapsFmbTippans}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.digitizedMapsFmbTippansPercent}" style="font-weight: bold;"></td>
+
+                                    <td th:text="${data.formattinggeoreferencedMaps}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.georeferencedMapsPercent}" style="font-weight: bold;"></td>
+
+                                    <td th:text="${data.formattingTotalVillages}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.formattingvillagesLinkedWithRor}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.villagesLinkedWithRorPercent != null ? (data.villagesLinkedWithRorPercent != 0 ? data.villagesLinkedWithRorPercent : 0.0) : 0.0}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.formattingvillagesGeoreferenced}" style="font-weight: bold;"></td>
+
+                                    <td th:text="${data.VillagesGeoreferencedPercent != null ? (data.VillagesGeoreferencedPercent != 0 ? data.VillagesGeoreferencedPercent : 0.0) : 0.0}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.formattingvillagesWithUlipn}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.villagesWithUlipnPercent != null ? (data.villagesWithUlipnPercent != 0 ? data.villagesWithUlipnPercent : 0.0) : 0.0}" style="font-weight: bold;"></td>
+
+                                    <td th:text="${data.formattingtotalLandParcels}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.formattinggeoreferencedLandParcels}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.georeferencedLandParcelsPercent}" style="font-weight: bold;"></td>
+
+                                    <td th:text="${data.formattinglandParcelsWithUlipn}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.landParcelsWithUlipnPercent}" style="font-weight: bold;"></td>
+
+                                    <td th:text="${data.mapsUpdatedBasedOnMutation ?: 0}" style="font-weight: bold;"></td>
+                                </tr>
+                                </tfoot>
+                            </table>
+                            <script>
+    function toggleSortDropdown() {
+        var ddlSelect = document.getElementById("ddlSelect");
+        var ascDropdown = document.getElementById("ascDropdown");
+        if (ddlSelect.value === "villageLinkRoR" || ddlSelect.value === "digitizedMaps" || ddlSelect.value === "cft_digitizedMaps") {
+            ascDropdown.style.display = "block";
+            // Set the value for ascDesc based on selection
+            var ascDescSelect = document.getElementById("ddlAscDesc");
+            if (ddlSelect.value === "villageLinkRoR") {
+                ascDescSelect.value = "ASC";
+            } else if (ddlSelect.value === "digitizedMaps") {
+                ascDescSelect.value = "ASC";
+            } else if (ddlSelect.value === "cft_digitizedMaps") {
+                ascDescSelect.value = "ASC";
+            }
+            else {
+                ascDescSelect.value = "";
+            }
+        } else {
+            ascDropdown.style.display = "none";
+        }
+    }
+                        </script>
+                            <script>
+    $(document).ready(function () {
+        $('#ddlSelect').change(function () {
+            var selectedValue = $(this).val();
+            if (selectedValue != '') {
+                $('#ascDropdown').show();
+            } else {
+                $('#ascDropdown').hide();
+            }
+        });
+    });
+    $('#resetButton').click(function () {
+        $('#searchForm')[0].reset();
+        $('#searchForm').trigger('submit');
+    });
+                            </script>
+                            <script>
+    $(document).ready(function () {
+        // Check if DataTable is already initialized on the table
+        if ($.fn.DataTable.isDataTable('#example2')) {
+            // If yes, destroy the existing DataTable instance
+            $('#example2').DataTable().destroy();
+        }
+
+        // Initialize DataTable with your table ID
+        $('#example2').DataTable({
+            // Add additional options if needed
+            paging: true,  // Enable pagination
+            lengthMenu: [5, 10, 15, 20, 25, 30, 36, 50, 100],  // Set page length options
+            pageLength: 36,  // Default page length
+            // Callback function after each draw event
+            drawCallback: function (settings) {
+                var api = this.api();
+                var totalPages = api.page.info().pages;
+                var page = api.page.info().page;
+
+                // Check if it's the last page
+                if (page === totalPages - 1) {
+                    $('#example2 tfoot').show();
+                } else {
+                    $('#example2 tfoot').hide();
+                }
+            }
+        });
+
+        // Initialize generic frozen columns (first 2 columns, first 3 header rows sticky, include footer)
+        if (window.freezeTableColumns) {
+            freezeTableColumns('#example2', {
+                columns: 2,
+                headerStickyRows: [0, 1, 2],
+                footerSticky: true
+            });
+        }
+
+        // Mouse drag functionality for horizontal scrolling
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+        const tableContainer = $('.table-responsive')[0];
+        const tableElement = $('#example2')[0];
+
+        if (!tableContainer || !tableElement) {
+            console.log('Table container or table element not found');
+            return;
+        }
+
+        // Mouse down event - only on table content, not DataTables controls
+        $(tableElement).on('mousedown', function(e) {
+            // Only handle left mouse button
+            if (e.which !== 1) return;
+            
+            // Check if clicking on DataTables controls
+            if ($(e.target).closest('.dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_paginate').length > 0) {
+                return; // Don't interfere with DataTables controls
+            }
+            
+            isDown = true;
+            tableElement.classList.add('active');
+            startX = e.pageX - tableContainer.offsetLeft;
+            scrollLeft = tableContainer.scrollLeft;
+            
+            e.preventDefault(); // Prevent text selection
+        });
+
+        // Mouse leave event
+        $(tableElement).on('mouseleave', function() {
+            isDown = false;
+            tableElement.classList.remove('active');
+        });
+
+        // Mouse up event
+        $(tableElement).on('mouseup', function() {
+            isDown = false;
+            tableElement.classList.remove('active');
+        });
+
+        // Mouse move event
+        $(tableElement).on('mousemove', function(e) {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - tableContainer.offsetLeft;
+            const walk = (x - startX) * 1.5; // Scroll speed multiplier
+            tableContainer.scrollLeft = scrollLeft - walk;
+        });
+
+        console.log('Mouse drag functionality initialized for state Map Digitization table');
+        console.log('Table container:', tableContainer);
+        console.log('Table element:', tableElement);
+    });
+
+
+
+
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </section>
+</div>
+    <script th:src="@{/js/freeze-columns.js}"></script>
+</body>
+</html>
+
+

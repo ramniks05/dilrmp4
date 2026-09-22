@@ -1,0 +1,1548 @@
+<div th:fragment="district-mis-data">
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <!-- Horizontal Form -->
+          <div class="card card-info">
+            <div class="card-header">
+              <h3 class="card-title">District MIS Data Entry Form</h3>
+            </div>
+            <div class="card-body">
+
+              <div id="districtMisPermissionBanner">
+                <div th:if="${increaseOnlyPolicyActive}" class="alert alert-warning" role="alert">
+                  <i class="fas fa-lock"></i>
+                  <strong>Increase Only:</strong> For this district, values for question numbers
+                  4, 5, 6, 7, 11–17, 20, 22–42 cannot be decreased. Contact the administrator to enable decrease permission.
+                </div>
+                <div th:if="${allowDecrease}" class="alert alert-success" role="alert">
+                  <i class="fas fa-lock-open"></i>
+                  <strong>Increase &amp; Decrease (24 hours):</strong> This district may update restricted question values upward or downward
+                  until <strong th:text="${decreaseAllowedUntilDisplay}"></strong>. After 24 hours, permission automatically reverts to Increase Only.
+                </div>
+              </div>
+
+              <script>
+        // Hide the message after 10 seconds
+        setTimeout(function() {
+            document.getElementById('flash-message').style.display = 'none';
+        }, 10000);
+
+        </script>
+             <!-- <form th:action="@{/state/district-mis-data/save}"th:object="${districtMISDataEntry}" method="post" onsubmit="return validateForm()" id="districtMisDataForm">-->
+                  <form th:action="@{/state/district-mis-data/save}" th:object="${districtMISDataEntry}" method="post"
+              hx-target="#content" id="districtMisDataForm"
+              th:attr="data-increase-only=${increaseOnlyPolicyActive},data-decrease-until-epoch=${decreaseAllowedUntilEpoch}">
+              <!-- Conditionally include the hidden input if id is not null -->
+              <div th:if="${districtMISDataEntry.id != null}">
+                <input type="hidden" name="id" th:value="${districtMISDataEntry.id}" />
+              </div>
+
+              <!-- Nav tabs -->
+              <ul class="nav nav-tabs" id="formTabs" role="tablist">
+                <!-- Tab items -->
+                <li class="nav-item">
+                  <a class="nav-link active" id="tehsils-villages-tab" data-toggle="tab" href="#tehsils-villages"
+                    role="tab" aria-controls="tehsils-villages" aria-selected="false">
+                    <i class="fas fa-map-marker-alt"></i> District/Tehsils/Villages
+                  </a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link" id="clr-tab" data-toggle="tab" href="#clr" role="tab" aria-controls="clr"
+                   aria-selected="false" data-tab-state="disabled">
+                    <i class="fas fa-database"></i> CLR
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="map-digitization-tab" data-toggle="tab" href="#map-digitization" role="tab"
+                    aria-controls="map-digitization" aria-selected="false" data-tab-state="disabled">
+                    <i class="fas fa-map"></i> Map Digitization
+                  </a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link" id="mrr-tab" data-toggle="tab" href="#mrr" role="tab" aria-controls="mrr"
+                    aria-selected="false" data-tab-state="disabled">
+                    <i class="fas fa-archive"></i> MRR
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="survey-tab" data-toggle="tab" href="#survey" role="tab" aria-controls="survey"
+                    aria-selected="false" data-tab-state="disabled">
+                    <i class="fas fa-compass"></i> Survey
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="e-rcms-tab" data-toggle="tab" href="#e-rcms" role="tab" aria-controls="e-rcms"
+                    aria-selected="false" data-tab-state="disabled">
+                    <i class="fas fa-calculator"></i> e-RCMS
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="aadhaar-tab" data-toggle="tab" href="#aadhaar" role="tab"
+                    aria-controls="aadhaar" aria-selected="false" data-tab-state="disabled">
+                    <i class="fas fa-id-card"></i> Aadhaar Linkage
+                  </a>
+                </li>
+              </ul>
+
+
+              <!-- Tab panes -->
+              <div class="tab-content mt-3">
+               <div class="tab-pane fade show active" id="tehsils-villages" role="tabpanel"
+                  aria-labelledby="tehsils-villages-tab">
+                  <div class="form-section">
+                    <div class="form-group row">
+                      <label for="district" class="col-sm-2 col-form-label">
+                        [1] Select District:
+                      </label>
+                      <div class="col-sm-10">
+                        <select name="district.id" class="form-control" hx-trigger="change"
+                                hx-post="/state/district-mis-data" hx-vals='{"district.id": this.value}' id="districtID">
+
+                          <option value="0">Select District</option>
+
+                          <option th:each="district : ${districts}"
+                                  th:value="${district.id}"
+                                  th:text="${district.name}"
+                                  th:selected="${districtMISDataEntry.district != null and district.id == districtMISDataEntry.district.id}"  >
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Tehsils/Villages Information -->
+                  <div class="form-section">
+                    <h3>A. Tehsils/Villages in District</h3>
+
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group row">
+                          <label for="totalTehsils" class="col-sm-4 col-form-label">
+                            [2] Total number of Tehsils:
+                          </label>
+                          <div class="col-sm-8">
+                            <input type="text" id="totalTehsils" name="totalTehsils"
+                              th:value="${districtMISDataEntry.totalTehsils}" onchange="validateSanctioned()" oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="0"
+                                   class="form-control"  maxlength="10" >
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-6">
+                        <div class="form-group row">
+                          <label for="totalVillages" class="col-sm-4 col-form-label">
+                            [3] Total number of Villages:
+                          </label>
+                          <div class="col-sm-8">
+                            <input type="text" id="totalVillages" name="totalVillages"
+                              th:value="${districtMISDataEntry.totalVillages}" onchange="validateVillages()"
+                                   oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="form-control" min="0" maxlength="10">
+                            <small id="totalVillageError" class="text-danger"></small>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- CLR Tab -->
+
+                <!--================================== Component 1: Computerization of Land Records (CLR) ===========================================-->
+                <div class="tab-pane fade" id="clr" role="tabpanel" aria-labelledby="clr-tab">
+                  <div class="card-header p-3 mb-3">
+                    <h3 class="mb-0"
+                      style="font-size: 24px; font-family: auto; letter-spacing: 2px; color: var(--danger);">
+                      Component 1: Computerization of Land Records (CLR)
+                    </h3>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="villagesComputerizationCompleted" class="col-sm-6 col-form-label">
+                      <span class="red-text">[4]</span> Number of Villages where computerization of Land Records
+                      Completed [RoR Data Entry as of Previous Settlement (100% checked and frozen)]
+                    </label>
+                    <div class="col-sm-6">
+                      <input type="text" title="Equal to lesser than Total Village" id="villagesComputerizationCompleted" name="villagesComputerizationCompleted"
+                        th:field="*{villagesComputerizationCompleted}" onchange="validateVillages()"
+                             oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="form-control" min="0" maxlength="10">
+                      <small id="villageComputerizationError" class="text-danger"></small>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="totalRoR" class="col-sm-6 col-form-label">
+                      <span class="red-text">[5]</span> Total number of Record of Rights (RoR)
+                    </label>
+                    <div class="col-sm-6">
+                      <input type="text" id="totalRoR" name="totalRoR" th:field="*{totalRoR}" class="form-control"
+                             onchange="validateTotalRoR()" oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="0" maxlength="10">
+                      <small id="totalRoRError" class="text-danger"></small>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="rorComputerized" class="col-sm-6 col-form-label">
+                      <span class="red-text">[6]</span> Number of RoR Computerized
+                    </label>
+                    <div class="col-sm-6">
+                      <input type="text" id="rorComputerized" name="rorComputerized" th:field="*{rorComputerized}"
+                        class="form-control" onchange="validateTotalRoR()" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                             min="0" maxlength="10">
+                      <small id="rorComputerizedError" class="text-danger"></small>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="totalLandOwners" class="col-sm-6 col-form-label">
+                      <span class="red-text">[7]</span> Total number of land owners
+                    </label>
+                    <div class="col-sm-6">
+                      <input type="text" id="totalLandOwners" name="totalLandOwners" th:field="*{totalLandOwners}"
+                        class="form-control"  onchange=" validateTotalLandOwner()" oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="0" maxlength="10">
+                    </div>
+                  </div>
+
+
+                  <div class="form-group row">
+                    <label for="genderBasedLandOwnership" class="col-sm-6 col-form-label">
+                      <span class="red-text">[8]</span> Whether gender-based land ownership is maintained in Land Records software
+                    </label>
+                    <div class="col-sm-6">
+                      <div class="form-check">
+                        <input type="radio" id="genderBasedLandOwnershipYes" name="genderBasedLandOwnership"
+                               th:field="*{genderBasedLandOwnership}" value="true" class="form-check-input" required>
+                        <label for="genderBasedLandOwnershipYes" class="form-check-label">Yes</label>
+                      </div>
+                      <div class="form-check">
+                        <input type="radio" id="genderBasedLandOwnershipNo" name="genderBasedLandOwnership"
+                               th:field="*{genderBasedLandOwnership}" value="false" class="form-check-input"
+                               th:checked="${genderBasedLandOwnership == null || !genderBasedLandOwnership}" required>
+                        <label for="genderBasedLandOwnershipNo" class="form-check-label">No</label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="totalMaleLandOwners" class="col-sm-6 col-form-label">
+                      <span class="red-text">[9]</span> Total number of Male land owners
+                    </label>
+                    <div class="col-sm-6">
+                      <input type="text" id="totalMaleLandOwners" name="totalMaleLandOwners"
+                             th:field="*{totalMaleLandOwners}" onchange="validateTotalLandOwner()"
+                             oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="form-control" disabled>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="totalFemaleLandOwners" class="col-sm-6 col-form-label">
+                      <span class="red-text">[10]</span> Total number of Female land owners
+                    </label>
+                    <div class="col-sm-6">
+                      <input type="text" id="totalFemaleLandOwners" name="totalFemaleLandOwners"
+                             th:field="*{totalFemaleLandOwners}" onchange="validateTotalLandOwner()"
+                             oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="form-control" disabled>
+                    </div>
+                  </div>
+
+
+                </div>
+
+
+
+
+                <!--================================== Component 2: Map Digitization ===========================================-->
+                <div class="tab-pane fade" id="map-digitization" role="tabpanel" aria-labelledby="map-digitization-tab">
+                  <div class="card-header p-3 mb-3">
+                    <h3 class="mb-0"
+                      style="font-size: 24px; font-family: auto; letter-spacing: 2px; color: var(--danger);">
+                      Component 2: Map Digitization
+                    </h3>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="totalCadastralMaps" class="col-sm-8 col-form-label">
+                      [11] Total number of Cadastral Maps
+                    </label>
+                    <div class="col-sm-4">
+                      <input type="text" id="totalCadastralMaps" name="totalCadastralMaps"
+                        th:field="*{totalCadastralMaps}" onchange=" validateCadastralMapsRoR()"
+                             oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="10" maxlength="10" class="form-control" required>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="digitizedCadastralMaps" class="col-sm-8 col-form-label">
+                      [12] Number of Digitized Cadastral Maps
+                    </label>
+                    <div class="col-sm-4">
+                      <input type="text" id="digitizedCadastralMaps" name="digitizedCadastralMaps"
+                        th:field="*{digitizedCadastralMaps}" onchange=" validateCadastralMapsRoR()"
+                             oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="0" maxlength="10" class="form-control" required>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="totalFMBs" class="col-sm-8 col-form-label">
+                      [13] Total number of FMBs<span style="color: red;">*</span>
+                    </label>
+                    <div class="col-sm-4">
+                      <input type="text" id="totalFMBs" name="totalFMBs" th:field="*{totalFMBs}" onchange=" validatetotalFMBs()"
+                             oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="0" maxlength="10" class="form-control"
+                        required>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="digitizedFMBs" class="col-sm-8 col-form-label">
+                      [14] Number of Digitized FMBs(not merely scanned)
+                    </label>
+                    <div class="col-sm-4">
+                      <input type="text" id="digitizedFMBs" name="digitizedFMBs" th:field="*{digitizedFMBs}"
+                             onchange=" validatetotalFMBs()" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                             min="0" maxlength="10" class="form-control" required>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="totalTippans" class="col-sm-8 col-form-label">
+                      [15] Total number of Tippans<span style="color: red;">**</span>
+                    </label>
+                    <div class="col-sm-4">
+                      <input type="text" id="totalTippans" name="totalTippans" th:field="*{totalTippans}"
+                        class="form-control" onchange=" validatetotalFMBs()" oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="10"
+                      maxlength="10">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="digitizedTippans" class="col-sm-8 col-form-label">
+                      [16] Number of Digitized Tippans(not merely scanned)
+                    </label>
+                    <div class="col-sm-4">
+                      <input type="text" id="digitizedTippans" name="digitizedTippans" th:field="*{digitizedTippans}"
+                       onchange="validatetotalFMBs()" class="form-control"  oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="0"
+                      maxlength="10">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="villagesLinkedWithRoR" class="col-sm-8 col-form-label">
+                      [17] Number of Villages where Cadastral Maps/ FMBs/ Tippans Linked with RoR
+                    </label>
+                    <div class="col-sm-4">
+                      <input type="text" id="villagesLinkedWithRoR" name="villagesLinkedWithRoR"
+                        th:field="*{villagesLinkedWithRoR}" class="form-control"  onchange="validateVillages()"  oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="0"
+                      maxlength="10">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="mapsUpdatedBasedOnMutation" class="col-sm-8 col-form-label">
+                      [18] Are Cadastral Maps/ FMBs/ Tippans updated based on Mutation orders and reflect current ownership?
+                    </label>
+                    <div class="col-sm-4">
+                      <div class="form-check">
+                        <input type="radio" id="mapsUpdatedBasedOnMutationYes" name="mapsUpdatedBasedOnMutation"
+                               th:field="*{mapsUpdatedBasedOnMutation}" value="false" class="form-check-input">
+                        <label for="mapsUpdatedBasedOnMutationYes" class="form-check-label">Yes</label>
+                      </div>
+                      <div class="form-check">
+                        <input type="radio" id="mapsUpdatedBasedOnMutationNo" name="mapsUpdatedBasedOnMutation"
+                               th:field="*{mapsUpdatedBasedOnMutation}" value="true" class="form-check-input"
+                               th:checked="${mapsUpdatedBasedOnMutation == null || !mapsUpdatedBasedOnMutation}">
+                        <label for="mapsUpdatedBasedOnMutationNo" class="form-check-label">No</label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="mapsUpdatePeriod" class="col-sm-8 col-form-label">
+                      [19] If not, what is the period up to which the maps/ FMBs/ Tippans have been updated including sub-division?
+                    </label>
+                    <div class="col-sm-4">
+                      <input type="date" id="mapsUpdatePeriod" name="mapsUpdatePeriod"
+                             th:field="*{mapsUpdatePeriodDate}" class="form-control" disabled>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="villagesGeoreferenced" class="col-sm-8 col-form-label">
+                      [20] Number of Villages where Cadastral Maps/ FMBs/ Tippans are Geo-Referenced
+                    </label>
+                    <div class="col-sm-4">
+                      <input type="text" id="villagesGeoreferenced" name="villagesGeoreferenced"
+                        th:field="*{villagesGeoreferenced}" onchange="validateVillages()" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                             class="form-control" min="0" maxlength="10">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="georeferencedMaps" class="col-sm-8 col-form-label">
+                      [21] Number of Geo-Referenced Cadastral Maps/ FMBs/ Tippans
+                    </label>
+                    <div class="col-sm-4">
+                      <input type="text" id="georeferencedMaps" name="georeferencedMaps"
+                        th:field="*{georeferencedMaps}" onchange="validateTotalMaps()"  oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                             class="form-control" min="0" maxlength="10">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="totalLandParcels" class="col-sm-8 col-form-label">
+                      [22] Total number of Land Parcels
+                    </label>
+                    <div class="col-sm-4">
+                      <input type="text" id="totalLandParcels" name="totalLandParcels" th:field="*{totalLandParcels}"
+                        class="form-control" onchange="validateLandParcels()" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                      min="10" maxlength="10">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="georeferencedLandParcels" class="col-sm-8 col-form-label">
+                      [23] Number of Geo-Referenced Land Parcels
+                    </label>
+                    <div class="col-sm-4">
+                      <input type="text" id="georeferencedLandParcels" name="georeferencedLandParcels"
+                        th:field="*{georeferencedLandParcels}" onchange="validateLandParcels()" class="form-control"
+                             oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="0" maxlength="10">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="villagesWithULIPN" class="col-sm-8 col-form-label">
+                      [24] Number of Villages where ULPIN has been assigned
+                    </label>
+                    <div class="col-sm-4">
+                      <input type="text" id="villagesWithULIPN" name="villagesWithULIPN"
+                        th:field="*{villagesWithULIPN}" onchange="validateVillages()" class="form-control"
+                             oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="0" maxlength="10">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="landParcelsWithULIPN" class="col-sm-8 col-form-label">
+                      [25] Number of Land Parcels to which ULPIN has been assigned
+                    </label>
+                    <div class="col-sm-4">
+                      <input type="text" id="landParcelsWithULIPN" name="landParcelsWithULIPN"
+                        th:field="*{landParcelsWithULIPN}" onchange="validateLandParcels()" class="form-control"
+                             oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="0" maxlength="10">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <h5>
+                      Note:
+                      <span style="color: red;">*</span> and
+                      <span style="color: red;">**</span> -
+                      <b>States are requested to finish information from Row 13-16 based on terminology (either Tippan or FMB) used in the State.</b>
+                    </h5>
+                  </div>
+
+                </div>
+
+
+
+                <!--================================== Component 4: Modern Record Room (MRR) ===========================================-->
+                <div class="tab-pane fade" id="mrr" role="tabpanel" aria-labelledby="mrr-tab">
+                  <div class="card-header p-3 mb-3">
+                    <h3 class="mb-0"
+                      style="font-size: 24px; font-family: auto; letter-spacing: 2px; color: var(--danger);">
+                      Component 4: Modern Record Room (MRR)
+                    </h3>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="mrrSanctioned" class="col-sm-8 col-form-label">
+                      <span>[26]</span> Number of MRR Sanctioned
+                    </label>
+                    <div class="col-sm-4">
+                      <input type="text" id="mrrSanctioned" name="mrrSanctioned" th:field="*{mrrSanctioned}"
+                        onchange="validateSanctioned()"  oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="0" maxlength="10" class="form-control">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="mrrCompleted" class="col-sm-8 col-form-label">
+                      <span>[27]</span> Number of MRR Completed
+                    </label>
+                    <div class="col-sm-4">
+                      <input type="text" id="mrrCompleted" name="mrrCompleted" th:field="*{mrrCompleted}"
+                             onchange="validateSanctioned()" oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="0" maxlength="10" class="form-control">
+                    </div>
+                  </div>
+                </div>
+
+                <!--================================== Component 5: Survey/Re-Survey under NLRMP/DILRMP ===========================================-->
+
+                <div class="tab-pane fade" id="survey" role="tabpanel" aria-labelledby="survey-tab">
+                  <div class="form-group row">
+                    <div class="card-header p-2"
+                      style="font-size: 24px; font-family: auto; letter-spacing: 2px; color: var(--danger);">
+                      <ul class="nav nav-pills">
+                        <li class="nav-item">Component 5: Survey/Re-Survey under NLRMP/DILRMP</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="totalRuralRevenueArea" class="col-sm-8 col-form-label">
+                      <span>[28]</span> Total Rural Revenue Area (Sq.Km)
+                    </label>
+                    <div class="col-sm-4">
+                      <input type="text" step="0.01" id="totalRuralRevenueArea" name="totalRuralRevenueArea"
+                        th:field="*{totalRuralRevenueArea}"   oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                             min="0" maxlength="10" onchange="validateSurvey()" class="form-control">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="areaSanctionedForSurvey" class="col-sm-8 col-form-label">
+                      <span>[29]</span> Area Sanctioned for Survey/Re-survey (Sq.Km.)
+                    </label>
+                    <div class="col-sm-4">
+                      <input type="text" step="0.01" id="areaSanctionedForSurvey" name="areaSanctionedForSurvey"
+                        th:field="*{areaSanctionedForSurvey}" onchange="validateSurvey()"
+                             oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                             min="0" maxlength="10" class="form-control" required>
+                    </div>
+                  </div>
+
+
+                  <div class="form-group row">
+                    <label for="villagesDroneFlyingCompleted" class="col-sm-8 col-form-label">
+                      <span>[30]</span> Number of villages where drone flying completed
+                    </label>
+                    <div class="col-sm-4">
+                      <input type="text" id="villagesDroneFlyingCompleted" name="villagesDroneFlyingCompleted"
+                             th:field="*{villagesDroneFlyingCompleted}" onchange="validateVillages()"
+                             oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="0" maxlength="10" class="form-control">
+                    </div>
+                  </div>
+
+
+                  <div class="form-group row">
+                    <label for="areaDroneFlyingCompleted" class="col-sm-8 col-form-label">
+                      <span>[31]</span> Area of villages where drone flying completed (Sq. Km)
+                    </label>
+                    <div class="col-sm-4">
+                      <input type="text" step="0.01" id="areaDroneFlyingCompleted" name="areaDroneFlyingCompleted"
+                             th:field="*{areaDroneFlyingCompleted}" onchange="validateSurvey()"
+                             oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                             min="0" maxlength="10" class="form-control">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="villagesMap1Generated" class="col-sm-8 col-form-label">
+                      <span>[32]</span> Number of villages where Map 1 is generated
+                    </label>
+                    <div class="col-sm-4">
+                      <input type="text" id="villagesMap1Generated" name="villagesMap1Generated"
+                        th:field="*{villagesMap1Generated}" onchange="validateVillages()" min="10" maxlength="10" class="form-control">
+                    </div>
+                  </div>
+
+
+                  <div class="form-group row">
+                    <label for="villagesDraftMapPublished" class="col-sm-8 col-form-label">
+                      <span>[33]</span> Number of villages where draft map is published and objections invites
+                    </label>
+                    <div class="col-sm-4">
+                      <input type="text" id="villagesDraftMapPublished" name="villagesDraftMapPublished"
+                        th:field="*{villagesDraftMapPublished}" oninput="this.value = this.value.replace(/[^0-9]/g, '');" onchange="validateVillages()"
+                             class="form-control" min="0" maxlength="10">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="villagesFinalPromulgationDone" class="col-sm-8 col-form-label">
+                      <span>[34]</span> Number of villages where final Promulgation done
+                    </label>
+                    <div class="col-sm-4">
+                      <input type="text" id="villagesFinalPromulgationDone" name="villagesFinalPromulgationDone"
+                        th:field="*{villagesFinalPromulgationDone}" onchange="validateVillages()"
+                             oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="0" maxlength="10" class="form-control">
+                    </div>
+                  </div>
+
+
+                  <div class="form-group row">
+                    <label for="villagesSurveyNotStarted" class="col-sm-8 col-form-label">
+                      <span>[35]</span> Number of villages where survey is sanctioned but not yet started
+                    </label>
+                    <div class="col-sm-4">
+                      <input type="text" id="villagesSurveyNotStarted" name="villagesSurveySanctionNotStarted"
+                        th:field="*{villagesSurveySanctionNotStarted}" onchange="validateVillages()" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                             class="form-control" min="0" maxlength="10">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="areaSurveyNotStarted" class="col-sm-8 col-form-label">
+                      <span>[36]</span> Area of villages where survey is sanctioned but not yet started (Sq. Km)
+                    </label>
+                    <div class="col-sm-4">
+                      <input type="text" id="areaSurveyNotStarted" name="areaSurveySanctionNotStarted"
+                        th:field="*{areaSurveySanctionNotStarted}" onchange="validateSurvey()" class="form-control"
+                             oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                             min="0" maxlength="10">
+                    </div>
+                  </div>
+                </div>
+
+
+
+                <!--================================== Component 6: Computerization of Revenue Court Management System (e-RCMS) ===========================================-->
+                <div class="tab-pane fade" id="e-rcms" role="tabpanel" aria-labelledby="e-rcms-tab">
+
+                  <div class="form-group row">
+                    <div class="card-header p-2"
+                      style="font-size: 24px;font-family: auto; letter-spacing: 2px; color: var(--danger);">
+                      <ul class="nav nav-pills">
+                        <li class="nav-item">Component 6: Computerization of Revenue Court Management System (e-RCMS)
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="totalRevenueCourts" class="col-sm-8 col-form-label"><span class="red-text">[37]</span>
+                      Total number of Revenue Courts:</label>
+                    <div class="col-sm-4">
+                      <input type="text" id="totalRevenueCourts" name="totalRevenueCourts"
+                        th:field="*{totalRevenueCourts}" onchange="validateRevenueCourts()" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                             min="0" maxlength="10" class="form-control">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="revenueCourtsComputerized" class="col-sm-8 col-form-label"><span
+                        class="red-text">[38]</span>
+                      Number of Revenue Courts computerized/online:</label>
+                    <div class="col-sm-4">
+                      <input type="text" id="revenueCourtsComputerized" name="revenueCourtsComputerized"
+                        th:field="*{revenueCourtsComputerized}" onchange="validateRevenueCourts()"
+                             oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="0" maxlength="10" class="form-control">
+                    </div>
+                  </div>
+
+                </div>
+                <!--================================== Component 7: Consent-based linkage of Aadhaar with Record of Rights (RoR) ===========================================-->
+
+                <div class="tab-pane fade" id="aadhaar" role="tabpanel" aria-labelledby="aadhaar-tab">
+                  <div class="form-group row">
+                    <div class="card-header p-2"
+                      style="font-size: 24px;font-family: auto; letter-spacing: 2px; color: var(--danger);">
+                      <ul class="nav nav-pills">
+                        <li class="nav-item">Component 7: Consent-based linkage of Aadhaar with Record of Rights (RoR)
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="villagesWithRoRLinkedAadhaar" class="col-sm-8 col-form-label"><span
+                        class="red-text">[39]</span>
+                      Number of Villages where at least 1 RoR linked with Aadhaar:</label>
+                    <div class="col-sm-4">
+                      <input type="text" id="villagesWithRoRLinkedAadhaar" name="villagesWithRoRLinkedAadhaar"
+                        th:field="*{villagesWithRoRLinkedAadhaar}" onchange="validateVillages()"
+                             oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="0" maxlength="10" class="form-control">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="villagesWith100PercentRoRLinkedAadhaar" class="col-sm-8 col-form-label"><span
+                        class="red-text">[40]</span> Number of Villages where 100% RoR linked with Aadhaar:</label>
+                    <div class="col-sm-4">
+                      <input type="text" id="villagesWith100PercentRoRLinkedAadhaar"
+                        name="villagesWith100PercentRoRLinkedAadhaar"
+                        th:field="*{villagesWith100PercentRoRLinkedAadhaar}" onchange="validateVillages()"
+                             oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="0" maxlength="10" class="form-control">
+                    </div>
+                  </div>
+
+
+
+                  <div class="form-group row">
+                    <label for="rorLinkedWithAadhaar" class="col-sm-8 col-form-label"><span class="red-text">[41]</span>
+                      Number of RoR linked with Aadhaar:</label>
+                    <div class="col-sm-4">
+                      <input type="text" id="rorLinkedWithAadhaar" name="rorLinkedWithAadhaar"
+                        th:field="*{rorLinkedWithAadhaar}" onchange="validateTotalRoR()"
+                             oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="0" maxlength="10" class="form-control">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="rorLinkedWithMobileNumber" class="col-sm-8 col-form-label"><span
+                        class="red-text">[42]</span>
+                      Number of RoR linked with Mobile Number:</label>
+                    <div class="col-sm-4">
+                      <input type="text" id="rorLinkedWithMobileNumber" name="rorLinkedWithMobileNumber"
+                        th:field="*{rorLinkedWithMobileNumber}" onchange="validateTotalRoR()"
+                             oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="0" maxlength="10" class="form-control">
+                    </div>
+                  </div>
+
+
+                </div>
+
+                <div class="form-group mt-4">
+                  <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save</button>
+                </div>
+
+              </div>
+            </form>
+            </div>
+            <script>
+              (function () {
+                if (window.districtMisIncreaseOnlyInit) {
+                  return;
+                }
+                window.districtMisIncreaseOnlyInit = true;
+
+                var restrictedFieldQuestionNos = {
+                  villagesComputerizationCompleted: 4,
+                  totalRoR: 5,
+                  rorComputerized: 6,
+                  totalLandOwners: 7,
+                  totalCadastralMaps: 11,
+                  digitizedCadastralMaps: 12,
+                  totalFMBs: 13,
+                  digitizedFMBs: 14,
+                  totalTippans: 15,
+                  digitizedTippans: 16,
+                  villagesLinkedWithRoR: 17,
+                  villagesGeoreferenced: 20,
+                  totalLandParcels: 22,
+                  georeferencedLandParcels: 23,
+                  villagesWithULIPN: 24,
+                  landParcelsWithULIPN: 25,
+                  mrrSanctioned: 26,
+                  mrrCompleted: 27,
+                  totalRuralRevenueArea: 28,
+                  areaSanctionedForSurvey: 29,
+                  villagesDroneFlyingCompleted: 30,
+                  areaDroneFlyingCompleted: 31,
+                  villagesMap1Generated: 32,
+                  villagesDraftMapPublished: 33,
+                  villagesFinalPromulgationDone: 34,
+                  villagesSurveyNotStarted: 35,
+                  areaSurveyNotStarted: 36,
+                  totalRevenueCourts: 37,
+                  revenueCourtsComputerized: 38,
+                  villagesWithRoRLinkedAadhaar: 39,
+                  villagesWith100PercentRoRLinkedAadhaar: 40,
+                  rorLinkedWithAadhaar: 41,
+                  rorLinkedWithMobileNumber: 42
+                };
+
+                function isDistrictMisIncreaseOnly() {
+                  var form = document.getElementById('districtMisDataForm');
+                  return form && form.getAttribute('data-increase-only') === 'true';
+                }
+
+                function isRestrictedField(field) {
+                  return field && field.id && Object.prototype.hasOwnProperty.call(restrictedFieldQuestionNos, field.id);
+                }
+
+                function formatRestoredValue(value) {
+                  return value === Math.floor(value) ? String(Math.floor(value)) : String(value);
+                }
+
+                function showDecreaseNotAllowedMessage(questionNo, original) {
+                  var restoredValue = formatRestoredValue(original);
+                  var message = 'Question No. ' + questionNo + ': Decrease is not allowed for this district. '
+                      + 'The value has been restored to ' + restoredValue + '.';
+                  if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                      title: 'Increase Only',
+                      text: message,
+                      icon: 'warning',
+                      confirmButtonText: 'OK',
+                      position: 'center',
+                      allowOutsideClick: true
+                    });
+                  } else {
+                    alert('Increase Only\n\n' + message);
+                  }
+                }
+
+                function enforceIncreaseOnly(field) {
+                  if (!isDistrictMisIncreaseOnly() || !isRestrictedField(field)) {
+                    return;
+                  }
+                  var original = parseFloat(field.getAttribute('data-original-value') || '0');
+                  var current = parseFloat(field.value);
+                  if (isNaN(current)) {
+                    current = 0;
+                  }
+                  if (current < original) {
+                    field.value = formatRestoredValue(original);
+                    showDecreaseNotAllowedMessage(restrictedFieldQuestionNos[field.id], original);
+                  }
+                }
+
+                window.refreshDistrictMisOriginalValues = function () {
+                  if (!isDistrictMisIncreaseOnly()) {
+                    return;
+                  }
+                  Object.keys(restrictedFieldQuestionNos).forEach(function (id) {
+                    var field = document.getElementById(id);
+                    if (field) {
+                      field.setAttribute('data-original-value', field.value || '0');
+                    }
+                  });
+                };
+
+                document.body.addEventListener('change', function (evt) {
+                  if (isRestrictedField(evt.target)) {
+                    enforceIncreaseOnly(evt.target);
+                  }
+                }, true);
+
+                document.body.addEventListener('blur', function (evt) {
+                  if (isRestrictedField(evt.target)) {
+                    enforceIncreaseOnly(evt.target);
+                  }
+                }, true);
+
+                document.body.addEventListener('htmx:afterSwap', function (evt) {
+                  if (evt.detail.target && evt.detail.target.id === 'content') {
+                    window.refreshDistrictMisOriginalValues();
+                  }
+                });
+
+                window.showDistrictMisPermissionExpiredMessage = function () {
+                  var message = 'Increase & Decrease permission has expired after 24 hours. '
+                      + 'This district is now Increase Only. Decrease is not allowed for restricted question numbers.';
+                  if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                      title: 'Permission Expired',
+                      text: message,
+                      icon: 'warning',
+                      confirmButtonText: 'OK',
+                      position: 'center'
+                    });
+                  } else {
+                    alert('Permission Expired\n\n' + message);
+                  }
+                };
+
+                window.showDistrictMisPermissionAllowedMessage = function (allowedUntilDisplay) {
+                  var message = 'Increase & Decrease permission is active for this district until '
+                      + allowedUntilDisplay + '. You may update restricted question values upward or downward.';
+                  if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                      title: 'Increase & Decrease',
+                      text: message,
+                      icon: 'success',
+                      confirmButtonText: 'OK',
+                      position: 'center'
+                    });
+                  } else {
+                    alert('Increase & Decrease\n\n' + message);
+                  }
+                };
+
+                function applyIncreaseOnlyMode() {
+                  var form = document.getElementById('districtMisDataForm');
+                  if (form) {
+                    form.setAttribute('data-increase-only', 'true');
+                    form.removeAttribute('data-decrease-until-epoch');
+                  }
+                  var banner = document.getElementById('districtMisPermissionBanner');
+                  if (banner) {
+                    banner.innerHTML = '<div class="alert alert-warning" role="alert">'
+                        + '<i class="fas fa-lock"></i> '
+                        + '<strong>Increase Only:</strong> Increase &amp; Decrease permission has expired after 24 hours. '
+                        + 'Values for question numbers 4, 5, 6, 7, 11–17, 20, 22–42 cannot be decreased.'
+                        + '</div>';
+                  }
+                  window.refreshDistrictMisOriginalValues();
+                }
+
+                function checkDecreasePermissionExpiry() {
+                  var form = document.getElementById('districtMisDataForm');
+                  if (!form || form.getAttribute('data-increase-only') === 'true') {
+                    return;
+                  }
+                  var untilEpoch = parseInt(form.getAttribute('data-decrease-until-epoch') || '0', 10);
+                  if (!untilEpoch || untilEpoch <= Date.now()) {
+                    applyIncreaseOnlyMode();
+                    window.showDistrictMisPermissionExpiredMessage();
+                  }
+                }
+
+                window.onDistrictMisPermissionLoaded = function (showExpiredAlert, showAllowedAlert, allowedUntilDisplay) {
+                  window.refreshDistrictMisOriginalValues();
+                  if (showExpiredAlert) {
+                    window.showDistrictMisPermissionExpiredMessage();
+                  } else if (showAllowedAlert) {
+                    window.showDistrictMisPermissionAllowedMessage(allowedUntilDisplay || '');
+                  } else {
+                    checkDecreasePermissionExpiry();
+                  }
+                };
+
+                setInterval(checkDecreasePermissionExpiry, 60 * 1000);
+              })();
+            </script>
+            <script th:inline="javascript">
+              (function () {
+                var showExpired = /*[[${showPermissionExpiredAlert}]]*/ false;
+                var showAllowed = /*[[${showPermissionAllowedAlert}]]*/ false;
+                var allowedUntil = /*[[${decreaseAllowedUntilDisplay}]]*/ '';
+                if (typeof window.onDistrictMisPermissionLoaded === 'function') {
+                  window.onDistrictMisPermissionLoaded(showExpired, showAllowed, allowedUntil);
+                }
+              })();
+            </script>
+
+            <script>
+             function toggleMapsUpdatePeriod() {
+        const isYesSelected = document.getElementById('mapsUpdatedBasedOnMutationYes').checked;
+        const mapsUpdatePeriod = document.getElementById('mapsUpdatePeriod');
+
+        // Enable the field if "Yes" is selected; disable it otherwise
+        mapsUpdatePeriod.disabled = !isYesSelected;
+         if (isYesSelected) {
+            mapsUpdatePeriod.value = "";
+            mapsUpdatePeriod.disabled = true;
+        } else {
+
+            mapsUpdatePeriod.disabled = false;
+        }
+    }
+     toggleMapsUpdatePeriod();
+    // Initialize the field state on page load
+    document.addEventListener('DOMContentLoaded', toggleMapsUpdatePeriod);
+
+    // Add event listeners for radio buttons
+    document.getElementById('mapsUpdatedBasedOnMutationYes').addEventListener('change', toggleMapsUpdatePeriod);
+    document.getElementById('mapsUpdatedBasedOnMutationNo').addEventListener('change', toggleMapsUpdatePeriod);
+
+
+     function toggleOwnerFields() {
+        const isYesSelected = document.getElementById('genderBasedLandOwnershipYes').checked;
+        const maleLandOwnersField = document.getElementById('totalMaleLandOwners');
+        const femaleLandOwnersField = document.getElementById('totalFemaleLandOwners');
+
+        if (isYesSelected) {
+            maleLandOwnersField.disabled = false;
+            femaleLandOwnersField.disabled = false;
+        } else {
+            maleLandOwnersField.value = "0";
+            femaleLandOwnersField.value = "0";
+            maleLandOwnersField.disabled = true;
+            femaleLandOwnersField.disabled = true;
+        }
+    }
+
+
+    // Initialize visibility and values on page load
+    toggleOwnerFields();
+
+    // Add event listeners for radio buttons
+    document.getElementById('genderBasedLandOwnershipYes').addEventListener('change', toggleOwnerFields);
+    document.getElementById('genderBasedLandOwnershipNo').addEventListener('change', toggleOwnerFields);
+
+
+         document.getElementById('mapsUpdatedBasedOnMutationYes').addEventListener('change', function() {
+        toggleFieldBasedOnRadio('mapsUpdatedBasedOnMutationYes', 'mapsUpdatePeriod');
+    });
+    document.getElementById('mobileAppAvailableNo').addEventListener('change', function() {
+        toggleFieldBasedOnRadio('mapsUpdatedBasedOnMutationYes', 'mapsUpdatePeriod');
+    });
+</script>
+
+
+
+            <script>
+
+
+
+$(document).ready(function() {
+    let previousTehsilsValue = parseInt($('#totalTehsils').val(), 10) || 0;
+    let previousVillagesValue = parseInt($('#totalVillages').val( ), 10) || 0;
+    var districtSelected = $('#district').val() != '-1';
+    function validateForm() {
+
+        var totalTehsils = parseInt($('#totalTehsils').val(), 10);
+        var totalVillages = parseInt($('#totalVillages').val(), 10);
+
+        if (districtSelected && totalTehsils > 0 && totalVillages > 0) {
+            $('#clr-tab').removeAttr('data-tab-state');
+            $('#map-digitization-tab').removeAttr('data-tab-state');
+            $('#sro-tab').removeAttr('data-tab-state');
+            $('#mrr-tab').removeAttr('data-tab-state');
+            $('#survey-tab').removeAttr('data-tab-state');
+            $('#e-rcms-tab').removeAttr('data-tab-state');
+            $('#aadhaar-tab').removeAttr('data-tab-state');
+        } else {
+            $('#clr-tab').attr('data-tab-state', 'disabled');
+            $('#map-digitization-tab').attr('data-tab-state', 'disabled');
+            $('#sro-tab').attr('data-tab-state', 'disabled');
+            $('#mrr-tab').attr('data-tab-state', 'disabled');
+            $('#survey-tab').attr('data-tab-state', 'disabled');
+            $('#e-rcms-tab').attr('data-tab-state', 'disabled');
+            $('#aadhaar-tab').attr('data-tab-state', 'disabled');
+        }
+    }
+    $('#formTabs').on('click', 'a.nav-link', function(e) {
+        var tabState = $(this).attr('data-tab-state');
+         var districtID = $('#districtID').val();
+       if (tabState === 'disabled'|| districtID == 0) {
+            e.preventDefault();
+            e.stopImmediatePropagation(); // Prevent other handlers from running
+            alert('Please complete the form in the first tab correctly before proceeding.\n\nMake sure to select a district and ensure that the total number of Tehsils and Villages is greater than 0.');
+        }
+    });
+
+    function updateTabsBasedOnValues() {
+        var totalTehsils = parseInt($('#totalTehsils').val(), 10);
+        var totalVillages = parseInt($('#totalVillages').val(), 10);
+        var districtSelected = $('#district').val() != '-1';
+
+        if (districtSelected && totalTehsils > 0 && totalVillages > 0) {
+            // Enable all tabs
+            $('#formTabs .nav-link').removeAttr('data-tab-state');
+        } else {
+            // Disable all tabs
+            $('#formTabs .nav-link').attr('data-tab-state', 'disabled');
+        }
+    }
+     $('#totalTehsils, #totalVillages').on('change', function() {
+        if(districtSelected){
+
+         updateTabsBasedOnValues();
+       }
+    });
+
+    // Initial validation
+    validateForm();
+});
+</script>
+
+            <script>
+
+    function validateVillages() {
+    const totalVillages = document.getElementById("totalVillages").value;
+    validateNotStarted(totalVillages, 'totalVillages');
+    const villagesComputerizationCompleted = document.getElementById("villagesComputerizationCompleted").value;
+    const villagesGeoreferenced = document.getElementById("villagesGeoreferenced").value;
+    const villagesWithULIPN = document.getElementById("villagesWithULIPN").value;
+    const villagesMap1Generated = document.getElementById("villagesMap1Generated").value;
+    const villagesDraftMapPublished = document.getElementById("villagesDraftMapPublished").value;
+    const villagesFinalPromulgationDone = document.getElementById("villagesFinalPromulgationDone").value;
+    const villagesDroneFlyingCompleted = document.getElementById("villagesDroneFlyingCompleted").value;
+    const villagesWithRoRLinkedAadhaar = document.getElementById("villagesWithRoRLinkedAadhaar").value;
+    const villagesSurveyNotStarted = document.getElementById("villagesSurveyNotStarted").value;
+    const villagesLinkedWithRoR = document.getElementById("villagesLinkedWithRoR").value;
+    const villagesWith100PercentRoRLinkedAadhaar = document.getElementById("villagesWith100PercentRoRLinkedAadhaar").value;
+
+    if (totalVillages === '' || totalVillages === null) {
+       document.getElementById("totalVillages").value = 0;
+    }
+
+    if (villagesComputerizationCompleted === '' || villagesComputerizationCompleted === null) {
+     document.getElementById("villagesComputerizationCompleted").value = 0;
+    }
+
+     if (villagesGeoreferenced === '' || villagesGeoreferenced === null) {
+     document.getElementById("villagesGeoreferenced").value = 0;
+    }
+
+     if (villagesWithULIPN === '' || villagesWithULIPN === null) {
+     document.getElementById("villagesWithULIPN").value = 0;
+    }
+
+    if (villagesMap1Generated === '' || villagesMap1Generated === null) {
+     document.getElementById("villagesMap1Generated").value = 0;
+    }
+
+    if (villagesDraftMapPublished === '' || villagesDraftMapPublished === null) {
+     document.getElementById("villagesDraftMapPublished").value = 0;
+    }
+
+    if (villagesFinalPromulgationDone === '' || villagesFinalPromulgationDone === null) {
+     document.getElementById("villagesFinalPromulgationDone").value = 0;
+    }
+
+    if (villagesDroneFlyingCompleted === '' || villagesDroneFlyingCompleted === null) {
+     document.getElementById("villagesDroneFlyingCompleted").value = 0;
+    }
+
+     if (villagesWithRoRLinkedAadhaar === '' || villagesWithRoRLinkedAadhaar === null) {
+     document.getElementById("villagesWithRoRLinkedAadhaar").value = 0;
+    }
+
+     if (villagesWith100PercentRoRLinkedAadhaar === '' || villagesWith100PercentRoRLinkedAadhaar === null) {
+     document.getElementById("villagesWith100PercentRoRLinkedAadhaar").value = 0;
+    }
+
+
+     if (villagesSurveyNotStarted === '' || villagesSurveyNotStarted === null) {
+     document.getElementById("villagesSurveyNotStarted").value = 0;
+    }
+
+     if (villagesLinkedWithRoR === '' || villagesLinkedWithRoR === null) {
+     document.getElementById("villagesLinkedWithRoR").value = 0;
+    }
+
+
+    if (parseInt(villagesComputerizationCompleted) > parseInt(totalVillages)) {
+       alert("S.No. [4] must be equal to or lesser than S.No. [3].");
+      document.getElementById("villagesComputerizationCompleted").value = 0;
+    }
+
+
+     if (parseInt(villagesGeoreferenced) > parseInt(totalVillages)) {
+       alert("S.No. [20] must be equal to or lesser than S.No. [3].");
+      document.getElementById("villagesGeoreferenced").value = 0;
+    }
+
+     if (parseInt(villagesWithULIPN) > parseInt(totalVillages)) {
+       alert("S.No. [24] must be equal to or lesser than S.No. [3].");
+      document.getElementById("villagesWithULIPN").value = 0;
+    }
+
+    if (parseInt(villagesMap1Generated) > parseInt(totalVillages)) {
+       alert("S.No. [32] must be equal to or lesser than S.No. [3].");
+      document.getElementById("villagesMap1Generated").value = 0;
+    }
+
+    if (parseInt(villagesDraftMapPublished) > parseInt(totalVillages)) {
+       alert("S.No. [33] must be equal to or lesser than S.No. [3].");
+      document.getElementById("villagesDraftMapPublished").value = 0;
+    }
+
+    if (parseInt(villagesFinalPromulgationDone) > parseInt(totalVillages)) {
+       alert("S.No. [34] must be equal to or lesser than S.No. [3].");
+      document.getElementById("villagesFinalPromulgationDone").value = 0;
+    }
+
+    if (parseInt(villagesDroneFlyingCompleted) > parseInt(totalVillages)) {
+       alert("S.No. [30] must be equal to or lesser than S.No. [3].");
+      document.getElementById("villagesDroneFlyingCompleted").value = 0;
+    }
+
+    if (parseInt(villagesWithRoRLinkedAadhaar) > parseInt(totalVillages)) {
+       alert("S.No. [39] must be equal to or lesser than S.No. [3].");
+      document.getElementById("villagesWithRoRLinkedAadhaar").value = 0;
+    }
+
+    if (parseInt(villagesWith100PercentRoRLinkedAadhaar) > parseInt(totalVillages)) {
+       alert("S.No. [40] must be equal to or lesser than S.No. [3].");
+      document.getElementById("villagesWith100PercentRoRLinkedAadhaar").value = 0;
+    }
+
+     if (parseInt(villagesSurveyNotStarted) > parseInt(totalVillages)) {
+       alert("S.No. [35] must be equal to or lesser than S.No. [3].");
+      document.getElementById("villagesSurveyNotStarted").value = 0;
+    }
+
+     if (parseInt(villagesLinkedWithRoR) > parseInt(totalVillages)) {
+       alert("S.No. [17] must be equal to or lesser than S.No. [3].");
+      document.getElementById("villagesLinkedWithRoR").value = 0;
+    }
+
+  }
+
+
+   function validateLandParcels(){
+    const totalLandParcels = document.getElementById("totalLandParcels").value;
+    const georeferencedLandParcels = document.getElementById("georeferencedLandParcels").value;
+    const landParcelsWithULIPN = document.getElementById("landParcelsWithULIPN").value;
+
+    if (totalLandParcels === '' || totalLandParcels === null) {
+       document.getElementById("totalLandParcels").value = 0;
+    }
+
+     if (georeferencedLandParcels === '' || georeferencedLandParcels === null) {
+     document.getElementById("georeferencedLandParcels").value = 0;
+    }
+
+     if (landParcelsWithULIPN === '' || landParcelsWithULIPN === null) {
+     document.getElementById("landParcelsWithULIPN").value = 0;
+    }
+
+    if (parseInt(georeferencedLandParcels) > parseInt(totalLandParcels)) {
+       alert("S.No. [23] must be equal to or lesser than S.No. [22].");
+      document.getElementById("georeferencedLandParcels").value = 0;
+    }
+
+     if (parseInt(landParcelsWithULIPN) > parseInt(totalLandParcels)) {
+       alert("S.No. [25] must be equal to or lesser than S.No. [22].");
+      document.getElementById("landParcelsWithULIPN").value = 0;
+    }
+
+   }
+
+
+    function validateTotalRoR() {
+    const totalRoR = document.getElementById("totalRoR").value;
+    const rorComputerized = document.getElementById("rorComputerized").value;
+    const rorLinkedWithAadhaar = document.getElementById("rorLinkedWithAadhaar").value;
+    const rorLinkedWithMobileNumber = document.getElementById("rorLinkedWithMobileNumber").value;
+    if (totalRoR === '' || totalRoR === null) {
+       document.getElementById("totalRoR").value = 0;
+    }
+
+    if (rorComputerized === '' || rorComputerized === null) {
+     document.getElementById("rorComputerized").value = 0;
+    }
+
+     if (rorLinkedWithAadhaar === '' || rorLinkedWithAadhaar === null) {
+     document.getElementById("rorLinkedWithAadhaar").value = 0;
+    }
+
+     if (rorLinkedWithMobileNumber === '' || rorLinkedWithMobileNumber === null) {
+     document.getElementById("rorLinkedWithMobileNumber").value = 0;
+    }
+
+    if (parseInt(rorComputerized) > parseInt(totalRoR)) {
+       alert("S.No. [6] must be equal to or lesser than S.No. [5].");
+      document.getElementById("rorComputerized").value = 0;
+    }
+
+    if (parseInt(rorLinkedWithAadhaar) > parseInt(rorComputerized)) {
+       alert("S.No. [41] must be equal to or lesser than S.No. [6].");
+      document.getElementById("rorLinkedWithAadhaar").value = 0;
+    }
+
+    if (parseInt(rorLinkedWithMobileNumber) > parseInt(rorComputerized)) {
+       alert("S.No. [42] must be equal to or lesser than S.No. [6].");
+      document.getElementById("rorLinkedWithMobileNumber").value = 0;
+    }
+  }
+
+
+   function validateCadastralMapsRoR() {
+    const totalCadastralMaps = document.getElementById("totalCadastralMaps").value;
+    const digitizedCadastralMaps = document.getElementById("digitizedCadastralMaps").value;
+    validateTotalMaps(digitizedCadastralMaps, 'digitizedCadastralMaps');
+    if (totalCadastralMaps === '' || totalCadastralMaps === null) {
+       document.getElementById("totalCadastralMaps").value = 0;
+    }
+
+    if (digitizedCadastralMaps === '' || digitizedCadastralMaps === null) {
+     document.getElementById("digitizedCadastralMaps").value = 0;
+    }
+
+    if (parseInt(digitizedCadastralMaps) > parseInt(totalCadastralMaps)) {
+       alert("S.No. [12] must be equal to or lesser than S.No. [11].");
+      document.getElementById("digitizedCadastralMaps").value = 0;
+    }
+  }
+
+
+
+   function validatetotalFMBs() {
+    const totalFMBs = document.getElementById("totalFMBs").value;
+    const digitizedFMBs = document.getElementById("digitizedFMBs").value;
+    const totalTippans = document.getElementById("totalTippans").value;
+    const digitizedTippans = document.getElementById("digitizedTippans").value;
+    validateTotalMaps(digitizedFMBs, 'digitizedFMBs');
+    validateTotalMaps(digitizedTippans, 'digitizedTippans');
+    if (totalFMBs === '' || totalFMBs === null) {
+       document.getElementById("totalFMBs").value = 0;
+    }
+
+    if (digitizedFMBs === '' || digitizedFMBs === null) {
+     document.getElementById("digitizedFMBs").value = 0;
+    }
+
+     if (totalTippans === '' || totalTippans === null) {
+     document.getElementById("totalTippans").value = 0;
+    }
+
+     if (digitizedTippans === '' || digitizedTippans === null) {
+     document.getElementById("digitizedTippans").value = 0;
+    }
+
+    if (parseInt(digitizedFMBs) > parseInt(totalFMBs)) {
+       alert("S.No. [14] must be equal to or lesser than S.No. [13].");
+      document.getElementById("digitizedFMBs").value = 0;
+    }
+
+      if (parseInt(digitizedTippans) > parseInt(totalTippans)) {
+       alert("S.No. [16] must be equal to or lesser than S.No. [15].");
+      document.getElementById("digitizedTippans").value = 0;
+    }
+  }
+
+
+
+function validateTotalMaps() {
+    const digitizedCadastralMaps = parseInt(document.getElementById('digitizedCadastralMaps').value || 0);
+    const digitizedFMBs = parseInt(document.getElementById('digitizedFMBs').value || 0);
+    const digitizedTippans = parseInt(document.getElementById('digitizedTippans').value || 0);
+    const georeferencedMaps = parseInt(document.getElementById('georeferencedMaps').value || 0);
+
+    const totalMaps = digitizedCadastralMaps + digitizedFMBs + digitizedTippans;
+       if (totalMaps === '' || totalMaps === null) {
+     document.getElementById("totalMaps").value = 0;
+    }
+
+    if (georeferencedMaps === '' || georeferencedMaps === null) {
+     document.getElementById("georeferencedMaps").value = 0;
+    }
+
+    if (parseInt(georeferencedMaps) > parseInt(totalMaps)) {
+       alert("S.No. [16]+[14]+[12] must be equal to or lesser than S.No. [21].");
+      document.getElementById("georeferencedMaps").value = 0;
+    }
+}
+
+
+  function validateSanctioned(){
+    const totalTehsils = parseInt(document.getElementById('totalTehsils').value || 0);
+    const mrrSanctioned = parseInt(document.getElementById('mrrSanctioned').value || 0);
+    const mrrCompleted = parseInt(document.getElementById('mrrCompleted').value || 0);
+
+       if (totalTehsils === '' || totalTehsils === null) {
+        document.getElementById("totalTehsils").value = 0;
+        }
+
+      if (mrrSanctioned === '' || mrrSanctioned === null) {
+        document.getElementById("mrrSanctioned").value = 0;
+        }
+
+      if (mrrCompleted === '' || mrrCompleted === null) {
+        document.getElementById("mrrCompleted").value = 0;
+        }
+
+        if (parseInt(mrrSanctioned) > parseInt(totalTehsils)) {
+        alert("S.No. [26] must be equal to or lesser than S.No. [2].");
+        document.getElementById("mrrSanctioned").value = 0;
+        }
+
+
+         if (parseInt(mrrCompleted) > parseInt(mrrSanctioned)) {
+        alert("S.No. [27] must be equal to or lesser than S.No. [26].");
+        document.getElementById("mrrCompleted").value = 0;
+        }
+
+  }
+
+  function validateSurvey(){
+   const totalRuralRevenueArea = parseFloat(document.getElementById('totalRuralRevenueArea').value || 0);
+   const areaSanctionedForSurvey = parseFloat(document.getElementById('areaSanctionedForSurvey').value || 0);
+   const areaDroneFlyingCompleted = parseFloat(document.getElementById('areaDroneFlyingCompleted').value || 0);
+   const areaSurveyNotStarted = parseFloat(document.getElementById('areaSurveyNotStarted').value || 0);
+
+        if (totalRuralRevenueArea === '' || totalRuralRevenueArea === null) {
+        document.getElementById("totalRuralRevenueArea").value = 0.0;
+        }
+
+        if (areaSanctionedForSurvey === '' || areaSanctionedForSurvey === null) {
+        document.getElementById("areaSanctionedForSurvey").value = 0.0;
+        }
+
+        if (areaDroneFlyingCompleted === '' || areaDroneFlyingCompleted === null) {
+        document.getElementById("areaDroneFlyingCompleted").value = 0.0;
+        }
+
+         if (areaSurveyNotStarted === '' || areaSurveyNotStarted === null) {
+        document.getElementById("areaSurveyNotStarted").value = 0.0;
+        }
+
+         if (parseFloat(areaSanctionedForSurvey) > parseFloat(totalRuralRevenueArea)) {
+        alert("S.No. [29] must be equal to or lesser than S.No. [28].");
+        document.getElementById("areaSanctionedForSurvey").value = 0.0;
+        }
+
+
+         if (parseFloat(areaDroneFlyingCompleted) > parseFloat(totalRuralRevenueArea)) {
+        alert("S.No. [31] must be equal to or lesser than S.No. [28].");
+        document.getElementById("areaDroneFlyingCompleted").value = 0.0;
+        }
+
+
+         if (parseFloat(areaSurveyNotStarted) > parseFloat(areaSanctionedForSurvey)) {
+        alert("S.No. [36] must be equal to or lesser than S.No. [29].");
+        document.getElementById("areaSurveyNotStarted").value = 0.0;
+        }
+  }
+
+  function validateNotStarted(){
+   const totalVillages = parseInt(document.getElementById('totalVillages').value || 0);
+   const villagesMap1Generated = parseInt(document.getElementById('villagesMap1Generated').value || 0);
+   const villagesSurveyNotStarted = parseInt(document.getElementById('villagesSurveyNotStarted').value || 0);
+
+        if (totalVillages === '' || totalVillages === null) {
+        document.getElementById("totalVillages").value = 0;
+        }
+       if (totalVillages === '' || totalVillages === null) {
+        document.getElementById("totalVillages").value = 0;
+        }
+
+         if (villagesSurveyNotStarted === '' || villagesSurveyNotStarted === null) {
+        document.getElementById("villagesSurveyNotStarted").value = 0;
+        }
+
+  }
+
+
+function validateArea(){
+   const totalRuralRevenueArea = parseFloat(document.getElementById('totalRuralRevenueArea').value || 0);
+   const areaSurveyNotStarted = parseFloat(document.getElementById('areaSurveyNotStarted').value || 0);
+
+       if (totalRuralRevenueArea === '' || totalRuralRevenueArea === null) {
+        document.getElementById("totalRuralRevenueArea").value = 0.0;
+        }
+
+
+         if (areaSurveyNotStarted === '' || areaSurveyNotStarted === null) {
+        document.getElementById("areaSurveyNotStarted").value = 0.0;
+        }
+
+         if (parseFloat(areaSurveyNotStarted) > parseFloat(notStartedArea)) {
+        alert("S.No. [40]-[43] must be equal to or lesser than S.No. [49].");
+        document.getElementById("areaSurveyNotStarted").value = 0.0;
+        }
+}
+
+
+  function validateRevenueCourts(){
+   const totalRevenueCourts = parseInt(document.getElementById('totalRevenueCourts').value || 0);
+   const revenueCourtsComputerized = parseInt(document.getElementById('revenueCourtsComputerized').value || 0);
+
+       if (totalRevenueCourts === '' || totalRevenueCourts === null) {
+        document.getElementById("totalRevenueCourts").value = 0;
+        }
+
+         if (revenueCourtsComputerized === '' || revenueCourtsComputerized === null) {
+        document.getElementById("revenueCourtsComputerized").value = 0;
+        }
+
+
+          if (parseInt(revenueCourtsComputerized) > parseInt(totalRevenueCourts)) {
+           alert("S.No. [38] must be equal to or lesser than S.No. [37].");
+           document.getElementById("revenueCourtsComputerized").value = 0;
+          }
+
+  }
+
+
+ function validateTotalLandOwner(){
+  const totalLandOwners = parseInt(document.getElementById('totalLandOwners').value || 0);
+  const totalMaleLandOwners = parseInt(document.getElementById('totalMaleLandOwners').value || 0);
+  const totalFemaleLandOwners = parseInt(document.getElementById('totalFemaleLandOwners').value || 0);
+
+       if (totalLandOwners === '' || totalLandOwners === null) {
+        document.getElementById("totalLandOwners").value = 0;
+        }
+
+         if (totalMaleLandOwners === '' || totalMaleLandOwners === null) {
+        document.getElementById("totalMaleLandOwners").value = 0;
+        }
+
+         if (totalFemaleLandOwners === '' || totalFemaleLandOwners === null) {
+        document.getElementById("totalFemaleLandOwners").value = 0;
+        }
+
+     if (totalMaleLandOwners + totalFemaleLandOwners > totalLandOwners) {
+       alert("S.No. [9]+[10] must be equal to or lesser than S.No. [7].");
+        document.getElementById("totalMaleLandOwners").value = 0;
+        document.getElementById("totalFemaleLandOwners").value = 0;
+    }
+
+    if (totalMaleLandOwners + totalFemaleLandOwners > totalLandOwners) {
+        document.getElementById("totalMaleLandOwners").value = 0;
+        document.getElementById("totalFemaleLandOwners").value = 0;
+    } else {
+        document.getElementById("totalMaleLandOwners").value = totalMaleLandOwners;
+        document.getElementById("totalFemaleLandOwners").value = totalFemaleLandOwners;
+    }
+
+ }
+
+  </script>
+            <script>
+  $(document).ready(function() {
+    // Attach submit event listener to the form
+    $('#districtMisDataForm').submit(function(e) {
+        e.preventDefault(); // Prevent the default form submission
+        var form = $(this);
+        var formData = new FormData(form[0]);
+        $.ajax({
+            type: 'POST',
+            url: form.attr('action'),
+            data: formData,
+            processData: false, // Prevent jQuery from automatically transforming the data into a query string
+            contentType: false, // Tell jQuery not to set content type
+            success: function(data) {
+
+
+                showSuccessAlert(data);
+
+                $('#formTabs .nav-link').removeClass('active'); // Remove active class from all tabs
+                $('#tehsils-villages-tab').addClass('active'); // Add active class to the desired tab
+                $('.tab-pane').removeClass('active show'); // Hide all tab content
+                $('#tehsils-villages').addClass('active show'); // Show the desired tab content
+
+            },
+            error: function(jqXHR) {
+                // Show error message
+                 form.find('input[type="text"], input[type="hidden"], textarea').val('0'); // Clear text inputs and textareas
+                form.find('select').val('0'); // Reset select dropdown to default value
+                form.find('input[type="checkbox"], input[type="radio"]').prop('checked', false); // Uncheck checkboxes and radio buttons
+
+                $('#formTabs .nav-link').removeClass('active'); // Remove active class from all tabs
+                $('#tehsils-villages-tab').addClass('active'); // Add active class to the desired tab
+                $('.tab-pane').removeClass('active show'); // Hide all tab content
+                $('#tehsils-villages').addClass('active show'); // Show the desired tab content
+                showErrorAlert('Error', jqXHR.responseText);
+
+            }
+        });
+    });
+
+
+
+
+    // Function to display a SweetAlert success message
+    function showSuccessAlert(data) {
+        Swal.fire({
+            title: 'Success',
+            text: data,
+            icon: 'success',
+            confirmButtonText: 'OK'
+        });
+    }
+
+    // Function to display a SweetAlert error message
+    function showErrorAlert(title, text) {
+        Swal.fire({
+            title: title,
+            text: text,
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    }
+});
+
+</script>
+
+
+
+
+
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

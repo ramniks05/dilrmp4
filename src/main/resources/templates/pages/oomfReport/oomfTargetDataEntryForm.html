@@ -1,0 +1,150 @@
+
+<div th:fragment="target-entry">
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-info">
+                        <div class="card-header">
+                            <h3 class="card-title">OOMF Target Data Entry Form</h3>
+                        </div>
+                        <div class="card-body">
+
+                            <!-- Target Input Script -->
+                            <script>
+                                document.getElementById('componentName').addEventListener('change', function () {
+                                    const component = this.value;
+                                    const targetInput = document.getElementById('target');
+                                    targetInput.value = component.startsWith('target') ? 0 : '';
+                                });
+                            </script>
+
+                            <!-- Data Entry Form -->
+                            <form id="dataEntryForm" th:action="@{/dolr/save-data-entry}" th:object="${oomf}" method="post">
+                                <!-- Financial Year Dropdown -->
+                                <div class="form-group">
+                                    <label for="financialYear">Financial Year</label>
+                                    <select id="financialYear" name="financialYear" class="form-control custom-select" required>
+                                        <option value="" disabled selected>Select a Financial Year</option>
+                                        <option th:each="financialYear : ${distinctFinancialYears}" th:value="${financialYear}" th:text="${financialYear}"></option>
+                                    </select>
+                                </div>
+
+                                <!-- Quarter Dropdown -->
+                                <div class="form-group">
+                                    <label for="quarter">Quarter</label>
+                                    <select id="quarter" name="quarter" class="form-control custom-select" required>
+                                        <option value="" disabled selected>Select a Quarter</option>
+                                        <option th:each="quarter : ${distinctQuarters}" th:value="${quarter}" th:text="${quarter}"></option>
+                                    </select>
+                                </div>
+
+                                <!-- Component Name Dropdown -->
+                                <div class="form-group">
+                                    <label for="componentName">Component Name</label>
+                                    <select id="componentName" name="componentName" class="form-control custom-select" required>
+                                        <option value="" disabled selected>Select a Component</option>
+                                        <!-- Options -->
+                                        <option value="target1">1.1 Record of Rights (RoRs) computerized (No. of villages)</option>
+                                        <option value="target2">1.2 No. of Maps / FMBs / Tippans digitized</option>
+                                        <option value="target3">1.3 RoRs integrated with cadastral Maps / FMBs / Tippans (No. of villages)</option>
+                                        <option value="target4">1.4 No. of villages having geo-referenced cadastral maps/FMBs</option>
+                                        <option value="target5">2.1 No. of Computerization of Registration across Districts of the Country</option>
+                                        <option value="target6">3.1 No. of Integration of Land Records (RoRs) with registration in Districts</option>
+                                        <option value="target7">4.1 Integrated Districts enabled for auto credit to farmer</option>
+                                        <option value="target8">5.1 Integrated Villages ready for Aadhar-based authentication</option>
+                                        <option value="target9">1.1 Percentage of villages where RoRs are made accessible (CSC, Kiosk, Online, etc)</option>
+                                        <option value="target10">1.2 Percentage of villages where digitally signed RoRs are issued</option>
+                                        <option value="target11">1.3 Percentage of villages in which land records (RoRs) have been computerized</option>
+                                    </select>
+                                </div>
+
+                                <!-- Target Input -->
+                                <div class="form-group">
+                                    <label for="target">Target</label>
+                                    <input type="number" id="target" name="target" class="form-control" required min="0" />
+                                </div>
+
+                                <!-- Submit Button -->
+                                <button type="button" id="submitDataEntry" class="btn btn-primary">Submit</button>
+                            </form>
+
+                            <!-- Response Message -->
+                            <div id="responseMessage"></div>
+
+                            <!-- AJAX Submit Script -->
+                            <script>
+                               $(document).ready(function () {
+    $("#submitDataEntry").click(function () {
+        const formData = {
+            financialYear: $("#financialYear").val(),
+            quarter: $("#quarter").val(),
+            componentName: $("#componentName").val(),
+            target: $("#target").val()
+        };
+
+        if (!formData.financialYear || !formData.quarter || !formData.componentName || !formData.target) {
+            showErrorAlert('Validation Error', 'Please fill out all fields.');
+            return;
+        }
+
+        $.ajax({
+            url: '/dolr/save-data-entry',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(formData),
+            success: function(data) {
+                showSuccessAlert(data);
+            },
+            error: function (xhr) {
+                // Check for error status and display appropriate message
+                let errorMessage = "Something went wrong. Please try again.";
+                if (xhr.status === 400) {
+                    errorMessage = xhr.responseText || "Validation Error: Please fill out all required fields.";
+                } else if (xhr.status === 500) {
+                    errorMessage = "Server error. Please try again later.";
+                }
+                showErrorAlert('Error', errorMessage);
+            }
+        });
+    });
+});
+
+// Function to display a SweetAlert success message
+function showSuccessAlert(data) {
+    Swal.fire({
+        title: 'Success',
+        text: data,
+        icon: 'success',
+        confirmButtonText: 'OK',
+        position: 'center'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Reset the form and dropdown
+            $("#dataEntryForm")[0].reset();  // Reset all form fields
+            $("#componentName").val(""); // Set the dropdown to default option
+            $("#financialYear").val("");
+            $("#quarter").val("");
+
+        }
+    });
+}
+
+// Function to display a SweetAlert error message
+function showErrorAlert(title, text) {
+    Swal.fire({
+        title: title,
+        text: text,
+        icon: 'error',
+        confirmButtonText: 'OK',
+        position: 'center'
+    });
+}
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

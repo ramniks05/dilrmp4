@@ -1,0 +1,227 @@
+<div th:fragment="naksha-report">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-info">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-sm-10">
+                                <h3 class="card-title"
+                                    style="font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a;  letter-spacing: 2px;">
+                                    Naksha For State/UT (before publication of Map1) Report</h3>
+                            </div>
+                            <div class="col-sm-2">
+                                <a th:href="@{/physcial/report/pdf/naksha}"><img th:src="@{/images/pdf.png}" alt="PDF Icon" class="btn-img" width="40" height="40" style="box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;"/></a>
+                                <a th:href="@{/physcial/report/excel/naksha}"><img th:src="@{/images/excel.png}" alt="EXCEL Icon" class="btn-img" width="40" height="40" style="box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;"/></a></div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive text-nowrap">
+                            <table id="example2"
+                                   class="table table-bordered  table-striped-columns table-success table-striped  table-responsive">
+                                <thead class="card-info wrap-text" style="background-color: #4a6c52; color:#ffff">
+
+                                <tr>
+                                    <th rowspan="2" th:text="'S.No.'"></th>
+                                    <th rowspan="2" th:text="'State/UT'"></th>
+                                    <th rowspan="2" th:text="'Nodal Department Name'"></th>
+                                    <th rowspan="2" th:text="'Nodal Officer Appointed (Yes/No)'"></th>
+                                    <th rowspan="2" th:text="'Nodal Officer Name'"></th>
+                                    <th rowspan="2" th:text="'Phone No. of Nodal Officer'"></th>
+                                    <th rowspan="2" th:text="'Email of Nodal Officer'"></th>
+
+                                    <th rowspan="2" th:text="'Total No. of SPMU Positions Sanctioned'"></th>
+                                    <th rowspan="2" th:text="'SPMU Recruitment Completed (Yes / No / Initiated / Under Process / Pending for Approval)'"></th>
+                                    <th rowspan="2" th:text="'Total No. of Professionals Recruited for SPMU'"></th>
+                                    <th rowspan="2" th:text="'No. of Teams to be Formed as Sanctioned'"></th>
+                                    <th rowspan="2" th:text="'No. of Teams Formed for Field Survey'"></th>
+                                    <th rowspan="2" th:text="'No. of Rovers Sanctioned'"></th>
+                                    <th rowspan="2" th:text="'No. of Rovers Procured for Field Survey'"></th>
+                                    <th rowspan="2" th:text="'Legal Framework for Urban Survey (Exists/ To be Ammended)'"></th>
+                                    <th rowspan="2" th:text="'Property Tax Data Obtained for all ULBs (Yes/No)'"></th>
+                                    <th rowspan="2" th:text="'Property Tax Data Digitized for all ULBs (Yes/No)'"></th>
+                                    <th rowspan="2" th:text="'SLC Status (Initiated / Under Process/ Pending for Approval)'"></th>
+                                    <th colspan="5" rowspan="1" th:text="'Ground Truthing '"></th>
+                                    <th rowspan="2" th:text="'Data uploaded on NAKSHA Web GIS Portal (Yes/ No)'"></th>
+                                    <th rowspan="2" th:text="'Total No. of UrPro Card Issued'"></th>
+                                    <th rowspan="2" th:text="'IEC Activities  awareness, documentation and monitoring plans. (Remarks)'"></th>
+                                    <th rowspan="2" th:text="'Last Updated Date'"></th>
+
+                                <tr>
+                                    <th rowspan="1" th:text="'Name of Survey Unit (Ward,Block,Colony,Sector,Revenue Village,Tile,Others)'"></th>
+                                    <th rowspan="1" th:text="'No. of ULBs where Ground Truthing has been Completed'"></th>
+                                    <th rowspan="1" th:text="'Total No. of Plots to be Surveyed'"></th>
+                                    <th rowspan="1" th:text="'No. of Plots Survey Completed'"></th>
+                                    <th rowspan="1" th:text="'Percentage Completed'"></th>
+                                </tr>
+
+                                <tr style="font-weight: bold;">
+                                    <td style="text-align: center;">1</td>
+                                    <td style="text-align: center;">2</td>
+                                    <td style="text-align: center;">3</td>
+                                    <td style="text-align: center;">4</td>
+                                    <td style="text-align: center;">5</td>
+                                    <td style="text-align: center;">6</td>
+                                    <td style="text-align: center;">7</td>
+                                    <td style="text-align: center;">8</td>
+                                    <td style="text-align: center;">9</td>
+                                    <td style="text-align: center;">10</td>
+                                    <td style="text-align: center;">11</td>
+                                    <td style="text-align: center;">12</td>
+                                    <td style="text-align: center;">13</td>
+                                    <td style="text-align: center;">14</td>
+                                    <td style="text-align: center;">15</td>
+                                    <td style="text-align: center;">16</td>
+                                    <td style="text-align: center;">17</td>
+                                    <td style="text-align: center;">18</td>
+                                    <td style="text-align: center;">19</td>
+                                    <td style="text-align: center;">20</td>
+                                    <td style="text-align: center;">21</td>
+                                    <td style="text-align: center;">22</td>
+                                    <td style="text-align: center;">23</td>
+                                    <td style="text-align: center;">23</td>
+                                    <td style="text-align: center;">24</td>
+                                    <td style="text-align: center;">25</td>
+                                    <td style="text-align: center;">26</td>
+                                </tr>
+                                </thead>
+                                <thead>
+                                <tr style="font-weight: bold; background-color: #f0f0f0;">
+                                    <td colspan="7" th:text="'Grand Total'"></td>
+                                    <td th:text="${grandTotal[0].grandTotalSPMUPositionsSanctioned}"></td>
+                                    <td></td>
+                                    <td th:text="${grandTotal[0].grandtotalProfessionalsRecruited}"></td>
+                                    <td th:text="${grandTotal[0].grandtotalteamsFormedForsanctioned}"></td>
+                                    <td th:text="${grandTotal[0].grandtotalteamsFormedForFieldSurvey}"></td>
+                                    <td th:text="${grandTotal[0].grandtotalroversSanctioned}"></td>
+                                    <td th:text="${grandTotal[0].grandtotalroversProcuredForFieldSurvey}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td th:text="${grandTotal[0].grandtotalulbsGroundTruthingCompleted}"></td>
+                                    <td th:text="${grandTotal[0].grandtotaltotalPlotsToSurvey}"></td>
+                                    <td th:text="${grandTotal[0].grandtotalplotsSurveyedCompleted}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td th:text="${grandTotal[0].grandtotalUrProCardIssued}"></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr style="word-wrap: break-word; white-space: normal; max-width: 200px;" th:each="entry, iterStat : ${nakshaMISDataEntries}">
+                                    <td th:text="${iterStat.index + 1}"></td>
+                                    <td th:text="${entry.state.name}"></td>
+                                    <td th:text="${entry.nodalDepartmentName != null ? entry.nodalDepartmentName : 'N/A'}"></td>
+                                    <td th:text="${entry.nodalOfficerAppointed == 'Yes' ? 'Yes' : 'No'}"></td>
+                                    <td th:text="${entry.nodalOfficerName != null ? entry.nodalOfficerName : 'N/A'}"></td>
+                                    <td th:text="${entry.phonenumber != null ? entry.phonenumber : 'N/A'}"></td>
+                                    <td th:text="${entry.email != null ? entry.email : 'N/A'}"></td>
+                                    <td th:text="${entry.totalSPMUPositionsSanctioned != null ? entry.totalSPMUPositionsSanctioned : 0}"></td>
+                                    <td th:text="${entry.spmuRecruitmentCompleted == 'Yes' ? 'Yes' : 'No'}"></td>
+                                    <td th:text="${entry.totalProfessionalsRecruited != null ? entry.totalProfessionalsRecruited : 0}"></td>
+                                    <td th:text="${entry.teamsFormedForsanctioned != null ? entry.teamsFormedForsanctioned : 0}"></td>
+                                    <td th:text="${entry.teamsFormedForFieldSurvey != null ? entry.teamsFormedForFieldSurvey : 0}"></td>
+                                    <td th:text="${entry.roversSanctioned != null ? entry.roversSanctioned : 0}"></td>
+                                    <td th:text="${entry.roversProcuredForFieldSurvey != null ? entry.roversProcuredForFieldSurvey : 0}"></td>
+                                    <td>
+                                       <span th:if="${entry.legal_framework_urban_survey != null and !#strings.isEmpty(entry.legal_framework_urban_survey)}">
+                                       <button onclick="toggleRemark(this)" style="background: none; border: none; cursor: pointer;">👁️</button>
+                                       <span class="remark-full" style="display: none;" th:text="${entry.legal_framework_urban_survey}"></span></span>
+                                    </td>
+                                    <td th:text="${entry.propertyTaxDataObtained == 'Yes' ? 'Yes' : 'No'}"></td>
+                                    <td th:text="${entry.propertyTaxDataDigitized == 'Yes' ? 'Yes' : 'No'}"></td>
+                                    <td th:text="${entry.slcStatus != null ? entry.slcStatus : 'N/A'}"></td>
+                                    <td th:text="${entry.surveyUnitName != null ? entry.surveyUnitName : 'N/A'}"></td>
+                                    <td th:text="${entry.ulbsGroundTruthingCompleted != null ? entry.ulbsGroundTruthingCompleted : 0}"></td>
+                                    <td th:text="${entry.totalPlotsToSurvey != null ? entry.totalPlotsToSurvey : 0}"></td>
+                                    <td th:text="${entry.plotsSurveyedCompleted != null ? entry.plotsSurveyedCompleted : 0}"></td>
+                                    <td th:text="${entry.surveyCompletionPercent != null ? entry.surveyCompletionPercent : 0.00}"></td>
+                                    <td th:text="${entry.dataUploadedOnNakshaWebGISPortal == null ? 'NA' : (entry.dataUploadedOnNakshaWebGISPortal == 'Yes' ? 'Yes' : 'No')}"></td>
+                                    <td th:text="${entry.totalUrProCardIssued != null ? entry.totalUrProCardIssued : 0}"></td>
+                                    <td>
+                                       <span th:if="${entry.iecActivitiesRemarks != null and !#strings.isEmpty(entry.iecActivitiesRemarks)}">
+                                       <button onclick="toggleRemark(this)" style="background: none; border: none; cursor: pointer;">👁️</button>
+                                       <span class="remark-full" style="display: none;" th:text="${entry.iecActivitiesRemarks}"></span></span>
+                                    </td>
+                                    <td th:text="${entry.updateOnDate != null} ? ${#dates.format(entry.updateOnDate, 'MMMM dd, yyyy')} : 'NA'"></td>
+
+                                </tr>
+                                </tbody>
+                                <!-- Grand Total Row -->
+                                <tr style="font-weight: bold; background-color: #f0f0f0;">
+                                    <td colspan="7" th:text="'Grand Total'"></td>
+                                    <td th:text="${grandTotal[0].grandTotalSPMUPositionsSanctioned}"></td>
+                                    <td></td>
+                                    <td th:text="${grandTotal[0].grandtotalProfessionalsRecruited}"></td>
+                                    <td th:text="${grandTotal[0].grandtotalteamsFormedForsanctioned}"></td>
+                                    <td th:text="${grandTotal[0].grandtotalteamsFormedForFieldSurvey}"></td>
+                                    <td th:text="${grandTotal[0].grandtotalroversSanctioned}"></td>
+                                    <td th:text="${grandTotal[0].grandtotalroversProcuredForFieldSurvey}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td th:text="${grandTotal[0].grandtotalulbsGroundTruthingCompleted}"></td>
+                                    <td th:text="${grandTotal[0].grandtotaltotalPlotsToSurvey}"></td>
+                                    <td th:text="${grandTotal[0].grandtotalplotsSurveyedCompleted}"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td th:text="${grandTotal[0].grandtotalUrProCardIssued}"></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </table>
+                            <script>
+    function toggleRemark(button) {
+        const remarkFull = button.nextElementSibling;
+        const isVisible = remarkFull.style.display === 'inline';
+
+        remarkFull.style.display = isVisible ? 'none' : 'inline';
+        button.textContent = isVisible ? '👁️' : '🙈';
+    }
+</script>
+                            <script>
+    $(document).ready(function () {
+        // Check if DataTable is already initialized on the table
+        if ($.fn.DataTable.isDataTable('#example2')) {
+            // If yes, destroy the existing DataTable instance
+            $('#example2').DataTable().destroy();
+        }
+
+        // Initialize DataTable with your table ID
+        $('#example2').DataTable({
+            // Add additional options if needed
+            paging: true,  // Enable pagination
+            lengthMenu: [10, 25, 50, 100],  // Set page length options
+            pageLength: 8,  // Default page length
+            // Callback function after each draw event
+            drawCallback: function (settings) {
+                var api = this.api();
+                var totalPages = api.page.info().pages;
+                var page = api.page.info().page;
+
+                // Check if it's the last page
+                if (page === totalPages - 1) {
+                    $('#example2 tfoot').show();
+                } else {
+                    $('#example2 tfoot').hide();
+                }
+            }
+        });
+    });
+
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </section>
+</div>
+</body>
+</html>

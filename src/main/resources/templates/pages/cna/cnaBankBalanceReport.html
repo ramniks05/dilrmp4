@@ -1,0 +1,270 @@
+<div th:fragment="cna-bank-balance">
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-info">
+                        <div class="card-header" style="background: linear-gradient(to right, #32b4c8 0%, rgb(64 101 142));">
+                            <h3 class="card-title" style="color: #eff3f6; font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a; letter-spacing: 2px;">
+                                CNA Bank Balance Report
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="cnaUploadForm" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <label for="cnaExcelFile">Select Excel File (.xlsx)</label>
+                                    <input type="file" id="cnaExcelFile" name="file" class="form-control" accept=".xlsx" required />
+                                </div>
+                                <button type="button" id="uploadCnaReport" class="btn btn-primary">Upload</button>
+                            </form>
+
+                            <div id="uploadResponseMessage" class="mt-3"></div>
+
+                            <hr>
+
+                            <h4>View Report</h4>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="card card-outline card-secondary">
+                                        <div class="card-header"><strong>As On Date Report</strong></div>
+                                        <div class="card-body">
+                                            <p class="text-muted small">Shows data only if an upload was done on the selected date.</p>
+                                            <div class="form-group">
+                                                <label for="asOnDate">As On Date</label>
+                                                <input type="date" id="asOnDate" class="form-control" />
+                                            </div>
+                                            <button type="button" id="viewAsOnDateReport" class="btn btn-info">View As On Date Report</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="card card-outline card-secondary">
+                                        <div class="card-header"><strong>Between Dates Report</strong></div>
+                                        <div class="card-body">
+                                            <p class="text-muted small">Shows all uploads between the selected date range.</p>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="fromDate">From Date</label>
+                                                        <input type="date" id="fromDate" class="form-control" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="toDate">To Date</label>
+                                                        <input type="date" id="toDate" class="form-control" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button type="button" id="viewBetweenDatesReport" class="btn btn-info">View Between Dates Report</button>
+                                            <button type="button" id="viewLatestReport" class="btn btn-secondary ml-2">View Latest Upload</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="reportFilterMessage" class="mt-3"></div>
+
+                            <hr>
+
+                            <h4 id="reportTitle" th:text="${reportTitle}">Latest Upload</h4>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped" id="cnaReportTable">
+                                    <thead>
+                                    <tr>
+                                        <th>S.No.</th>
+                                        <th>CNA Code</th>
+                                        <th>CNA Name</th>
+                                        <th>Bank Balance (in Crore)</th>
+                                        <th>Report Date</th>
+                                        <th>Uploaded On</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="cnaReportTableBody">
+                                    <tr th:if="${#lists.isEmpty(reports)}">
+                                        <td colspan="6" class="text-center">No records uploaded yet.</td>
+                                    </tr>
+                                    <tr th:each="report, stat : ${reports}">
+                                        <td th:text="${stat.count}"></td>
+                                        <td th:text="${report.cnaCode}"></td>
+                                        <td th:text="${report.cnaName}"></td>
+                                        <td th:text="${report.bankBalance}"></td>
+                                        <td th:text="${report.reportDate != null ? #temporals.format(report.reportDate, 'dd-MM-yyyy') : '-'}"></td>
+                                        <td th:text="${report.uploadedOn != null ? #temporals.format(report.uploadedOn, 'dd-MM-yyyy HH:mm') : '-'}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        (function () {
+            function showMessage(target, type, message) {
+                $(target).html('<div class="alert alert-' + type + '">' + message + '</div>');
+            }
+
+            function renderReportTable(reports) {
+                const tbody = $("#cnaReportTableBody");
+                tbody.empty();
+
+                if (!reports || reports.length === 0) {
+                    tbody.append('<tr><td colspan="6" class="text-center">No records found for selected criteria.</td></tr>');
+                    return;
+                }
+
+                reports.forEach(function (report) {
+                    tbody.append(
+                        '<tr>' +
+                        '<td>' + report.serialNo + '</td>' +
+                        '<td>' + (report.cnaCode || '') + '</td>' +
+                        '<td>' + (report.cnaName || '') + '</td>' +
+                        '<td>' + (report.bankBalance || '-') + '</td>' +
+                        '<td>' + (report.reportDate || '-') + '</td>' +
+                        '<td>' + (report.uploadedOn || '-') + '</td>' +
+                        '</tr>'
+                    );
+                });
+            }
+
+            function handleReportResponse(response) {
+                if (!response || response.status !== "success") {
+                    const message = (response && response.message) ? response.message : "Failed to load report.";
+                    $("#reportTitle").text("Report");
+                    renderReportTable([]);
+                    showMessage("#reportFilterMessage", "danger", message);
+                    return;
+                }
+
+                const reports = response.reports || [];
+                $("#reportTitle").text(response.reportTitle || "Report");
+                renderReportTable(reports);
+
+                if (reports.length === 0) {
+                    showMessage("#reportFilterMessage", "warning",
+                        response.message || "No records found for selected criteria.");
+                } else if (response.message) {
+                    showMessage("#reportFilterMessage", "warning", response.message);
+                } else {
+                    showMessage("#reportFilterMessage", "success", reports.length + " record(s) found.");
+                }
+            }
+
+            function bindCnaReportEvents() {
+                $(document).off("click.cnaReport", "#uploadCnaReport");
+                $(document).off("click.cnaReport", "#viewAsOnDateReport");
+                $(document).off("click.cnaReport", "#viewBetweenDatesReport");
+                $(document).off("click.cnaReport", "#viewLatestReport");
+
+                $(document).on("click.cnaReport", "#uploadCnaReport", function () {
+                    const fileInput = $("#cnaExcelFile")[0];
+                    if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+                        showMessage("#uploadResponseMessage", "danger", "Please select an Excel file.");
+                        return;
+                    }
+
+                    const formData = new FormData();
+                    formData.append("file", fileInput.files[0]);
+                    showMessage("#uploadResponseMessage", "info", "Uploading, please wait...");
+
+                    $.ajax({
+                        url: "/dolr/cna-bank-balance/upload",
+                        type: "POST",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        dataType: "json",
+                        success: function (response) {
+                            if (!response || response.status !== "success") {
+                                showMessage("#uploadResponseMessage", "danger",
+                                    (response && response.message) ? response.message : "Upload failed.");
+                                return;
+                            }
+                            showMessage("#uploadResponseMessage", "success", response.message);
+                            htmx.ajax("GET", "/dolr/cna-bank-balance", "#content");
+                        },
+                        error: function (xhr) {
+                            let message = "Failed to upload Excel file.";
+                            if (xhr.responseJSON && xhr.responseJSON.message) {
+                                message = xhr.responseJSON.message;
+                            }
+                            showMessage("#uploadResponseMessage", "danger", message);
+                        }
+                    });
+                });
+
+                $(document).on("click.cnaReport", "#viewAsOnDateReport", function () {
+                    const asOnDate = $("#asOnDate").val();
+                    if (!asOnDate) {
+                        showMessage("#reportFilterMessage", "danger", "Please select As On Date.");
+                        return;
+                    }
+
+                    showMessage("#reportFilterMessage", "info", "Loading report, please wait...");
+
+                    $.ajax({
+                        url: "/dolr/cna-bank-balance/report/as-on-date",
+                        type: "POST",
+                        data: { asOnDate: asOnDate },
+                        dataType: "json",
+                        success: function (response) {
+                            handleReportResponse(response);
+                        },
+                        error: function (xhr) {
+                            const message = (xhr.responseJSON && xhr.responseJSON.message)
+                                ? xhr.responseJSON.message : "Failed to load As On Date report.";
+                            $("#reportTitle").text("Report");
+                            renderReportTable([]);
+                            showMessage("#reportFilterMessage", "danger", message);
+                        }
+                    });
+                });
+
+                $(document).on("click.cnaReport", "#viewBetweenDatesReport", function () {
+                    const fromDate = $("#fromDate").val();
+                    const toDate = $("#toDate").val();
+                    if (!fromDate || !toDate) {
+                        showMessage("#reportFilterMessage", "danger", "Please select both From Date and To Date.");
+                        return;
+                    }
+
+                    showMessage("#reportFilterMessage", "info", "Loading report, please wait...");
+
+                    $.ajax({
+                        url: "/dolr/cna-bank-balance/report/between-dates",
+                        type: "POST",
+                        data: { fromDate: fromDate, toDate: toDate },
+                        dataType: "json",
+                        success: function (response) {
+                            handleReportResponse(response);
+                        },
+                        error: function (xhr) {
+                            const message = (xhr.responseJSON && xhr.responseJSON.message)
+                                ? xhr.responseJSON.message : "Failed to load Between Dates report.";
+                            $("#reportTitle").text("Report");
+                            renderReportTable([]);
+                            showMessage("#reportFilterMessage", "danger", message);
+                        }
+                    });
+                });
+
+                $(document).on("click.cnaReport", "#viewLatestReport", function () {
+                    htmx.ajax("GET", "/dolr/cna-bank-balance", "#content");
+                });
+            }
+
+            $(document).ready(bindCnaReportEvents);
+
+            document.body.addEventListener("htmx:afterSwap", function (evt) {
+                if (evt.detail.target && evt.detail.target.id === "content"
+                    && document.getElementById("viewAsOnDateReport")) {
+                    bindCnaReportEvents();
+                }
+            });
+        })();
+    </script>
+</div>

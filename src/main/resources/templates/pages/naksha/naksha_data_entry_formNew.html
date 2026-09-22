@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/dashboard">
+<head>
+    <meta charset="UTF-8">
+    <title>Naksha For State/UT (before publication of Map1)</title>
+    <link th:href="@{/css/report/nakshasoi.css}" rel="stylesheet"/>
+    <script type="text/javascript" th:src="@{/static/nlrmpmap/nakshaDataEntryForm.js}"></script>
+    <style>
+    .btn-xxs{padding:.15rem .5rem;font-size:.75rem;line-height:1;border-radius:9999px}
+    .btn-icon-xxs{padding:.15rem .4rem;font-size:.8rem;line-height:1;border-radius:9999px}
+    </style>
+</head>
+<div class="content-wrapper" layout:fragment="content">
+    <!-- Content Header (Page header) -->
+    <section class="content containerOne">
+        <div class="card-header"
+             style="background: linear-gradient(45deg, rgb(16, 137, 211) 0%, rgb(19, 111, 130) 100%);">
+
+            <div class="heading"> Format 1: Naksha For State/UT (before publication of Map1)</div>
+        </div>
+        <br>
+
+        <form th:action="@{/ulb/naksha-mis-data/save}" th:object="${nakshaMISDataEntry}"
+              method="post" hx-target="#content" id="ulbMisDataForm" class="form">
+            <div class="col-md-4">
+                <input type="hidden" id="nakshaID"
+                       th:field="*{id}">
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-9 col-sm-12 headingOne">
+                    <span style="color:#ab7b75;">State/UT:</span>
+                    <span class=" col-md-1" th:text="${stateName}"></span>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-12">
+                <h6 class="heading-section headingOne">
+                    <span style="color:#FA8072;">Last Update:</span>
+                    <span id="lastUpdateDate" class=" col-md-1 ">
+                                                      <span th:text="${#dates.format(lastUpdateDate, 'MMMM dd, yyyy')}"></span>
+                                                 </span>
+                </h6>
+
+            </div>
+
+            <div class="row">
+                <hr style="border-top: 2px solid #FA8072;">
+
+                <div class="border rounded p-3 mb-4 bg-light">
+                    <h5 class="fw-bold mb-3" style="color: green; text-shadow: 1px 1px 1px #e0e0e0;">
+                        (A) Basic Details
+                    </h5>
+
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group row">
+                                <label for="nodalDepartmentName" class="col-md-7 col-form-label">
+                                    <span class="red-text">[1]</span> Nodal Department Name:
+                                </label>
+                                <div class="col-md-5">
+                                    <input type="text" id="nodalDepartmentName" name="nodalDepartmentName"
+                                           th:field="*{nodalDepartmentName}" class="form-control" required
+                                           pattern="^[A-Za-z\s]+$"
+                                           placeholder="Enter Nodal Department Name"
+                                           title="Only letters and spaces are allowed"/>
+                                    <small id="nodalDepartmentError" class="text-danger"></small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group row">
+                                <label for="nodalOfficerAppointed" class="col-md-7 col-form-label">
+                                    <span class="red-text">[2]</span> Nodal Officer Appointed (Yes/No):
+                                </label>
+                                <div class="col-md-5">
+                                    <select id="nodalOfficerAppointed" name="nodalOfficerAppointed"
+                                            th:field="*{nodalOfficerAppointed}"
+                                            class="form-control" required
+                                            onchange="toggleContactDetails()">
+                                        <!-- Call JavaScript directly -->
+                                        <option value="No">No</option>
+                                        <option value="Yes">Yes</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3" id="nodalOfficerNameWrapper">
+                            <div class="form-group row">
+                                <label for="nodalOfficerName" class="col-md-7 col-form-label">
+                                    <span class="red-text">[3]</span> Nodal Officer Name:
+                                </label>
+                                <div class="col-md-5">
+                                    <input type="text" id="nodalOfficerName" name="nodalOfficerName"
+                                           th:field="*{nodalOfficerName}" class="form-control"
+                                           placeholder="Enter Nodal Officer Name"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3" id="contactDetailsWrapper">
+                            <div class="form-group row">
+                                <label for="phonenumber" class="col-md-7 col-form-label">
+                                    <span class="red-text">[4]</span> Phone No. of Nodal Officer:
+                                </label>
+                                <div class="col-md-5">
+                                    <input type="text" id="phonenumber" name="phonenumber"
+                                           th:field="*{phonenumber}" class="form-control"
+                                           placeholder="Enter Your Phone Number"
+                                           maxlength="10"
+                                           onkeyup="if (/\D/g.test(this.value)) this.value = this.value.replace(/\D/g, '')">
+                                    <span style="color:red" id="message_phonenumber"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- New Added -->
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group row">
+                                <label for="email" class="col-md-7 col-form-label">
+                                    <span class="red-text">[5]</span> Email of Nodal Officer:
+                                    <br>
+                                    <small style="color:#0d75ea">Example: example@domain.com</small>
+                                </label>
+                                <div class="col-md-5">
+                                    <input type="email" id="email" name="email"
+                                           th:field="*{email}" required
+                                           oninput="validateEmail(this)"
+                                           class="form-control"
+                                           placeholder="Enter Your Email Address"
+                                    />
+                                    <small id="emailError" class="form-text text-danger d-none">
+                                        Please enter a valid email address (e.g., example@domain.com).
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="border rounded p-3 mb-4 bg-light">
+                    <h5 class="fw-bold mb-3" style="color: green; text-shadow: 1px 1px 1px #e0e0e0;">
+                        (B) Field Survey Readiness
+                    </h5>
+                    <div class="row">
+
+
+                        <!-- SPMU Recruitment Completed -->
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group row">
+                                <label for="spmuRecruitmentCompleted" class="col-md-7 col-form-label">
+                                    <span class="red-text">[6]</span> SPMU Recruitment Completed:
+                                    <br>
+                                    <small style="color:#0d75ea">Options: Yes / No / Initiated / Under Process / Pending
+                                        for
+                                        Approval</small>
+                                </label>
+                                <div class="col-md-5">
+                                    <select id="spmuRecruitmentCompleted" name="spmuRecruitmentCompleted"
+                                            th:field="*{spmuRecruitmentCompleted}" class="form-control"
+                                            required onchange="toggleProfessionalsRecruited()">
+                                        <option value="" disabled selected>Select Status</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                        <option value="Initiated">Initiated</option>
+                                        <option value="Under Process">Under Process</option>
+                                        <option value="Pending for Approval">Pending for Approval</option>
+                                    </select>
+                                    <small id="spmuRecruitmentError" class="text-danger"></small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Total No. of SPMU Positions Sanctioned -->
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group row">
+                                <label for="totalSPMUPositionsSanctioned" class="col-md-7 col-form-label">
+                                    <span class="red-text">[7]</span> Total No. of SPMU Positions
+                                    Sanctioned:
+                                </label>
+                                <div class="col-md-5">
+                                    <input type="number" id="totalSPMUPositionsSanctioned"
+                                           name="totalSPMUPositionsSanctioned"
+                                           th:field="*{totalSPMUPositionsSanctioned}" class="form-control"
+                                           min="0" pattern="^\d+$"
+                                           title="Please enter a valid number (no letters or special characters allowed)"
+                                           readonly/>
+                                    <small id="spmuPositionsError" class="text-danger"></small>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- If Recruitment Completed, Total Professionals Recruited -->
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group row">
+                                <label for="totalProfessionalsRecruited" class="col-md-7 col-form-label">
+                                    <span class="red-text">[8]</span> Total No. of SPMU Positions Recruited:
+                                </label>
+                                <div class="col-md-5">
+                                    <input type="number" id="totalProfessionalsRecruited"
+                                           name="totalProfessionalsRecruited"
+                                           th:field="*{totalProfessionalsRecruited}" class="form-control"
+                                           min="0"
+                                           title="Please enter a valid number (no letters or special characters allowed)"
+                                           disabled/>
+                                    <small id="professionalsError" class="text-danger"></small>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- New Added  -->
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group row">
+                                <label for="teamsFormedForsanctioned" class="col-md-7 col-form-label">
+                                    <span class="red-text">[9]</span> No. of Teams Sanctioned for field Survey by DoLR :
+                                </label>
+                                <div class="col-md-5">
+                                    <input type="number" id="teamsFormedForsanctioned"
+                                           name="teamsFormedForsanctioned"
+                                           th:field="*{teamsFormedForsanctioned}" class="form-control"
+                                           min="0"
+                                           title="Please enter a valid number (no letters or special characters allowed)"
+                                           readonly/>
+                                    <small id="teamsFormedForsanctionedError" class="text-danger"></small>
+                                </div>
+                            </div>
+                        </div>
+                        <script>
+// Function to toggle the disabled state and required attribute of the Total Professionals Recruited field
+function toggleProfessionalsRecruited() {
+    var recruitmentStatus = document.getElementById("spmuRecruitmentCompleted").value;
+    var professionalsInput = document.getElementById("totalProfessionalsRecruited");
+
+    if (recruitmentStatus === "Yes" || recruitmentStatus === "Initiated" || recruitmentStatus === "Under Process" || recruitmentStatus === "Pending for Approval") {
+        professionalsInput.disabled = false;
+        professionalsInput.setAttribute("required", "true"); // Make it required when enabled
+        console.log('Professionals Recruited field enabled');
+    } else {
+
+        professionalsInput.disabled = true;
+        professionalsInput.removeAttribute("required");
+        professionalsInput.value = ""; // Clear the field
+        console.log('Professionals Recruited field disabled and cleared');
+    }
+}
+
+// Call the function on page load to set initial state
+window.onload = toggleProfessionalsRecruited;
+
+
+
+
+                        </script>
+
+                        <!-- No. of Teams Formed for Field Survey -->
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group row">
+                                <label for="teamsFormedForFieldSurvey" class="col-md-7 col-form-label">
+                                    <span class="red-text">[10]</span> No. of Teams Formed for Field Survey till date:
+                                </label>
+                                <div class="col-md-5">
+                                    <input type="number" id="teamsFormedForFieldSurvey"
+                                           name="teamsFormedForFieldSurvey"
+                                           th:field="*{teamsFormedForFieldSurvey}" class="form-control"
+                                           min="0"
+                                           title="Please enter a valid number (no letters or special characters allowed)"/>
+                                    <small id="teamsFormedForFieldSurveyError" class="text-danger"></small>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- New Added  -->
+
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group row">
+                                <label class="col-md-7 col-form-label">
+                                    <span class="red-text">[11]</span> Rover Procurement Status:
+                                    <br>
+                                    <small style="color:#0d75ea">Options: Procured / Already Available (for NAKSHA) /
+                                        Rental / Initiated / Under Progress / Not Started</small>
+                                </label>
+                                <div class="col-md-5">
+                                    <select th:field="*{roverProcurementStatus}" class="form-control">
+                                        <option value="" disabled selected>Select status</option>
+                                        <option th:each="status : ${roverProcurementOptions}"
+                                                th:value="${status.code}"
+                                                th:text="${status.description}">
+                                        </option>
+                                    </select>
+                                    <small class="text-danger" id="roverProcurementStatusError"></small>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group row">
+                                <label for="roversSanctioned" class="col-md-7 col-form-label">
+                                    <span class="red-text">[12]</span> No. of Rovers Sanctioned by DoLR :
+                                </label>
+                                <div class="col-md-5">
+                                    <input type="number" id="roversSanctioned"
+                                           name="roversSanctioned"
+                                           th:field="*{roversSanctioned}" class="form-control"
+                                           min="0"
+                                           title="Please enter a valid number (no letters or special characters allowed)"
+                                           readonly/>
+                                    <small id="teamsError" class="text-danger"></small>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- No. of Rovers Procured for Field Survey -->
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group row">
+                                <label for="roversProcuredForFieldSurvey" class="col-md-7 col-form-label">
+                                    <span class="red-text">[13]</span> No. of Rovers Procured :
+                                </label>
+                                <div class="col-md-5">
+                                    <input type="number" id="roversProcuredForFieldSurvey"
+                                           name="roversProcuredForFieldSurvey"
+                                           th:field="*{roversProcuredForFieldSurvey}" class="form-control"
+                                           min="0"
+                                           title="Please enter a valid number (no letters or special characters allowed)"/>
+                                    <small id="roversError" class="text-danger"></small>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- Legal Framework for Urban Survey -->
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group row">
+                                <label class="col-md-7 col-form-label">
+                                    <span class="red-text">[14]</span> Legal Framework for Urban Survey:
+                                    <br>
+                                    <small style="color:#0d75ea">Options: Adequate Provisions Available / Amendments
+                                        Required</small>
+                                </label>
+                                <div class="col-md-5">
+                                    <select id="legalFrameworkUrbanSurveyStatus"
+                                            th:field="*{legalFrameworkUrbanSurveyStatus}" class="form-control">
+                                        <option value="" disabled selected>Select status</option>
+                                        <option th:each="status : ${legalFrameworkOptions}"
+                                                th:value="${status.code}"
+                                                th:text="${status.description}">
+                                        </option>
+                                    </select>
+                                    <small class="text-danger" id="legalFrameworkUrbanSurveyStatusError"></small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Status of Legal Framework Amendment -->
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group row">
+                                <label class="col-md-7 col-form-label">
+                                    <span class="red-text">[15]</span> Status of Legal Framework Amendment:
+                                    <br>
+                                    <small style="color:#0d75ea">Options: Initiated / Not Initiated / Under
+                                        Progress</small>
+                                </label>
+                                <div class="col-md-5">
+                                    <select id="legalFrameworkAmendmentStatus"
+                                            th:field="*{legalFrameworkAmendmentStatus}" class="form-control">
+                                        <option value="" disabled selected>Select status</option>
+                                        <option th:each="status : ${legalAmendmentOptions}"
+                                                th:value="${status.code}"
+                                                th:text="${status.description}">
+                                        </option>
+                                    </select>
+                                    <small class="text-danger" id="legalFrameworkAmendmentStatusError"></small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Your existing HTML unchanged -->
+
+                        <script>
+
+$(document).ready(function(){
+    const urbanSurveyDropdown = document.getElementById("legalFrameworkUrbanSurveyStatus");
+    const amendmentDropdown = document.getElementById("legalFrameworkAmendmentStatus");
+
+    function toggleAmendmentDropdown() {
+    const selectedValue = urbanSurveyDropdown.value;
+    console.log("Urban Survey selected value:", selectedValue);
+
+    if (selectedValue === "1") {
+        amendmentDropdown.disabled = true;
+        amendmentDropdown.value = ""; // Clear amendment selection
+        console.log("Amendment dropdown disabled");
+    } else if (selectedValue === "2") {
+        amendmentDropdown.disabled = false;
+        amendmentDropdown.setAttribute("required", "true");
+        console.log("Amendment dropdown enabled");
+    } else if (!selectedValue || selectedValue === "") {
+        // Handle null or empty value
+        amendmentDropdown.disabled = false;
+        amendmentDropdown.value = "";
+        console.log("Amendment dropdown enabled (default or null)");
+    } else {
+        // Fallback
+        amendmentDropdown.disabled = false;
+        amendmentDropdown.value = "";
+        console.log("Amendment dropdown enabled (fallback)");
+    }
+}
+
+
+    // Initial toggle on page load
+    toggleAmendmentDropdown();
+
+    // Listen for changes in urbanSurveyDropdown
+    urbanSurveyDropdown.addEventListener("change", toggleAmendmentDropdown);
+});
+
+                        </script>
+                        <!-- Property Tax Data Obtained -->
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group row">
+                                <label for="propertyTaxDataObtained" class="col-md-7 col-form-label">
+                                    <span class="red-text">[16]</span> Property Tax Data Obtained for all ULBs (Yes/No):
+                                </label>
+                                <div class="col-md-5">
+                                    <select id="propertyTaxDataObtained" name="propertyTaxDataObtained"
+                                            th:field="*{propertyTaxDataObtained}" class="form-control"
+                                            required>
+                                        <option value="No">No</option>
+                                        <option value="Yes">Yes</option>
+                                    </select>
+                                    <small id="taxDataError" class="text-danger"></small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Property Tax Data Digitized -->
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group row">
+                                <label for="propertyTaxDataDigitized" class="col-md-7 col-form-label">
+                                    <span class="red-text">[17]</span> Property Tax Data Digitized for all ULBs
+                                    (Yes/No):
+                                </label>
+                                <div class="col-md-5">
+                                    <select id="propertyTaxDataDigitized" name="propertyTaxDataDigitized"
+                                            th:field="*{propertyTaxDataDigitized}" class="form-control"
+                                            required>
+                                        <option value="No">No</option>
+                                        <option value="Yes">Yes</option>
+                                    </select>
+                                    <small id="taxDataDigitizedError" class="text-danger"></small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group row">
+                                <label class="col-md-7 col-form-label">
+                                    <span class="red-text">[18]</span> Constitution of State Level Committee:
+                                    <br>
+                                    <small style="color:#0d75ea">Options: Yes / No</small>
+                                </label>
+
+                                <div class="col-md-5">
+                                    <select id="slcMeetingConducted"
+                                            th:field="*{slcMeetingConducted}" class="form-control">
+                                        <option value="" disabled selected>Select status</option>
+                                        <option th:each="status : ${slcMeetingOptions}"
+                                                th:value="${status.code}"
+                                                th:text="${status.description}">
+                                        </option>
+                                    </select>
+                                    <small class="text-danger" id="slcMeetingOptionsError"></small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3" id="slcMeetingDateContainer">
+                            <div class="form-group row">
+                                <label class="col-md-7 col-form-label">
+                                    <span class="red-text">[19]</span> SLC Meeting Conducted Dates:
+                                </label>
+                                <div class="col-md-5">
+                                    <!-- Dynamic Date Inputs -->
+                                    <div id="dateInputsWrapper">
+                                        <div class="input-group mb-2">
+                                            <input type="date" name="slcMeetingDates" class="form-control" />
+                                            <button type="button" class="btn btn-outline-secondary btn-icon-xxs removeDateBtn" disabled><i class="fa fa-minus"></i></button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Add / Show buttons -->
+                                    <div class="d-flex gap-2 mt-2">
+                                        <button type="button" class="btn btn-outline-primary btn-xxs rounded-pill" id="addDateBtn">Add Another Date</button>
+
+                                        <button type="button" class="btn btn-outline-info btn-xxs rounded-pill" id="showDatesBtn">Show Date List</button>
+                                    </div>
+
+                                    <!-- Hidden Table for Saved Dates -->
+                                    <div id="savedDatesPopup" style="display: none; margin-top: 1rem;">
+                                        <h5 class="mb-2">List of SLC Meeting Dates <span class="badge bg-info ms-1">Newest first</span></h5>
+                                        <table class="table table-bordered table-striped table-hover align-middle shadow-sm rounded">
+                                            <thead>
+                                            <tr class="table-primary">
+                                                <th style="width:60px">S.N.</th>
+                                                <th>Date</th>
+                                                <th style="width:100px">Action</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="savedDatesTbody">
+                                            <tr th:each="date, iterStat : ${slcMeetingDates}" th:attr="data-id=${date.id}, data-date=${date.meetingDate}">
+                                                <td class="slc-sn" th:text="${iterStat.index + 1}">1</td>
+                                                <td class="slc-date" th:text="${date.meetingDate}">2025-08-01</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-outline-danger btn-icon-xxs deleteSavedDateBtn"><i class="fa fa-trash"></i></button>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                            <!-- New dates entered in inputs will render here dynamically -->
+                                            <tbody id="newDatesTbody"></tbody>
+                                        </table>
+                                        <!-- This hidden container holds inputs for deleted items so backend can process removals -->
+                                        <div id="deletedDatesInputs"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- =====================================================================================
+                             SLC Meeting Dates Management Script - CURRENT VERSION (INDEPENDENT)
+                             =====================================================================================
+                             
+                             CURRENT BEHAVIOR:
+                             - Field [19] is independent of Field [18]
+                             - Dates can be added/removed regardless of Yes/No selection
+                             - Backend deletes dates when "No" is selected on submit
+                             
+                             PREVIOUS BEHAVIOR (Commented below):
+                             - Field [19] was dependent on Field [18]
+                             - Dates were enabled/disabled based on Yes/No selection
+                             - To restore: Uncomment the code at the bottom
+                             
+                             ===================================================================================== -->
+                        <script>
+// ========== CURRENT: INDEPENDENT VERSION ==========
+// Field [19] dates are independent of Field [18] Yes/No selection
+document.addEventListener("DOMContentLoaded", function () {
+    const slcSelect = document.getElementById("slcMeetingConducted");
+    const addBtn = document.getElementById("addDateBtn");
+    const wrapper = document.getElementById("dateInputsWrapper");
+    const showBtn = document.getElementById("showDatesBtn");
+    const popup = document.getElementById("savedDatesPopup");
+    const deletedInputsContainer = document.getElementById("deletedDatesInputs");
+    const savedDatesTbody = document.getElementById("savedDatesTbody");
+    const newDatesTbody = document.getElementById("newDatesTbody");
+
+    // Helper to enable/disable date inputs and related buttons
+    function updateDateFieldsEnabled(shouldEnable) {
+        const dateInputs = wrapper.querySelectorAll('input[type="date"]');
+        dateInputs.forEach(inp => {
+            inp.disabled = !shouldEnable;
+            if (!shouldEnable) {
+                // When disabling, also remove name so it doesn't submit accidentally
+                inp.removeAttribute('name');
+            } else if (inp.value) {
+                // Re-apply name when enabled and has value
+                inp.name = 'slcMeetingDates';
+            }
+        });
+
+        // Toggle Add button
+        if (addBtn) addBtn.disabled = !shouldEnable;
+
+        // Toggle remove buttons
+        const removeButtons = wrapper.querySelectorAll('.removeDateBtn');
+        removeButtons.forEach(btn => {
+            btn.disabled = !shouldEnable;
+        });
+    }
+
+    // Store previous value to revert if user cancels
+    let previousSlcValue = slcSelect.value;
+
+    // Confirmation alert when "No" is selected in Field [18]
+    slcSelect.addEventListener("change", function() {
+        const selectedValue = this.value;
+        const selectedText = this.options[this.selectedIndex] ? this.options[this.selectedIndex].text : '';
+        const selectElement = this;
+        
+        // Check if "No" is selected (value = 0 or text = "No")
+        if (selectedValue === '0' || selectedText.toLowerCase() === 'no') {
+            // Count existing saved dates
+            const savedDatesCount = savedDatesTbody ? savedDatesTbody.querySelectorAll('tr').length : 0;
+            const newDatesCount = Array.from(wrapper.querySelectorAll('input[type="date"]')).filter(i => i.value).length;
+            const totalDates = savedDatesCount + newDatesCount;
+            
+            // Show confirmation only if there are dates to delete
+            if (totalDates > 0) {
+                // Use SweetAlert2 for better UX
+                Swal.fire({
+                    title: '⚠️ Warning!',
+                    html: '<p style="font-size: 16px;">' +
+                          'Selecting <strong>"No"</strong> will <strong style="color: #d33;">DELETE</strong> all saved SLC Meeting Dates.<br><br>' +
+                          '<span style="color: #e74c3c; font-weight: bold;">Total Dates to be Deleted: ' + totalDates + '</span>' +
+                          '</p>',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, Delete All Dates',
+                    cancelButtonText: 'Cancel',
+                    focusCancel: true,
+                    reverseButtons: true
+                }).then((result) => {
+                    if (!result.isConfirmed) {
+                        // User cancelled - revert to previous value and re-enable fields
+                        selectElement.value = previousSlcValue;
+                        updateDateFieldsEnabled(true);
+                    } else {
+                        // User confirmed - delete all dates immediately and disable inputs
+                        previousSlcValue = selectElement.value;
+                        
+                        // Clear all date input fields
+                        const dateInputs = wrapper.querySelectorAll('input[type="date"]');
+                        dateInputs.forEach(input => {
+                            input.value = '';
+                            input.removeAttribute('name');
+                        });
+                        
+                        // Clear saved dates from the list (mark all for deletion)
+                        if (savedDatesTbody) {
+                            const savedRows = savedDatesTbody.querySelectorAll('tr');
+                            savedRows.forEach(row => {
+                                const id = row.getAttribute('data-id');
+                                const dateVal = row.getAttribute('data-date');
+                                
+                                // Add hidden input to mark for deletion
+                                const input = document.createElement('input');
+                                input.type = 'hidden';
+                                input.name = id ? 'deletedSlcMeetingDateIds' : 'deletedSlcMeetingDateValues';
+                                input.value = id ? id : dateVal;
+                                deletedInputsContainer.appendChild(input);
+                            });
+                            
+                            // Clear the table
+                            savedDatesTbody.innerHTML = '';
+                        }
+                        
+                        // Clear new dates list
+                        if (newDatesTbody) {
+                            newDatesTbody.innerHTML = '';
+                        }
+                        
+                        // Hide the popup if visible
+                        if (popup.style.display !== 'none') {
+                            popup.style.display = 'none';
+                            showBtn.textContent = 'Show Date List';
+                        }
+                        
+                        // Disable date fields after selecting No
+                        updateDateFieldsEnabled(false);
+                        
+                        // Show success message
+                        Swal.fire({
+                            title: 'Dates Cleared!',
+                            text: 'All SLC Meeting Dates have been removed from the list.',
+                            icon: 'success',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    }
+                });
+                return;
+            }
+
+            // If there are no dates to delete, still disable fields on selecting No
+            updateDateFieldsEnabled(false);
+        } else {
+            // Selecting something other than No -> enable fields
+            updateDateFieldsEnabled(true);
+        }
+        
+        // Update previous value if change is confirmed (when no dates to delete)
+        previousSlcValue = this.value;
+    });
+
+    // Initialize previous value on page load
+    if (slcSelect.value) {
+        previousSlcValue = slcSelect.value;
+    }
+
+    // Initialize date fields enabled state on load based on current selection
+    (function initEnableState() {
+        const optText = slcSelect.options[slcSelect.selectedIndex] ? slcSelect.options[slcSelect.selectedIndex].text.toLowerCase() : '';
+        const isNo = slcSelect.value === '0' || optText === 'no';
+        updateDateFieldsEnabled(!isNo);
+    })();
+
+    function setMaxDate(input) {
+        input.max = new Date().toISOString().split('T')[0];
+    }
+
+    addBtn.addEventListener("click", function () {
+        const div = document.createElement("div");
+        div.classList.add("input-group", "mb-2");
+
+        const input = document.createElement("input");
+        input.type = "date";
+        // Do NOT name empty inputs so they aren't submitted
+        // Name will be applied dynamically when value is present
+        input.classList.add("form-control");
+        setMaxDate(input);
+        input.addEventListener('change', function() {
+            // Toggle name attribute based on whether a value exists
+            if (input.value) {
+                input.name = 'slcMeetingDates';
+            } else {
+                input.removeAttribute('name');
+            }
+            refreshNewDatesList();
+        });
+
+        const removeBtn = document.createElement("button");
+        removeBtn.type = "button";
+        removeBtn.classList.add("btn", "btn-outline-secondary", "btn-icon-xxs", "removeDateBtn");
+        removeBtn.innerHTML = '<i class="fa fa-minus"></i>';
+
+        removeBtn.addEventListener("click", function () {
+            div.remove();
+            refreshNewDatesList();
+        });
+
+        div.appendChild(input);
+        div.appendChild(removeBtn);
+        wrapper.appendChild(div);
+    });
+
+    const initialInput = wrapper.querySelector('input[type="date"]');
+    if (initialInput) {
+        setMaxDate(initialInput);
+        // Ensure initial input is only named when it has a value
+        if (!initialInput.value) {
+            initialInput.removeAttribute('name');
+        } else {
+            initialInput.name = 'slcMeetingDates';
+        }
+        initialInput.addEventListener('change', function() {
+            if (initialInput.value) {
+                initialInput.name = 'slcMeetingDates';
+            } else {
+                initialInput.removeAttribute('name');
+            }
+            refreshNewDatesList();
+        });
+    }
+
+    showBtn.addEventListener("click", function () {
+        if (popup.style.display === "none") {
+            popup.style.display = "block";
+            showBtn.textContent = "Hide Date List";
+            sortAllRowsByDateDesc();
+        } else {
+            popup.style.display = "none";
+            showBtn.textContent = "Show Date List";
+        }
+    });
+
+    function renumberAllRows() {
+        const allRows = popup.querySelectorAll('tbody tr');
+        allRows.forEach((row, index) => {
+            const snCell = row.querySelector('.slc-sn');
+            if (snCell) snCell.textContent = (index + 1).toString();
+        });
+    }
+
+    function refreshNewDatesList() {
+        newDatesTbody.innerHTML = '';
+
+        // Build a set of already-saved dates shown in the table to avoid duplicates
+        const savedDatesSet = new Set();
+        if (savedDatesTbody) {
+            savedDatesTbody.querySelectorAll('.slc-date').forEach(td => {
+                const val = (td.textContent || '').trim();
+                if (val) savedDatesSet.add(val);
+            });
+        }
+
+        // Collect unique values from current inputs, skipping those already saved
+        const dateInputs = wrapper.querySelectorAll('input[type="date"]');
+        const uniqueNewValues = [];
+        dateInputs.forEach((inp, idx) => {
+            const raw = (inp.value || '').trim();
+            if (raw.length === 0) {
+                // Ensure unnamed when empty so it won't submit
+                inp.removeAttribute('name');
+                return;
+            }
+            // Ensure named only when value is present
+            inp.name = 'slcMeetingDates';
+
+            if (!savedDatesSet.has(raw) && !uniqueNewValues.includes(raw)) {
+                uniqueNewValues.push(raw);
+
+                const tr = document.createElement('tr');
+                tr.setAttribute('data-new-index', String(idx));
+                tr.innerHTML = '<td class="slc-sn"></td>' +
+                               '<td class="slc-date">' + raw + '</td>' +
+                               '<td><button type="button" class="btn btn-outline-danger btn-icon-xxs deleteNewDateBtn"><i class="fa fa-trash"></i></button></td>';
+                newDatesTbody.appendChild(tr);
+            }
+        });
+
+        renumberAllRows();
+        sortAllRowsByDateDesc();
+
+        // Auto-show the date list when dates are added/changed
+        const savedDatesCount = savedDatesTbody ? savedDatesTbody.querySelectorAll('tr').length : 0;
+        const newDatesCount = uniqueNewValues.length;
+        const totalDates = savedDatesCount + newDatesCount;
+
+        if (totalDates > 0) {
+            // Show the list automatically when dates exist
+            popup.style.display = 'block';
+            showBtn.textContent = 'Hide Date List';
+        } else {
+            // Hide if no dates
+            popup.style.display = 'none';
+            showBtn.textContent = 'Show Date List';
+        }
+    }
+
+    popup.addEventListener('click', function(e) {
+        if (e.target && (e.target.classList.contains('deleteSavedDateBtn') || e.target.closest('.deleteSavedDateBtn'))) {
+            const row = e.target.closest('tr');
+            const id = row.getAttribute('data-id');
+            const dateVal = row.getAttribute('data-date');
+
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = id ? 'deletedSlcMeetingDateIds' : 'deletedSlcMeetingDateValues';
+            input.value = id ? id : dateVal;
+            deletedInputsContainer.appendChild(input);
+
+            row.remove();
+            renumberAllRows();
+            sortAllRowsByDateDesc();
+            
+            // Check if there are any dates left after deletion
+            const remainingSavedDates = savedDatesTbody ? savedDatesTbody.querySelectorAll('tr').length : 0;
+            const remainingNewDates = newDatesTbody ? newDatesTbody.querySelectorAll('tr').length : 0;
+            const totalRemaining = remainingSavedDates + remainingNewDates;
+            
+            if (totalRemaining === 0) {
+                // Hide the list if no dates remain
+                popup.style.display = "none";
+                showBtn.textContent = "Show Date List";
+            }
+        }
+
+        if (e.target && (e.target.classList.contains('deleteNewDateBtn') || e.target.closest('.deleteNewDateBtn'))) {
+            const row = e.target.closest('tr');
+            const newIndex = row.getAttribute('data-new-index');
+            if (newIndex !== null) {
+                const group = wrapper.children[Number(newIndex)];
+                if (group) group.remove();
+                refreshNewDatesList();
+            }
+        }
+    });
+
+    function sortAllRowsByDateDesc() {
+        const allRows = [];
+        if (savedDatesTbody) {
+            savedDatesTbody.querySelectorAll('tr').forEach(r => allRows.push(r));
+        }
+        if (newDatesTbody) {
+            newDatesTbody.querySelectorAll('tr').forEach(r => allRows.push(r));
+        }
+
+        allRows.sort((a, b) => {
+            const da = (a.querySelector('.slc-date')?.textContent || '').trim();
+            const db = (b.querySelector('.slc-date')?.textContent || '').trim();
+            if (da === db) return 0;
+            return da > db ? -1 : 1;
+        });
+
+        if (savedDatesTbody) {
+            savedDatesTbody.innerHTML = '';
+            allRows.forEach(r => savedDatesTbody.appendChild(r));
+        }
+        if (newDatesTbody) newDatesTbody.innerHTML = '';
+        renumberAllRows();
+    }
+    sortAllRowsByDateDesc();
+    
+    // Auto-show list on page load if dates already exist
+    const initialSavedDates = savedDatesTbody ? savedDatesTbody.querySelectorAll('tr').length : 0;
+    const initialNewDates = newDatesTbody ? newDatesTbody.querySelectorAll('tr').length : 0;
+    const initialTotalDates = initialSavedDates + initialNewDates;
+    
+    if (initialTotalDates > 0) {
+        popup.style.display = "block";
+        showBtn.textContent = "Hide Date List";
+    }
+});
+</script>
+
+<!-- ========== PREVIOUS: DEPENDENT VERSION (Commented) ==========
+     To restore dependency, uncomment this section and comment the above script
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const slcSelect = document.getElementById("slcMeetingConducted");
+    const addBtn = document.getElementById("addDateBtn");
+    const wrapper = document.getElementById("dateInputsWrapper");
+    const showBtn = document.getElementById("showDatesBtn");
+    const popup = document.getElementById("savedDatesPopup");
+    const deletedInputsContainer = document.getElementById("deletedDatesInputs");
+    const savedDatesTbody = document.getElementById("savedDatesTbody");
+    const newDatesTbody = document.getElementById("newDatesTbody");
+
+    function isYesSelected() {
+        const val = slcSelect.value;
+        const text = slcSelect.options[slcSelect.selectedIndex] ? slcSelect.options[slcSelect.selectedIndex].text.toLowerCase() : '';
+        return val === '1' || text === 'yes';
+    }
+
+    function setMaxDate(input) {
+        input.max = new Date().toISOString().split('T')[0];
+    }
+
+    function toggleDateFields() {
+        const shouldEnable = isYesSelected();
+
+        const dateInputs = wrapper.querySelectorAll('input[type="date"]');
+        dateInputs.forEach(input => {
+            input.disabled = !shouldEnable;
+            input.required = shouldEnable;
+            setMaxDate(input);
+        });
+
+        addBtn.disabled = !shouldEnable;
+
+        const removeButtons = wrapper.querySelectorAll('.removeDateBtn');
+        removeButtons.forEach(btn => {
+            btn.disabled = !shouldEnable || wrapper.children.length === 1;
+        });
+
+        if (!shouldEnable) {
+            newDatesTbody.innerHTML = '';
+            renumberAllRows();
+        }
+    }
+
+    addBtn.addEventListener("click", function () {
+        const div = document.createElement("div");
+        div.classList.add("input-group", "mb-2");
+
+        const input = document.createElement("input");
+        input.type = "date";
+        input.name = "slcMeetingDates";
+        input.classList.add("form-control");
+        setMaxDate(input);
+        input.addEventListener('change', refreshNewDatesList);
+
+        const removeBtn = document.createElement("button");
+        removeBtn.type = "button";
+        removeBtn.classList.add("btn", "btn-outline-secondary", "btn-icon-xxs", "removeDateBtn");
+        removeBtn.innerHTML = '<i class="fa fa-minus"></i>';
+
+        removeBtn.addEventListener("click", function () {
+            div.remove();
+            toggleDateFields();
+            refreshNewDatesList();
+        });
+
+        div.appendChild(input);
+        div.appendChild(removeBtn);
+        wrapper.appendChild(div);
+
+        toggleDateFields();
+    });
+
+    slcSelect.addEventListener("change", toggleDateFields);
+    toggleDateFields();
+
+    const initialRemoveBtn = wrapper.querySelector(".removeDateBtn");
+    if (initialRemoveBtn) {
+        initialRemoveBtn.addEventListener("click", function () {
+            if (wrapper.children.length > 1) {
+                initialRemoveBtn.parentElement.remove();
+                toggleDateFields();
+                refreshNewDatesList();
+            }
+        });
+    }
+
+    const initialInput = wrapper.querySelector('input[type="date"]');
+    if (initialInput) {
+        setMaxDate(initialInput);
+        initialInput.addEventListener('change', refreshNewDatesList);
+    }
+
+    showBtn.addEventListener("click", function () {
+        if (popup.style.display === "none") {
+            popup.style.display = "block";
+            showBtn.textContent = "Hide Date List";
+            sortAllRowsByDateDesc();
+        } else {
+            popup.style.display = "none";
+            showBtn.textContent = "Show Date List";
+        }
+    });
+
+    function renumberAllRows() {
+        const allRows = popup.querySelectorAll('tbody tr');
+        allRows.forEach((row, index) => {
+            const snCell = row.querySelector('.slc-sn');
+            if (snCell) snCell.textContent = (index + 1).toString();
+        });
+    }
+
+    function refreshNewDatesList() {
+        newDatesTbody.innerHTML = '';
+        const dateInputs = wrapper.querySelectorAll('input[type="date"]');
+        const values = [];
+        dateInputs.forEach((inp, idx) => {
+            if (inp.value) {
+                if (!values.includes(inp.value)) {
+                    values.push(inp.value);
+                    const tr = document.createElement('tr');
+                    tr.setAttribute('data-new-index', String(idx));
+                    tr.innerHTML = '<td class="slc-sn"></td>' +
+                                   '<td class="slc-date">' + inp.value + '</td>' +
+                                   '<td><button type="button" class="btn btn-outline-danger btn-icon-xxs deleteNewDateBtn"><i class="fa fa-trash"></i></button></td>';
+                    newDatesTbody.appendChild(tr);
+                }
+            }
+        });
+        renumberAllRows();
+        sortAllRowsByDateDesc();
+    }
+
+    popup.addEventListener('click', function(e) {
+        if (e.target && (e.target.classList.contains('deleteSavedDateBtn') || e.target.closest('.deleteSavedDateBtn'))) {
+            const row = e.target.closest('tr');
+            const id = row.getAttribute('data-id');
+            const dateVal = row.getAttribute('data-date');
+
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = id ? 'deletedSlcMeetingDateIds' : 'deletedSlcMeetingDateValues';
+            input.value = id ? id : dateVal;
+            deletedInputsContainer.appendChild(input);
+
+            row.remove();
+            renumberAllRows();
+            sortAllRowsByDateDesc();
+        }
+
+        if (e.target && (e.target.classList.contains('deleteNewDateBtn') || e.target.closest('.deleteNewDateBtn'))) {
+            const row = e.target.closest('tr');
+            const newIndex = row.getAttribute('data-new-index');
+            if (newIndex !== null) {
+                const group = wrapper.children[Number(newIndex)];
+                if (group) group.remove();
+                refreshNewDatesList();
+                toggleDateFields();
+            }
+        }
+    });
+
+    const formEl = document.getElementById('ulbMisDataForm');
+    if (formEl) {
+        formEl.addEventListener('submit', function(ev) {
+            if (isYesSelected()) {
+                const savedCount = savedDatesTbody ? savedDatesTbody.querySelectorAll('tr').length : 0;
+                const newValues = Array.from(wrapper.querySelectorAll('input[type="date"]')).filter(i => i.value).length;
+                const total = savedCount + newValues;
+                if (total === 0) {
+                    ev.preventDefault();
+                    alert('Please enter at least one SLC Meeting date.');
+                    if (popup.style.display === 'none') {
+                        popup.style.display = 'block';
+                        showBtn.textContent = 'Hide Date List';
+                    }
+                }
+            }
+        }, true);
+    }
+
+    function sortAllRowsByDateDesc() {
+        const allRows = [];
+        if (savedDatesTbody) {
+            savedDatesTbody.querySelectorAll('tr').forEach(r => allRows.push(r));
+        }
+        if (newDatesTbody) {
+            newDatesTbody.querySelectorAll('tr').forEach(r => allRows.push(r));
+        }
+
+        allRows.sort((a, b) => {
+            const da = (a.querySelector('.slc-date')?.textContent || '').trim();
+            const db = (b.querySelector('.slc-date')?.textContent || '').trim();
+            if (da === db) return 0;
+            return da > db ? -1 : 1;
+        });
+
+        if (savedDatesTbody) {
+            savedDatesTbody.innerHTML = '';
+            allRows.forEach(r => savedDatesTbody.appendChild(r));
+        }
+        if (newDatesTbody) newDatesTbody.innerHTML = '';
+        renumberAllRows();
+    }
+    sortAllRowsByDateDesc();
+});
+</script>
+-->
+
+
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group row">
+                                <label for="ulbsGroundTruthingCompleted" class="col-md-7 col-form-label">
+                                    <span class="red-text">[20]</span> No. of ULBs where Ground Truthing has been
+                                    Completed:
+                                </label>
+                                <div class="col-md-5">
+                                    <input type="number" id="ulbsGroundTruthingCompleted"
+                                           name="ulbsGroundTruthingCompleted"
+                                           th:field="*{ulbsGroundTruthingCompleted}" class="form-control"
+                                           min="0" max="10"
+                                           title="Please enter a number between 0 and 10 only"/>
+                                    <small id="ulbsGroundTruthingCompletedError" class="text-danger"></small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group row">
+                                <label class="col-md-7 col-form-label">
+                                    <span class="red-text">[21]</span> Status of Ward level Shapefile Sharing:
+                                    <br>
+                                    <small style="color:#0d75ea">Options: Shared / Not Shared</small>
+                                </label>
+                                <div class="col-md-5">
+                                    <select th:field="*{wardLevelShapefileStatus}" id="wardLevelShapefileStatus"
+                                            class="form-control">
+                                        <option value="" disabled selected>Select status</option>
+                                        <option th:each="status : ${wardLevelShapefileStatusOptions}"
+                                                th:value="${status.code}"
+                                                th:text="${status.description}">
+                                        </option>
+                                    </select>
+                                    <small class="text-danger" id="wardLevelShapefileStatusError"></small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr style="border-top: 2px solid #FA8072;">
+
+
+                <!-- Link to Ground Truthing Data Entry Form -->
+                <div class="text-center mt-3 mb-3">
+                    <a href="/ulb/ulb-gt-mis-data/form" class="btn btn-outline-primary px-4 py-2 rounded-pill">
+                        <i class="fa fa-user me-2"></i>
+                        Ground Truthing Data Entry
+                    </a>
+                </div>
+                <!-- Submit Button -->
+                <div class="col-md-12 d-flex justify-content-center mt-4">
+                    <button type="submit" class=" px-5 py-2 rounded-pill shadow-sm inner">
+                        <div class="svg-wrapper-1">
+                            <div class="svg-wrapper">
+                                <svg viewBox="0 0 24 24" width="24" height="24">
+                                    <path fill="none" d="M0 0h24v24H0z"></path>
+                                    <path fill="currentColor"
+                                          d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <span>Submit</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+        <br><br><br>
+        <script>
+    document.getElementById('ulbsGroundTruthingCompleted').addEventListener('input', function () {
+        const val = parseInt(this.value, 10);
+        const errorEl = document.getElementById('ulbsGroundTruthingCompletedError');
+        if (val < 0 || val > 10) {
+            errorEl.textContent = 'Value must be between 0 and 10.';
+            this.classList.add('is-invalid');
+        } else {
+            errorEl.textContent = '';
+            this.classList.remove('is-invalid');
+        }
+    });
+
+
+
+        </script>
+
+        <script>
+function limitWords(textarea, maxWords) {
+  let words = textarea.value.trim().split(/\s+/).filter(w => w.length > 0);
+  if (words.length > maxWords) {
+    textarea.value = words.slice(0, maxWords).join(" ");
+  }
+}
+
+function updateWordCount(textarea, maxWords) {
+  let words = textarea.value.trim().split(/\s+/).filter(w => w.length > 0);
+  let count = words.length;
+  if (count > maxWords) count = maxWords;
+  document.getElementById('wordCountMessage').textContent = count + ' / ' + maxWords + ' words';
+}
+
+// Initialize count on page load if textarea has content
+document.addEventListener('DOMContentLoaded', () => {
+  let ta = document.getElementById('iecActivitiesRemarks');
+  updateWordCount(ta, 150);
+});
+
+
+
+        </script>
+
+
+        <script>
+$(document).ready(function() {
+    // Attach submit event listener to the form
+    $('#ulbMisDataForm').submit(function(e) {
+        e.preventDefault(); // Prevent the default form submission
+        var form = $(this);
+        var formData = new FormData(form[0]);
+        $.ajax({
+            type: 'POST',
+            url: form.attr('action'),
+            data: formData,
+            processData: false, // Prevent jQuery from automatically transforming the data into a query string
+            contentType: false, // Tell jQuery not to set content type
+            success: function(data) {
+                // Show success message and refresh CAPTCHA
+                showSuccessAlert(data);
+
+
+            },
+            error: function(jqXHR) {
+                // Show error message
+                  showErrorAlert('Error', jqXHR.responseText);
+
+            }
+        });
+    });
+
+     // ✅ Add this block here for AJAX session expiry check (no global use)
+        $.ajaxSetup({
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+
+        $(document).ajaxError(function (event, xhr) {
+            if (xhr.status === 401 || xhr.status === 403) {
+                Swal.fire({
+                    title: 'Session Expired',
+                    text: 'Your session has expired. Please log in again.',
+                    icon: 'warning',
+                    confirmButtonText: 'Login'
+                }).then(() => {
+                    window.location.href = '/loginPage?sessionExpired';
+                });
+            }
+        });
+
+
+    // Function to display a SweetAlert success message
+    function showSuccessAlert(data) {
+        Swal.fire({
+            title: 'Success',
+            text: data,
+            icon: 'success',
+            confirmButtonText: 'OK',
+            position: 'center'
+        });
+    }
+
+    // Function to display a SweetAlert error message
+    function showErrorAlert(title, text) {
+        Swal.fire({
+            title: title,
+            text: text,
+            icon: 'error',
+            confirmButtonText: 'OK',
+            position: 'center'
+        });
+    }
+});
+
+
+
+
+        </script>
+
+        <script>
+  function validateFields() {
+    let isValid = true;
+
+    // Validate Mobile No
+    const mobileno = $('#mobileno').val().trim();
+    if (mobileno === '' || mobileno.length !== 10) {
+      $("#message_mobileno").text("Enter a valid 10-digit Mobile No.");
+      $('#mobileno').focus().css("background-color", "yellow");
+      isValid = false;
+    } else {
+      $("#message_mobileno").text("");
+      $('#mobileno').css("background-color", "white");
+    }
+
+    // Validate Phone No of Nodal Officer
+    const phonenumber = $('#phonenumber').val().trim();
+    if (phonenumber === '' || phonenumber.length !== 10) {
+      $("#message_phonenumber").text("Enter a valid 10-digit Phone No.");
+      $('#phonenumber').focus().css("background-color", "yellow");
+      isValid = false;
+    } else {
+      $("#message_phonenumber").text("");
+      $('#phonenumber').css("background-color", "white");
+    }
+
+    // Validate Email
+    const email = $('#email').val().trim();
+    const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (email === '') {
+      $("#emailError").removeClass("d-none").text("Enter E-Mail Id");
+      $('#email').focus().css("background-color", "yellow");
+      isValid = false;
+    } else if (!emailRegex.test(email)) {
+      $("#emailError").removeClass("d-none").text("Invalid E-Mail Id");
+      $('#email').focus().css("background-color", "yellow");
+      isValid = false;
+    } else {
+      $("#emailError").addClass("d-none").text("");
+      $('#email').css("background-color", "white");
+    }
+
+    return isValid;
+  }
+
+  $(document).ready(function () {
+    // Attach to form submission
+    $("form").submit(function (e) {
+      if (!validateFields()) {
+        e.preventDefault(); // Prevent form submission if validation fails
+      }
+    });
+
+    // Optional: live validation as user types
+    $('#mobileno').on('keyup', validateFields);
+    $('#phonenumber').on('keyup', validateFields);
+    $('#email').on('input', validateFields);
+  });
+
+
+
+        </script>
+    </section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+
+</html>
+

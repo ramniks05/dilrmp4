@@ -1,0 +1,293 @@
+<div th:fragment="district-mis-permission">
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-info">
+                        <div class="card-header" style="background: linear-gradient(to right, #32b4c8 0%, rgb(64 101 142));">
+                            <h3 class="card-title" style="color: #eff3f6; font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a; letter-spacing: 2px;">
+                                District MIS Data Entry — District Permissions
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-muted">
+                                Select a state to view districts. By default, all districts are <strong>Increase Only</strong>.
+                                Check a district (or <strong>ALL</strong>) to allow <strong>Increase &amp; Decrease</strong> for question numbers
+                                4, 5, 6, 7, 11–17, 20, 22–42.
+                                <br><strong>Note:</strong> Increase &amp; Decrease permission is valid for <strong>24 hours</strong> only.
+                                After 24 hours, permission automatically reverts to <strong>Increase Only</strong>.
+                            </p>
+
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <span class="badge badge-success mr-2">&#10003; Increase &amp; Decrease</span>
+                                    <span class="badge badge-secondary">&#128274; Increase Only (Default)</span>
+                                </div>
+                            </div>
+
+                            <form id="districtMisPermissionForm" onsubmit="return saveDistrictMisPermissions(event)">
+                                <div class="form-group row">
+                                    <label class="col-md-2 col-form-label" for="permissionStateId">Select State<span style="color:red"> *</span></label>
+                                    <div class="col-md-6">
+                                        <select id="permissionStateId" name="stateId" class="form-control" required
+                                                hx-trigger="change"
+                                                hx-post="/dolr/district-mis-permissions/load"
+                                                hx-target="#districtPermissionList"
+                                                hx-include="#permissionStateId"
+                                                hx-indicator="#districtPermissionLoading">
+                                            <option value="">-- Select State --</option>
+                                            <option th:each="state : ${states}"
+                                                    th:value="${state.id}"
+                                                    th:text="${state.name}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div id="districtPermissionLoading" class="htmx-indicator text-muted mb-2">
+                                    <i class="fas fa-spinner fa-spin"></i> Loading districts...
+                                </div>
+
+                                <div id="districtPermissionList">
+                                    <p class="text-muted">Select a state to view districts.</p>
+                                </div>
+
+                                <div class="mt-3" id="permissionSaveActions" style="display: none;">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save"></i> Save Permissions
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        .htmx-indicator { display: none; }
+        .htmx-request .htmx-indicator,
+        .htmx-request.htmx-indicator { display: inline-block; }
+
+        .district-permission-table-wrap {
+            max-height: 440px;
+            overflow-y: auto;
+            overflow-x: auto;
+        }
+
+        #districtPermissionTable {
+            margin-bottom: 0;
+        }
+
+        #districtPermissionTable thead th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background-color: #f4f6f9;
+            vertical-align: middle;
+            box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        #districtPermissionTable tbody td {
+            vertical-align: middle;
+        }
+
+        #districtPermissionTable .perm-col-sn { width: 6%; }
+        #districtPermissionTable .perm-col-check { width: 10%; }
+        #districtPermissionTable .perm-col-district { width: 56%; }
+        #districtPermissionTable .perm-col-type { width: 28%; white-space: nowrap; }
+    </style>
+
+    <script>
+        function showPermissionSuccessAlert(message) {
+            Swal.fire({
+                title: 'Success',
+                text: message,
+                icon: 'success',
+                confirmButtonText: 'OK',
+                position: 'center'
+            });
+        }
+
+        function showPermissionErrorAlert(message) {
+            Swal.fire({
+                title: 'Error',
+                text: message,
+                icon: 'error',
+                confirmButtonText: 'OK',
+                position: 'center'
+            });
+        }
+
+        function getDistrictPermissionCheckboxes() {
+            return document.querySelectorAll('#districtPermissionList input.district-permission-checkbox');
+        }
+
+        function setPermissionLabelForCheckbox(checkbox, checked) {
+            const label = document.getElementById('permLabel_' + checkbox.value);
+            if (!label) {
+                return;
+            }
+            if (checked) {
+                label.textContent = 'Increase & Decrease (24 hours)';
+                label.className = 'text-success font-weight-bold';
+            } else {
+                label.textContent = 'Increase Only';
+                label.className = 'text-muted';
+            }
+            updatePermissionSummary();
+        }
+
+        function updatePermissionLabel(checkbox) {
+            setPermissionLabelForCheckbox(checkbox, checkbox.checked);
+            syncSelectAllDistrictPermissions();
+        }
+
+        function updatePermissionSummary() {
+            const summaryEl = document.getElementById('dmisAllowedCount');
+            if (!summaryEl) {
+                return;
+            }
+            const checkboxes = getDistrictPermissionCheckboxes();
+            const checkedCount = Array.from(checkboxes).filter(function (cb) { return cb.checked; }).length;
+            summaryEl.textContent = checkedCount;
+        }
+
+        function syncSelectAllDistrictPermissions() {
+            const master = document.getElementById('selectAllDistrictPermissions');
+            if (!master) {
+                return;
+            }
+            const checkboxes = getDistrictPermissionCheckboxes();
+            if (checkboxes.length === 0) {
+                master.checked = false;
+                master.indeterminate = false;
+                return;
+            }
+            const checkedCount = Array.from(checkboxes).filter(function (cb) { return cb.checked; }).length;
+            master.checked = checkedCount === checkboxes.length;
+            master.indeterminate = checkedCount > 0 && checkedCount < checkboxes.length;
+            updatePermissionSummary();
+        }
+
+        function toggleAllDistrictPermissions(masterCheckbox) {
+            const isChecked = masterCheckbox.checked;
+            const checkboxes = getDistrictPermissionCheckboxes();
+            checkboxes.forEach(function (cb) {
+                cb.checked = isChecked;
+                setPermissionLabelForCheckbox(cb, isChecked);
+            });
+            masterCheckbox.indeterminate = false;
+        }
+
+        function initDistrictPermissionList() {
+            syncSelectAllDistrictPermissions();
+            const hasRows = document.querySelector('#districtPermissionList .district-permission-row');
+            document.getElementById('permissionSaveActions').style.display = hasRows ? 'block' : 'none';
+        }
+
+        function saveDistrictMisPermissions(event) {
+            event.preventDefault();
+            const stateId = document.getElementById('permissionStateId').value;
+            if (!stateId) {
+                showPermissionErrorAlert('Please select a state.');
+                return false;
+            }
+            if (getDistrictPermissionCheckboxes().length === 0) {
+                showPermissionErrorAlert('No districts found for the selected state.');
+                return false;
+            }
+            const formData = new FormData(document.getElementById('districtMisPermissionForm'));
+            fetch('/dolr/district-mis-permissions/save', {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+                .then(function (response) { return response.json(); })
+                .then(function (data) {
+                    if (data.status === 'success') {
+                        showPermissionSuccessAlert(data.message);
+                    } else {
+                        showPermissionErrorAlert(data.message);
+                    }
+                })
+                .catch(function () {
+                    showPermissionErrorAlert('Failed to save permissions. Please try again.');
+                });
+            return false;
+        }
+
+        document.getElementById('districtMisPermissionForm').addEventListener('change', function (evt) {
+            const target = evt.target;
+            if (target.id === 'selectAllDistrictPermissions') {
+                toggleAllDistrictPermissions(target);
+                return;
+            }
+            if (target.classList && target.classList.contains('district-permission-checkbox')) {
+                updatePermissionLabel(target);
+            }
+        });
+
+        document.body.addEventListener('htmx:afterSwap', function (evt) {
+            if (evt.detail.target && evt.detail.target.id === 'districtPermissionList') {
+                initDistrictPermissionList();
+            }
+        });
+    </script>
+</div>
+
+<div th:fragment="district-permission-list">
+    <input type="hidden" name="stateId" th:value="${selectedStateId}"/>
+    <div th:if="${districtRows == null or districtRows.isEmpty()}" class="text-muted">
+        No districts found for the selected state.
+    </div>
+    <div th:if="${districtRows != null and !districtRows.isEmpty()}">
+        <hr>
+        <h4>State &amp; District Permissions</h4>
+        <p class="text-muted small mb-2">
+            <span th:text="${totalDistrictCount}"></span> district(s) |
+            Increase &amp; Decrease: <strong id="dmisAllowedCount" th:text="${allowedDistrictCount}">0</strong> |
+            Scroll the table to view all districts.
+        </p>
+        <div class="table-responsive district-permission-table-wrap">
+            <table class="table table-bordered table-striped table-sm mb-0" id="districtPermissionTable">
+                <thead>
+                <tr>
+                    <th class="text-center perm-col-sn">S.No.</th>
+                    <th class="text-center perm-col-check">
+                        <input type="checkbox" id="selectAllDistrictPermissions"
+                               th:checked="${allAllowDecrease}"
+                               title="Select all districts for Increase & Decrease"/>
+                        <label for="selectAllDistrictPermissions" class="font-weight-bold mb-0 ml-1" style="cursor: pointer;">ALL</label>
+                    </th>
+                    <th class="perm-col-district">District</th>
+                    <th class="text-center perm-col-type">Permission Type</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="row, stat : ${districtRows}" class="district-permission-row">
+                    <td class="text-center" th:text="${stat.count}"></td>
+                    <td class="text-center">
+                        <input type="checkbox"
+                               class="district-permission-checkbox"
+                               name="allowDecreaseDistrictIds"
+                               th:value="${row.districtId}"
+                               th:checked="${row.allowDecrease}"
+                               th:id="${'perm_' + row.districtId}"/>
+                    </td>
+                    <td class="perm-col-district">
+                        <label th:for="${'perm_' + row.districtId}" th:text="${row.districtName}" style="margin-bottom: 0; cursor: pointer;"></label>
+                    </td>
+                    <td class="text-center perm-col-type">
+                        <span th:id="${'permLabel_' + row.districtId}"
+                              th:class="${row.allowDecrease} ? 'text-success font-weight-bold' : 'text-muted'"
+                              th:text="${row.permissionTypeLabel}">
+                        </span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

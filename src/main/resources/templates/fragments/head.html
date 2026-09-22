@@ -1,0 +1,116 @@
+<head th:fragment="head">
+    <link rel="stylesheet" th:href="@{/static/css/fontawesome/css/fontawesome.min.css}">
+    <!-- <link rel="stylesheet" th:href="@{/static/css/fontawesome/css/solid.css}"> -->
+    <link rel="stylesheet" th:href="@{/static/css/fontawesome/css/all.min.css}">
+
+    <link rel="stylesheet" th:href="@{/static/css/choices.min.css}">
+    <!-- Theme style -->
+    <link rel="stylesheet" th:href="@{/static/css/adminlte.css}">
+    <link rel="stylesheet" th:href="@{/static/css/topnav.css}">
+    <!-- Font Awesome -->
+    <!-- <link rel="stylesheet" th:href="@{/static/css/all.min.css}"> -->
+    <link sec:authorize="!isAuthenticated()" rel="stylesheet" th:href="@{/static/css/dilrmp.css}">
+    <!-- Link Swiper's CSS -->
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" /> -->
+    <link rel="stylesheet" th:href="@{/static/css/swiper-bundle.min.css}">
+    <!-- Datatable CSS -->
+    <link rel="stylesheet" th:href="@{/static/css/dataTables.bootstrap4.min.css}">
+    <link rel="stylesheet" th:href="@{/static/css/responsive.bootstrap4.min.css}">
+    <link rel="stylesheet" th:href="@{/static/css/buttons.bootstrap4.min.css}">
+
+    <!-- Js File -->
+    <script th:src="@{/static/js/jquery.min.js}"></script>
+    <script th:src="@{/static/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap-datepicker.min.css}">
+    <script type="text/javascript" th:src="@{/static/js/bootstrap-datepicker.min.js}"></script>
+    <script type="text/javascript" th:src="@{/static/dilrmp/physical-monitoring/sweetalert.js}"></script>
+    <!--  <link rel='stylesheet' href='https://js.arcgis.com/3.25/esri/css/esri.css'/>-->
+
+    <script th:src="@{/static/htmx.js}"></script>
+
+
+    <style>
+      .disclamer{
+        border-top: 2px solid #fff;
+        padding-bottom: 5px !important;
+      }
+
+      .footer div a{
+        text-decoration: none !important;
+      }
+      .web-content{
+        padding-bottom: 20px !important;
+      }
+      .indicator {
+            display: none;
+            color: blue;
+            font-weight: bold;}
+
+    </style>
+    <style>
+  .nav-tabs .nav-item .nav-link {
+      border-radius: 0.25rem;
+      color: #495057;
+      font-size: 1.2rem;
+  }
+
+  .nav-tabs .nav-link.active {
+      color: #fff;
+      background-color: #007bff;
+      border-color: #007bff;
+  }
+
+  .nav-link-tehsils-villages {
+      background-color: #e9ecef;
+  }
+
+  .nav-link-clr {
+      background-color: #d6e9c6;
+  }
+
+  .nav-link-map-digitization {
+      background-color: #c6e0f5;
+  }
+
+  .nav-link-sro {
+      background-color: #f5c6cb;
+  }
+
+  .nav-link-mrr {
+      background-color: #e2e3e5;
+  }
+
+  .nav-link-survey {
+      background-color: #d1ecf1;
+  }
+
+  .nav-link-e-rcms {
+      background-color: #d4edda;
+  }
+
+  .nav-link-aadhaar {
+      background-color: #f8d7da;
+  }
+
+  .tab-content {
+      background-color: #f8f9fa;
+      padding: 20px;
+      border: 1px solid #dee2e6;
+      border-top: none;
+  }
+
+  .form-group label {
+      font-weight: bold;
+  }
+
+  .btn-primary {
+      background-color: #007bff;
+      border-color: #007bff;
+  }
+
+  .btn-primary:hover {
+      background-color: #0056b3;
+      border-color: #004085;
+  }
+</style>
+</head>

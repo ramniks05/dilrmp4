@@ -1,0 +1,377 @@
+
+#spmuClick {
+    cursor: pointer;
+}
+
+.clickable-metric {
+  cursor: pointer;
+  transition: color 0.3s;
+}
+.clickable-metric:hover {
+  color: #007bff;
+
+}
+
+.clickable-metric1 {
+  cursor: pointer;
+  transition: color 0.3s;
+}
+.clickable-metric1:hover {
+   color: #ffffff;
+
+}
+
+.clickable-metric2 {
+  cursor: pointer;
+  transition: color 0.3s;
+}
+.clickable-metric2:hover {
+  color: #ffffff;
+
+}
+
+
+
+/* on mobile devices below 600px
+ */
+@media screen and (max-width: 600px) {
+  :root {
+    --header-height: 100px;
+    --header-height-min: 80px;
+  }
+}
+
+/* Theme Colors */
+:root {
+  --primary-color: #4CC082;
+  --light-primary-color: #E2F3F0;
+  --secondary-color: #EC6C5A;
+  --light-secondary-color: #FFE9E5;
+  --tertiary-color: #FFEED3;
+  --tertiary1-color: #c1e5ff;
+  --tertiary2-color: #d7e7c5;
+  --dark-color: #31333A;
+  --light-color: #FFFFFF;
+  --grey-color: #BBC7D4;
+  --light-dark-color: #727272;
+  --light-grey-color: #f5f5f5;
+}
+
+/* Fonts */
+:root {
+  --body-font: 'Inter', sans-serif;
+  --heading-font: 'Inter', sans-serif;
+}
+
+body {
+
+  --bs-link-color: var(--dark-color);
+  --bs-link-hover-color: var(--dark-color);
+
+  --bs-link-color-rgb: 40, 40, 40;
+  --bs-link-hover-color-rgb: 0, 0, 0;
+
+  --bs-light-rgb: 248, 248, 248;
+
+  --bs-font-sans-serif: var(var(--body-font));
+  --bs-body-font-family: var(--bs-font-sans-serif);
+  --bs-body-font-size: 1rem;
+  --bs-body-font-weight: 400;
+  --bs-body-line-height: 1.3rem;
+  --bs-body-color: var(--dark-color);
+
+  --bs-primary: #4CC082;
+  --bs-primary-rgb: 76, 192, 130;
+  --bs-primary-bg-subtle: #E2F3F0;
+
+  --bs-border-color: #F7F7F7;
+
+  --bs-secondary: #EC6C5A;
+  --bs-secondary-rgb: 236, 108, 90;
+  --bs-secondary-bg-subtle: #FFE9E5;
+
+  --bs-tertiary: #f8be60;
+  --bs-tertiary-bg-subtle: #FFEED3;
+
+  --bs-tertiary1: #507fa3;
+  --bs-tertiary1-bg-subtle: #c1e5ff;
+
+   --bs-tertiary2: #83b24d;
+  --bs-tertiary2-bg-subtle: #d7e7c5;
+
+
+}
+
+/*----- catergory Section Style -------------------------*/
+.category-paragraph {
+  transition: all 0.3s ease-in;
+}
+
+.primary {
+  background: var(--bs-primary-bg-subtle);
+  transition: all 0.3s ease-in;
+}
+
+.svg-primary {
+  color: var(--primary-color);
+  transition: all 0.3s ease-in;
+}
+
+.primary:hover {
+  background: var(--bs-primary);
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.secondary {
+  background: var(--bs-secondary-bg-subtle);
+  transition: all 0.3s ease-in;
+}
+
+.svg-secondary {
+  color: var(--secondary-color);
+  transition: all 0.3s ease-in;
+}
+
+.secondary:hover {
+  background: var(--bs-secondary);
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.tertiary {
+  background: var(--bs-tertiary-bg-subtle);
+  transition: all 0.3s ease-in;
+}
+.tertiary1 {
+  background: var(--bs-tertiary1-bg-subtle);
+  transition: all 0.3s ease-in;
+}
+
+.tertiary2 {
+  background: var(--bs-tertiary2-bg-subtle);
+  transition: all 0.3s ease-in;
+}
+
+.svg-tertiary {
+  color: var(--bs-tertiary);
+  transition: all 0.3s ease-in;
+}
+.svg-tertiary1 {
+  color: var(--bs-tertiary1);
+  transition: all 0.3s ease-in;
+}
+
+.svg-tertiary2 {
+  color: var(--bs-tertiary2);
+  transition: all 0.3s ease-in;
+}
+
+.tertiary:hover {
+  background: var(--bs-tertiary);
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+.tertiary1:hover {
+  background: var(--bs-tertiary1);
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+.tertiary2:hover {
+  background: var(--bs-tertiary2);
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+
+.gray {
+  background: #dbf2f7;
+  transition: all 0.3s ease-in;
+
+}
+
+.svg-gray {
+  color: var(--bs-gray);
+  transition: all 0.3s ease-in;
+}
+
+.gray:hover {
+  background: #8ddfef;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.primary:hover .svg-primary,
+.primary:hover .category-paragraph,
+.secondary:hover .svg-secondary,
+.secondary:hover .category-paragraph,
+.tertiary:hover .svg-tertiary,
+.tertiary:hover .category-paragraph,
+.tertiary1:hover .svg-tertiary1,
+.tertiary1:hover .category-paragraph,
+.tertiary2:hover .svg-tertiary2,
+.tertiary2:hover .category-paragraph,
+.gray:hover .svg-gray,
+.gray:hover .category-paragraph {
+  color: var(--light-color);
+}
+
+
+
+
+.fw-bold {
+    font-weight:  700!important;
+
+}
+
+a {
+    color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity, 1));
+    text-decoration: underline;
+}
+/* Full-screen overlay for GIF */
+        #gifOverlay {
+            position: fixed;
+            /* Fixed position to cover the entire screen */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            /* Semi-transparent background */
+            display: flex;
+            /* Center the GIF */
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            /* Ensure it's on top of other elements */
+            display: none;
+            /* Initially hidden */
+        }
+
+        #gifOverlay img {
+            width: 150px;
+            /* Adjust size as needed */
+            height: auto;
+        }
+ }
+
+
+    .display {
+    width: 100%;
+    }
+ #wait {
+    width: 100px;
+    height: 130px;
+    text-align: center;
+    position: fixed;
+    left: 280px;
+    right: 0;
+    top: 40%;
+    z-index: 99;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.43);
+    display: none;
+    }
+    #wait img {
+    width: 100%;
+    }
+
+
+    .bg-dark1 {
+    background-color: #6ab2a4 !important;
+    style="color: #ffffff;"
+}
+
+.p-2 {
+    padding: 1.5rem
+24px
+ !important;
+}
+
+
+.card.card-info {
+  transition: box-shadow 0.3s ease;
+}
+
+.card.card-info:hover {
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.card.card-success {
+  transition: box-shadow 0.3s ease;
+}
+
+.card.card-success:hover {
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+.card.card-warning {
+  transition: box-shadow 0.3s ease;
+}
+
+.card.card-warning:hover {
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+/* Draggable Modal Styles */
+.modal-draggable {
+    position: fixed !important;
+    margin: 0 !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    transition: none !important;
+}
+
+.modal-draggable .modal-dialog {
+    margin: 0 !important;
+    position: relative !important;
+}
+
+.modal-draggable .modal-content {
+    cursor: move !important;
+    user-select: none !important;
+}
+
+.modal-draggable .modal-content:hover {
+    cursor: move !important;
+}
+
+.modal-draggable .modal-content:active {
+    cursor: grabbing !important;
+}
+
+/* Prevent dragging on interactive elements */
+.modal-draggable .modal-content button,
+.modal-draggable .modal-content input,
+.modal-draggable .modal-content select,
+.modal-draggable .modal-content a,
+.modal-draggable .modal-content .table-responsive,
+.modal-draggable .modal-content table {
+    cursor: default !important;
+    user-select: auto !important;
+}
+
+.modal-draggable .modal-header {
+    background-color: #007bff !important;
+    border-bottom: 1px solid #dee2e6 !important;
+}
+
+.modal-draggable .modal-header:hover {
+    background-color: #0056b3 !important;
+}
+
+.modal-draggable .modal-content {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    border: 1px solid rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Ensure modal backdrop doesn't interfere with dragging */
+.modal-draggable + .modal-backdrop {
+    pointer-events: none !important;
+}
+
+/* Dragging state styles */
+.modal-dragging {
+    transition: none !important;
+    z-index: 1060 !important;
+}
+
+.modal-dragging .modal-content {
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+}

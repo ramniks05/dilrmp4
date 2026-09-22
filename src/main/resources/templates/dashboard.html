@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/dashboard">
+
+<head>
+  <meta charset="UTF-8">
+  <title>DILRMP-MIS 3.0</title>
+</head>
+
+<body>
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper" style="margin-left:0px !important;min-height:0px !important" layout:fragment="content">
+
+  <form th:object="${dolrobj}">
+    <section class="content">
+      <div class="container-fluid">
+        <!-- Small boxes (Stat box) -->
+        <div class="row top-boxes">
+          <!-- ./col -->
+          <div class="col-lg-2 col-6">
+            <!-- small box -->
+            <div class="small-box bg-success">
+              <div class="inner">
+                <h3 th:text="${dashboardDto.clrCompleted}"></h3>
+                <p>Computerization of Land Records</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-stats-bars"></i>
+              </div>
+              <a th:href="@{/PhyscialComponent/CLR/state-level}" class="small-box-footer">CLR <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-2 col-6">
+            <!-- small box -->
+            <div class="small-box bg-info">
+              <div class="inner" style="padding-right: 0px;">
+                <h3 th:text="${dashboardDto.digititzedSheets}"></h3>
+
+                <p>Digitized Mapsheets/FMBs/Tippans</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-person-add"></i>
+              </div>
+              <a th:href="@{/PhyscialComponent/mapDigitization/state-level}" class="small-box-footer">Map Digitization <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-2 col-6">
+            <!-- small box -->
+            <div class="small-box bg-secondary">
+              <div class="inner">
+                <h3 th:text="${dashboardDto.mrrSanctioned}"></h3>
+
+                <p>Sanctioned Modern Record Room</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-pie-graph"></i>
+              </div>
+              <a th:href="@{/PhyscialComponent/mrr/state-level}" class="small-box-footer">MRR <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <!-- ./col -->
+          <div class="col-lg-2 col-6">
+            <!-- small box -->
+            <div class="small-box bg-white">
+              <div class="inner">
+                <h3 th:text="${dashboardDto.surveyedVillage}"></h3>
+
+                <p>Survey / Resurvey - Physical Progress</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-pie-graph"></i>
+              </div>
+              <a th:href="@{/PhyscialComponent/SurveyResurvey/state-level}" class="small-box-footer">Survey Resurvey <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <!-- ./col -->
+          <div class="col-lg-2 col-6">
+            <!-- small box -->
+            <div class="small-box bg-warning">
+              <div class="inner">
+                <h3 th:text="${dashboardDto.sroComputerized}"></h3>
+
+                <p>SROs Computerized</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-pie-graph"></i>
+              </div>
+              <a th:href="@{/PhyscialComponent/sro/state-level}" class="small-box-footer">SRO <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-2 col-6">
+            <!-- small box -->
+            <div class="small-box bg-dark">
+              <div class="inner">
+                <h3 th:text="${dashboardDto.sroInreragllr}"></h3>
+
+                <p>SROs Integrated with Land Records</p>
+              </div>
+
+              <div class="icon">
+                <i class="ion ion-bag"></i>
+              </div>
+              <a th:href="@{/PhyscialComponent/sro/state-level}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+        </div>
+        <!-- /.row -->
+        <!-- Main row -->
+
+        <!-- /.row (main row) -->
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="card-title" style="color: firebrick;font-weight: 500px;">Monthly Progress Report of Physcial Component (In Last Month)</h5>
+
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                </div>
+              </div>
+              <!-- /.card-header -->
+
+              <!-- ./card-body -->
+              <div class="card-footer">
+                <!--                      <div class="row">-->
+                <!--                        <div class="col-sm-2 col-6">-->
+                <!--                          <div class="description-block border-right">-->
+                <!--                            <span class="description-percentage text-success"><i class="fas fa-caret-up"></i> 17%</span>-->
+                <!--                            <h5 class="description-header">35,210</h5>-->
+                <!--                            <span class="description-text">Records of Rights</span>-->
+                <!--                          </div>-->
+                <!--                          &lt;!&ndash; /.description-block &ndash;&gt;-->
+                <!--                        </div>-->
+                <!--                        &lt;!&ndash; /.col &ndash;&gt;-->
+                <!--                        <div class="col-sm-2 col-6">-->
+                <!--                          <div class="description-block border-right">-->
+                <!--                            <span class="description-percentage text-warning"><i class="fas fa-caret-up"></i> 0%</span>-->
+                <!--                            <h5 class="description-header">10,390</h5>-->
+                <!--                            <span class="description-text">Computerization of Land Records</span>-->
+                <!--                          </div>-->
+                <!--                          &lt;!&ndash; /.description-block &ndash;&gt;-->
+                <!--                        </div>-->
+                <!--                        &lt;!&ndash; /.col &ndash;&gt;-->
+                <!--                        <div class="col-sm-2 col-6">-->
+                <!--                          <div class="description-block border-right">-->
+                <!--                            <span class="description-percentage text-success"><i class="fas fa-caret-up"></i> 20%</span>-->
+                <!--                            <h5 class="description-header">24,813</h5>-->
+                <!--                            <span class="description-text">Map Digitization</span>-->
+                <!--                          </div>-->
+                <!--                          &lt;!&ndash; /.description-block &ndash;&gt;-->
+                <!--                        </div>-->
+                <!--                        &lt;!&ndash; /.col &ndash;&gt;-->
+                <!--                        <div class="col-sm-2 col-6">-->
+                <!--                          <div class="description-block border-right">-->
+                <!--                            <span class="description-percentage text-success"><i class="fas fa-caret-up"></i> 18%</span>-->
+                <!--                            <h5 class="description-header">1200</h5>-->
+                <!--                            <span class="description-text">Modern Record Room</span>-->
+                <!--                          </div>-->
+                <!--                          &lt;!&ndash; /.description-block &ndash;&gt;-->
+                <!--                        </div>-->
+                <!--                         <div class="col-sm-2 col-6">-->
+                <!--                          <div class="description-block border-right">-->
+                <!--                            <span class="description-percentage text-success"><i class="fas fa-caret-up"></i> 10%</span>-->
+                <!--                            <h5 class="description-header">10,390</h5>-->
+                <!--                            <span class="description-text">Survey Resurvey</span>-->
+                <!--                          </div>-->
+                <!--                          &lt;!&ndash; /.description-block &ndash;&gt;-->
+                <!--                        </div>-->
+                <!--                         <div class="col-sm-2 col-6">-->
+                <!--                          <div class="description-block">-->
+                <!--                            <span class="description-percentage text-success"><i class="fas fa-caret-up"></i> 30%</span>-->
+                <!--                            <h5 class="description-header">5,39</h5>-->
+                <!--                            <span class="description-text">Sub Registrar Office</span>-->
+                <!--                          </div>-->
+                <!--                          &lt;!&ndash; /.description-block &ndash;&gt;-->
+                <!--                        </div>-->
+                <!--      -->
+                <!--                      </div>-->
+                <!--                      &lt;!&ndash; /.row &ndash;&gt;-->
+                <!--                    </div>-->
+                <!--                    &lt;!&ndash; /.card-footer &ndash;&gt;-->
+                <!--                  </div>-->
+                <!--                  &lt;!&ndash; /.card &ndash;&gt;-->
+                <!--                </div>-->
+                <!-- /.col -->
+
+                <div class="row">
+                  <div class="col-xl-3 col-md-6">
+                    <div class="card card-stats">
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col">
+                            <h5 class="card-title  text-muted mb-0" style="font-weight: bold;">Records of Rights</h5>
+                            <span class="h2 font-weight-bold mb-0 d-block text-center" style="color: #333;">35,210</span>
+                          </div>
+                          <div class="col-auto">
+                            <!--                                  <div class="icon icon-shape bg-gradient-red text-white rounded-circle shadow">-->
+                            <!--                                    <i class="fas fa-arrow-circle-right"></i>-->
+                            <!--                                  </div>-->
+                          </div>
+                        </div>
+                        <p class="mt-3 mb-0 text-sm">
+                          <a class="text-nowrap small-box-footer">View details <i class="fas fa-arrow-circle-right"></i></a>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-xl-3 col-md-6">
+                    <div class="card card-stats">
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col">
+                            <h6 class="card-title  text-muted mb-0" style="font-weight: bold;">Computerization of Land Records</h6>
+                            <span class="h4 font-weight-bold mb-0 d-block text-center" style="color: #333;">10,390</span>
+                          </div>
+                          <div class="col-auto">
+                            <!--                                  <div class="icon icon-shape bg-gradient-red text-white rounded-circle shadow">-->
+                            <!--                                    <i class="fas fa-arrow-circle-right"></i>-->
+                            <!--                                  </div>-->
+                          </div>
+                        </div>
+                        <p class="mt-3 mb-0 text-sm">
+                          <a class="text-nowrap small-box-footer">View details <i class="fas fa-arrow-circle-right"></i></a>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-xl-3 col-md-6">
+                    <div class="card card-stats">
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col">
+                            <h5 class="card-title  text-muted mb-0" style="font-weight: bold;">Map Digitization</h5>
+                            <span class="h2 font-weight-bold mb-0 d-block text-center" style="color: #333;">10,390</span>
+                          </div>
+                          <div class="col-auto">
+                            <!--                                  <div class="icon icon-shape bg-gradient-red text-white rounded-circle shadow">-->
+                            <!--                                    <i class="fas fa-arrow-circle-right"></i>-->
+                            <!--                                  </div>-->
+                          </div>
+                        </div>
+                        <p class="mt-3 mb-0 text-sm">
+                          <a class="text-nowrap small-box-footer">View details <i class="fas fa-arrow-circle-right"></i></a>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-xl-3 col-md-6">
+                    <div class="card card-stats">
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col">
+                            <h5 class="card-title  text-muted mb-0" style="font-weight: bold;">Modern Record Room</h5>
+                            <span class="h2 font-weight-bold mb-0 d-block text-center" style="color: #333;">10,390</span>
+                          </div>
+                          <div class="col-auto">
+                            <!--                                  <div class="icon icon-shape bg-gradient-red text-white rounded-circle shadow">-->
+                            <!--                                    <i class="fas fa-arrow-circle-right"></i>-->
+                            <!--                                  </div>-->
+                          </div>
+                        </div>
+                        <p class="mt-3 mb-0 text-sm">
+                          <a class="text-nowrap small-box-footer">View details <i class="fas fa-arrow-circle-right"></i></a>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  <div class="col-xl-3 col-md-6">
+                    <div class="card card-stats">
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col">
+                            <h5 class="card-title  text-muted mb-0" style="font-weight: bold;">Survey Resurvey</h5>
+                            <span class="h2 font-weight-bold mb-0 d-block text-center" style="color: #333;">10,390</span>
+                          </div>
+                          <div class="col-auto">
+                            <!--                                  <div class="icon icon-shape bg-gradient-red text-white rounded-circle shadow">-->
+                            <!--                                    <i class="fas fa-arrow-circle-right"></i>-->
+                            <!--                                  </div>-->
+                          </div>
+                        </div>
+                        <p class="mt-3 mb-0 text-sm">
+                          <a class="text-nowrap small-box-footer">View details <i class="fas fa-arrow-circle-right"></i></a>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  <div class="col-xl-3 col-md-6">
+                    <div class="card card-stats">
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col">
+                            <h5 class="card-title  text-muted mb-0" style="font-weight: bold;">Sub Registrar Office</h5>
+                            <span class="h2 font-weight-bold mb-0 d-block text-center" style="color: #333;">10,390</span>
+                          </div>
+                          <div class="col-auto">
+                            <!--                                  <div class="icon icon-shape bg-gradient-red text-white rounded-circle shadow">-->
+                            <!--                                    <i class="fas fa-arrow-circle-right"></i>-->
+                            <!--                                  </div>-->
+                          </div>
+                        </div>
+                        <p class="mt-3 mb-0 text-sm">
+                          <a class="text-nowrap small-box-footer">View details <i class="fas fa-arrow-circle-right"></i></a>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+            <!-- /.row -->
+
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h5 class="card-title" style="color: firebrick;font-weight: 500px;">No. of Masters Mapped with Our MIS</h5>
+
+                    <div class="card-tools">
+                      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <!-- /.card-header -->
+
+                  <!-- ./card-body -->
+                  <div class="card-footer">
+                    <!--                      <div class="row">-->
+                    <!--                        <div class="col-sm-3 col-6">-->
+                    <!--                          <div class="description-block border-right">-->
+                    <!--                            <h5 class="description-header">36</h5>-->
+                    <!--                            <span class="description-text"></span>-->
+                    <!--                            <a th:href="@{/mastersummary/masterData}" class="small-box-footer">State /Uts <i class="fas fa-arrow-circle-right"></i></a>-->
+                    <!--                          </div>-->
+                    <!--                          -->
+                    <!--                          &lt;!&ndash; /.description-block &ndash;&gt;-->
+                    <!--                        </div>-->
+                    <!--                        &lt;!&ndash; /.col &ndash;&gt;-->
+                    <!--                        <div class="col-sm-3 col-6">-->
+                    <!--                          <div class="description-block border-right">-->
+                    <!--                           <h5 class="description-header"><span th:text="${dashboardDto.totaldistrict}"/></h5>-->
+                    <!--                            <span class="description-text"></span> <h3 ></h3>-->
+                    <!--                            <a th:href="@{/mastersummary/masterData}" class="small-box-footer">Districts <i class="fas fa-arrow-circle-right"></i></a>-->
+                    <!--                        -->
+                    <!--                          </div>-->
+                    <!--                          &lt;!&ndash; /.description-block &ndash;&gt;-->
+                    <!--                        </div>-->
+                    <!--                         &lt;!&ndash; /.col &ndash;&gt;-->
+                    <!--                        <div class="col-sm-3 col-6">-->
+                    <!--                          <div class="description-block border-right">-->
+                    <!--                            <h5 class="description-header"><span th:text="${dashboardDto.totaltehsil}"/></h5>-->
+                    <!--                            <span class="description-text"></span>-->
+                    <!--                            <a th:href="@{/mastersummary/masterData}" class="small-box-footer">Tehsils <i class="fas fa-arrow-circle-right"></i></a>-->
+                    <!--                        -->
+                    <!--                          </div>-->
+                    <!--                          &lt;!&ndash; /.description-block &ndash;&gt;-->
+                    <!--                        </div>-->
+                    <!--                        &lt;!&ndash; /.col &ndash;&gt;-->
+                    <!--                        <div class="col-sm-3 col-6">-->
+                    <!--                          <div class="description-block border-right">-->
+                    <!--                            <h5 class="description-header"><span th:text="${dashboardDto.totalvillage}"/></h5>-->
+                    <!--                            <span class="description-text"></span>-->
+                    <!--                            <a th:href="@{/mastersummary/masterData}" class="small-box-footer">Village <i class="fas fa-arrow-circle-right"></i></a>-->
+                    <!--                          </div>-->
+                    <!--                          &lt;!&ndash; /.description-block &ndash;&gt;-->
+                    <!--                        </div>-->
+                    <!--    -->
+                    <!--                      </div>-->
+                    <!--                      &lt;!&ndash; /.row &ndash;&gt;-->
+                    <!--                    </div>-->
+                    <!--                    &lt;!&ndash; /.card-footer &ndash;&gt;-->
+                    <!--                  </div>-->
+                    <!--                  &lt;!&ndash; /.card &ndash;&gt;-->
+                    <!--                </div>-->
+                    <!-- /.col -->
+
+                    <div class="row">
+                      <div class="col-xl-3 col-md-6">
+                        <div class="card card-stats">
+                          <div class="card-body">
+                            <div class="row">
+                              <div class="col">
+                                <h5 class="card-title  text-muted mb-0" style="font-weight: bold;">States / UTs</h5>
+                                <span class="h2 font-weight-bold mb-0 d-block text-center" style="color: #333;">36</span>
+                              </div>
+                              <div class="col-auto">
+                                <!--                                  <div class="icon icon-shape bg-gradient-red text-white rounded-circle shadow">-->
+                                <!--                                    <i class="fas fa-arrow-circle-right"></i>-->
+                                <!--                                  </div>-->
+                              </div>
+                            </div>
+                            <p class="mt-3 mb-0 text-sm">
+                              <a th:href="@{state/state-list}" class="text-nowrap small-box-footer">View details <i class="fas fa-arrow-circle-right"></i></a>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+
+                      <div class="col-xl-3 col-md-6">
+                        <div class="card card-stats">
+                          <div class="card-body">
+                            <div class="row">
+                              <div class="col">
+                                <h5 class="card-title  text-muted mb-0" style="font-weight: bold;">Districts</h5>
+                                <span class="h2 font-weight-bold mb-0 d-block text-center" style="color: #333;" th:text="${dashboardDto.totaldistrict}"></span>
+                              </div>
+                              <div class="col-auto">
+                                <!--                                  <div class="icon icon-shape bg-gradient-orange text-white rounded-circle shadow">-->
+                                <!--                                    <i class="fas fa-arrow-circle-right"></i>-->
+                                <!--                                  </div>-->
+                              </div>
+                            </div>
+                            <p class="mt-3 mb-0 text-sm">
+                              <a th:href="@{district/district-list}" class="text-nowrap small-box-footer">View  details <i class="fas fa-arrow-circle-right"></i></a>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-xl-3 col-md-6">
+                        <div class="card card-stats">
+                          <div class="card-body">
+                            <div class="row">
+                              <div class="col">
+                                <h5 class="card-title  text-muted mb-0" style="font-weight: bold;">Tehsils</h5>
+                                <span class="h2 font-weight-bold mb-0 d-block text-center" style="color: #333;" th:text="${dashboardDto.totaltehsil}"></span>
+                              </div>
+                              <div class="col-auto">
+                                <!--                                  <div class="icon icon-shape bg-gradient-green text-white rounded-circle shadow">-->
+                                <!--                                    <i class="fas fa-arrow-circle-right"></i>-->
+                                <!--                                  </div>-->
+                              </div>
+                            </div>
+                            <p class="mt-3 mb-0 text-sm">
+                              <a th:href="@{mastersummary/masterData}" class="text-nowrap small-box-footer">View  details <i class="fas fa-arrow-circle-right"></i></a>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-xl-3 col-md-6">
+                        <div class="card card-stats">
+                          <div class="card-body">
+                            <div class="row">
+                              <div class="col">
+                                <h5 class="card-title  text-muted mb-0" style="font-weight: bold;">Villages</h5>
+                                <span class="h2 font-weight-bold mb-0 d-block text-center" style="color: #333;" th:text="${dashboardDto.totalvillage}"></span>
+                              </div>
+                              <div class="col-auto">
+                                <!--                                  <div class="icon icon-shape bg-gradient-info text-white rounded-circle shadow">-->
+                                <!--                                    <i class="fas fa-arrow-circle-right"></i>-->
+                                <!--                                  </div>-->
+                              </div>
+                            </div>
+                            <p class="mt-3 mb-0 text-sm">
+                              <a th:href="@{mastersummary/masterData}" class="text-nowrap small-box-footer">View  details <i class="fas fa-arrow-circle-right"></i></a>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- /.row -->
+
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="card">
+                      <div class="card-header">
+                        <h5 class="card-title" style="color: firebrick;font-weight: 500px;">Progress report of various Component </h5>
+
+                        <div class="card-tools">
+                          <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <!-- /.card-header -->
+
+                      <!-- ./card-body -->
+                      <div class="card-footer">
+                        <div class="row">
+
+                          <div th:each="data : ${sumData}" class="col-xl-3 col-md-6">
+                            <div class="card card-stats">
+                              <div class="card-body">
+                                <div class="row">
+                                  <div class="col">
+                                    <h6 class="card-title text-muted mb-0" style="font-weight: bold;">Ulpin Implemented (Village)</h6>
+                                    <span class="h4 font-weight-bold mb-0 d-block text-center" style="color: #333;" th:text="${data[0]}"></span>
+                                  </div>
+                                  <div class="col-auto">
+                                    <div class="icon icon-shape bg-gradient-red text-white rounded-circle shadow">
+                                      <!--                                    <i class="fas fa-arrow-circle-right"></i>-->
+                                    </div>
+                                  </div>
+                                </div>
+                                <p class="mt-3 mb-0 text-sm">
+                                  <a class="text-nowrap small-box-footer">View details <i class="fas fa-arrow-circle-right"></i></a>
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div th:each="data : ${sumData}" class="col-xl-3 col-md-6">
+                            <div class="card card-stats">
+                              <div class="card-body">
+                                <div class="row">
+                                  <div class="col">
+                                    <h6 class="card-title  text-muted mb-0" style="font-weight: bold;">Geo- refrenced (Village)</h6>
+                                    <span class="h4 font-weight-bold mb-0 d-block text-center" style="color: #333;" th:text="${data[1]}"></span>
+                                  </div>
+                                  <div class="col-auto">
+                                    <!--                                  <div class="icon icon-shape bg-gradient-red text-white rounded-circle shadow">-->
+                                    <!--                                    <i class="fas fa-arrow-circle-right"></i>-->
+                                    <!--                                  </div>-->
+                                  </div>
+                                </div>
+                                <p class="mt-3 mb-0 text-sm">
+                                  <a class="text-nowrap small-box-footer">View details <i class="fas fa-arrow-circle-right"></i></a>
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div th:each="data : ${sumData}" class="col-xl-3 col-md-6">
+                            <div class="card card-stats">
+                              <div class="card-body">
+                                <div class="row">
+                                  <div class="col">
+                                    <h6 class="card-title  text-muted mb-0" style="font-weight: bold;">Bhu-Naksha used for Cadastral Maps(Village)</h6>
+                                    <span class="h4 font-weight-bold mb-0 d-block text-center" style="color: #333;" th:text="${data[2]}"></span>
+                                  </div>
+                                  <div class="col-auto">
+                                    <!--                                  <div class="icon icon-shape bg-gradient-red text-white rounded-circle shadow">-->
+                                    <!--                                    <i class="fas fa-arrow-circle-right"></i>-->
+                                    <!--                                  </div>-->
+                                  </div>
+                                </div>
+                                <p class="mt-3 mb-0 text-sm">
+                                  <a class="text-nowrap small-box-footer">View details <i class="fas fa-arrow-circle-right"></i></a>
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+
+
+                          <div class="col-xl-3 col-md-6">
+                            <div class="card card-stats">
+                              <div class="card-body">
+                                <div class="row">
+                                  <div class="col">
+                                    <h6 class="card-title  text-muted mb-0" style="font-weight: bold;">Issuance of digitally Signed RoR</h6>
+                                    <span class="h4 font-weight-bold mb-0 d-block text-center" style="color: #333;">10,390</span>
+                                  </div>
+                                  <div class="col-auto">
+                                    <!--                                  <div class="icon icon-shape bg-gradient-red text-white rounded-circle shadow">-->
+                                    <!--                                    <i class="fas fa-arrow-circle-right"></i>-->
+                                    <!--                                  </div>-->
+                                  </div>
+                                </div>
+                                <p class="mt-3 mb-0 text-sm">
+                                  <a class="text-nowrap small-box-footer">View details <i class="fas fa-arrow-circle-right"></i></a>
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+
+
+                        </div>
+                        <!-- /.col -->
+                      </div>
+                    </div>
+                    <!-- /.row -->
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="card card-primary">
+                          <div class="card-header">
+                            <h3 class="card-title">PFMS Report</h3>
+
+                            <div class="card-tools">
+                              <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                              </button>
+                            </div>
+                            <!-- /.card-tools -->
+                          </div>
+                          <!-- /.card-header -->
+                          <div class="card-body" style="display: block;">
+                            <table id="example2" class="table table-bordered table-striped">
+                              <thead>
+                              <tr>
+                                <th>S.No.</th>
+                                <th>State/UT Name</th>
+                                <th>Expenditure(as entered by State/UT) in Lakhs</th>
+                              </tr>
+                              <tr>
+                                <th>(1)</th>
+                                <th>(2)</th>
+                                <th>(3)</th>
+                              </tr>
+                              </thead>
+
+                              <tbody>
+                              <tr th:each="financialProgress, iterator : ${financialProgressList}">
+                                <td th:text="${iterator.count}"></td>
+                                <td th:text="${financialProgress[0]}"></td>
+                                <td>
+                                  <a href="#"
+                                     th:text="${financialProgress[2]}"></a>
+                                </td>
+                              </tr>
+                              <!-- Total row -->
+                              <tfoot>
+                              <tr th:if="${not #lists.isEmpty(totalExpenditureInLakhs)}"
+                                  th:each="total : ${totalExpenditureInLakhs}">
+                                <td></td>
+                                <td th:text="${total[0]}"></td>
+                                <td th:text="${total[1]}"></td>
+                              </tr>
+                              </tfoot>
+                              </tbody>
+                            </table>
+                          </div>
+                          <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+                      </div>
+
+
+                    </div>
+
+                  </div>
+                </div><!-- /.container-fluid -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </form>
+  <!-- /.content -->
+</div>
+</body>
+
+</html>

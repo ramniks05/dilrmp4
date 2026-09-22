@@ -1,0 +1,688 @@
+state_Survey_ProgresReportNew<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/dashboard">
+
+<head>
+    <meta charset="UTF-8">
+    <title>State Level Revenue Of Court (E-RCMS)</title>
+    <link th:href="@{/css/report/report.css}" rel="stylesheet"/>
+    <style>
+        /* Sticky columns styling */
+        .table-responsive {
+            position: relative;
+            overflow-x: auto;
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        /* Make first two columns sticky */
+        .table th:nth-child(1),
+        .table td:nth-child(1) {
+            position: sticky;
+            left: 0;
+            z-index: 5;
+            background-color: #4a6c52;
+            color: #ffff;
+            border-right: 2px solid #ddd;
+        }
+        
+        .table td:nth-child(1) {
+            background-color: #f8f9fa;
+            color: #000;
+        }
+        
+        /* Second column sticky positioning */
+        .table th:nth-child(2),
+        .table td:nth-child(2) {
+            position: sticky;
+            left: 60px; /* Will be dynamically adjusted by JavaScript */
+            z-index: 5;
+            background-color: #4a6c52;
+            color: #ffff;
+            border-right: 2px solid #ddd;
+        }
+        
+        .table td:nth-child(2) {
+            background-color: #f8f9fa;
+            color: #000;
+        }
+        
+        /* Main header row sticky positioning */
+        .table thead tr:first-child {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .table thead tr:first-child th:nth-child(1),
+        .table thead tr:first-child th:nth-child(2) {
+            position: sticky;
+            left: 0;
+            z-index: 15;
+            background-color: #4a6c52;
+            color: #ffff;
+            border-right: 2px solid #ddd;
+        }
+        
+        .table thead tr:first-child th:nth-child(2) {
+            left: 60px; /* Will be dynamically adjusted by JavaScript */
+        }
+        
+        /* Column number header row sticky */
+        .table thead tr:last-child {
+            position: sticky;
+            top: 60px; /* Position below the main header row */
+            z-index: 8;
+        }
+        
+        .table thead tr:last-child th:nth-child(1),
+        .table thead tr:last-child td:nth-child(1) {
+            position: sticky;
+            left: 0;
+            top: 60px;
+            z-index: 12;
+            background-color: #4a6c52;
+            color: #ffff;
+            border-right: 2px solid #ddd;
+        }
+        
+        .table thead tr:last-child th:nth-child(2),
+        .table thead tr:last-child td:nth-child(2) {
+            position: sticky;
+            left: 60px; /* Will be dynamically adjusted by JavaScript */
+            top: 60px;
+            z-index: 12;
+            background-color: #4a6c52;
+            color: #ffff;
+            border-right: 2px solid #ddd;
+        }
+        
+        /* Grand total row styling */
+        .grand-total-row td {
+           background-color: #f8f9fa;
+            color: #000;
+        }
+        /* Top grand total row (inside thead) should match header color */
+        thead .grand-total-row td {
+            background-color: #f8f9fa;
+            color: #000;
+        }
+        /* Footer grand total row (inside tfoot) should match last row style */
+        tfoot .grand-total-row td {
+            background-color: #f8f9fa;
+            color: #000;
+        }
+        
+        /* Ensure grand total rows in frozen columns have consistent styling */
+        .grand-total-row td:nth-child(1),
+        .grand-total-row td:nth-child(2) {
+            background-color: #f8f9fa;
+            color: #000;
+        }
+        
+        /* Ensure proper styling for sticky columns */
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            white-space: nowrap;
+        }
+        
+        /* Enable text wrapping for State Name column (2nd column) */
+        .table th:nth-child(2),
+        .table td:nth-child(2) {
+            white-space: normal !important;
+            word-wrap: break-word;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            max-width: 150px;
+            min-width: 100px;
+        }
+        
+        /* Mobile responsive adjustments for State Name column */
+        @media screen and (max-width: 768px) {
+            .table th:nth-child(2),
+            .table td:nth-child(2) {
+                max-width: 120px;
+                min-width: 80px;
+            }
+        }
+        
+        /* Enable text wrapping for all columns except frozen ones */
+        .table th:not(:nth-child(1)):not(:nth-child(2)),
+        .table td:not(:nth-child(1)):not(:nth-child(2)) {
+            white-space: normal !important;
+            word-wrap: break-word;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            max-width: 150px;
+            min-width: 100px;
+        }
+        
+        /* Special wrapping for columns with long text (columns 8-20) */
+        .table th:nth-child(n+8):nth-child(-n+20),
+        .table td:nth-child(n+8):nth-child(-n+20) {
+            white-space: normal !important;
+            word-wrap: break-word;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            max-width: 120px;
+            min-width: 80px;
+            vertical-align: top;
+        }
+        
+        /* Extra narrow columns for Yes/No type columns */
+        .table th:nth-child(n+13):nth-child(-n+20),
+        .table td:nth-child(n+13):nth-child(-n+20) {
+            max-width: 100px;
+            min-width: 70px;
+        }
+        
+        .table th {
+            background-color: #4a6c52;
+            color: #ffff;
+        }
+        
+        /* Shadow effect for frozen columns */
+        .table th:nth-child(1),
+        .table td:nth-child(1),
+        .table th:nth-child(2),
+        .table td:nth-child(2),
+        .table thead tr:first-child th:nth-child(1),
+        .table thead tr:first-child th:nth-child(2),
+        .table thead tr:last-child th:nth-child(1),
+        .table thead tr:last-child td:nth-child(1),
+        .table thead tr:last-child th:nth-child(2),
+        .table thead tr:last-child td:nth-child(2) {
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        
+        /* Ensure table body rows have proper background */
+        .table tbody tr:nth-child(even) td {
+            background-color: #f8f9fa;
+        }
+        
+        .table tbody tr:nth-child(odd) td {
+            background-color: #ffffff;
+        }
+        
+        /* Data rows - ensure first two columns stay sticky during vertical scroll */
+        .table tbody tr td:nth-child(1),
+        .table tbody tr td:nth-child(2) {
+            position: sticky;
+            z-index: 12;
+            border-right: 2px solid #ddd;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        
+        .table tbody tr td:nth-child(1) {
+            left: 0;
+            background-color: #f8f9fa;
+            color: #000;
+        }
+        
+        .table tbody tr td:nth-child(2) {
+            left: 60px; /* Will be dynamically adjusted by JavaScript */
+            background-color: #f8f9fa;
+            color: #000;
+        }
+
+        /* Footer frozen columns implementation */
+        .table tfoot tr td:nth-child(1),
+        .table tfoot tr td:nth-child(2) {
+            position: sticky;
+            left: 0;
+            z-index: 10;
+            background-color: #f8f9fa;
+            color: #000;
+            border-right: 2px solid #ddd;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        
+        .table tfoot tr td:nth-child(2) {
+            left: 60px; /* Will be dynamically adjusted by JavaScript */
+        }
+        
+        /* Grand total row styling */
+        .grand-total-row td {
+           background-color: #ffffff;
+            color: #000;
+        }
+        /* Top grand total row (inside thead) should match data row style */
+        thead .grand-total-row td {
+            background-color: #ffffff;
+            color: #000;
+        }
+        
+        /* Override sticky column styling for Grand Total row in thead */
+        thead .grand-total-row td:nth-child(1),
+        thead .grand-total-row td:nth-child(2) {
+            background-color: #ffffff !important;
+            color: #000 !important;
+        }
+        /* Footer grand total row (inside tfoot) should match data row style */
+        tfoot .grand-total-row td {
+            background-color: #ffffff;
+            color: #000;
+        }
+        
+        /* Mouse drag functionality styles */
+        .table-responsive {
+            user-select: none; /* Prevent text selection while dragging */
+            scroll-behavior: smooth;
+        }
+        
+        /* Only apply grab cursor to table content, not DataTables controls */
+        .table-responsive table {
+            cursor: grab !important;
+        }
+        
+        .table-responsive table.active {
+            cursor: grabbing !important;
+        }
+        
+        /* Ensure DataTables controls have normal cursor */
+        .dataTables_wrapper .dataTables_length,
+        .dataTables_wrapper .dataTables_filter,
+        .dataTables_wrapper .dataTables_info,
+        .dataTables_wrapper .dataTables_processing,
+        .dataTables_wrapper .dataTables_paginate {
+            cursor: default !important;
+        }
+        
+        .dataTables_wrapper .dataTables_length select,
+        .dataTables_wrapper .dataTables_filter input,
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            cursor: pointer !important;
+        }
+        
+        /* Override cursor for table elements only */
+        .table-responsive table,
+        .table-responsive tbody,
+        .table-responsive thead,
+        .table-responsive tr,
+        .table-responsive td,
+        .table-responsive th {
+            cursor: inherit !important;
+        }
+    </style>
+</head>
+
+<body>
+<div layout:fragment="content"
+     style="box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;">
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-info">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-sm-10">
+                                    <h3 class="card-title"
+                                        style="font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a; letter-spacing: 2px;">
+                                        <span th:text="${labels['reportName']}"></span>
+                                    </h3>
+                                </div>
+                                <div class="col-sm-2">
+                                    <a th:href="@{/physcial/report/pdf/rcms}">
+                                        <img th:src="@{/images/pdf.png}" alt="PDF Icon" class="btn-img" width="40"
+                                             height="40"
+                                             style="box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;"/>
+                                    </a>
+                                    <a th:href="@{/physcial/report/excel/rcms}">
+                                        <img th:src="@{/images/excel.png}" alt="EXCEL Icon" class="btn-img" width="40"
+                                             height="40"
+                                             style="box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;"/>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <a th:href="@{/reports/physical-progress-report}" class="btn btn-primary"
+                               style="font-size: 13px;">
+                                ← Back
+                            </a>
+                            <form th:action="@{/physicalProgressReports/rcms/sorting-rcms}" method="post" id="searchForm">
+                                <div class="form-group mt-3">
+                                    <div class="form-outline ms-3" style="width: 20%;">
+                                        <label for="ddlSelect">Select Field For Sorting:</label>
+                                        <select id="ddlSelect" name="parameter" class="form-control"
+                                                onchange="toggleSortDropdown()">
+                                            <option value="state">Select Sort Type</option>
+                                            <option value="computerized">Revenue Courts Computerized/Online (%)</option>
+                                            <!-- Add more options if needed -->
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group mt-3" id="ascDropdown" style="display: none;">
+                                    <div class="form-outline ms-3" style="width: 20%;">
+                                        <label for="ddlAscDesc">Select ASC or DESC:</label>
+                                        <select id="ddlAscDesc" name="ascDesc" class="form-control">
+                                            <option value="ASC">Ascending Order</option>
+                                            <option value="DESC">Descending Order</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="input-group mt-2">
+                                    <button type="submit" class="btn btn-primary" style="font-size: 16px;">
+                                        Sort
+                                    </button>
+                                </div>
+                            </form>
+                            <div class="table-responsive text-nowrap">
+                                <table id="example2"
+                                       class="table table-bordered  table-striped-columns table-success table-striped  table-responsive">
+                                    <thead class="card-info wrap-text" style="background-color: #4a6c52; color:#ffff">
+                                    <tr>
+                                        <th rowspan="3" th:text="${labels['serialNumber']}"></th>
+                                        <th rowspan="3" th:text="${labels['stateUT']}"></th>
+                                        <th rowspan="3" th:text="${labels['totalDistricts']}"></th>
+                                        <th rowspan="3" th:text="${labels['totalTehsils']}"></th>
+                                        <th colspan="3" th:text="${labels['noOfrevenueCourts']}"></th>
+                                        <th rowspan="3"
+                                            th:text="${labels['eReveCourtManagementSystem']} + ' (' + ${labels['yesNo']} + ')'"></th>
+                                        <th colspan="8" rowspan="2"
+                                            th:text="${labels['onlineProcessOfRevenueCourts']}"></th>
+                                        <th rowspan="3"
+                                            th:text="${labels['whetherProceed']} + ' (' + ${labels['yesNo']} + ')'"></th>
+                                        <th rowspan="3"
+                                            th:text="${labels['whetherLawRecordOnline']} + ' (' + ${labels['yesNo']} + ')'"></th>
+                                        <th rowspan="3"
+                                            th:text="${labels['whetherFilingDirectly']} + ' (' + ${labels['yesNo']} + ')'"></th>
+                                    </tr>
+                                    <tr>
+                                        <th th:text="${labels['total']}"></th>
+                                        <th colspan="2" th:text="${labels['computerized']}"></th>
+                                    </tr>
+                                    <tr>
+                                        <th th:text="${labels['number']}"></th>
+                                        <th th:text="${labels['number']}"></th>
+                                        <th th:text="${labels['percentage']}"></th>
+                                        <th th:text="${labels['attachedDocuments']} + ' (' + ${labels['yesNo']} + ')'"></th>
+                                        <th th:text="${labels['generationOfCauseList']} + ' (' + ${labels['yesNo']} + ')'"></th>
+                                        <th th:text="${labels['noticeToDefendants']} + ' (' + ${labels['yesNo']} + ')'"></th>
+                                        <th th:text="${labels['filingOfCounterAffidavits']} + ' (' + ${labels['yesNo']} + ')'"></th>
+                                        <th th:text="${labels['proceedingsTypingSystem']} + ' (' + ${labels['yesNo']} + ')'"></th>
+                                        <th th:text="${labels['uploadingRevenueCourtOrders']} + ' (' + ${labels['yesNo']} + ')'"></th>
+                                        <th th:text="${labels['landRecordSystemIntegration']} + ' (' + ${labels['yesNo']} + ')'"></th>
+                                        <th th:text="${labels['landRecordsCheckedOnline']} + ' (' + ${labels['yesNo']} + ')'"></th>
+                                    </tr>
+                                    <tr style="font-weight: bold;">
+                                        <td style="text-align: center;">1</td>
+                                        <td style="text-align: center;">2</td>
+                                        <td style="text-align: center;">3</td>
+                                        <td style="text-align: center;">4</td>
+                                        <td style="text-align: center;">5a</td>
+                                        <td style="text-align: center;">5a</td>
+                                        <td style="text-align: center;">5c</td>
+                                        <td style="text-align: center;">6</td>
+                                        <td style="text-align: center;">7a</td>
+                                        <td style="text-align: center;">7b</td>
+                                        <td style="text-align: center;">7c</td>
+                                        <td style="text-align: center;">7d</td>
+                                        <td style="text-align: center;">7e</td>
+                                        <td style="text-align: center;">7f</td>
+                                        <td style="text-align: center;">7g</td>
+                                        <td style="text-align: center;">7h</td>
+                                        <td style="text-align: center;">8</td>
+                                        <td style="text-align: center;">9</td>
+                                        <td style="text-align: center;">10</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="report, status : ${rcmsReportList}"
+                                        th:if="${report != null && report.stateId != 999}">
+                                        <td th:text="${status.count}"></td>
+                                        <td>
+                                            <a th:href="@{/physicalProgressReports/rcms/district-level/{stateId}(stateId=${report.stateId})}"
+                                               th:text="${report.stateName}" target="_blank"></a></td>
+                                        <td th:text="${report.totalDistrict}"></td>
+                                        <td th:text="${report.totalTehsils}"></td>
+                                        <td th:text="${report.totalRevenueCourts}"></td>
+                                        <td th:text="${report.revenueCourtsComputerized}"></td>
+                                        <td th:text="${report.revenueCourtsComputerizedPercent}"></td>
+                                        <td th:text="${report.eRcmsAvailable}"></td>
+                                        <td th:text="${report.affidavitFilingOnline}"></td>
+                                        <td th:text="${report.causeListGenerationOnline}"></td>
+                                        <td th:text="${report.noticeToDefendantsOnline}"></td>
+                                        <td th:text="${report.counterAffidavitFilingOnline}"></td>
+                                        <td th:text="${report.proceedingsTypingDirectlyOnline}"></td>
+                                        <td th:text="${report.uploadingRevenueCourtOrdersOnline}"></td>
+                                        <td th:text="${report.landRecordsOnlineFromRevenueCourtSystem}"></td>
+                                        <td th:text="${report.revenueCourtProceedingsPaperless}"></td>
+                                        <td th:text="${report.landRecordsOnlineForCivilCourts}"></td>
+                                        <td th:text="${report.caseFilingRedFlaggedInLandRecordsFromCivilCourts}"></td>
+                                        <td th:text="${report.caseFilingRedFlaggedInLandRecords}"></td>
+                                    </tr>
+
+                                    <tr class="grand-total-row" th:each="grandTotal : ${grandTotal}" th:if="${grandTotal.stateId == 999}">
+                                        <td></td>
+                                        <td th:text="${grandTotal.stateName}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.totalDistrict}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.totalTehsils}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.totalRevenueCourts}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.revenueCourtsComputerized}"
+                                            style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.revenueCourtsComputerizedPercent}"
+                                            style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.eRcmsAvailable}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.affidavitFilingOnline}"
+                                            style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.causeListGenerationOnline}"
+                                            style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.noticeToDefendantsOnline}"
+                                            style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.counterAffidavitFilingOnline}"
+                                            style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.proceedingsTypingDirectlyOnline}"
+                                            style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.uploadingRevenueCourtOrdersOnline}"
+                                            style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.landRecordsOnlineFromRevenueCourtSystem}"
+                                            style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.revenueCourtProceedingsPaperless}"
+                                            style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.landRecordsOnlineForCivilCourts}"
+                                            style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.caseFilingRedFlaggedInLandRecordsFromCivilCourts}"
+                                            style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.caseFilingRedFlaggedInLandRecords}"
+                                            style="font-weight: bold;"></td>
+                                    </tr>
+                                    </tbody>
+
+                                    <tfoot>
+                                    <tr class="grand-total-row" th:each="grandTotal : ${grandTotal}" th:if="${grandTotal.stateId == 999}">
+                                        <td></td>
+                                        <td th:text="${grandTotal.stateName}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.totalDistrict}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.totalTehsils}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.totalRevenueCourts}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.revenueCourtsComputerized}"
+                                            style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.revenueCourtsComputerizedPercent}"
+                                            style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.eRcmsAvailable}" style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.affidavitFilingOnline}"
+                                            style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.causeListGenerationOnline}"
+                                            style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.noticeToDefendantsOnline}"
+                                            style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.counterAffidavitFilingOnline}"
+                                            style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.proceedingsTypingDirectlyOnline}"
+                                            style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.uploadingRevenueCourtOrdersOnline}"
+                                            style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.landRecordsOnlineFromRevenueCourtSystem}"
+                                            style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.revenueCourtProceedingsPaperless}"
+                                            style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.landRecordsOnlineForCivilCourts}"
+                                            style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.caseFilingRedFlaggedInLandRecordsFromCivilCourts}"
+                                            style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.caseFilingRedFlaggedInLandRecords}"
+                                            style="font-weight: bold;"></td>
+                                    </tr>
+                                    </tfoot>
+
+                                </table>
+                                <script>
+    function toggleSortDropdown() {
+        var ddlSelect = document.getElementById("ddlSelect");
+        var ascDropdown = document.getElementById("ascDropdown");
+        if (ddlSelect.value === "computerized") {
+            ascDropdown.style.display = "block";
+            var ascDescSelect = document.getElementById("ddlAscDesc");
+            if (ddlSelect.value === "computerized") {
+                ascDescSelect.value = "ASC";
+            } else {
+                ascDescSelect.value = "";
+            }
+        } else {
+            ascDropdown.style.display = "none";
+        }
+    }
+
+                                </script>
+
+                                <script>
+    $(document).ready(function () {
+        $('#ddlSelect').change(function () {
+            var selectedValue = $(this).val();
+            if (selectedValue != '') {
+                $('#ascDropdown').show();
+            } else {
+                $('#ascDropdown').hide();
+            }
+        });
+    });
+    $('#resetButton').click(function () {
+        $('#searchForm')[0].reset();
+        $('#searchForm').trigger('submit');
+    });
+
+
+
+
+
+
+                                </script>
+                                <script>
+    $(document).ready(function () {
+        // Check if DataTable is already initialized on the table
+        if ($.fn.DataTable.isDataTable('#example2')) {
+            // If yes, destroy the existing DataTable instance
+            $('#example2').DataTable().destroy();
+        }
+
+        // Initialize DataTable with your table ID
+        $('#example2').DataTable({
+            // Add additional options if needed
+            paging: true,  // Enable pagination
+            lengthMenu: [5, 10, 15, 20, 25, 30, 36, 50, 100],  // Set page length options
+            pageLength: 36,  // Default page length
+            // Callback function after each draw event
+            drawCallback: function (settings) {
+                var api = this.api();
+                var totalPages = api.page.info().pages;
+                var page = api.page.info().page;
+
+                // Check if it's the last page
+                if (page === totalPages - 1) {
+                    $('#example2 tfoot').show();
+                } else {
+                    $('#example2 tfoot').hide();
+                }
+            }
+        });
+
+        // Initialize generic frozen columns (first 2 columns, first 3 header rows sticky, include footer)
+        if (window.freezeTableColumns) {
+            freezeTableColumns('#example2', {
+                columns: 2,
+                headerStickyRows: [0, 1, 2],
+                footerSticky: true
+            });
+        }
+
+        // Mouse drag functionality for horizontal scrolling
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+        const tableContainer = $('.table-responsive')[0];
+        const tableElement = $('#example2')[0];
+
+        if (!tableContainer || !tableElement) {
+            console.log('Table container or table element not found');
+            return;
+        }
+
+        // Mouse down event - only on table content, not DataTables controls
+        $(tableElement).on('mousedown', function(e) {
+            // Only handle left mouse button
+            if (e.which !== 1) return;
+            
+            // Check if clicking on DataTables controls
+            if ($(e.target).closest('.dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_paginate').length > 0) {
+                return; // Don't interfere with DataTables controls
+            }
+            
+            isDown = true;
+            tableElement.classList.add('active');
+            startX = e.pageX - tableContainer.offsetLeft;
+            scrollLeft = tableContainer.scrollLeft;
+            
+            e.preventDefault(); // Prevent text selection
+        });
+
+        // Mouse leave event
+        $(tableElement).on('mouseleave', function() {
+            isDown = false;
+            tableElement.classList.remove('active');
+        });
+
+        // Mouse up event
+        $(tableElement).on('mouseup', function() {
+            isDown = false;
+            tableElement.classList.remove('active');
+        });
+
+        // Mouse move event
+        $(tableElement).on('mousemove', function(e) {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - tableContainer.offsetLeft;
+            const walk = (x - startX) * 1.5; // Scroll speed multiplier
+            tableContainer.scrollLeft = scrollLeft - walk;
+        });
+
+        console.log('Mouse drag functionality initialized for state RCMS table');
+        console.log('Table container:', tableContainer);
+        console.log('Table element:', tableElement);
+    });
+
+
+
+
+
+
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+    <script th:src="@{/js/freeze-columns.js}"></script>
+</body>
+</html>

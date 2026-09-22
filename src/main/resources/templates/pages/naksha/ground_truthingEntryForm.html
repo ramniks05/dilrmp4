@@ -1,0 +1,2544 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/dashboard">
+<head>
+    <meta charset="UTF-8">
+    <title>Ground Truthing Details</title>
+    <link th:href="@{/css/report/nakshasoi.css}" rel="stylesheet"/>
+    <style>
+        /* Enhanced Form Styling - Keeping Original Theme */
+        .containerOne {
+            background: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin: 20px;
+            overflow: hidden;
+        }
+        
+        .card-header {
+            padding: 25px 30px;
+            border-bottom: 3px solid rgba(255,255,255,0.2);
+        }
+        
+        .card-header .heading {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-align: center;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: 1px;
+        }
+        
+        .form {
+            padding: 30px;
+        }
+        
+        .bg-light {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%) !important;
+            border: 1px solid #e9ecef;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .headingOne {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group.row {
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .col-form-label {
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+        
+        .red-text {
+            background: linear-gradient(135deg, #6f42c1 0%, #5a2d91 100%);
+            color: white;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 800;
+            margin-right: 12px;
+            box-shadow: 0 3px 8px rgba(111, 66, 193, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .red-text:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(111, 66, 193, 0.6);
+        }
+        
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .form-control:focus {
+            border-color: #1089d1;
+            box-shadow: 0 0 0 0.2rem rgba(16, 137, 209, 0.25);
+            background: #f8f9ff;
+        }
+        
+        .form-control:read-only {
+            background: #f8f9fa;
+            color: #6c757d;
+            border-color: #dee2e6;
+        }
+        
+        .form-control:disabled {
+            background: #e9ecef;
+            color: #6c757d;
+            cursor: not-allowed;
+            border-color: #dee2e6;
+        }
+        
+        .text-danger {
+            color: #dc3545 !important;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .text-danger::before {
+
+            .
+            margin-right: 5px;
+            font-size: 0.9rem;
+        }
+        
+        /* Section Headers */
+        .fw-bold {
+            background: linear-gradient(45deg, rgb(16, 137, 211) 0%, rgb(19, 111, 130) 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 25px 0 20px 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            box-shadow: 0 3px 10px rgba(16, 137, 211, 0.3);
+            border-left: 5px solid rgba(255,255,255,0.3);
+        }
+        
+        /* Horizontal Rules */
+        hr {
+            border: none;
+            height: 3px;
+            background: linear-gradient(90deg, #FA8072 0%, #ff6b6b 50%, #FA8072 100%);
+            border-radius: 2px;
+            margin: 30px 0;
+            box-shadow: 0 2px 4px rgba(250, 128, 114, 0.3);
+        }
+        
+        /* Submit Button Enhancement */
+        .inner {
+            background: linear-gradient(135deg, #1089d1 0%, #0f7bb8 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(16, 137, 209, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .inner:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(16, 137, 209, 0.4);
+            background: linear-gradient(135deg, #0f7bb8 0%, #0e6ba8 100%);
+        }
+        
+        .inner:active {
+            transform: translateY(0);
+        }
+        
+        /* SVG Icon Enhancement */
+        .svg-wrapper {
+            transition: transform 0.3s ease;
+        }
+        
+        .inner:hover .svg-wrapper {
+            transform: translateX(3px);
+        }
+        
+        /* Help Text Styling */
+        small[style*="color:#0d75ea"] {
+            background: #e3f2fd;
+            color: #1565c0 !important;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border-left: 3px solid #2196f3;
+            margin-top: 8px;
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        /* State/UT Info Enhancement */
+        .col-sm-6.headingOne {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            padding: 15px 20px;
+            border-radius: 10px;
+            border: 1px solid #e1bee7;
+            margin-bottom: 20px;
+        }
+        
+        .col-sm-6.headingOne span[style*="color:#ab7b75"] {
+            color: #4a148c !important;
+            font-weight: 600;
+        }
+        
+        /* Form Field Spacing */
+        .mb-3 {
+            margin-bottom: 20px !important;
+        }
+        
+        /* Responsive Improvements */
+        @media (max-width: 768px) {
+            .containerOne {
+                margin: 10px;
+            }
+            
+            .form {
+                padding: 20px;
+            }
+            
+            .card-header .heading {
+                font-size: 1.5rem;
+            }
+            
+            .col-form-label {
+                font-size: 0.9rem;
+            }
+            
+            .red-text {
+                width: 28px;
+                height: 28px;
+                font-size: 0.75rem;
+                margin-right: 8px;
+            }
+        }
+        
+        /* Focus States */
+        select.form-control:focus,
+        input.form-control:focus,
+        textarea.form-control:focus {
+            outline: none;
+            border-color: #1089d1;
+            box-shadow: 0 0 0 0.2rem rgba(16, 137, 209, 0.25);
+        }
+        
+        /* Animation for form elements */
+        .form-group {
+            animation: fadeInUp 0.5s ease forwards;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Staggered animation delays */
+        .form-group:nth-child(1) { animation-delay: 0.1s; }
+        .form-group:nth-child(2) { animation-delay: 0.2s; }
+        .form-group:nth-child(3) { animation-delay: 0.3s; }
+        .form-group:nth-child(4) { animation-delay: 0.4s; }
+        .form-group:nth-child(5) { animation-delay: 0.5s; }
+        .form-group:nth-child(6) { animation-delay: 0.6s; }
+        
+        /* Help text styling */
+        .text-muted {
+            background: #f8f9fa;
+            color: #6c757d !important;
+            padding: 6px 10px;
+            border-radius: 5px;
+            border-left: 3px solid #17a2b8;
+            margin-top: 5px;
+            font-size: 0.8rem;
+            font-style: italic;
+            display: block;
+        }
+        
+        /* Enhanced form field grouping */
+        .form-group.row {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .form-group.row:hover {
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        /* ULB Selection Styling */
+        .ulb-selection-container {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 2px solid #dee2e6;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ulb-selection-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #6f42c1 0%, #1089d1 50%, #20c997 100%);
+        }
+        
+        .ulb-selection-label {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #495057;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .ulb-selection-label::before {
+            content: '🏛️';
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+        
+        .ulb-select {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px 20px;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #495057;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            width: 100%;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236f42c1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 20px;
+            padding-right: 50px;
+        }
+        
+        .ulb-select:focus {
+            outline: none;
+            border-color: #6f42c1;
+            box-shadow: 0 0 0 3px rgba(111, 66, 193, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .ulb-select:hover {
+            border-color: #6f42c1;
+            box-shadow: 0 4px 12px rgba(111, 66, 193, 0.15);
+        }
+        
+        .ulb-select option {
+            padding: 10px;
+            font-size: 1rem;
+            color: #495057;
+        }
+        
+        .ulb-select option:first-child {
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        /* Toggle Section Styles */
+        .section-toggle {
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .section-toggle:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(16, 137, 211, 0.4);
+        }
+        
+        .toggle-icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+            color: rgba(255, 255, 255, 0.9);
+            margin-left: 10px;
+        }
+        
+        .toggle-icon.expanded {
+            transform: rotate(180deg);
+        }
+        
+        .section-content {
+            overflow: hidden;
+            transition: all 0.4s ease;
+            max-height: 2000px;
+            opacity: 1;
+        }
+        
+        .section-content.collapsed {
+            max-height: 0;
+            opacity: 0;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .section-content.collapsed .form-group {
+            margin: 0;
+            padding: 0;
+        }
+        
+        
+    </style>
+</head>
+<body>
+<div class="content-wrapper" layout:fragment="content">
+    <div class="containerOne">
+        <div class="card-header"
+             style="background: linear-gradient(45deg, rgb(16, 137, 211) 0%, rgb(19, 111, 130) 100%);">
+            <div class="heading">GROUND TRUTHING FORM (Data to be Recorded ULB-Wise)</div>
+        </div>
+        <br>
+        <form th:action="@{/ulb/naksha-gt-data/save}" th:object="${nakshaGTDataEntry}" method="post"
+              id="nakshaGTDataEntryForm" class="form">
+             <div class="border rounded p-4 mb-4 bg-light">
+                 <!-- ULB Selection Header -->
+                 <div class="row mb-4">
+                     <div class="col-md-4">
+                         <div class="headingOne text-center">
+                             <span style="color:#ab7b75;">📍 State/UT:</span>
+                             <span th:text="${stateName}"></span>
+                         </div>
+                     </div>
+                     <div class="col-md-4">
+                         <div class="headingOne text-center">
+                             <span style="color:#ab7b75;">🏢 Total ULBs:</span>
+                             <span th:text="${#lists.size(ulbMasterList)}"></span>
+                         </div>
+                     </div>
+                     <div class="col-md-4">
+                         <div class="headingOne text-center">
+                             <span style="color:#ab7b75;">🕒 Last Updated:</span>
+                             <span th:text="${#dates.format(#dates.createNow(), 'dd/MM/yyyy HH:mm')}"></span>
+                         </div>
+                     </div>
+                 </div>
+
+                 <!-- ULB Selection -->
+                 <div class="ulb-selection-container">
+                     <label class="ulb-selection-label">Select ULB</label>
+                     <select id="ulbSelect" name="ulbMaster.id" class="ulb-select"
+                             onchange="onUlbChange(this.value)">
+                         <option value="">-- Select ULB --</option>
+                         <option th:each="ulb : ${ulbMasterList}" th:value="${ulb.id}"
+                                 th:text="${ulb.ulb_name}"></option>
+                     </select>
+                 </div>
+                    <script>
+                function onUlbChange(ulbId) {
+    if (!ulbId) {
+        console.log("No ULB ID provided");
+        resetGTForm();
+        return;
+    }
+
+    console.log("Fetching data for ULB ID:", ulbId);
+
+    // Show loading indicator (optional)
+    const loadingElements = document.querySelectorAll('#population, #fieldSurveyArea, #aerialSurveyArea, #bufferGridAreaForFlying, #noOfTeams');
+    loadingElements.forEach(el => {
+        if (el) el.value = 'Loading...';
+    });
+
+    fetch(`/ulb/getGTMISData/${ulbId}`)
+        .then(response => {
+            console.log("Response status:", response.status);
+            if (!response.ok) {
+                if (response.status === 404) {
+                    console.log("No data found for ULB ID:", ulbId);
+                    // Don't throw error for 404, just clear the form
+                    resetGTForm();
+                    return null;
+                }
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data === null) {
+                console.log("No data returned for ULB ID:", ulbId);
+                return;
+            }
+
+            console.log("Received Ground Truthing data:", data);
+
+            // Helper function to safely set field values
+            function setFieldValue(fieldId, value) {
+                const element = document.getElementById(fieldId);
+                if (element) {
+                    element.value = value || '';
+                    console.log(`Set ${fieldId} = ${value}`);
+                } else {
+                    console.warn(`Element with ID ${fieldId} not found`);
+                }
+            }
+
+            // Set all form fields
+            setFieldValue("ulbWiseFieldSurveyTeamsFormed", data.ulbWiseFieldSurveyTeamsFormed);
+            setFieldValue("surveyUnitNameOptions", data.surveyUnitNameOptions);
+            setFieldValue("surveyUnitText", data.surveyUnitText);
+            setFieldValue("typeOfSurveyDone", data.typeOfSurveyDone);
+            setFieldValue("areaFieldSurveyCompletedULB", data.areaFieldSurveyCompletedULB);
+            setFieldValue("areaWiseSurveyCompletionPercent", data.areaWiseSurveyCompletionPercent);
+
+            // Survey Unit tracking fields (16-19)
+            setFieldValue("totalSurveyUnits", data.totalSurveyUnits);
+            setFieldValue("surveyUnitsSurveyed", data.surveyUnitsSurveyed);
+            setFieldValue("surveyUnitsPending", data.surveyUnitsPending);
+            setFieldValue("surveyUnitCompletionPercent", data.surveyUnitCompletionPercent);
+
+            setFieldValue("typeOfSurveyDoneForSurveyUnit", data.typeOfSurveyDoneForSurveyUnit);
+            setFieldValue("totalPropertiesForFieldSurveyInSurveyUnit", data.totalPropertiesForFieldSurveyInSurveyUnit);
+            setFieldValue("noOfPropertiesSurveyedInSurveyUnit", data.noOfPropertiesSurveyedInSurveyUnit);
+            setFieldValue("totalAreaForFieldSurveyInSurveyUnit", data.totalAreaForFieldSurveyInSurveyUnit);
+            setFieldValue("areaWhereFieldSurveyCompletedInSurveyUnit", data.areaWhereFieldSurveyCompletedInSurveyUnit);
+            setFieldValue("workValidatedBySupervisoryOfficer", data.workValidatedBySupervisoryOfficer);
+            setFieldValue("noOfClaimsWithBoundaryDisputes", data.noOfClaimsWithBoundaryDisputes);
+            setFieldValue("noOfClaimsWithOwnershipConflicts", data.noOfClaimsWithOwnershipConflicts);
+            setFieldValue("noOfClaimsWithDataErrors", data.noOfClaimsWithDataErrors);
+            setFieldValue("noOfClaimsWithAdministrativeIssues", data.noOfClaimsWithAdministrativeIssues);
+            setFieldValue("noOfAnyOtherClaims", data.noOfAnyOtherClaims);
+            setFieldValue("noOfClaimsObjectionsResolved", data.noOfClaimsObjectionsResolved);
+            setFieldValue("noOfClaimsObjectionsPending", data.noOfClaimsObjectionsPending);
+            setFieldValue("percentOfClaimsDisputesResolution", data.percentOfClaimsDisputesResolution);
+
+            // Calculate Survey Unit percentages after a short delay
+            setTimeout(function() {
+                console.log('Calculating Survey Unit percentages after data load...');
+                calculatePropertyWiseFieldSurveyCompletionSurveyUnit();
+                calculateAreaWiseFieldSurveyCompletionSurveyUnit();
+                calculateClaimsDisputesResolution();
+                validateAreaFieldSurveyCompletedULB();
+                calculateAreaWiseSurveyCompletionPercent();
+
+                // Calculate new Survey Unit tracking fields
+                calculateSurveyUnitsPending();
+                calculateSurveyUnitCompletionPercent();
+            }, 200);
+            setFieldValue("totalPlotsToSurvey", data.totalPlotsToSurvey);
+            setFieldValue("plotsSurveyedCompleted", data.plotsSurveyedCompleted);
+            setFieldValue("surveyCompletionPercent", data.surveyCompletionPercent);
+            setFieldValue("totalUrProCardIssued", data.totalUrProCardIssued);
+            setFieldValue("claimsObjectionsReceived", data.claimsObjectionsReceived);
+            setFieldValue("claimsObjectionsResolved", data.claimsObjectionsResolved);
+            setFieldValue("claimsResolutionPercentage", data.claimsResolutionPercentage);
+            setFieldValue("totalFinalUrProCardIssued", data.totalFinalUrProCardIssued);
+            setFieldValue("groundTruthingCommencementDate", data.groundTruthingCommencementDate);
+            setFieldValue("groundTruthingCompletionDate", data.groundTruthingCompletionDate);
+
+            // Set the 5 main fields that were not loading
+            setFieldValue("population", data.population);
+            setFieldValue("fieldSurveyArea", data.fieldSurveyArea);
+            setFieldValue("aerialSurveyArea", data.aerialSurveyArea);
+            setFieldValue("bufferGridAreaForFlying", data.bufferGridAreaForFlying);
+            setFieldValue("noOfTeams", data.noOfTeams);
+
+            // After setting all fields, check if "Others" is selected and enable the text field
+            setTimeout(() => {
+                toggleSurveyUnitTextField();
+                toggleSurveyTypeFields();
+                toggleSurveyUnitTypeFields();
+            }, 100);
+
+            console.log("All fields populated successfully");
+        })
+        .catch(error => {
+            console.error("Error fetching Ground Truthing data:", error);
+            resetGTForm();
+            // Show user-friendly error message
+            alert('Error loading ULB data. Please try again or contact support if the issue persists.');
+        });
+}
+
+function resetGTForm() {
+    const fields = [
+        "ulbWiseFieldSurveyTeamsFormed", "population", "fieldSurveyArea", "aerialSurveyArea",
+        "bufferGridAreaForFlying", "noOfTeams", "surveyUnitNameOptions", "surveyUnitText",
+        "typeOfSurveyDone", "areaFieldSurveyCompletedULB", "areaWiseSurveyCompletionPercent",
+        "totalSurveyUnits", "surveyUnitsSurveyed", "surveyUnitsPending", "surveyUnitCompletionPercent",
+        "typeOfSurveyDoneForSurveyUnit", "totalPropertiesForFieldSurveyInSurveyUnit",
+        "noOfPropertiesSurveyedInSurveyUnit", "propertyWiseFieldSurveyCompletionPercent",
+        "totalAreaForFieldSurveyInSurveyUnit", "areaWhereFieldSurveyCompletedInSurveyUnit",
+        "areaWiseFieldSurveyCompletionPercentSurveyUnit", "workValidatedBySupervisoryOfficer", "noOfClaimsWithBoundaryDisputes",
+        "noOfClaimsWithOwnershipConflicts", "noOfClaimsWithDataErrors", "noOfClaimsWithAdministrativeIssues", "noOfAnyOtherClaims",
+        "noOfClaimsObjectionsResolved", "noOfClaimsObjectionsPending", "percentOfClaimsDisputesResolution",
+        "totalPlotsToSurvey", "plotsSurveyedCompleted", "surveyCompletionPercent",
+        "totalUrProCardIssued", "claimsObjectionsReceived", "claimsObjectionsResolved",
+        "claimsResolutionPercentage", "totalFinalUrProCardIssued",
+        "groundTruthingCommencementDate", "groundTruthingCompletionDate"
+    ];
+
+    fields.forEach(fieldId => {
+        const el = document.getElementById(fieldId);
+        if (el) {
+            el.value = '';
+            console.log(`Reset field: ${fieldId}`);
+        } else {
+            console.warn(`Field not found for reset: ${fieldId}`);
+        }
+    });
+
+    // After resetting, ensure the survey unit text field is properly disabled
+    setTimeout(() => {
+        toggleSurveyUnitTextField();
+    }, 50);
+
+    console.log("Form reset completed");
+}
+
+
+
+
+
+
+                    </script>
+                     <hr>
+
+                     <h5 class="fw-bold mb-3 section-toggle" onclick="toggleSection('fieldGroundTruthingSection')">
+                         <span>🏗️ (A) Field & Ground Truthing Details</span>
+                         <span class="toggle-icon" id="fieldGroundTruthingToggle">▼</span>
+                     </h5>
+                    <div class="section-content" id="fieldGroundTruthingSection">
+                        <div class="row">
+                                     <div class="col-md-6 mb-3">
+                                         <div class="form-group row">
+                                             <label for="noOfTeams" class="col-md-7 col-form-label">
+                                                 <span class="red-text">1</span> No. of Teams teams sanctioned by DoLR:
+                                             </label>
+                                             <div class="col-md-5">
+                                                 <input type="text" id="noOfTeams"
+                                                        name="noOfTeams"
+                                                        class="form-control"
+                                                        th:value="${noOfTeams}"
+                                                        readonly/>
+                                                 <small id="noOfTeamsError" class="text-danger"></small>
+                                             </div>
+                                         </div>
+                                     </div>
+                                     <div class="col-md-6 mb-3">
+                                         <div class="form-group row">
+                                             <label for="ulbWiseFieldSurveyTeamsFormed" class="col-md-7 col-form-label">
+                                                 <span class="red-text">2</span> ULB Wise Field Survey Teams Formed:
+                                             </label>
+                                             <div class="col-md-5">
+                                                 <input type="number" id="ulbWiseFieldSurveyTeamsFormed"
+                                                        name="ulbWiseFieldSurveyTeamsFormed"
+                                                        th:field="*{ulbWiseFieldSurveyTeamsFormed}" class="form-control"/>
+                                                 <small id="ulbWiseFieldSurveyTeamsFormedError" class="text-danger"></small>
+                                             </div>
+                                         </div>
+                                     </div>
+                                     <div class="col-md-6 mb-3">
+                                         <div class="form-group row">
+                                             <label for="groundTruthingCommencementDate" class="col-md-7 col-form-label">
+                                                <span class="red-text">3</span> Ground Truthing Commencement Date:
+                                            </label>
+                                            <div class="col-md-5">
+                                                <input type="date" id="groundTruthingCommencementDate"
+                                                       name="groundTruthingCommencementDate"
+                                                       th:field="*{groundTruthingCommencementDate}"
+                                                       th:attr="disabled=${nakshaGTDataEntry.groundTruthingCommencementDate != null ? 'disabled' : null}"
+                                                       th:class="${nakshaGTDataEntry.groundTruthingCommencementDate != null ? 'form-control bg-light' : 'form-control'}"
+                                                       required/>
+                                                <small id="groundTruthingCommencementDateError" class="text-danger"></small>
+                                                <small id="groundTruthingCommencementDateWarning"
+                                                       th:if="${nakshaGTDataEntry.groundTruthingCommencementDate != null}"
+                                                       class="text-warning" style="font-size: 0.85em; display: block; font-weight: 500;">
+                                                    <i class="fa fa-lock" aria-hidden="true"></i>
+                                                    <strong>One-Time Entry:</strong> This date can only be entered once. The saved date is:
+                                                    <span th:text="${#temporals.format(nakshaGTDataEntry.groundTruthingCommencementDate, 'dd-MM-yyyy')}"></span>
+                                                </small>
+                                                <small th:if="${nakshaGTDataEntry.groundTruthingCommencementDate == null}"
+                                                       class="text-info" style="font-size: 0.85em; display: block;">
+                                                    <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                                    <strong>Note:</strong> This date can only be entered once. Please ensure the date is correct before saving.
+                                                </small>
+                                            </div>
+                                         </div>
+                                     </div>
+                                     <div class="col-md-6 mb-3">
+                                         <div class="form-group row">
+                                             <label for="groundTruthingCompletionDate" class="col-md-7 col-form-label">
+                                                <span class="red-text">4</span> Ground Truthing Completion Date:
+                                            </label>
+                                            <div class="col-md-5">
+                                                <input type="date" id="groundTruthingCompletionDate"
+                                                       name="groundTruthingCompletionDate"
+                                                       th:field="*{groundTruthingCompletionDate}" class="form-control"/>
+                                                <small id="groundTruthingCompletionDateError" class="text-danger"></small>
+                                                <small class="text-info" style="font-size: 0.85em; display: block;">
+                                                    <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                                    <strong>Optional:</strong> If entered, must not be before Commencement Date.
+                                                </small>
+                                            </div>
+                                         </div>
+                                     </div>
+                                     <div class="col-md-6 mb-3">
+                                         <div class="form-group row">
+                                             <label class="col-md-7 col-form-label">
+                                                <span class="red-text">5</span> Type of Survey Unit:
+                                                <br>
+                                                <small style="color:#0d75ea">Options: Ward / Block / Colony / Sector / Revenue
+                                                    Village /
+                                                    Tile / Others</small>
+                                            </label>
+                                            <div class="col-md-5">
+                                                <select th:field="*{surveyUnitNameOptions}" id="surveyUnitNameOptions"
+                                                        class="form-control" required>
+                                                    <option value="" disabled selected>Select Type</option>
+                                                     <option th:each="status : ${survyUnitTypeOptions}"
+                                                             th:value="${status.code}"
+                                                             th:text="${status.description}">
+                                                     </option>
+                                                 </select>
+                                             </div>
+                                         </div>
+                                     </div>
+                                     <div class="col-md-6 mb-3">
+                                         <div class="form-group row">
+                                             <label for="surveyUnitText" class="col-md-7 col-form-label visually-hidden">
+                                                 <span class="red-text">5a</span> Specify Other Type of Survey Unit:
+                                             </label>
+                                             <div class="col-md-5">
+                                                      <textarea
+                                                              class="form-control mt-2"
+                                                              id="surveyUnitText"
+                                                              name="surveyUnitText"
+                                                              th:field="*{surveyUnitText}"
+                                                              placeholder="Please specify (max 20 words)"
+                                                              maxlength="20"
+                                                              rows="2"
+                                                          disabled>
+                                                     </textarea>
+                                                 <small id="surveyUnitTextError" class="text-danger"></small>
+                                             </div>
+                                         </div>
+                                     </div>
+                                     <div class="col-md-6 mb-3">
+                                         <div class="form-group row">
+                                             <label for="population" class="col-md-7 col-form-label">
+                                                 <span class="red-text">6</span> Total Population:
+                                             </label>
+                                             <div class="col-md-5">
+                                                 <input type="text" id="population"
+                                                        name="population"
+                                                        class="form-control"
+                                                        th:value="${population}"
+                                                        readonly/>
+                                                 <small id="populationError" class="text-danger"></small>
+                                             </div>
+                                         </div>
+                                     </div>
+                                     <div class="col-md-6 mb-3">
+                                         <div class="form-group row">
+                                             <label for="aerialSurveyArea" class="col-md-7 col-form-label">
+                                                 <span class="red-text">7</span> Aerial Survey Area (in sq.km.):
+                                             </label>
+                                             <div class="col-md-5">
+                                                 <input type="text" id="aerialSurveyArea"
+                                                        name="aerialSurveyArea"
+                                                        class="form-control"
+                                                        th:value="${aerialSurveyArea}"
+                                                        readonly/>
+                                                 <small id="aerialSurveyAreaError" class="text-danger"></small>
+                                             </div>
+                                         </div>
+                                     </div>
+                                     <div class="col-md-6 mb-3">
+                                         <div class="form-group row">
+                                             <label for="bufferGridAreaForFlying" class="col-md-7 col-form-label">
+                                                 <span class="red-text">8</span> Buffer / Grid Area for Flying (in sq.km):
+                                             </label>
+                                             <div class="col-md-5">
+                                                 <input type="text" id="bufferGridAreaForFlying"
+                                                        name="bufferGridAreaForFlying"
+                                                        class="form-control"
+                                                        th:value="${bufferGridAreaForFlying}"
+                                                        readonly/>
+                                                 <small id="bufferGridAreaForFlyingError" class="text-danger"></small>
+                                             </div>
+                                         </div>
+                                     </div>
+                        </div>
+                    </div>
+                    <br>
+                     <hr>
+
+                     <!-- Section B -->
+                     <div style="clear: both; width: 100%;">
+                         <h5 class="fw-bold mb-3 section-toggle" onclick="toggleSection('ulbWiseDetailsSection')">
+                             <span>🏙️ (B) ULB Wise Details</span>
+                             <span class="toggle-icon" id="ulbWiseDetailsToggle">▼</span>
+                         </h5>
+                    <div class="section-content" id="ulbWiseDetailsSection">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group row">
+                                    <label for="typeOfSurveyDone" class="col-md-7 col-form-label">
+                                        <span class="red-text">9</span> Type of Survey done:
+                                    </label>
+                                    <div class="col-md-5">
+                                        <select th:field="*{typeOfSurveyDone}" id="typeOfSurveyDone"
+                                                class="form-control" required>
+                                            <option value="" disabled selected>Select Type</option>
+                                            <option th:each="status : ${surveyTypeOptions}"
+                                                    th:value="${status.code}"
+                                                    th:text="${status.description}">
+                                            </option>
+                                        </select>
+                                        <small id="typeOfSurveyDoneError" class="text-danger"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group row">
+                                    <label for="totalPlotsToSurvey" class="col-md-7 col-form-label">
+                                        <span class="red-text">10</span> Total Properties for Field Survey in the ULB:
+                                    </label>
+                                    <div class="col-md-5">
+                                        <input type="number" id="totalPlotsToSurvey" name="totalPlotsToSurvey"
+                                               th:field="*{totalPlotsToSurvey}" class="form-control"
+                                               title="Please enter a valid number"/>
+                                        <small id="totalPlotsToSurveyError" class="text-danger"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group row">
+                                    <label for="plotsSurveyedCompleted" class="col-md-7 col-form-label">
+                                        <span class="red-text">11</span> No. of Properties Surveyed in the ULB:
+                                    </label>
+                                    <div class="col-md-5">
+                                        <input type="number" id="plotsSurveyedCompleted" name="plotsSurveyedCompleted"
+                                               th:field="*{plotsSurveyedCompleted}" class="form-control"
+                                               title="Please enter a valid number"/>
+                                        <small id="plotsSurveyedCompletedError" class="text-danger"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group row">
+                                     <label for="surveyCompletionPercent" class="col-md-7 col-form-label">
+                                         <span class="red-text">12</span> Property Wise Survey Completion (%):
+                                     </label>
+                                     <div class="col-md-5">
+                                         <input type="number" id="surveyCompletionPercent" name="surveyCompletionPercent"
+                                                th:field="*{surveyCompletionPercent}" class="form-control" readonly/>
+                                         <small class="text-muted">💡 Auto-calculated: (Completed Properties / Total Properties) × 100</small>
+                                     </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group row">
+                                    <label for="fieldSurveyArea" class="col-md-7 col-form-label">
+                                        <span class="red-text">13</span> Total Area for Field Survey in the ULB (in sq.km.):
+                                    </label>
+                                    <div class="col-md-5">
+                                        <input type="text" id="fieldSurveyArea"
+                                               name="fieldSurveyArea"
+                                               class="form-control"
+                                               th:field="*{fieldSurveyArea}"
+                                               readonly/>
+                                        <small id="fieldSurveyAreaError" class="text-danger"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group row">
+                                    <label for="areaFieldSurveyCompletedULB" class="col-md-7 col-form-label">
+                                        <span class="red-text">14</span> Area where Field Survey is completed in the ULB (in sq.km.):
+                                    </label>
+                                    <div class="col-md-5">
+                                        <input type="number" id="areaFieldSurveyCompletedULB"
+                                               name="areaFieldSurveyCompletedULB"
+                                               class="form-control"
+                                               th:field="*{areaFieldSurveyCompletedULB}"
+                                               min="0"
+                                               step="0.01"
+                                               title="Please enter area in square meters"
+                                               oninput="validateAreaFieldSurveyCompletedULB(); calculateAreaWiseSurveyCompletionPercent();"/>
+                                        <small id="areaFieldSurveyCompletedULBError" class="text-danger"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group row">
+                                     <label for="areaWiseSurveyCompletionPercent" class="col-md-7 col-form-label">
+                                         <span class="red-text">15</span> Area Wise Field Survey Completion (%) (in sq.km.):
+                                     </label>
+                                     <div class="col-md-5">
+                                        <input type="number" id="areaWiseSurveyCompletionPercent"
+                                               name="areaWiseSurveyCompletionPercent"
+                                               class="form-control"
+                                               th:field="*{areaWiseSurveyCompletionPercent}"
+                                               min="0"
+                                               max="100"
+                                               step="0.01"
+                                               readonly
+                                               title="Calculated field"/>
+                                         <small class="text-muted">💡 Auto-calculated: (Completed Area / Total Area) × 100</small>
+                                         <small id="areaWiseSurveyCompletionPercentError" class="text-danger"></small>
+                                     </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Survey Unit Tracking Fields -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group row">
+                                    <label for="totalSurveyUnits" class="col-md-7 col-form-label">
+                                        <span class="red-text">16</span> Total No. of Survey Unit:
+                                    </label>
+                                    <div class="col-md-5">
+                                        <input type="number" id="totalSurveyUnits"
+                                               name="totalSurveyUnits"
+                                               class="form-control"
+                                               th:field="*{totalSurveyUnits}"
+                                               min="0"
+                                               step="1"
+                                               title="Please enter total number of survey units"
+                                               oninput="validateTotalSurveyUnits(); calculateSurveyUnitCompletionPercent();"/>
+                                        <small id="totalSurveyUnitsError" class="text-danger"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group row">
+                                    <label for="surveyUnitsSurveyed" class="col-md-7 col-form-label">
+                                        <span class="red-text">17</span> No. of Survey Unit Surveyed:
+                                    </label>
+                                    <div class="col-md-5">
+                                        <input type="number" id="surveyUnitsSurveyed"
+                                               name="surveyUnitsSurveyed"
+                                               class="form-control"
+                                               th:field="*{surveyUnitsSurveyed}"
+                                               min="0"
+                                               step="1"
+                                               title="Please enter number of survey units surveyed"
+                                               oninput="validateSurveyUnitsSurveyed(); calculateSurveyUnitsPending(); calculateSurveyUnitCompletionPercent();"/>
+                                        <small id="surveyUnitsSurveyedError" class="text-danger"></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group row">
+                                    <label for="surveyUnitsPending" class="col-md-7 col-form-label">
+                                        <span class="red-text">18</span> No. of Survey Unit Pending (to be surveyed):
+                                    </label>
+                                    <div class="col-md-5">
+                                        <input type="number" id="surveyUnitsPending"
+                                               name="surveyUnitsPending"
+                                               class="form-control"
+                                               th:field="*{surveyUnitsPending}"
+                                               min="0"
+                                               step="1"
+                                               readonly
+                                               title="Calculated field: Total - Surveyed"/>
+                                        <small class="text-muted">💡 Auto-calculated: Total Survey Units - Surveyed Units</small>
+                                        <small id="surveyUnitsPendingError" class="text-danger"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group row">
+                                    <label for="surveyUnitCompletionPercent" class="col-md-7 col-form-label">
+                                        <span class="red-text">19</span> Survey Unit wise Survey Completion Percentage (%):
+                                    </label>
+                                    <div class="col-md-5">
+                                        <input type="number" id="surveyUnitCompletionPercent"
+                                               name="surveyUnitCompletionPercent"
+                                               class="form-control"
+                                               th:field="*{surveyUnitCompletionPercent}"
+                                               min="0"
+                                               max="100"
+                                               step="0.01"
+                                               readonly
+                                               title="Calculated field"/>
+                                        <small class="text-muted">💡 Auto-calculated: (Surveyed Units / Total Units) × 100</small>
+                                        <small id="surveyUnitCompletionPercentError" class="text-danger"></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                     <hr>
+
+                     <!-- Section C -->
+                     <!-- <div style="clear: both; width: 100%;">
+                         <h5 class="fw-bold mb-3 section-toggle" onclick="toggleSection('surveyUnitWiseDetailsSection')">
+                             <span>📊 (C) Survey Unit Wise Details</span>
+                             <span class="toggle-icon" id="surveyUnitWiseDetailsToggle">▼</span>
+                         </h5>
+                        <div class="section-content" id="surveyUnitWiseDetailsSection">
+                            <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group row">
+                                    <label for="typeOfSurveyDoneForSurveyUnit" class="col-md-7 col-form-label">
+                                        <span class="red-text">16</span> Type of Survey done for Survey Unit:
+                                    </label>
+                                    <div class="col-md-5">
+                                        <select th:field="*{typeOfSurveyDoneForSurveyUnit}" id="typeOfSurveyDoneForSurveyUnit"
+                                                class="form-control">
+                                            <option value="" disabled selected>Select Type</option>
+                                            <option th:each="status : ${surveyUnitSurveyTypeOptions}"
+                                                    th:value="${status.code}"
+                                                    th:text="${status.description}">
+                                            </option>
+                                        </select>
+                                        <small id="typeOfSurveyDoneForSurveyUnitError" class="text-danger"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group row">
+                                    <label for="totalPropertiesForFieldSurveyInSurveyUnit" class="col-md-7 col-form-label">
+                                        <span class="red-text">17</span> Total Properties for Field Survey in Survey Unit:
+                                    </label>
+                                    <div class="col-md-5">
+                                        <input type="number" id="totalPropertiesForFieldSurveyInSurveyUnit"
+                                               name="totalPropertiesForFieldSurveyInSurveyUnit"
+                                               class="form-control"
+                                               th:field="*{totalPropertiesForFieldSurveyInSurveyUnit}"
+                                               min="0"
+                                               title="Please enter total number of properties"
+                                               oninput="calculatePropertyWiseFieldSurveyCompletionSurveyUnit()"/>
+                                        <small id="totalPropertiesForFieldSurveyInSurveyUnitError" class="text-danger"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group row">
+                                    <label for="noOfPropertiesSurveyedInSurveyUnit" class="col-md-7 col-form-label">
+                                        <span class="red-text">18</span> No. of Properties Surveyed in Survey Unit:
+                                    </label>
+                                    <div class="col-md-5">
+                                        <input type="number" id="noOfPropertiesSurveyedInSurveyUnit"
+                                               name="noOfPropertiesSurveyedInSurveyUnit"
+                                               class="form-control"
+                                               th:field="*{noOfPropertiesSurveyedInSurveyUnit}"
+                                               min="0"
+                                               title="Please enter number of properties surveyed"
+                                               oninput="calculatePropertyWiseFieldSurveyCompletionSurveyUnit()"/>
+                                        <small id="noOfPropertiesSurveyedInSurveyUnitError" class="text-danger"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group row">
+                                    <label for="propertyWiseFieldSurveyCompletionPercent" class="col-md-7 col-form-label">
+                                        <span class="red-text">19</span> Property Wise Field Survey Completion (%):
+                                    </label>
+                                    <div class="col-md-5">
+                                        <input type="number" id="propertyWiseFieldSurveyCompletionPercent"
+                                               name="propertyWiseFieldSurveyCompletionPercent"
+                                               class="form-control"
+                                               th:field="*{propertyWiseFieldSurveyCompletionPercent}"
+                                               min="0"
+                                               max="100"
+                                               step="0.01"
+                                               readonly
+                                               title="Calculated field (Formula: 18/17*100)"/>
+                                        <small id="propertyWiseFieldSurveyCompletionPercentError" class="text-danger"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group row">
+                                    <label for="totalAreaForFieldSurveyInSurveyUnit" class="col-md-7 col-form-label">
+                                        <span class="red-text">20</span> Total Area for Field Survey in Survey Unit (in sq.m):
+                                    </label>
+                                    <div class="col-md-5">
+                                        <input type="number" id="totalAreaForFieldSurveyInSurveyUnit"
+                                               name="totalAreaForFieldSurveyInSurveyUnit"
+                                               class="form-control"
+                                               th:field="*{totalAreaForFieldSurveyInSurveyUnit}"
+                                               min="0"
+                                               step="0.01"
+                                               title="Please enter total area in square meters"
+                                               oninput="calculateAreaWiseFieldSurveyCompletionSurveyUnit()"/>
+                                        <small id="totalAreaForFieldSurveyInSurveyUnitError" class="text-danger"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group row">
+                                    <label for="areaWhereFieldSurveyCompletedInSurveyUnit" class="col-md-7 col-form-label">
+                                        <span class="red-text">21</span> Area where Field Survey is Completed in Survey Unit (in sq.m):
+                                    </label>
+                                    <div class="col-md-5">
+                                        <input type="number" id="areaWhereFieldSurveyCompletedInSurveyUnit"
+                                               name="areaWhereFieldSurveyCompletedInSurveyUnit"
+                                               class="form-control"
+                                               th:field="*{areaWhereFieldSurveyCompletedInSurveyUnit}"
+                                               min="0"
+                                               step="0.01"
+                                               title="Please enter completed area in square meters"
+                                               oninput="calculateAreaWiseFieldSurveyCompletionSurveyUnit()"/>
+                                        <small id="areaWhereFieldSurveyCompletedInSurveyUnitError" class="text-danger"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group row">
+                                    <label for="areaWiseFieldSurveyCompletionPercentSurveyUnit" class="col-md-7 col-form-label">
+                                        <span class="red-text">22</span> Area Wise Field Survey Completion (%):
+                                    </label>
+                                    <div class="col-md-5">
+                                        <input type="number" id="areaWiseFieldSurveyCompletionPercentSurveyUnit"
+                                               name="areaWiseFieldSurveyCompletionPercentSurveyUnit"
+                                               class="form-control"
+                                               th:field="*{areaWiseFieldSurveyCompletionPercentSurveyUnit}"
+                                               min="0"
+                                               max="100"
+                                               step="0.01"
+                                               readonly
+                                               title="Calculated field (Formula: 21/20*100)"/>
+                                        <small id="areaWiseFieldSurveyCompletionPercentSurveyUnitError" class="text-danger"></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                </div>
+
+                     <hr> -->
+
+                     <!-- Section C -->
+                     <div style="clear: both; width: 100%;">
+                         <h5 class="fw-bold mb-3 section-toggle" onclick="toggleSection('workValidationSection')">
+                             <span>✅ (C) Work Validation & Draft UrPro Card Issuance</span>
+                             <span class="toggle-icon" id="workValidationToggle">▼</span>
+                         </h5>
+                        <div class="section-content" id="workValidationSection">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-group row">
+                                        <label for="workValidatedBySupervisoryOfficer" class="col-md-7 col-form-label">
+                                            <span class="red-text">20</span> Work Validated by Supervisory Officer:
+                                        </label>
+                                        <div class="col-md-5">
+                                            <select th:field="*{workValidatedBySupervisoryOfficer}" id="workValidatedBySupervisoryOfficer"
+                                                    class="form-control" required>
+                                                <option value="" disabled selected>Select Option</option>
+                                                <option th:each="status : ${workValidationOptions}"
+                                                        th:value="${status.code}"
+                                                        th:text="${status.description}">
+                                                </option>
+                                            </select>
+                                            <small id="workValidatedBySupervisoryOfficerError" class="text-danger"></small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-group row">
+                                        <label for="totalUrProCardIssued" class="col-md-7 col-form-label">
+                                            <span class="red-text">21</span> No. of Draft Ur-Pro Card Issued:
+                                        </label>
+                                        <div class="col-md-5">
+                                            <input type="number" id="totalUrProCardIssued" name="totalUrProCardIssued"
+                                                   th:field="*{totalUrProCardIssued}" class="form-control" min="0"
+                                                   title="Please enter a valid number (no letters or special characters allowed)"/>
+                                            <small id="totalUrProCardIssuedError" class="text-danger"></small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                     <hr>
+
+                     <!-- Section D -->
+                     <div style="clear: both; width: 100%;">
+                         <h5 class="fw-bold mb-3 section-toggle" onclick="toggleSection('claimsObjectionsReceivedSection')">
+                             <span>📋 (D) Types of Claims & Objections Received</span>
+                             <span class="toggle-icon" id="claimsObjectionsReceivedToggle">▼</span>
+                         </h5>
+                        <div class="section-content" id="claimsObjectionsReceivedSection">
+                            <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group row">
+                                    <label for="claimsObjectionsReceived" class="col-md-7 col-form-label">
+                                        <span class="red-text">22</span> Total No. of Claims & Objections Received:
+                                    </label>
+                                    <div class="col-md-5">
+                                        <input type="number" id="claimsObjectionsReceived" name="claimsObjectionsReceived"
+                                               th:field="*{claimsObjectionsReceived}" class="form-control" min="0"
+                                               title="Please enter a valid number (no letters or special characters allowed)"/>
+                                        <small id="claimsObjectionsReceivedError" class="text-danger"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group row">
+                                    <label for="noOfClaimsWithBoundaryDisputes" class="col-md-7 col-form-label">
+                                        <span class="red-text">23</span> No. of Claims with Boundary Disputes:
+                                    </label>
+                                    <div class="col-md-5">
+                                        <input type="number" id="noOfClaimsWithBoundaryDisputes"
+                                               name="noOfClaimsWithBoundaryDisputes"
+                                               class="form-control"
+                                               th:field="*{noOfClaimsWithBoundaryDisputes}"
+                                               min="0"
+                                               title="Please enter number of claims with boundary disputes"/>
+                                        <small id="noOfClaimsWithBoundaryDisputesError" class="text-danger"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group row">
+                                    <label for="noOfClaimsWithOwnershipConflicts" class="col-md-7 col-form-label">
+                                        <span class="red-text">24</span> No. of Claims with Ownership Conflicts:
+                                    </label>
+                                    <div class="col-md-5">
+                                        <input type="number" id="noOfClaimsWithOwnershipConflicts"
+                                               name="noOfClaimsWithOwnershipConflicts"
+                                               class="form-control"
+                                               th:field="*{noOfClaimsWithOwnershipConflicts}"
+                                               min="0"
+                                               title="Please enter number of claims with ownership conflicts"/>
+                                        <small id="noOfClaimsWithOwnershipConflictsError" class="text-danger"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group row">
+                                    <label for="noOfClaimsWithDataErrors" class="col-md-7 col-form-label">
+                                        <span class="red-text">25</span> No. of Claims with Data Errors:
+                                    </label>
+                                    <div class="col-md-5">
+                                        <input type="number" id="noOfClaimsWithDataErrors"
+                                               name="noOfClaimsWithDataErrors"
+                                               class="form-control"
+                                               th:field="*{noOfClaimsWithDataErrors}"
+                                               min="0"
+                                               title="Please enter number of claims with data errors"/>
+                                        <small id="noOfClaimsWithDataErrorsError" class="text-danger"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group row">
+                                    <label for="noOfClaimsWithAdministrativeIssues" class="col-md-7 col-form-label">
+                                        <span class="red-text">26</span> No. of Claims with Administrative Issues:
+                                    </label>
+                                    <div class="col-md-5">
+                                        <input type="number" id="noOfClaimsWithAdministrativeIssues"
+                                               name="noOfClaimsWithAdministrativeIssues"
+                                               class="form-control"
+                                               th:field="*{noOfClaimsWithAdministrativeIssues}"
+                                               min="0"
+                                               title="Please enter number of claims with administrative issues"/>
+                                        <small id="noOfClaimsWithAdministrativeIssuesError" class="text-danger"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group row">
+                                    <label for="noOfAnyOtherClaims" class="col-md-7 col-form-label">
+                                        <span class="red-text">27</span> No. of Any other Claims:
+                                    </label>
+                                    <div class="col-md-5">
+                                        <input type="number" id="noOfAnyOtherClaims"
+                                               name="noOfAnyOtherClaims"
+                                               class="form-control"
+                                               th:field="*{noOfAnyOtherClaims}"
+                                               min="0"
+                                               title="Please enter number of any other claims"/>
+                                        <small id="noOfAnyOtherClaimsError" class="text-danger"></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+
+                     <hr>
+
+                     <!-- Section E -->
+                     <div style="clear: both; width: 100%;">
+                         <h5 class="fw-bold mb-3 section-toggle" onclick="toggleSection('claimsObjectionsResolutionSection')">
+                             <span>🔧 (E) Claims & Objections Resolution</span>
+                             <span class="toggle-icon" id="claimsObjectionsResolutionToggle">▼</span>
+                         </h5>
+                        <div class="section-content" id="claimsObjectionsResolutionSection">
+                            <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group row">
+                                    <label for="claimsObjectionsResolved" class="col-md-7 col-form-label">
+                                        <span class="red-text">28</span> Total No. of Claims & Objections Resolved:
+                                    </label>
+                                    <div class="col-md-5">
+                                        <input type="number" id="claimsObjectionsResolved" name="claimsObjectionsResolved"
+                                               th:field="*{claimsObjectionsResolved}" class="form-control" min="0"
+                                               oninput="validateClaimsResolved()"/>
+                                        <small class="text-muted">💡 Auto-validated: Resolved cannot exceed Received</small>
+                                        <small id="claimsObjectionsResolvedError" class="text-danger" style="display: block;"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group row">
+                                    <label for="claimsResolutionPercentage" class="col-md-7 col-form-label">
+                                        <span class="red-text">29</span> Claims & Disputes Resolution Percentage:
+                                    </label>
+                                    <div class="col-md-5">
+                                        <input type="number" id="claimsResolutionPercentage"
+                                               name="claimsResolutionPercentage"
+                                               class="form-control" readonly/>
+                                        <small id="claimsResolutionPercentageError" class="text-danger"></small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group row">
+                                    <label for="noOfClaimsObjectionsPending" class="col-md-7 col-form-label">
+                                        <span class="red-text">30</span> No. of Claims & Objections Pending:
+                                    </label>
+                                    <div class="col-md-5">
+                                        <input type="number" id="noOfClaimsObjectionsPending"
+                                               name="noOfClaimsObjectionsPending"
+                                               class="form-control"
+                                               th:field="*{noOfClaimsObjectionsPending}"
+                                               min="0"
+                                               readonly
+                                               title="Auto-calculated: Total Received - Total Resolved"/>
+                                        <small id="noOfClaimsObjectionsPendingError" class="text-danger"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group row">
+                                    <label for="percentOfClaimsDisputesResolution" class="col-md-7 col-form-label">
+                                        <span class="red-text">31</span>  Claims & Objections Resolution Pending (%):
+                                    </label>
+                                    <div class="col-md-5">
+                                        <input type="number" id="percentOfClaimsDisputesResolution"
+                                               name="percentOfClaimsDisputesResolution"
+                                               class="form-control"
+                                               th:field="*{percentOfClaimsDisputesResolution}"
+                                               min="0"
+                                               max="100"
+                                               step="0.01"
+                                               readonly
+                                               title="Auto-calculated: (Pending / Total Received) × 100"/>
+                                        <small id="percentOfClaimsDisputesResolutionError" class="text-danger"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group row">
+                                    <label for="totalFinalUrProCardIssued" class="col-md-7 col-form-label">
+                                        <span class="red-text">32</span> Total No. of Final Ur Pro Card Issued:
+                                    </label>
+                                    <div class="col-md-5">
+                                        <input type="number" id="totalFinalUrProCardIssued" name="totalFinalUrProCardIssued"
+                                               th:field="*{totalFinalUrProCardIssued}" class="form-control" min="0"
+                                               title="Please enter a valid number (no letters or special characters allowed)"/>
+                                        <small id="totalFinalUrProCardIssuedError" class="text-danger"></small>
+                                    </div>
+                                </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <script>
+    const commencementDateInput = document.getElementById('groundTruthingCommencementDate');
+    const completionDateInput = document.getElementById('groundTruthingCompletionDate');
+    const commencementError = document.getElementById('groundTruthingCommencementDateError');
+    const completionError = document.getElementById('groundTruthingCompletionDateError');
+    const commencementWarning = document.getElementById('groundTruthingCommencementDateWarning');
+
+    // Store the original saved date value (if it exists)
+    const originalCommencementDate = commencementDateInput.value;
+    const isCommencementDateLocked = commencementDateInput.disabled;
+
+    // Function to show one-time entry validation message
+    function showOneTimeEntryValidation() {
+        commencementError.innerHTML = '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> <strong>One-Time Entry Restriction:</strong> Ground Truthing Commencement Date can only be entered once. The date has already been saved and cannot be modified.';
+        commencementError.style.display = 'block';
+        commencementError.style.color = '#dc3545';
+        commencementError.style.fontWeight = '500';
+
+        // Scroll to the error message
+        commencementError.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+        // Hide message after 8 seconds
+        setTimeout(function() {
+            commencementError.textContent = '';
+        }, 8000);
+    }
+
+    // Show validation message on page load if date is locked
+    if (isCommencementDateLocked && originalCommencementDate) {
+        // Add visual indicator
+        commencementDateInput.style.cursor = 'not-allowed';
+        commencementDateInput.setAttribute('title', 'This date can only be entered once. The date has already been saved.');
+
+        // Show persistent warning message
+        if (commencementWarning) {
+            commencementWarning.style.display = 'block';
+        }
+    }
+
+    // 🔒 Lock commencement date if it's already saved
+    if (isCommencementDateLocked && originalCommencementDate) {
+        // Prevent any changes to the locked field with validation message
+        commencementDateInput.addEventListener('focus', function(e) {
+            e.preventDefault();
+            this.blur();
+            showOneTimeEntryValidation();
+        });
+
+        // Prevent manual value changes with validation message
+        commencementDateInput.addEventListener('input', function(e) {
+            if (this.value !== originalCommencementDate) {
+                this.value = originalCommencementDate;
+                showOneTimeEntryValidation();
+            }
+        });
+
+        // Prevent change events with validation message
+        commencementDateInput.addEventListener('change', function(e) {
+            if (this.value !== originalCommencementDate) {
+                this.value = originalCommencementDate;
+                showOneTimeEntryValidation();
+            }
+        });
+
+        // Prevent click events
+        commencementDateInput.addEventListener('click', function(e) {
+            if (this.disabled) {
+                e.preventDefault();
+                showOneTimeEntryValidation();
+            }
+        });
+    }
+
+    // 🔄 Validate date order - Completion date should not be before Commencement date
+    function validateDateOrder() {
+        commencementError.textContent = '';
+        completionError.textContent = '';
+
+        // Only validate if both dates are provided
+        if (!commencementDateInput.value || !completionDateInput.value) {
+            return;
+        }
+
+        const commencementDate = new Date(commencementDateInput.value);
+        const completionDate = new Date(completionDateInput.value);
+
+        // If completion date is before commencement date, show error and clear completion date
+        if (commencementDate > completionDate) {
+            completionDateInput.value = '';
+            completionError.textContent = 'Completion Date cannot be before Commencement Date. Please enter a date on or after the Commencement Date.';
+            completionDateInput.focus();
+        }
+    }
+
+    // Attach change listeners to inputs
+    // If commencement date changes and completion date exists, validate and update min
+    if (!isCommencementDateLocked) {
+        commencementDateInput.addEventListener('change', function() {
+            updateCompletionDateMin();
+            if (completionDateInput.value) {
+                validateDateOrder();
+            }
+        });
+    }
+    // If completion date changes, validate against commencement date
+    completionDateInput.addEventListener('change', validateDateOrder);
+
+    // 🔒 Prevent future dates via max attribute
+    const todayISO = new Date().toISOString().split('T')[0];
+    if (!isCommencementDateLocked) {
+        commencementDateInput.setAttribute('max', todayISO);
+    }
+    completionDateInput.setAttribute('max', '');
+
+    // Set minimum date for completion date based on commencement date
+    function updateCompletionDateMin() {
+        if (commencementDateInput.value) {
+            completionDateInput.setAttribute('min', commencementDateInput.value);
+        } else {
+            completionDateInput.removeAttribute('min');
+        }
+    }
+
+    // Update min attribute when commencement date changes
+    if (!isCommencementDateLocked) {
+        commencementDateInput.addEventListener('change', updateCompletionDateMin);
+    }
+
+    // Set initial min value if commencement date already exists
+    if (commencementDateInput.value) {
+        updateCompletionDateMin();
+    }
+
+
+    // ✅ Full validation on form submit
+    document.getElementById('nakshaGTDataEntryForm').addEventListener('submit', function (e) {
+        const commencementDate = commencementDateInput.value;
+        const completionDate = completionDateInput.value;
+
+        commencementError.textContent = '';
+        completionError.textContent = '';
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Remove time
+
+        let formIsValid = true;
+
+        // Validate one-time entry restriction on form submit
+        if (isCommencementDateLocked && originalCommencementDate) {
+            if (commencementDate !== originalCommencementDate) {
+                commencementError.innerHTML = '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> <strong>One-Time Entry Restriction:</strong> Ground Truthing Commencement Date can only be entered once. The saved date cannot be modified. Please refresh the page to see the original saved date.';
+                commencementError.style.display = 'block';
+                commencementError.style.color = '#dc3545';
+                commencementError.style.fontWeight = '500';
+                formIsValid = false;
+                e.preventDefault();
+                commencementDateInput.value = originalCommencementDate;
+                commencementDateInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return false;
+            }
+        }
+
+        // Skip commencement date validation if it's locked (already saved)
+        if (!isCommencementDateLocked) {
+            if (!commencementDate) {
+                commencementError.textContent = 'Ground Truthing Commencement Date is required.';
+                formIsValid = false;
+            }
+        }
+
+        // Completion date is optional, but if provided, validate it
+        if (formIsValid) {
+            // Validate commencement date (if not locked)
+            if (!isCommencementDateLocked && commencementDate) {
+                const commencement = new Date(commencementDate);
+                if (commencement > today) {
+                    commencementError.textContent = 'Commencement Date cannot be in the future.';
+                    formIsValid = false;
+                }
+            }
+
+            // Validate completion date only if it's provided (optional field)
+            if (completionDate) {
+                const completion = new Date(completionDate);
+
+                // Check if completion date is in the future
+
+
+                // Check if completion date is before commencement date (dependency validation)
+                if (commencementDate) {
+                    const commencement = new Date(commencementDate);
+                    if (commencement > completion) {
+                        completionError.textContent = 'Completion Date cannot be before Commencement Date. Please enter a date on or after ' +
+                            new Date(commencementDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) + '.';
+                        formIsValid = false;
+                    }
+                } else {
+                    // If commencement date is not provided but completion is, show error
+                    if (!isCommencementDateLocked) {
+                        completionError.textContent = 'Please enter Commencement Date first before entering Completion Date.';
+                        formIsValid = false;
+                    }
+                }
+            }
+        }
+
+        if (!formIsValid) {
+            e.preventDefault();
+        }
+    });
+
+
+
+
+
+                        </script>
+                        <script>
+    function limitWords(input, maxWords) {
+    const errorField = document.getElementById('surveyUnitTextError');
+    const words = input.value.trim().split(/\s+/).filter(word => word.length > 0);
+
+    if (words.length > maxWords) {
+        input.value = words.slice(0, maxWords).join(' ');
+        errorField.textContent = `Only ${maxWords} words are allowed.`;
+    } else {
+        errorField.textContent = '';
+    }
+}
+
+// Global function to toggle survey unit text field
+function toggleSurveyUnitTextField() {
+    const dropdown = document.getElementById('surveyUnitNameOptions');
+    const textInput = document.getElementById('surveyUnitText');
+    const errorField = document.getElementById('surveyUnitTextError');
+
+    if (!dropdown || !textInput || !errorField) {
+        console.warn('Required elements not found for toggleSurveyUnitTextField');
+        return;
+    }
+
+    const selectedValue = dropdown.value.trim();
+    console.log('Survey unit dropdown value:', selectedValue);
+
+    if (selectedValue === '7') { // "Others" option selected
+        textInput.disabled = false;
+        console.log('Enabled survey unit text field for "Others" option');
+    } else {
+        textInput.disabled = true;
+        if (selectedValue !== '7') { // Only clear if not "Others"
+            textInput.value = '';
+            errorField.textContent = '';
+        }
+        console.log('Disabled survey unit text field for option:', selectedValue);
+    }
+}
+
+// Function to toggle field enable/disable based on survey type selection (Property/Area) for ULB
+function toggleSurveyTypeFields() {
+    const surveyTypeDropdown = document.getElementById('typeOfSurveyDone');
+
+    if (!surveyTypeDropdown) {
+        console.warn('Survey type dropdown not found');
+        return;
+    }
+
+    const selectedValue = surveyTypeDropdown.value.trim();
+    console.log('Survey type selected:', selectedValue);
+
+    // Define field IDs based on Excel structure
+    const propertyFields = [
+        'totalPlotsToSurvey',           // 10 Total No. of Property for Field Survey
+        'plotsSurveyedCompleted',       // 11 No. of Property where Field Survey is Completed
+        'surveyCompletionPercent'       // 12 Completion Percentage of Field Survey (%)
+    ];
+
+    const areaFields = [
+        'fieldSurveyArea',              // 13 Field Survey Area (in sq.km.) - readonly
+        'areaFieldSurveyCompletedULB',  // 14 Area where Field Survey is completed in the ULB (in sq.km.)
+        'areaWiseSurveyCompletionPercent' // 15 Area Wise Survey Completion (%)
+    ];
+
+    // Disable all fields first
+    [...propertyFields, ...areaFields].forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            field.disabled = true;
+            // Don't clear values, just disable
+        }
+    });
+
+    // Enable relevant fields based on selection
+    if (selectedValue === '1' || selectedValue.toLowerCase().includes('property')) {
+        // Enable property fields only
+        propertyFields.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.disabled = false;
+            }
+        });
+        console.log('Enabled property-related fields (10, 11, 12)');
+    } else if (selectedValue === '2' || selectedValue.toLowerCase().includes('area')) {
+        // Enable area fields only
+        areaFields.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.disabled = false;
+            }
+        });
+        console.log('Enabled area-related fields (13, 14, 15)');
+    } else if (selectedValue === '3' || selectedValue.toLowerCase().includes('both')) {
+        // Enable both property and area fields
+        [...propertyFields, ...areaFields].forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.disabled = false;
+            }
+        });
+        console.log('Enabled both property and area fields (10-15)');
+    }
+}
+
+// Function to toggle field enable/disable based on Survey Unit survey type selection (Property/Area)
+function toggleSurveyUnitTypeFields() {
+    const surveyUnitTypeDropdown = document.getElementById('typeOfSurveyDoneForSurveyUnit');
+
+    if (!surveyUnitTypeDropdown) {
+        console.warn('Survey Unit type dropdown not found');
+        return;
+    }
+
+    const selectedValue = surveyUnitTypeDropdown.value.trim();
+    console.log('Survey Unit type selected:', selectedValue);
+
+    // Define field IDs for Survey Unit section
+    const propertyFields = [
+        'totalPropertiesForFieldSurveyInSurveyUnit',    // 17 Total Properties for Field Survey in Survey Unit
+        'noOfPropertiesSurveyedInSurveyUnit',           // 18 No. of Properties Surveyed in Survey Unit
+        'propertyWiseFieldSurveyCompletionPercent'      // 19 Property Wise Field Survey Completion (%)
+    ];
+
+    const areaFields = [
+        'totalAreaForFieldSurveyInSurveyUnit',          // 20 Total Area for Field Survey in Survey Unit (in sq.m)
+        'areaWhereFieldSurveyCompletedInSurveyUnit',    // 21 Area where Field Survey is Completed in Survey Unit (in sq.m)
+        'areaWiseFieldSurveyCompletionPercentSurveyUnit' // 22 Area Wise Field Survey Completion (%)
+    ];
+
+    // Disable all fields first
+    [...propertyFields, ...areaFields].forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            field.disabled = true;
+            // Don't clear values, just disable
+        }
+    });
+
+    // Enable relevant fields based on selection
+    if (selectedValue === '1' || selectedValue.toLowerCase().includes('property')) {
+        // Enable property fields only
+        propertyFields.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.disabled = false;
+            }
+        });
+        console.log('Enabled Survey Unit property-related fields (17, 18, 19)');
+    } else if (selectedValue === '2' || selectedValue.toLowerCase().includes('area')) {
+        // Enable area fields only
+        areaFields.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.disabled = false;
+            }
+        });
+        console.log('Enabled Survey Unit area-related fields (20, 21, 22)');
+    } else if (selectedValue === '3' || selectedValue.toLowerCase().includes('both')) {
+        // Enable both property and area fields
+        [...propertyFields, ...areaFields].forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.disabled = false;
+            }
+        });
+        console.log('Enabled both Survey Unit property and area fields (17-22)');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const dropdown = document.getElementById('surveyUnitNameOptions');
+    const textInput = document.getElementById('surveyUnitText');
+    const errorField = document.getElementById('surveyUnitTextError');
+
+    if (textInput) {
+        textInput.addEventListener('input', () => limitWords(textInput, 20));
+    }
+
+    if (dropdown) {
+        dropdown.addEventListener('change', toggleSurveyUnitTextField);
+    }
+
+    // Add event listener for survey type dropdown (Field 9)
+    const surveyTypeDropdown = document.getElementById('typeOfSurveyDone');
+    if (surveyTypeDropdown) {
+        surveyTypeDropdown.addEventListener('change', toggleSurveyTypeFields);
+    }
+
+    // Add event listener for Survey Unit survey type dropdown (Field 16)
+    const surveyUnitTypeDropdown = document.getElementById('typeOfSurveyDoneForSurveyUnit');
+    if (surveyUnitTypeDropdown) {
+        surveyUnitTypeDropdown.addEventListener('change', toggleSurveyUnitTypeFields);
+    }
+
+    // Run on page load
+    toggleSurveyUnitTextField();
+    toggleSurveyTypeFields();
+    toggleSurveyUnitTypeFields();
+});
+
+// Function to calculate Property Wise Field Survey Completion percentage for Survey Unit
+function calculatePropertyWiseFieldSurveyCompletionSurveyUnit() {
+    const totalPropertiesField = document.getElementById('totalPropertiesForFieldSurveyInSurveyUnit');
+    const propertiesCompletedField = document.getElementById('noOfPropertiesSurveyedInSurveyUnit');
+    const percentageField = document.getElementById('propertyWiseFieldSurveyCompletionPercent');
+
+    const totalProperties = parseFloat(totalPropertiesField.value);
+    const propertiesCompleted = parseFloat(propertiesCompletedField.value);
+
+    const percentageError = document.getElementById('propertyWiseFieldSurveyCompletionPercentError');
+
+    // Clear percentage and error by default
+    if (percentageError) percentageError.textContent = '';
+    percentageField.value = '';
+
+    if (!isNaN(totalProperties) && totalProperties > 0 && !isNaN(propertiesCompleted)) {
+        const percentage = (propertiesCompleted / totalProperties) * 100;
+
+        if (percentage > 100) {
+            if (percentageError) percentageError.textContent = 'Property completion percentage cannot exceed 100%.';
+            return;
+        }
+
+        percentageField.value = percentage.toFixed(2);
+    }
+}
+
+// Function to calculate Area Wise Field Survey Completion percentage for Survey Unit
+function calculateAreaWiseFieldSurveyCompletionSurveyUnit() {
+    const totalAreaField = document.getElementById('totalAreaForFieldSurveyInSurveyUnit');
+    const areaCompletedField = document.getElementById('areaWhereFieldSurveyCompletedInSurveyUnit');
+    const percentageField = document.getElementById('areaWiseFieldSurveyCompletionPercentSurveyUnit');
+
+    const totalArea = parseFloat(totalAreaField.value);
+    const areaCompleted = parseFloat(areaCompletedField.value);
+
+    const percentageError = document.getElementById('areaWiseFieldSurveyCompletionPercentSurveyUnitError');
+
+    // Clear percentage and error by default
+    if (percentageError) percentageError.textContent = '';
+    percentageField.value = '';
+
+    if (!isNaN(totalArea) && totalArea > 0 && !isNaN(areaCompleted)) {
+        const percentage = (areaCompleted / totalArea) * 100;
+
+        if (percentage > 100) {
+            if (percentageError) percentageError.textContent = 'Area completion percentage cannot exceed 100%.';
+            return;
+        }
+
+        percentageField.value = percentage.toFixed(2);
+    }
+}
+
+// Add event listeners for Survey Unit calculations
+document.addEventListener('DOMContentLoaded', function() {
+    // Property calculation event listeners for Survey Unit
+    const totalPropertiesSurveyUnitInput = document.getElementById('totalPropertiesForFieldSurveyInSurveyUnit');
+    const propertiesCompletedSurveyUnitInput = document.getElementById('noOfPropertiesSurveyedInSurveyUnit');
+
+    // Attach input event on both property fields
+    if (totalPropertiesSurveyUnitInput) {
+        totalPropertiesSurveyUnitInput.addEventListener('input', calculatePropertyWiseFieldSurveyCompletionSurveyUnit);
+    }
+    if (propertiesCompletedSurveyUnitInput) {
+        propertiesCompletedSurveyUnitInput.addEventListener('input', function () {
+            const totalProperties = parseFloat(totalPropertiesSurveyUnitInput.value);
+            const propertiesCompleted = parseFloat(propertiesCompletedSurveyUnitInput.value);
+            const propertiesCompletedError = document.getElementById('noOfPropertiesSurveyedInSurveyUnitError');
+
+            // Clear error by default
+            if (propertiesCompletedError) propertiesCompletedError.textContent = '';
+
+            if (!isNaN(totalProperties) && !isNaN(propertiesCompleted) && propertiesCompleted > totalProperties) {
+                propertiesCompletedSurveyUnitInput.value = '';
+                if (propertiesCompletedError) propertiesCompletedError.textContent = 'Completed properties cannot be more than total properties.';
+            }
+
+            calculatePropertyWiseFieldSurveyCompletionSurveyUnit(); // Recalculate if still valid
+        });
+    }
+
+    // Area calculation event listeners for Survey Unit
+    const totalAreaSurveyUnitInput = document.getElementById('totalAreaForFieldSurveyInSurveyUnit');
+    const areaCompletedSurveyUnitInput = document.getElementById('areaWhereFieldSurveyCompletedInSurveyUnit');
+
+    // Attach input event on both area fields
+    if (totalAreaSurveyUnitInput) {
+        totalAreaSurveyUnitInput.addEventListener('input', calculateAreaWiseFieldSurveyCompletionSurveyUnit);
+    }
+    if (areaCompletedSurveyUnitInput) {
+        areaCompletedSurveyUnitInput.addEventListener('input', function () {
+            const totalArea = parseFloat(totalAreaSurveyUnitInput.value);
+            const areaCompleted = parseFloat(areaCompletedSurveyUnitInput.value);
+            const areaCompletedError = document.getElementById('areaWhereFieldSurveyCompletedInSurveyUnitError');
+
+            // Clear error by default
+            if (areaCompletedError) areaCompletedError.textContent = '';
+
+            if (!isNaN(totalArea) && !isNaN(areaCompleted) && areaCompleted > totalArea) {
+                areaCompletedSurveyUnitInput.value = '';
+                if (areaCompletedError) areaCompletedError.textContent = 'Completed area cannot be more than total area.';
+            }
+
+            calculateAreaWiseFieldSurveyCompletionSurveyUnit(); // Recalculate if still valid
+        });
+    }
+});
+
+// Add event listener for validation and percentage calculation
+document.addEventListener('DOMContentLoaded', function() {
+    // Area completion percentage calculation event listeners
+    const fieldSurveyAreaInput = document.getElementById('fieldSurveyArea');
+    const areaFieldSurveyCompletedULBInput = document.getElementById('areaFieldSurveyCompletedULB');
+
+    // Attach change event on fieldSurveyArea to revalidate when it changes
+    if (fieldSurveyAreaInput) {
+        fieldSurveyAreaInput.addEventListener('change', function() {
+            validateAreaFieldSurveyCompletedULB();
+            calculateAreaWiseSurveyCompletionPercent();
+        });
+    }
+
+    // Attach input event on areaFieldSurveyCompletedULB for real-time validation and percentage calculation
+    if (areaFieldSurveyCompletedULBInput) {
+        areaFieldSurveyCompletedULBInput.addEventListener('input', function() {
+            validateAreaFieldSurveyCompletedULB();
+            calculateAreaWiseSurveyCompletionPercent();
+        });
+        areaFieldSurveyCompletedULBInput.addEventListener('change', function() {
+            validateAreaFieldSurveyCompletedULB();
+            calculateAreaWiseSurveyCompletionPercent();
+        });
+    }
+});
+
+
+// Function to validate Area where Field Survey is completed in the ULB
+function validateAreaFieldSurveyCompletedULB() {
+    const fieldSurveyAreaField = document.getElementById('fieldSurveyArea');
+    const areaFieldSurveyCompletedULBField = document.getElementById('areaFieldSurveyCompletedULB');
+    const areaCompletedError = document.getElementById('areaFieldSurveyCompletedULBError');
+
+    if (!fieldSurveyAreaField || !areaFieldSurveyCompletedULBField || !areaCompletedError) {
+        console.log('One or more required fields not found for validation');
+        return;
+    }
+
+    const fieldSurveyArea = parseFloat(fieldSurveyAreaField.value);
+    const areaFieldSurveyCompletedULB = parseFloat(areaFieldSurveyCompletedULBField.value);
+
+    console.log('Validation check:', {
+        fieldSurveyArea: fieldSurveyArea,
+        areaFieldSurveyCompletedULB: areaFieldSurveyCompletedULB,
+        fieldSurveyAreaValid: !isNaN(fieldSurveyArea) && fieldSurveyArea > 0,
+        areaFieldSurveyCompletedULBValid: !isNaN(areaFieldSurveyCompletedULB) && areaFieldSurveyCompletedULB > 0
+    });
+
+    // Clear error by default
+    areaCompletedError.textContent = '';
+
+    // Check if both values are valid numbers
+    if (!isNaN(fieldSurveyArea) && fieldSurveyArea > 0 && !isNaN(areaFieldSurveyCompletedULB) && areaFieldSurveyCompletedULB > 0) {
+        // Convert fieldSurveyArea from sq.km to sq.m for comparison
+        const fieldSurveyAreaInSqM = fieldSurveyArea * 1000000; // 1 sq.km = 1,000,000 sq.m
+
+        console.log('Comparison:', {
+            areaFieldSurveyCompletedULB: areaFieldSurveyCompletedULB,
+            fieldSurveyAreaInSqM: fieldSurveyAreaInSqM,
+            isExceeding: areaFieldSurveyCompletedULB > fieldSurveyAreaInSqM
+        });
+
+        if (areaFieldSurveyCompletedULB > fieldSurveyAreaInSqM) {
+            areaFieldSurveyCompletedULBField.value = '';
+            areaCompletedError.textContent = 'Completed area cannot be more than total field survey area (' + fieldSurveyAreaInSqM.toLocaleString() + ' sq.m).';
+            console.log('Validation error triggered');
+            return;
+        }
+    }
+}
+
+// Function to calculate Area Wise Survey Completion percentage for ULB (Field 15)
+function calculateAreaWiseSurveyCompletionPercent() {
+    const fieldSurveyAreaField = document.getElementById('fieldSurveyArea');
+    const areaFieldSurveyCompletedULBField = document.getElementById('areaFieldSurveyCompletedULB');
+    const percentageField = document.getElementById('areaWiseSurveyCompletionPercent');
+
+    if (!fieldSurveyAreaField || !areaFieldSurveyCompletedULBField || !percentageField) {
+        console.log('One or more required fields not found for area percentage calculation');
+        return;
+    }
+
+    const fieldSurveyArea = parseFloat(fieldSurveyAreaField.value);
+    const areaFieldSurveyCompletedULB = parseFloat(areaFieldSurveyCompletedULBField.value);
+
+    const percentageError = document.getElementById('areaWiseSurveyCompletionPercentError');
+
+    // Debug: Log the raw values
+    console.log('Raw field values:', {
+        fieldSurveyAreaValue: fieldSurveyAreaField.value,
+        areaFieldSurveyCompletedULBValue: areaFieldSurveyCompletedULBField.value,
+        fieldSurveyAreaParsed: fieldSurveyArea,
+        areaFieldSurveyCompletedULBParsed: areaFieldSurveyCompletedULB
+    });
+
+    // Clear percentage and error by default
+    if (percentageError) percentageError.textContent = '';
+    percentageField.value = '';
+
+    // Check if both values are valid numbers
+    if (!isNaN(fieldSurveyArea) && fieldSurveyArea > 0 && !isNaN(areaFieldSurveyCompletedULB) && areaFieldSurveyCompletedULB > 0) {
+        // Simple percentage calculation: (completed / total) * 100
+        // No unit conversion - treat both values as the same units for percentage calculation
+        const percentage = (areaFieldSurveyCompletedULB / fieldSurveyArea) * 100;
+
+        console.log('Area calculation details:', {
+            fieldSurveyArea: fieldSurveyArea,
+            areaFieldSurveyCompletedULB: areaFieldSurveyCompletedULB,
+            percentage: percentage
+        });
+
+        if (percentage > 100) {
+            if (percentageError) percentageError.textContent = 'Area completion percentage cannot exceed 100%.';
+            return;
+        }
+
+        // Display percentage with 2 decimal places
+        percentageField.value = percentage.toFixed(2);
+
+        console.log('Area Wise Survey Completion percentage calculated:', percentageField.value + '%');
+    }
+}
+
+// Function to validate Total Survey Units
+function validateTotalSurveyUnits() {
+    const totalSurveyUnitsField = document.getElementById('totalSurveyUnits');
+    const surveyUnitsSurveyedField = document.getElementById('surveyUnitsSurveyed');
+    const totalSurveyUnitsError = document.getElementById('totalSurveyUnitsError');
+
+    if (!totalSurveyUnitsField || !totalSurveyUnitsError) {
+        console.log('Total survey units field or error element not found');
+        return;
+    }
+
+    const totalSurveyUnits = parseFloat(totalSurveyUnitsField.value);
+    const surveyUnitsSurveyed = parseFloat(surveyUnitsSurveyedField.value);
+
+    // Clear error by default
+    totalSurveyUnitsError.textContent = '';
+
+    // Validate that total survey units is not negative
+    if (!isNaN(totalSurveyUnits) && totalSurveyUnits < 0) {
+        totalSurveyUnitsError.textContent = 'Total survey units cannot be negative.';
+        return;
+    }
+
+    // Validate that surveyed units don't exceed total units
+    if (!isNaN(totalSurveyUnits) && !isNaN(surveyUnitsSurveyed) && surveyUnitsSurveyed > totalSurveyUnits) {
+        totalSurveyUnitsError.textContent = 'Total survey units cannot be less than surveyed units.';
+        return;
+    }
+}
+
+// Function to validate Survey Units Surveyed
+function validateSurveyUnitsSurveyed() {
+    const totalSurveyUnitsField = document.getElementById('totalSurveyUnits');
+    const surveyUnitsSurveyedField = document.getElementById('surveyUnitsSurveyed');
+    const surveyUnitsSurveyedError = document.getElementById('surveyUnitsSurveyedError');
+
+    if (!surveyUnitsSurveyedField || !surveyUnitsSurveyedError) {
+        console.log('Survey units surveyed field or error element not found');
+        return;
+    }
+
+    const totalSurveyUnits = parseFloat(totalSurveyUnitsField.value);
+    const surveyUnitsSurveyed = parseFloat(surveyUnitsSurveyedField.value);
+
+    // Clear error by default
+    surveyUnitsSurveyedError.textContent = '';
+
+    // Validate that surveyed units is not negative
+    if (!isNaN(surveyUnitsSurveyed) && surveyUnitsSurveyed < 0) {
+        surveyUnitsSurveyedError.textContent = 'Survey units surveyed cannot be negative.';
+        return;
+    }
+
+    // Validate that surveyed units don't exceed total units
+    if (!isNaN(totalSurveyUnits) && !isNaN(surveyUnitsSurveyed) && surveyUnitsSurveyed > totalSurveyUnits) {
+        surveyUnitsSurveyedError.textContent = 'Survey units surveyed cannot exceed total survey units.';
+        return;
+    }
+}
+
+// Function to calculate Survey Units Pending
+function calculateSurveyUnitsPending() {
+    const totalSurveyUnitsField = document.getElementById('totalSurveyUnits');
+    const surveyUnitsSurveyedField = document.getElementById('surveyUnitsSurveyed');
+    const surveyUnitsPendingField = document.getElementById('surveyUnitsPending');
+
+    if (!totalSurveyUnitsField || !surveyUnitsSurveyedField || !surveyUnitsPendingField) {
+        console.log('One or more required fields not found for survey units pending calculation');
+        return;
+    }
+
+    const totalSurveyUnits = parseFloat(totalSurveyUnitsField.value);
+    const surveyUnitsSurveyed = parseFloat(surveyUnitsSurveyedField.value);
+
+    const pendingError = document.getElementById('surveyUnitsPendingError');
+
+    // Clear error by default
+    if (pendingError) pendingError.textContent = '';
+    surveyUnitsPendingField.value = '';
+
+    // Check if both values are valid numbers
+    if (!isNaN(totalSurveyUnits) && totalSurveyUnits >= 0 && !isNaN(surveyUnitsSurveyed) && surveyUnitsSurveyed >= 0) {
+        const pending = totalSurveyUnits - surveyUnitsSurveyed;
+
+        if (pending < 0) {
+            if (pendingError) pendingError.textContent = 'Surveyed units cannot exceed total survey units.';
+            return;
+        }
+
+        surveyUnitsPendingField.value = pending.toFixed(0);
+        console.log('Survey Units Pending calculated:', pending);
+    }
+}
+
+// Function to calculate Survey Unit Completion Percentage
+function calculateSurveyUnitCompletionPercent() {
+    const totalSurveyUnitsField = document.getElementById('totalSurveyUnits');
+    const surveyUnitsSurveyedField = document.getElementById('surveyUnitsSurveyed');
+    const surveyUnitCompletionPercentField = document.getElementById('surveyUnitCompletionPercent');
+
+    if (!totalSurveyUnitsField || !surveyUnitsSurveyedField || !surveyUnitCompletionPercentField) {
+        console.log('One or more required fields not found for survey unit completion percentage calculation');
+        return;
+    }
+
+    const totalSurveyUnits = parseFloat(totalSurveyUnitsField.value);
+    const surveyUnitsSurveyed = parseFloat(surveyUnitsSurveyedField.value);
+
+    const percentageError = document.getElementById('surveyUnitCompletionPercentError');
+
+    // Clear error by default
+    if (percentageError) percentageError.textContent = '';
+    surveyUnitCompletionPercentField.value = '';
+
+    // Check if both values are valid numbers
+    if (!isNaN(totalSurveyUnits) && totalSurveyUnits > 0 && !isNaN(surveyUnitsSurveyed) && surveyUnitsSurveyed >= 0) {
+        const percentage = (surveyUnitsSurveyed / totalSurveyUnits) * 100;
+
+        console.log('Survey Unit completion calculation details:', {
+            totalSurveyUnits: totalSurveyUnits,
+            surveyUnitsSurveyed: surveyUnitsSurveyed,
+            percentage: percentage
+        });
+
+        if (percentage > 100) {
+            if (percentageError) percentageError.textContent = 'Survey unit completion percentage cannot exceed 100%.';
+            return;
+        }
+
+        // Display percentage with 2 decimal places
+        surveyUnitCompletionPercentField.value = percentage.toFixed(2);
+
+        console.log('Survey Unit Completion percentage calculated:', surveyUnitCompletionPercentField.value + '%');
+    }
+}
+
+
+// Function to validate claims resolved against claims received
+function validateClaimsResolved() {
+    const totalReceivedField = document.getElementById('claimsObjectionsReceived');
+    const totalResolvedField = document.getElementById('claimsObjectionsResolved');
+    const resolvedError = document.getElementById('claimsObjectionsResolvedError');
+
+    const totalReceived = parseFloat(totalReceivedField.value);
+    const totalResolved = parseFloat(totalResolvedField.value);
+
+    // Clear error by default
+    if (resolvedError) {
+        resolvedError.textContent = '';
+        resolvedError.style.display = 'block';
+    }
+
+    // Validate that resolved cannot be more than received
+    if (!isNaN(totalReceived) && !isNaN(totalResolved) && totalResolved > totalReceived) {
+        if (resolvedError) {
+            resolvedError.textContent = 'Total No. of Claims & Objections Resolved cannot be more than Total No. of Claims & Objections Received!';
+            resolvedError.style.display = 'block';
+        }
+        totalResolvedField.value = '';
+        return false;
+    }
+
+    // If validation passes, calculate dependent fields
+    calculatePendingClaims();
+    calculateClaimsDisputesResolution();
+    calculateResolutionPercentage();
+    return true;
+}
+
+// Function to calculate pending claims
+function calculatePendingClaims() {
+    const totalReceivedField = document.getElementById('claimsObjectionsReceived');
+    const totalResolvedField = document.getElementById('claimsObjectionsResolved');
+    const pendingField = document.getElementById('noOfClaimsObjectionsPending');
+
+    const totalReceived = parseFloat(totalReceivedField.value);
+    const totalResolved = parseFloat(totalResolvedField.value);
+
+    const pendingError = document.getElementById('noOfClaimsObjectionsPendingError');
+
+    // Clear error by default
+    if (pendingError) pendingError.textContent = '';
+    pendingField.value = '';
+
+    if (!isNaN(totalReceived) && !isNaN(totalResolved)) {
+        const pending = totalReceived - totalResolved;
+
+        if (pending < 0) {
+            if (pendingError) pendingError.textContent = 'Resolved claims cannot be more than total received claims.';
+            return;
+        }
+
+        pendingField.value = pending;
+    }
+}
+
+// Function to calculate % of Claims & Disputes Resolution (Pending Percentage)
+function calculateClaimsDisputesResolution() {
+    const totalReceivedField = document.getElementById('claimsObjectionsReceived');
+    const pendingField = document.getElementById('noOfClaimsObjectionsPending');
+    const percentageField = document.getElementById('percentOfClaimsDisputesResolution');
+
+    const totalReceived = parseFloat(totalReceivedField.value);
+    const pending = parseFloat(pendingField.value);
+
+    const percentageError = document.getElementById('percentOfClaimsDisputesResolutionError');
+
+    // Clear percentage and error by default
+    if (percentageError) percentageError.textContent = '';
+    percentageField.value = '';
+
+    if (!isNaN(totalReceived) && totalReceived > 0 && !isNaN(pending)) {
+        const percentage = (pending * 100) / totalReceived;
+
+        if (percentage > 100) {
+            if (percentageError) percentageError.textContent = 'Pending percentage cannot exceed 100%.';
+            return;
+        }
+
+        percentageField.value = percentage.toFixed(2);
+    }
+}
+
+// Add event listeners for Claims & Disputes Resolution calculation
+document.addEventListener('DOMContentLoaded', function() {
+    const totalReceivedInput = document.getElementById('claimsObjectionsReceived');
+    const totalResolvedInput = document.getElementById('claimsObjectionsResolved');
+
+    // Attach input event on both fields
+    if (totalReceivedInput) {
+        totalReceivedInput.addEventListener('input', function () {
+            calculatePendingClaims(); // Calculate pending first
+            calculateClaimsDisputesResolution(); // Then calculate percentage
+        });
+    }
+    if (totalResolvedInput) {
+        totalResolvedInput.addEventListener('input', function () {
+            const totalReceived = parseFloat(totalReceivedInput.value);
+            const totalResolved = parseFloat(totalResolvedInput.value);
+            const resolvedError = document.getElementById('claimsObjectionsResolvedError');
+
+            // Clear error by default
+            if (resolvedError) resolvedError.textContent = '';
+
+            if (!isNaN(totalReceived) && !isNaN(totalResolved) && totalResolved > totalReceived) {
+                totalResolvedInput.value = '';
+                if (resolvedError) resolvedError.textContent = 'Total No. of Claims & Objections Resolved cannot be more than Total No. of Claims & Objections Received!';
+            }
+
+            calculatePendingClaims(); // Calculate pending first
+            calculateClaimsDisputesResolution(); // Then calculate percentage
+        });
+    }
+});
+
+
+
+
+
+
+                        </script>
+                        <script>
+    // Attach input listeners once the DOM is ready
+    document.addEventListener('DOMContentLoaded', function () {
+        const receivedField = document.getElementById('claimsObjectionsReceived');
+        const resolvedField = document.getElementById('claimsObjectionsResolved');
+
+        // Attach input event on both fields
+        receivedField.addEventListener('input', calculateResolutionPercentage);
+        resolvedField.addEventListener('input', function () {
+            const received = parseFloat(receivedField.value);
+            const resolved = parseFloat(resolvedField.value);
+            const resolvedError = document.getElementById('claimsObjectionsResolvedError');
+
+            // Reset error
+            resolvedError.textContent = '';
+
+            if (!isNaN(received) && !isNaN(resolved) && resolved > received) {
+                resolvedField.value = '';
+                resolvedError.textContent = 'Total No. of Claims & Objections Resolved cannot be more than Total No. of Claims & Objections Received!';
+            }
+
+            calculateResolutionPercentage(); // Recalculate if still valid
+        });
+    });
+
+    function calculateResolutionPercentage() {
+        const receivedField = document.getElementById('claimsObjectionsReceived');
+        const resolvedField = document.getElementById('claimsObjectionsResolved');
+        const percentageField = document.getElementById('claimsResolutionPercentage');
+
+        const received = parseFloat(receivedField.value);
+        const resolved = parseFloat(resolvedField.value);
+
+        const percentageError = document.getElementById('claimsResolutionPercentageError');
+
+        // Clear percentage and error by default
+        percentageError.textContent = '';
+        percentageField.value = '';
+
+        if (!isNaN(received) && received > 0 && !isNaN(resolved)) {
+            const percentage = (resolved / received) * 100;
+
+            if (percentage > 100) {
+                percentageError.textContent = 'Resolution percentage cannot exceed 100%.';
+                return;
+            }
+
+            percentageField.value = percentage.toFixed(2);
+        }
+    }
+
+
+
+
+
+                        </script>
+
+                        <script>
+                        // Toggle Section Functionality
+                        function toggleSection(sectionId) {
+                            const section = document.getElementById(sectionId);
+                            const toggleIcon = document.getElementById(sectionId.replace('Section', 'Toggle'));
+
+                            if (!section || !toggleIcon) {
+                                console.warn('Section or toggle icon not found:', sectionId);
+                                return;
+                            }
+
+                            // Toggle the collapsed class
+                            section.classList.toggle('collapsed');
+
+                            // Toggle the icon rotation
+                            toggleIcon.classList.toggle('expanded');
+
+                            // Update icon text
+                            if (section.classList.contains('collapsed')) {
+                                toggleIcon.textContent = '▶';
+                            } else {
+                                toggleIcon.textContent = '▼';
+                            }
+
+                            console.log('Toggled section:', sectionId, 'Collapsed:', section.classList.contains('collapsed'));
+                        }
+
+                        // Initialize sections on page load
+                        document.addEventListener('DOMContentLoaded', function() {
+                            // Set initial state - all sections expanded by default
+                            const sections = document.querySelectorAll('.section-content');
+                            sections.forEach(section => {
+                                section.classList.remove('collapsed');
+                            });
+
+                            // Set initial icon states
+                            const toggleIcons = document.querySelectorAll('.toggle-icon');
+                            toggleIcons.forEach(icon => {
+                                icon.textContent = '▼';
+                                icon.classList.remove('expanded');
+                            });
+                        });
+                        </script>
+
+                         <hr>
+                </div>
+
+                <!-- Submit Section -->
+                <div class="row mt-4">
+                    <div class="col-12 d-flex justify-content-center">
+                        <button type="submit" class="inner">
+                            <div class="svg-wrapper-1">
+                                <div class="svg-wrapper">
+                                    <svg viewBox="0 0 24 24" width="24" height="24">
+                                        <path fill="none" d="M0 0h24v24H0z"></path>
+                                        <path fill="currentColor"
+                                              d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <span>🚀 Submit Ground Truthing Data</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <script>
+$(document).ready(function () {
+
+    // Auto calculate survey percentage function
+    function calculatePercentage() {
+        const total = parseFloat($('#totalPlotsToSurvey').val());
+        const completed = parseFloat($('#plotsSurveyedCompleted').val());
+        const percentageInput = $('#surveyCompletionPercent');
+
+        if (!isNaN(total) && total > 0 && !isNaN(completed)) {
+            if (completed > total) {
+                // Show validation error below plotsSurveyedCompleted input
+                $('#plotsSurveyedCompletedError').text('Completed plots cannot be more than total plots.');
+                percentageInput.val('');
+                return false; // invalid
+            } else {
+                $('#plotsSurveyedCompletedError').text('');
+                const percentage = (completed / total) * 100;
+                percentageInput.val(percentage.toFixed(2));
+                return true; // valid
+            }
+        } else {
+            $('#plotsSurveyedCompletedError').text('');
+            percentageInput.val('');
+            return true; // valid since empty or invalid inputs can be handled separately
+        }
+    }
+
+    $('#totalPlotsToSurvey, #plotsSurveyedCompleted').on('input', calculatePercentage);
+
+    $('#nakshaGTDataEntryForm').submit(function (e) {
+        e.preventDefault();
+
+        // Validate before submit
+        if (!calculatePercentage()) {
+            // If validation failed, stop form submission
+            return;
+        }
+
+        // Additional validations can go here if needed
+
+        const form = $(this);
+        const formData = new FormData(form[0]);
+
+        $.ajax({
+            type: 'POST',
+            url: form.attr('action'),
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                form[0].reset();
+                $('#surveyCompletionPercent').val('');
+                $('#plotsSurveyedCompletedError').text('');
+                showSuccessAlert(data);
+            },
+            error: function (jqXHR) {
+                showErrorAlert('Error', jqXHR.responseText || 'Save failed.');
+            }
+        });
+    });
+
+    $.ajaxSetup({
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    });
+
+    $(document).ajaxError(function (event, xhr) {
+        if (xhr.status === 401 || xhr.status === 403) {
+            Swal.fire({
+                title: 'Session Expired',
+                text: 'Your session has expired. Please log in again.',
+                icon: 'warning',
+                confirmButtonText: 'Login'
+            }).then(() => {
+                window.location.href = '/loginPage?sessionExpired';
+            });
+        }
+    });
+
+    function showSuccessAlert(msg) {
+        Swal.fire({
+            title: 'Success',
+            text: msg,
+            icon: 'success',
+            confirmButtonText: 'OK'
+        });
+    }
+
+    function showErrorAlert(title, text) {
+        Swal.fire({
+            title,
+            text,
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    }
+});
+
+
+
+
+
+        </script>
+    </div>
+</div>
+</body>
+</html>

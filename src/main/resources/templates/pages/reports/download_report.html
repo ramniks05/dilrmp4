@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/dashboard">
+
+<head>
+  <meta charset="UTF-8">
+  <title>DILRMP-MIS 4.0</title>
+  <script type="text/javascript" th:src="@{/static/js/jquery.min.js}"></script>
+
+
+
+  <script type="text/javascript" th:src="@{/static/js/jquery.min.js}"></script>
+  <script type="text/javascript" th:src="@{/static/nlrmpmap/downloadReport.js}"></script>
+
+  <style>
+
+
+
+.row>* {
+    flex-shrink: 0;
+    width: 100%;
+    max-width: 100%;
+    padding-right: calc(var(--bs-gutter-x)* .5);
+    padding-left: calc(var(--bs-gutter-x)* .5);
+    margin-top: var(--bs-gutter-y);
+}
+
+    .display {
+    width: 100%;
+    }
+ #wait {
+    width: 100px;
+    height: 130px;
+    text-align: center;
+    position: fixed;
+    left: 280px;
+    right: 0;
+    top: 40%;
+    z-index: 99;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.43);
+    display: none;
+    }
+    #wait img {
+    width: 100%;
+    }
+
+    </style>
+
+  <style>
+
+
+.btn-primary {
+    color: #fff;
+    background-color: #8ddfef;
+    border-color: #36d0e9;
+    box-shadow: none;
+}
+  #data tbody tr:hover {
+    background-color: #FFD700;; /* Light blue background for hover effect */
+    font-weight: bold;
+     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+
+   table, th, td {
+  border: 1px solid white;
+  border-collapse: collapse;
+}
+
+
+
+}
+.table-success th, .table-success td, .table-success thead th, .table-success tbody+tbody {
+    border-color: #31613c;
+}
+
+   .old-mis-link {
+        color: blue; /* Default link color */
+        text-decoration: none; /* Remove underline */
+        font-weight: bold; /* Bold text */
+        transition: color 0.3s ease, transform 0.3s ease; /* Smooth transitions */
+    }
+
+    .old-mis-link:hover {
+        color: darkblue; /* Hover color */
+        transform: scale(1.05); /* Slightly enlarge on hover */
+        text-decoration: underline; /* Add underline on hover */
+    }
+
+    </style>
+
+</head>
+
+<body>
+
+<hr>
+<!-- Content Wrapper. Contains page content -->
+<div class="content" layout:fragment="content">
+    <div class="card-header" style="background-color: #8ddfef; text-align: center; padding: 10px;">
+        <div style="display: inline-block; background-color: #ffffff; padding: 10px 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+            <marquee scrollamount="10" style="font-family: Arial, sans-serif; font-size: 16px; color: red; font-weight: bold;">
+                <h4 style="margin: 0;">The new MIS 4.0 was launched on October 15, 2024. All States/UTs are required to complete data entry by the end of this week.</h4>
+            </marquee>
+        </div>
+    </div>
+
+
+  <section>
+    <div class="row px-4 px-lg-5 py-md-4 ">
+      <div class="col-md-1"></div>
+      <div class="col-md-10">
+
+    <div class="card card-info row top-boxes" >
+      <div class="card-body table-responsive" >
+        <div class="container">
+          <div class="row top-boxes">
+            <h3>Download Physical Progress Report</h3>
+            <div class="row g-md-3 mt-2">
+              <form >
+                  <div class="form-group row">
+                    <label  class="col-sm-2 col-form-label">Select State/UT:</label>
+                    <div class="col-sm-6">
+                      <select class="form-control" id="stateId" name="stateId" onchange="fetchReportData(); toggleExcelLinks();" required style="max-height: 120px; overflow-y: auto;">
+                            <option value="00"> All State/UT</option>
+                        <option th:each="state : ${stateList}" th:value="${state.id}" th:text="${state.name}"></option>
+                      </select>
+                    </div>
+                  </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div id="wait" >
+          <img th:src="@{/images/loading.gif}" alt="Loading..."style="width: 100px;
+                   height: 130px; text-align: center; margin: 0 auto;"/>
+          <br />Please Wait...
+        </div>
+       <table  id="data"class="table   table-bordered   table-striped "style="display: none;">
+        <thead style="color: #fff; background-color: #7bdef3;">
+
+        <tr>
+          <th>S.No.</th>
+          <th colspan="4">Physical Progress Report</th>
+          <th>Download</th>
+
+        </tr>
+        </thead>
+        <tbody style="border-color: #fff;">
+        <tr>
+          <td>1</td>
+          <td colspan="4" id="clrLabel"></td>
+          <td>
+            <a id="clrUrl" href="#" class="btn btn-link" title="PDF Report"><img src="/images/pdf.png" width="40" height="40" /></a>
+            <a id="clrExcelUrl" href="#" class="btn btn-link"title="Excel Report" style="display: none;"><img src="/images/excel.png" width="40" height="40" /></a>
+          </td>
+        </tr>
+
+         <tr>
+          <td>2</td>
+          <td colspan="4" id="mapLabel"></td>
+          <td>
+            <a id="mapUrl" href="#" class="btn btn-link" title="PDF Report"><img src="/images/pdf.png" width="40" height="40" /></a>
+            <a id="mapExcelUrl" href="#" class="btn btn-link" title="Excel Report" style="display: none;"><img src="/images/excel.png" width="40" height="40" /></a>
+          </td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td colspan="4" id="mrrLabel"></td>
+          <td>
+            <a id="mrrUrl" href="#" class="btn btn-link"title="PDF Report"><img src="/images/pdf.png" width="40" height="40" /></a>
+            <a id="mrrExcelUrl" href="#" class="btn btn-link" title="Excel Report" style="display: none;"><img src="/images/excel.png" width="40" height="40" /></a>
+          </td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td colspan="4" id="surveyLabel"></td>
+          <td>
+            <a id="surveyUrl" href="#" class="btn btn-link" title="PDF Report"><img src="/images/pdf.png" width="40" height="40" /></a>
+            <a id="surveyExcelUrl" href="#" class="btn btn-link" title="Excel Report" style="display: none;"><img src="/images/excel.png" width="40" height="40" /></a>
+          </td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td colspan="4" id="rcmLabel"></td>
+          <td><a id="rcmUrl" href="#" class="btn btn-link" title="PDF Report"><img src="/images/pdf.png" width="40" height="40" /></a>
+              <a id="rcmExcelUrl" href="#" class="btn btn-link" title="Excel Report" style="display: none;"><img src="/images/excel.png" width="40" height="40" /></a></td>
+        </tr>
+
+        <tr>
+          <td>6</td>
+          <td colspan="4" id="aadhaarLabel"></td>
+          <td><a id="aadhaarUrl" href="#" class="btn btn-link" title="PDF Report"><img src="/images/pdf.png" width="40" height="40" /></a>
+              <a id="aadhaarExcelUrl" href="#" class="btn btn-link" title="Excel Report" style="display: none;"><img src="/images/excel.png" width="40" height="40" /></a></td>
+        </tr>
+
+        <tr id='sro' style="display: none;">
+          <td>7</td>
+          <td colspan="4" id="sroLabel"></td>
+          <td>
+            <a id="sroUrl" href="#" class="btn btn-link" title="PDF Report"><img src="/images/pdf.png" width="40" height="40" /></a>
+            <a id="sroExcelUrl" href="#" class="btn btn-link" title="Excel Report" style="display: none;" ><img src="/images/excel.png" width="40" height="40" /></a>
+          </td>
+        </tr>
+        <!-- Repeat rows as needed, giving unique ids to elements -->
+        </tbody>
+      </table>
+    </div>
+    </div>
+      </div>
+      <div class="col-md-1"></div>
+  </div>
+  </section>
+</div>
+</body>
+</html>

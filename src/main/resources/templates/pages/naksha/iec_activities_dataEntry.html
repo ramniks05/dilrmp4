@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/dashboard}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>IEC Activities</title>
+    <link th:href="@{/css/report/nakshasoi.css}" rel="stylesheet"/>
+    <script type="text/javascript" th:src="@{/static/nlrmpmap/capacityBuilding.js}"></script>
+    <style>
+    /* Common styling for all form controls */
+.form-control.input,
+.form-select.input {
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 15px;
+    color: #333;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.form-control.input:focus,
+.form-select.input:focus {
+    outline: none;
+    border-color: #2684FF;
+    box-shadow: 0 0 0 3px rgba(38,132,255,0.2);
+    background-color: #fff;
+}
+
+/* Placeholder style */
+.form-control.input::placeholder {
+    color: #aaa;
+}
+
+/* Label styling */
+.form-label.input-group {
+    font-weight: 600;
+    color: #444;
+    font-size: 14px;
+}
+
+/* For better spacing between fields */
+.row.mb-3 {
+    margin-bottom: 1.5rem;
+}
+
+/* Custom style for select dropdown arrow */
+.form-select.input {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23666' d='M2 0L0 2h4z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 8px 10px;
+    padding-right: 2rem;
+}
+
+/* Hover effect */
+.form-control.input:hover,
+.form-select.input:hover {
+    border-color: #2684FF;
+    background-color: #f1f9ff;
+}
+
+/* For smaller screen adaptability */
+@media (max-width: 768px) {
+    .form-control.input,
+    .form-select.input {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+}
+.form-control.input,
+.form-select.input {
+    width: 100%;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 10px;
+    color: #333;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+}
+
+
+
+
+    </style>
+</head>
+
+<body>
+<div class="content-wrapper" layout:fragment="content">
+    <div class="containerOne">
+        <div class="card-header"
+             style="background: linear-gradient(45deg, rgb(16, 137, 211) 0%, rgb(19, 111, 130) 100%);">
+            <div class="heading">IEC Activities</div>
+        </div>
+
+        <form th:action="@{/ulb/iec-activity}"
+              th:object="${iecActivity}"
+              method="post"
+              id="iecActivityForm">
+
+            <input type="hidden" id="id" th:field="*{id}" readonly/>
+
+            <div class="row mb-3">
+                <div class="col-md-9 col-sm-12 headingOne">
+                    <span style="color:#ab7b75;">State/UT:</span>
+                    <span class="col-md-1" th:text="${stateName}"></span>
+                </div>
+                <div class="col-md-3 col-sm-12">
+                    <h6 class="heading-section headingOne">
+                        <span style="color:#FA8072;">Last Update:</span>
+                        <span id="lastUpdateSpan" class="col-md-1">
+                            <span th:text="${iecActivity.updateOnDate != null ? #temporals.format(iecActivity.updateOnDate, 'MMMM dd, yyyy') : 'N/A'}"></span>
+                        </span>
+                    </h6>
+                </div>
+            </div>
+
+            <hr style="border-top: 2px solid #FA8072;"/>
+
+            <!-- Form Fields -->
+            <div class="row mb-3">
+                <div class="col-md-6 col-sm-12">
+                    <label class="form-label input-group mb-3">[1] IEC Activity Status</label>
+                    <select class="form-select input" id="iecActivityStatusSelect" th:field="*{iecActivityStatus}"
+                            required>
+                        <option value="" disabled selected>Select</option>
+                        <option th:each="item : ${iecActivityStatusList}" th:value="${item.code}"
+                                th:text="${item.description}"></option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 col-sm-12">
+                    <label class="form-label input-group mb-3">[2] Link for Completed IEC Activity</label>
+                    <input type="url" class="form-control input" id="iecActivityLinkInput" th:field="*{iecActivityLink}"
+                           placeholder="https://example.com" disabled/>
+                </div>
+
+                <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const statusSelect = document.getElementById('iecActivityStatusSelect');
+    const linkInput = document.getElementById('iecActivityLinkInput');
+
+    function toggleLinkInput() {
+        if (statusSelect.value === '3') {  // COMPLETED code = 3
+            linkInput.disabled = false;
+            linkInput.setAttribute('required', 'required');
+        } else {
+            linkInput.disabled = true;
+            linkInput.removeAttribute('required');
+            linkInput.value = '';
+        }
+    }
+
+    statusSelect.addEventListener('change', toggleLinkInput);
+
+    // Run on page load in case of pre-filled value
+    toggleLinkInput();
+});
+
+                </script>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6 col-sm-12">
+                    <label class="form-label input-group mb-3">[3] IEC Activity Conducted</label>
+                    <select class="form-select input" id="iecActivityConductedSelect" th:field="*{iecActivityConducted}"
+                            required>
+                        <option value="" disabled selected>Select</option>
+                        <option th:each="item : ${iecActivityConductedList}" th:value="${item.code}"
+                                th:text="${item.description}"></option>
+                    </select>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <label class="form-label input-group mb-3">[4] Type of Activity Conducted</label>
+                    <select class="form-select input" id="iecActivityTypeSelect" th:field="*{iecActivityType}"
+                            name="iecActivityType" disabled required>
+                        <option value="" disabled selected>Select</option>
+                        <option th:each="item : ${iecActivityTypeList}" th:value="${item.code}"
+                                th:text="${item.description}"></option>
+                        <!-- Assuming 'Others' option code is e.g. 99 -->
+                        <option value="99">Others</option>
+                    </select>
+
+                    <!-- Hidden field for 'Others' option -->
+                    <label for="otherActivityInput" class="visually-hidden" style="color: blue; font-size: small;">
+                        Specify Other Activity:
+                    </label>
+                    <textarea
+                            class="form-control mt-2"
+                            id="otherActivityInput"
+                            name="otherActivity"
+                            th:field="*{otherActivity}"
+                            placeholder="Please specify (max 20 characters)"
+                            maxlength="20"
+                            disabled
+                            rows="1"></textarea>
+
+                </div>
+
+                <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const conductedSelect = document.getElementById('iecActivityConductedSelect');
+    const typeSelect = document.getElementById('iecActivityTypeSelect');
+    const otherInput = document.getElementById('otherActivityInput');
+
+    function toggleTypeSelect() {
+        if (conductedSelect.value === '1') { // YES = 1
+            typeSelect.disabled = false;
+            typeSelect.setAttribute('required', 'required');
+        } else {
+            typeSelect.disabled = true;
+            typeSelect.value = '';
+            typeSelect.removeAttribute('required');
+            disableOtherInput();
+        }
+    }
+
+    function toggleOtherInput() {
+        if (typeSelect.value === '99' || typeSelect.value === '19') { // Handle "Others"
+            otherInput.disabled = false;
+            otherInput.setAttribute('required', 'required');
+        } else {
+            disableOtherInput();
+        }
+    }
+
+    function disableOtherInput() {
+        otherInput.disabled = true;
+        otherInput.removeAttribute('required');
+        otherInput.value = '';
+    }
+
+    conductedSelect.addEventListener('change', toggleTypeSelect);
+    typeSelect.addEventListener('change', toggleOtherInput);
+
+    // Initialize state on page load
+    toggleTypeSelect();
+    toggleOtherInput();
+});
+</script>
+
+                <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const selectElement = document.getElementById('iecActivityTypeSelect');
+        const otherInput = document.getElementById('otherActivityInput');
+
+        function toggleOtherInput() {
+            const selectedValues = Array.from(selectElement.selectedOptions).map(opt => opt.value);
+            if (selectedValues.includes('19')) { // 19 = Others
+                otherInput.disabled = false;
+                otherInput.setAttribute('required', 'required');
+            } else {
+                otherInput.disabled = true;
+                otherInput.removeAttribute('required');
+                otherInput.value = '';
+            }
+        }
+
+        selectElement.addEventListener('change', toggleOtherInput);
+        toggleOtherInput(); // Initial check (in case form retains values)
+    });
+</script>
+
+
+                <div class="col-md-6 col-sm-12">
+                    <label class="form-label input-group mb-3">[5] IEC Material Status</label>
+                    <select class="form-select input" id="iecMaterialStatusSelect" th:field="*{iecMaterialStatus}"
+                            required>
+                        <option value="" disabled selected>Select</option>
+                        <option th:each="item : ${iecMaterialStatusList}" th:value="${item.code}"
+                                th:text="${item.description}"></option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 col-sm-12">
+                    <label class="form-label input-group mb-3">[6] Upload IEC Material link for All Aspects</label>
+                    <input type="url" class="form-control input"
+                           th:field="*{iecMaterialLink}"
+                           placeholder="https://example.com"
+                           id="iecMaterialLinkInput"
+                           maxlength="200"
+                           disabled/>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6 col-sm-12">
+                    <label class="form-label input-group mb-3">[7] Type of IEC Media Uploaded</label>
+                    <select class="form-select input" id="iecMediaTypeSelect" th:field="*{iecMediaType}" required>
+                        <option value="" disabled selected>Select</option>
+                        <option th:each="item : ${iecMediaTypeList}" th:value="${item.code}"
+                                th:text="${item.description}"></option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 col-sm-12">
+                    <label class="form-label input-group mb-3">[8] Variety of IEC Media Uploaded</label>
+                    <select class="form-select input" id="iecMediaVarietySelect" th:field="*{iecMediaVariety}" required>
+                        <option value="" disabled selected>Select</option>
+                        <option th:each="item : ${iecMediaVarietyList}" th:value="${item.code}"
+                                th:text="${item.description}"></option>
+                    </select>
+                </div>
+                <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const mediaTypeSelect = document.getElementById('iecMediaTypeSelect');
+        const mediaVarietySelect = document.getElementById('iecMediaVarietySelect');
+
+        // Map media type codes to allowed variety codes
+        const varietyMap = {
+            '1': ['1', '2', '3'],            // PRINT -> Posters, Banners, Brochures
+            '2': ['4', '5', '6', '7'],       // DIGITAL -> Videos, Social Media, Creatives, Presentation
+            '3': ['8']                       // AUDIO -> Radio Spots
+        };
+
+        // Store all options from variety dropdown initially
+        const allVarietyOptions = Array.from(mediaVarietySelect.options).filter(opt => opt.value !== '');
+
+        function filterVarieties() {
+            const selectedType = mediaTypeSelect.value;
+
+            // Clear current options except the first "Select"
+            mediaVarietySelect.options.length = 1;
+
+            if (!selectedType) return; // No type selected, keep only 'Select'
+
+            const allowedVarieties = varietyMap[selectedType] || [];
+
+            // Append only allowed options
+            allVarietyOptions.forEach(opt => {
+                if (allowedVarieties.includes(opt.value)) {
+                    mediaVarietySelect.appendChild(opt);
+                }
+            });
+        }
+
+        mediaTypeSelect.addEventListener('change', filterVarieties);
+
+        // Run initially in case of pre-selected value
+        filterVarieties();
+    });
+
+                </script>
+                <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const materialSelect = document.getElementById('iecMaterialStatusSelect');
+        const linkInput = document.getElementById('iecMaterialLinkInput');
+
+        function toggleLinkField() {
+            const selectedValue = materialSelect.value;
+            if (selectedValue === '1') { // Uploaded
+                linkInput.removeAttribute('disabled');
+                linkInput.setAttribute('required', 'required');
+            } else {
+                linkInput.setAttribute('disabled', 'disabled');
+                linkInput.removeAttribute('required');
+                linkInput.value = ''; // Optional: clear field when disabled
+            }
+        }
+
+        materialSelect.addEventListener('change', toggleLinkField);
+
+        // Initial check on page load (for edit forms)
+        toggleLinkField();
+    });
+
+                </script>
+
+            </div>
+
+            <hr style="border-top: 2px solid #FA8072;"/>
+
+            <div class="row mt-4">
+                <div class="col-12 d-flex justify-content-center">
+                    <button type="submit" class="px-5 py-2 rounded-pill shadow-sm inner">
+                        <div class="svg-wrapper-1">
+                            <div class="svg-wrapper">
+                                <svg viewBox="0 0 24 24" width="24" height="24">
+                                    <path fill="none" d="M0 0h24v24H0z"></path>
+                                    <path fill="currentColor"
+                                          d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <span>Submit</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+        <script>
+
+
+    $(document).ready(function () {
+        $('#iecActivityForm').submit(function (e) {
+            e.preventDefault();
+            const form = $(this);
+            const formData = new FormData(this);
+
+            $.ajax({
+                type: 'POST',
+                url: form.attr('action'),
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+    $.get('/ulb/last-update-date')
+        .done(function (date) {
+            $('#lastUpdateSpan').text(date);
+            showSuccessAlert(data); // This is likely not firing as expected
+        })
+
+                        .fail(function () {
+                            $('#lastUpdateSpan').text('N/A');
+                            showErrorAlert('Error', 'Failed to fetch updated date.');
+                        });
+                },
+                error: function (jqXHR) {
+                    showErrorAlert('Error', jqXHR.responseText || 'Save failed.');
+                }
+            });
+        });
+
+        $.ajaxSetup({
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+
+        $(document).ajaxError(function (event, xhr) {
+            if (xhr.status === 401 || xhr.status === 403) {
+                Swal.fire({
+                    title: 'Session Expired',
+                    text: 'Your session has expired. Please log in again.',
+                    icon: 'warning',
+                    confirmButtonText: 'Login'
+                }).then(() => {
+                    window.location.href = '/loginPage?sessionExpired';
+                });
+            }
+        });
+
+        function showSuccessAlert(msg) {
+            Swal.fire({
+                title: 'Success',
+                text: msg,
+                icon: 'success',
+                confirmButtonText: 'OK',
+                position: 'center'
+            });
+        }
+
+        function showErrorAlert(title, text) {
+            Swal.fire({
+                title,
+                text,
+                icon: 'error',
+                confirmButtonText: 'OK',
+                position: 'center'
+            });
+        }
+    });
+
+
+
+</script>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,98 @@
+
+<div class="navbar-upper" th:fragment="top-header">
+  <div class="boxes">
+    <div>
+      <div id="waitOne" style="display: none;">
+        <img th:src="@{/images/loading.gif}" alt="Loading..."style="width: 100px;
+                   height: 130px; text-align: center; margin: 0 auto; background: rgba(255, 255, 255, 0.85);
+                     box-shadow: 0 0 10px rgba(0, 0, 0, 0.43);"/>
+        <br />Please Wait...
+      </div>
+      <a id="linkOne" th:href="@{/PhyscialComponent/CLR/state-level}">
+        <img th:src="@{/static/images/clr.png}" alt=""/>
+        <h6 style="color:black !important">Computerization of Land Records</h6>
+      </a>
+    </div>
+    <div>
+      <div id="waitTwo" style="display: none;">
+        <img th:src="@{/images/loading.gif}" alt="Loading..."style="width: 100px;
+                   height: 130px; text-align: center; margin: 0 auto; background: rgba(255, 255, 255, 0.85);
+                     box-shadow: 0 0 10px rgba(0, 0, 0, 0.43);"/>
+        <br />Please Wait...
+      </div>
+      <a id="linkTwo" th:href="@{/PhyscialComponent/mapDigitization/state-level}">
+        <img style="width:55px" th:src="@{/static/images/map1.png}" alt=""/>
+        <h6 style="color:black !important">Map Digitization</h6>
+      </a>
+    </div>
+    <div>
+      <div id="waitThree" style="display: none;">
+        <img th:src="@{/images/loading.gif}" alt="Loading..."style="width: 100px;
+                   height: 130px; text-align: center; margin: 0 auto; background: rgba(255, 255, 255, 0.85);
+                     box-shadow: 0 0 10px rgba(0, 0, 0, 0.43);"/>
+        <br />Please Wait...
+      </div>
+      <a id="linkThree" class="nav-link" th:href="@{/PhyscialComponent/mrr/state-level}">
+        <img style="width:55px" th:src="@{/static/images/mrr.png}" alt="">
+        <h6 style="color:black !important">Modern Record Rooms</h6>
+      </a>
+    </div>
+    <div>
+      <div id="waitFour" style="display: none;">
+        <img th:src="@{/images/loading.gif}" alt="Loading..."style="width: 100px;
+                   height: 130px; text-align: center; margin: 0 auto; background: rgba(255, 255, 255, 0.85);
+                     box-shadow: 0 0 10px rgba(0, 0, 0, 0.43);"/>
+        <br />Please Wait...
+      </div>
+
+      <a id="linkFour" class="nav-link"  th:href="@{/PhyscialComponent/SurveyResurvey/state-level}" >
+        <img  style="width:55px" th:src="@{/static/images/Survey.png}" alt="">
+        <h6 style="color: black !important">Survey / Resurvey</h6>
+      </a>
+    </div>
+    <div>
+      <div id="waitFive" style="display: none;">
+        <img th:src="@{/images/loading.gif}" alt="Loading..."style="width: 100px;
+                   height: 130px; text-align: center; margin: 0 auto; background: rgba(255, 255, 255, 0.85);
+                     box-shadow: 0 0 10px rgba(0, 0, 0, 0.43);"/>
+        <br />Please Wait...
+      </div>
+      <a id="linkFive" class="nav-link" th:href="@{/PhyscialComponent/sro/state-level}">
+        <img style="width:55px" th:src="@{/static/images/sro.png}" alt="">
+        <h6 style="color:black !important">Sub Registrar Offices</h6>
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // Function to handle the click event for any link in the boxes
+    function handleLinkClick(linkNumber, event) {
+        // Construct the ID of the corresponding loading spinner
+        var waitId = "#wait" + linkNumber;
+
+        // Show the loading spinner
+        $(waitId).css("display", "block");
+
+        // Hide the clicked link
+        $("#link" + linkNumber).css("display", "none");
+
+        // Optional: You can do additional actions or customization here
+
+        // Delay for a short time (e.g., 500 milliseconds) to display the loading spinner
+        setTimeout(function () {
+            // Navigate to the link destination
+            window.location.href = $("#link" + linkNumber).attr("href");
+        }, 500);
+
+        // Prevent the default behavior of the link immediately (to show the loading spinner)
+        event.preventDefault();
+    }
+
+    // Attach the handleLinkClick function to the click event of each link in the boxes
+    $("#linkOne").click(function (event) { handleLinkClick("One", event); });
+    $("#linkTwo").click(function (event) { handleLinkClick("Two", event); });
+    $("#linkThree").click(function (event) { handleLinkClick("Three", event); });
+    $("#linkFour").click(function (event) { handleLinkClick("Four", event); });
+    $("#linkFive").click(function (event) { handleLinkClick("Five", event); });
+</script>
+

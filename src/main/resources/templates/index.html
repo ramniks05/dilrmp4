@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/dashboard">
+
+<head>
+    <meta charset="UTF-8">
+    <title>DILRMP-MIS 4.0</title>
+
+    <script type="text/javascript" th:src="@{/static/js/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/static/nlrmpmap/dashboardData.js}"></script>
+    <link rel='stylesheet' href='https://js.arcgis.com/3.25/esri/css/esri.css' />
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+    <script type="text/javascript" th:src="@{/static/nlrmpmap/highcharts.js}"></script>
+
+
+
+
+
+
+
+    <style>
+         .ps-4 {
+    padding-left: 1.5rem !important;
+}
+
+.gy-xxl-5{--bs-gutter-y:3rem}}.table{--bs-table-color:var(--bs-body-color);--bs-table-bg:transparent;--bs-table-border-color:var(--bs-border-color);--bs-table-accent-bg:transparent;--bs-table-striped-color:var(--bs-body-color);--bs-table-striped-bg:rgba(0, 0, 0, 0.05);--bs-table-active-color:var(--bs-body-color);--bs-table-active-bg:rgba(0, 0, 0, 0.1);--bs-table-hover-color:var(--bs-body-color);--bs-table-hover-bg:rgba(0, 0, 0, 0.075);width:100%;margin-bottom:1rem;color:var(--bs-table-color);vertical-align:top;border-color:var(--bs-table-border-color)}.table>:not(caption)>*>*{padding:.5rem .5rem;background-color:var(--bs-table-bg);border-bottom-width:var(--bs-border-width);box-shadow:inset 0 0 0 9999px var(--bs-table-accent-bg)}.table>tbody{vertical-align:inherit}.table>thead{vertical-align:bottom}.table-group-divider{border-top:calc(var(--bs-border-width) * 2) solid currentcolor}.caption-top{caption-side:top}.table-sm>:not(caption)>*>*{padding:.25rem .25rem}.table-bordered>:not(caption)>*{border-width:var(--bs-border-width) 0}.table-bordered>:not(caption)>*>*{border-width:0 var(--bs-border-width)}.table-borderless>:not(caption)>*>*{border-bottom-width:0}.table-borderless>:not(:first-child){border-top-width:0}.table-striped>tbody>tr:nth-of-type(odd)>*{--bs-table-accent-bg:var(--bs-table-striped-bg);color:var(--bs-table-striped-color)}.table-striped-columns>:not(caption)>tr>:nth-child(2n){--bs-table-accent-bg:var(--bs-table-striped-bg);color:var(--bs-table-striped-color)}.table-active{--bs-table-accent-bg:var(--bs-table-active-bg);color:var(--bs-table-active-color)}.table-hover>tbody>tr:hover>*{--bs-table-accent-bg:var(--bs-table-hover-bg);color:var(--bs-table-hover-color)}.table-primary{--bs-table-color:#000;--bs-table-bg:#cfe2ff;--bs-table-border-color:#bacbe6;--bs-table-striped-bg:#c5d7f2;--bs-table-striped-color:#000;--bs-table-active-bg:#bacbe6;--bs-table-active-color:#000;--bs-table-hover-bg:#bfd1ec;--bs-table-hover-color:#000;color:var(--bs-table-color);border-color:var(--bs-table-border-color)}.table-secondary{--bs-table-color:#000;--bs-table-bg:#e2e3e5;--bs-table-border-color:#cbccce;--bs-table-striped-bg:#d7d8da;--bs-table-striped-color:#000;--bs-table-active-bg:#cbccce;--bs-table-active-color:#000;--bs-table-hover-bg:#d1d2d4;--bs-table-hover-color:#000;color:var(--bs-table-color);border-color:var(--bs-table-border-color)}.table-success{--bs-table-color:#000;--bs-table-bg:#d1e7dd;--bs-table-border-color:#bcd0c7;--bs-table-striped-bg:#c7dbd2;--bs-table-striped-color:#000;--bs-table-active-bg:#bcd0c7;--bs-table-active-color:#000;--bs-table-hover-bg:#c1d6cc;--bs-table-hover-color:#000;color:var(--bs-table-color);border-color:var(--bs-table-border-color)}
+
+
+    .bg-sky {
+    background-color: #51d4d4 !important;
+}
+
+.bg-dark {
+  background-color: #343a40 !important;
+}
+
+.bg-dark,
+.bg-dark>a {
+  color: #51d4d4 !important;
+}
+
+.bg-dark.btn:hover {
+  border-color: #51d4d4;
+  color: #51d4d4;
+}
+
+
+
+        .top-boxes p {
+            margin-bottom: 1px;
+        }
+
+        .card-tools .fa-minus {
+            margin-right: 0;
+        }
+
+        .legend-container {
+            list-style: none;
+            margin: 0 0 25px;
+            padding: 0 0 0 15px;
+            margin-top: -8%;
+        }
+
+        .scrolepopup {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .small-box>.inner {
+            min-height: 130px;
+        }
+
+        .esriControlsBR {
+            display: none !important;
+        }
+
+        .popup,
+        .popup1,
+        .popup2,
+        .popup3,
+        .popup4,
+        .popup5 {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 9999;
+        }
+
+        #popupTitle {
+            margin-bottom: 20px;
+        }
+
+        .close-btn {
+            font-size: 24px;
+            float: right;
+            color: red;
+            margin-right: 20px;
+            cursor: pointer;
+        }
+
+        .linkable-color {
+            color: blue;
+        }
+
+        .header-link {
+            color: blue;
+            text-decoration: none;
+        }
+
+        .header-link:hover {
+            text-decoration: underline;
+        }
+
+        .active-box {
+            z-index: 10;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transform: scale(1.05);
+            transition: all 0.3s ease-in-out;
+
+        }
+
+        .active-box.bg-success {
+            background-color: #28a745 !important;
+
+        }
+
+        .active-box.bg-primary {
+            background-color: #007bff !important;
+        }
+
+        /* Full-screen overlay for GIF */
+        #gifOverlay {
+            position: fixed;
+            /* Fixed position to cover the entire screen */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            /* Semi-transparent background */
+            display: flex;
+            /* Center the GIF */
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            /* Ensure it's on top of other elements */
+            display: none;
+            /* Initially hidden */
+        }
+
+        #gifOverlay img {
+            width: 150px;
+            /* Adjust size as needed */
+            height: auto;
+        }
+ }
+
+
+    .display {
+    width: 100%;
+    }
+ #wait {
+    width: 100px;
+    height: 130px;
+    text-align: center;
+    position: fixed;
+    left: 280px;
+    right: 0;
+    top: 40%;
+    z-index: 99;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.43);
+    display: none;
+    }
+    #wait img {
+    width: 100%;
+    }
+
+
+    .bg-dark1 {
+    background-color: #6ab2a4 !important;
+    style="color: #ffffff;"
+}
+
+
+
+
+  #user_table tbody tr:hover {
+    background-color: #8ddfef; /* Light blue background for hover effect */
+
+    font-weight: bold;
+
+   table, th, td {
+  border: 1px solid white;
+  border-collapse: collapse;
+   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+
+    </style>
+
+
+    <style>
+
+
+
+
+
+/*--------------------------------------------------------------
+/** 1. VARIABLES
+--------------------------------------------------------------*/
+
+/* on mobile devices below 600px
+ */
+@media screen and (max-width: 600px) {
+  :root {
+    --header-height: 100px;
+    --header-height-min: 80px;
+  }
+}
+
+/* Theme Colors */
+:root {
+  --primary-color: #4CC082;
+  --light-primary-color: #E2F3F0;
+  --secondary-color: #EC6C5A;
+  --light-secondary-color: #FFE9E5;
+  --tertiary-color: #FFEED3;
+  --dark-color: #31333A;
+  --light-color: #FFFFFF;
+  --grey-color: #BBC7D4;
+  --light-dark-color: #727272;
+  --light-grey-color: #f5f5f5;
+}
+
+/* Fonts */
+:root {
+  --body-font: 'Inter', sans-serif;
+  --heading-font: 'Inter', sans-serif;
+}
+
+body {
+
+  --bs-link-color: var(--dark-color);
+  --bs-link-hover-color: var(--dark-color);
+
+  --bs-link-color-rgb: 40, 40, 40;
+  --bs-link-hover-color-rgb: 0, 0, 0;
+
+  --bs-light-rgb: 248, 248, 248;
+
+  --bs-font-sans-serif: var(var(--body-font));
+  --bs-body-font-family: var(--bs-font-sans-serif);
+  --bs-body-font-size: 1rem;
+  --bs-body-font-weight: 400;
+  --bs-body-line-height: 1.3rem;
+  --bs-body-color: var(--dark-color);
+
+  --bs-primary: #4CC082;
+  --bs-primary-rgb: 76, 192, 130;
+  --bs-primary-bg-subtle: #E2F3F0;
+
+
+
+  --bs-border-color: #F7F7F7;
+
+  --bs-secondary: #EC6C5A;
+  --bs-secondary-rgb: 236, 108, 90;
+  --bs-secondary-bg-subtle: #FFE9E5;
+
+  --bs-tertiary: #f8be60;
+  --bs-tertiary-bg-subtle: #FFEED3;
+
+}
+
+/*----- catergory Section Style -------------------------*/
+.category-paragraph {
+  transition: all 0.3s ease-in;
+}
+
+.primary {
+  background: var(--bs-primary-bg-subtle);
+  transition: all 0.3s ease-in;
+}
+
+.svg-primary {
+  color: var(--primary-color);
+  transition: all 0.3s ease-in;
+}
+
+.primary:hover {
+  background: var(--bs-primary);
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.secondary {
+  background: var(--bs-secondary-bg-subtle);
+  transition: all 0.3s ease-in;
+}
+
+.svg-secondary {
+  color: var(--secondary-color);
+  transition: all 0.3s ease-in;
+}
+
+.secondary:hover {
+  background: var(--bs-secondary);
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.tertiary {
+  background: var(--bs-tertiary-bg-subtle);
+  transition: all 0.3s ease-in;
+}
+
+.svg-tertiary {
+  color: var(--bs-tertiary);
+  transition: all 0.3s ease-in;
+}
+
+.tertiary:hover {
+  background: var(--bs-tertiary);
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.gray {
+  background: #dbf2f7;
+  transition: all 0.3s ease-in;
+
+}
+
+.svg-gray {
+  color: var(--bs-gray);
+  transition: all 0.3s ease-in;
+}
+
+.gray:hover {
+  background: #8ddfef;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.primary1 {
+  background: #fff;
+  transition: all 0.3s ease-in;
+}
+
+.svg-primary1 {
+  color: #fff;
+  transition: all 0.3s ease-in;
+}
+
+.primary1:hover {
+  background: #fff;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.primary:hover .svg-primary,
+.primary:hover .category-paragraph,
+.primary1:hover .svg-primary1,
+.primary1:hover .category-paragraph,
+.secondary:hover .svg-secondary,
+.secondary:hover .category-paragraph,
+.tertiary:hover .svg-tertiary,
+.tertiary:hover .category-paragraph,
+.gray:hover .svg-gray,
+.gray:hover .category-paragraph {
+  color: var(--light-color);
+}
+
+
+
+
+.fw-bold {
+    font-weight:  700!important;
+
+}
+
+a {
+    color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity, 1));
+    text-decoration: underline;
+}
+
+p {
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    unicode-bidi: isolate;
+}
+.container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    width: 100%;
+    padding-right: calc(var(--bs-gutter-x)* .5);
+    padding-left: calc(var(--bs-gutter-x)* .5);
+    margin-right: auto;
+    margin-left: auto;
+
+
+
+}
+img, svg {
+    vertical-align: middle;
+}
+.svg-primary {
+    color: var(--primary-color);
+    transition: all 0.3s ease-in;
+}
+.iconContent1 {
+    font-size: 60px;
+    color: #7cbdaa;
+
+}
+.iconContent2 {
+    font-size: 60px;
+    color: #dca605;
+}
+.iconContent3 {
+    font-size: 60px;
+    color: #db4646;
+}
+
+.iconContent4 {
+    font-size: 60px;
+    color: #24b8d0;
+}
+
+
+
+
+#example6 {
+    --bs-table-bg: #9defff;
+    --bs-table-striped-bg: #85def0;
+}
+.table-success th, .table-success td, .table-success thead th, .table-success tbody+tbody {
+    border-color: #31613c;
+}
+
+
+#example5 tbody tr:hover,
+#example6 tbody tr:hover {
+    background-color: #FFD700;
+    font-weight: bold;
+     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+/* Table, th, and td border styling */
+table, th, td {
+    border: 1px solid white;
+    border-collapse: collapse;
+}
+
+.banner-ad .banner-content .categories {
+    font-family: 'Garamond';
+    font-size: 37px;
+    text-transform: capitalize;
+    color: var(--dark-color);
+}
+
+ .line-height-lg {
+        line-height: 2.8;
+    }
+
+    .modal {
+
+
+  border-radius: .8rem;
+
+
+  background: var(--background);
+  box-shadow: .4rem .4rem 2.4rem .2rem hsla(236, 50%, 50%, 0.3);
+
+
+}
+.modal__btn {
+  padding: 1rem 1.6rem;
+  border: 1px solid hsla(0, 0%, 100%, .4);
+  border-radius: 100rem;
+
+  color: inherit;
+  background: transparent;
+
+
+  letter-spacing: .2rem;
+
+  transition: .2s;
+  cursor: pointer;
+}
+
+.modal__btn:hover,
+.modal__btn:focus {
+  border-color: hsla(0, 0%, 100%, .6);
+  transform: translateY(-.2rem);
+}
+
+.modal__details {
+  text-align: center;
+
+  margin-bottom: -1rem;
+  padding-bottom: 4rem;
+  border-bottom: 1px solid hsla(0, 0%, 100%, .4);
+}
+
+.link-2:hover,
+.link-2:focus {
+  border-color: hsla(0, 0%, 100%, .6);
+  transform: translateY(-.2rem);
+}}
+.circle-img {
+    width: 40px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.circle-img:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+}
+/* Card base */
+.top-boxes .card-like {
+  transition: transform .18s ease, box-shadow .18s ease;
+  box-shadow: 0 6px 18px rgba(12,20,30,0.06);
+  border: 0;
+}
+.top-boxes .card-like:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(12,20,30,0.10);
+}
+
+/* Icon circle */
+.top-boxes .icon {
+  width:56px;
+  height:56px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:12px;
+  background:rgba(0,0,0,0.04);
+}
+
+/* Responsive image */
+.top-boxes img.resp-chart {
+  width:100%;
+  max-width:220px;
+  height:auto;
+  object-fit:cover;
+}
+
+/* Reduce visual clutter on small screens */
+@media (max-width: 576px) {
+  .top-boxes .ps-4 { padding-left: 0.75rem !important; }
+  .top-boxes .icon { width:48px; height:48px; }
+  .top-boxes h4 { font-size:1.05rem; }
+}
+
+/* Header background */
+.announcement-header {
+  background-color: #8ddfef;
+}
+
+/* Inner white box */
+.announcement-box {
+  max-width: 100%;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Scrolling text animation */
+.scrolling-text {
+  display: inline-block;
+  white-space: nowrap;
+  animation: scrollText 15s linear infinite;
+}
+
+.scrolling-text span {
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  color: #d62828;
+  font-weight: bold;
+}
+
+/* Animation keyframes */
+@keyframes scrollText {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+/* Responsive font sizing */
+@media (max-width: 768px) {
+  .scrolling-text span {
+    font-size: 14px;
+  }
+}
+
+
+    </style>
+</head>
+
+<body>
+<div id="dashboard-content" style="display: none;">
+    <div class="card-header announcement-header text-center py-3" style=" background-color: #ffffff; margin-left:0px !important;min-height:0px !important" layout:fragment="content">
+        <div class="card-header" style="background-color: #8ddfef; text-align: center; padding: 10px;">
+            <div style="display: inline-block; background-color: #ffffff; padding: 10px 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                <marquee scrollamount="10" style="font-family: Arial, sans-serif; font-size: 16px; color: red; font-weight: bold;">
+                    <h4 style="margin: 0;">The new MIS 4.0 was launched on October 15, 2024. All States/UTs are required to complete data entry by the end of this week.</h4>
+                </marquee>
+            </div>
+        </div>
+
+
+
+
+        <section class="content">
+            <div class="container-fluid">
+
+                        <div id="wait">
+                            <img th:src="@{/images/loading.gif}"  />
+                            <br />Please Wait...
+                        </div>
+
+
+                            <div class="row g-md-3 mt-2 row top-boxes px-4 px-lg-5 mt-3">
+                              <!-- Card 1 -->
+                                <div class="col-md-6 col-lg-4 col-xl-3 mb-3">
+
+                                    <div class="primary rounded-3 p-4 h-100">
+
+                                        <a href="#" id="clr" onclick="loadMatribhoomiData(this.id);" class="small-box-footer text-dark card-like">
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon">
+                                                    <i class="fa-solid fas fa-sitemap iconContent1 category-paragraph"></i>
+                                                </div>
+                                                <div class="ps-4 category-paragraph">
+                                                    <div class="d-flex align-items-center">
+                                                        <h4 id="rorComputerzed" class="fw-bold me-2 ">0</h4>
+                                                        <span id="rorComputerzedPercent" class="fw-bold">0%</span>
+                                                    </div>
+                                                    <p class="fw-bold mb-1">RoR Computerized
+                                                    </p>
+                                                    <span class=" fw-bold line-height-lg">View details</span>
+                                                    <i class="fas fa-arrow-circle-right"></i>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- Card 2 -->
+                                <div class="col-md-6 col-lg-4 col-xl-3 mb-3">
+                                    <div class="tertiary rounded-3 p-4 h-100">
+                                        <a href="#" id="MapDigitization" onclick="loadMatribhoomiData(this);" class="small-box-footer text-dark">
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon">
+                                                    <i class="fa-solid fa-globe iconContent2 category-paragraph"></i>
+                                                </div>
+                                                <div class="ps-4 category-paragraph">
+                                                    <div class="d-flex align-items-center">
+                                                        <h4 id="digitizedCadustralMaps" class="fw-bold me-2">0</h4>
+                                                        <span id="digitizedCadustralMapsPercent" class="fw-bold">0%</span>
+                                                    </div>
+                                                    <p class="fw-bold mb-1">Digitized Cadastral Maps
+<!--                                                        <span class="fw-bold">(No.)</span>-->
+                                                    </p>
+                                                    <span class=" fw-bold line-height-lg">View details</span>
+                                                    <i class="fas fa-arrow-circle-right"></i>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- Card 3 -->
+                                <div class="col-md-6 col-lg-4 col-xl-3 mb-3">
+                                    <div class="secondary rounded-3 p-4 h-100">
+                                        <a href="#" id="mrr" onclick="loadMatribhoomiData(this.id);" class="small-box-footer text-dark">
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon">
+                                                    <i class="fa-solid fa fa-edit iconContent3 category-paragraph"></i>
+                                                </div>
+                                                <div class="ps-4 category-paragraph">
+                                                    <div class="d-flex align-items-center">
+                                                        <h4 id="mrrCompleted" class="fw-bold me-2">0</h4>
+                                                        <span id="mrrCompletedOutOfTotalSanctionedPercent" class="fw-bold">0%</span>
+                                                    </div>
+                                                    <p class="fw-bold mb-1">MRR Completed (Out of Sanctioned)
+<!--                                                        <span class="fw-bold">(No.)</span>-->
+                                                    </p>
+                                                    <span class=" fw-bold line-height-lg">View details</span>
+                                                    <i class="fas fa-arrow-circle-right"></i>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- Card 4 -->
+                                <div class="col-md-6 col-lg-4 col-xl-3 mb-3">
+                                    <div class="gray rounded-3 p-4 h-100">
+                                        <a href="#" id="surveyReservey" onclick="loadMatribhoomiData(this.id);" class="text-dark">
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon">
+                                                    <i class="fa-solid fa fa-edit iconContent4 category-paragraph"></i>
+                                                </div>
+                                                <div class="ps-4 category-paragraph">
+                                                    <div class="d-flex align-items-center">
+                                                        <h4 id="villagesDroneFlyingCompleted" class="fw-bold me-2">0</h4>
+                                                        <span id="villagesDroneFlyingCompletedPercent" class="fw-bold">0%</span>
+                                                    </div>
+                                                    <p class="fw-bold mb-1">Survey/Resurvey Completed
+                                                        <span class="fw-bold">(Villages)</span>
+                                                    </p>
+                                                    <span class=" fw-bold line-height-lg">View details</span>
+                                                    <i class="fas fa-arrow-circle-right"></i>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- Card 5 -->
+
+
+
+                                <!-- Card 1 -->
+                                <div class="col-md-6 col-lg-4 col-xl-3 mb-3">
+                                    <div class="secondary rounded-3 p-4 h-100">
+                                        <a href="#" id="rccms" onclick="loadMatribhoomiData(this.id);" class="small-box-footer text-dark">
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon">
+                                                    <i class="fa-solid fa-laptop iconContent3 category-paragraph"></i>
+                                                </div>
+                                                <div class="ps-4 category-paragraph">
+                                                    <div class="d-flex align-items-center">
+                                                        <h4 id="revenueCourtsComputerized" class="fw-bold me-2">0</h4>
+                                                        <span id="totalRevenueCourtsPercent" class="fw-bold">0%</span>
+                                                    </div>
+                                                    <p class="fw-bold mb-1">Computerized/Online Revenue Courts
+<!--                                                        <span class="fw-bold">(Villages)</span>-->
+                                                    </p>
+                                                    <span class=" fw-bold line-height-lg">View details</span>
+                                                    <i class="fas fa-arrow-circle-right"></i>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- Card 2 -->
+                                <div class="col-lg-4 col-md-6 col-xl-3 mb-3">
+                                    <div class="gray rounded-3 p-4 h-100">
+                                        <a href="#" id="linkedwithaadhaar" onclick="loadMatribhoomiData(this.id);" class="small-box-footer text-dark">
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon">
+                                                    <i class="fa-solid fa-link iconContent4 category-paragraph"></i>
+                                                </div>
+                                                <div class="ps-4 category-paragraph">
+                                                    <div class="d-flex align-items-center">
+                                                        <h4 id="villagesWith100PercentRorLinkedAadhaar" class="fw-bold me-2">0</h4>
+                                                        <span id="villagesWith100PercentRorLinkedAadhaarPercent" class="fw-bold">0%</span>
+                                                    </div>
+                                                    <p class="fw-bold mb-1">Aadhaar Linked With RoR
+                                                        <span class="fw-bold">(Villages)</span>
+                                                    </p>
+                                                    <span class=" fw-bold line-height-lg">View details</span>
+                                                    <i class="fas fa-arrow-circle-right"></i>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- Card 3 -->
+                                <div class="col-lg-4 col-md-6 col-xl-3 mb-3">
+                                    <div class="tertiary rounded-3 p-4 h-100">
+                                        <a href="#" id="sro" onclick="loadMatribhoomiData(this.id);" class="small-box-footer text-dark">
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon">
+                                                    <i class="fa-solid fa-laptop iconContent2 category-paragraph"></i>
+                                                </div>
+                                                <div class="ps-4 category-paragraph">
+                                                    <div class="d-flex align-items-center">
+                                                        <h4 id="totalSro" class="fw-bold me-2">0</h4>
+                                                        <span id="sroComputerizedPercent" class="fw-bold">0%</span>
+                                                    </div>
+                                                    <p class="fw-bold mb-1">SROs Computerized
+<!--                                                        <span class="fw-bold">(No.)</span>-->
+                                                    </p>
+                                                    <span class=" fw-bold line-height-lg">View details</span>
+                                                    <i class="fas fa-arrow-circle-right"></i>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- Card 4 -->
+                                <div class="col-lg-4 col-md-6 col-xl-3 mb-3">
+                                    <div class="primary1 rounded-3 p-4 h-100">
+
+                                            <div class="d-flex align-items-center">
+
+                                                <div class="ps-4 ">
+
+                                                    <img th:src="@{/images/graphs.jpg}" class="resp-chart img-fluid" loading="lazy" alt="Physical Components Chart">
+                                                    <!--            <i class="fa-solid fa fa-pie-chart iconContent1 category-paragraph"></i>-->
+                                                   </div>
+                                                <div>
+                                                    <p class="fw-bold mb-1" id="physicalProgress" style="cursor: pointer;">
+                                                        Physical Components Progress Report (Chart)
+
+                                                    </p>
+                                                </div>
+
+                                            </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
+
+
+
+
+                <!-- Loader -->
+                <div id="gifOverlay">
+                    <img th:src="@{/static/images/loading.gif}" alt="Loading..."> <!-- Replace with your GIF path -->
+                </div>
+
+
+                <div class="row px-4 px-lg-5 ">
+                    <div class="col-md-6">
+                        <div class="card" >
+                            <div class="card-header" >
+                                <input id="dt" style="background-color: #EBF1FB;color: #007bff" type="button"
+                                       onclick="downloadimage(this.id)" value="Download Map">
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body" style="background-color: #8ddfef;">
+                                <div id="mapdivparent">
+                                    <h2 id="maptitle" class="card-title"
+                                        style="font-size: 20px;  color:#131316;font-family: auto;  letter-spacing: 1px;">
+                                    </h2>
+
+                                    <br />
+
+                                    <div id="mapDiv" class="chart&#45;&#45;container" >
+                                    </div>
+                                    <div id="legend" class="legend-container">
+                                        <ul class="tiny">
+                                            <li style="width: 16%;padding: 1px;">
+                                                    <span style="font-size: 14px">
+                                                        <font style="color:#FF0000">0% ≤ - ≤ 30%</font>
+                                                    </span>
+                                                <span
+                                                        style="height: 10px; background:#FF0000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    </span>
+                                            </li>
+                                            <li style="width: 16%;padding: 1px;">
+                                                    <span style="font-size: 14px !important">
+                                                        <font style="color:#FF9A00">30% &lt; - ≤ 65%</font>
+                                                    </span>
+                                                <span
+                                                        style="height: 10px; background:#FF9A00">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    </span>
+                                            </li>
+                                            <li style="width: 16%;padding: 1px;">
+                                                    <span style="font-size: 14px !important">
+                                                        <font style="color:#FFDB00">65% &lt; - ≤ 80%</font>
+                                                    </span>
+                                                <span
+                                                        style="height: 10px; background:#FFDB00">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    </span>
+                                            </li>
+                                            <li style="width: 16%;padding: 1px;">
+                                                    <span style="font-size: 14px !important">
+                                                        <font style="color:#059212">80% &lt; - ≤ 100%</font>
+                                                    </span>
+                                                <span
+                                                        style="height: 10px; background:#059212">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    </span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="card card-info">
+                                <div class="card-header" style="background-color: #8ddfef;">
+                                    <div class="card-tools">
+                                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-10">
+                                            <h3 class="card-title" id="tabletitle"
+                                                style="font-size: 20px; font-family: auto; text-shadow: 2px 2px 4px #090a0a; letter-spacing: 2px;">
+                                            </h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body"
+                                     style="display: block;height: 1359px;overflow-y: auto; overflow-x: auto;">
+                                    <table id="user_table">
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-header   d-flex justify-content-between align-items-center">
+                                    <div class="col-sm-10">
+                                    <h5 class="card-title" style="color: firebrick; font-weight: 500px;">
+                                        Additional Key Performance Indicators
+                                    </h5>
+                                    </div>
+                                        <div class="col-sm-2">
+                                            <label id="ChartVillage" class="fw-bold text-primary" style="cursor: pointer;">
+                                                <img th:src="@{/static/images/chart.jpg}" class="circle-img" title="Chart" alt="">
+                                            </label>
+                                        </div>
+
+                                </div>
+
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="card-footer" style="background: #ffff;">
+                                <div class="row">
+
+                                    <!-- Geo-Referenced Card -->
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                        <div class="primary rounded-3 p-4 h-100">
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon">
+                                                    <i class="fa-solid fa-draw-polygon iconContent1 category-paragraph"></i>
+                                                </div>
+                                                <div class="ps-4 category-paragraph">
+                                                    <div style="display: flex; align-items: center;">
+                                                        <h4 id="villagesGeoreferenced" class="fw-bold me-2">0</h4>
+                                                    </div>
+                                                    <p class="fw-bold mb-1">
+                                                        Geo-Referenced <span style="font-weight: bold">(Villages)</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- ULPIN Card -->
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                        <div class="tertiary rounded-3 p-4 h-100">
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon">
+                                                    <i class="fa-solid fa-map-marker-alt iconContent2 category-paragraph"></i>
+                                                </div>
+                                                <div class="ps-4 category-paragraph">
+                                                    <div style="display: flex; align-items: center;">
+                                                        <h4 id="villagesWithUlipn" class="fw-bold me-2">0</h4>
+                                                    </div>
+                                                    <p class="fw-bold mb-1">
+                                                        ULPIN <span style="font-weight: bold">(Villages)</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="card" >
+                            <div class="card-header">
+
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <div class="col-sm-10">
+                                    <h5 class="card-title" style="color: firebrick; font-weight: 500px;">
+                                        Master Details
+
+                                    </h5>
+                                    </div>
+                                    <div class="col-sm-2">
+                                    <label id="masterDetails" class="fw-bold text-primary" style="cursor: pointer;">
+                                        <img th:src="@{/static/images/chart.jpg}" class="circle-img" title="Chart" alt="">
+                                    </label>
+                                    </div>
+                                </div>
+
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="card-footer" style="background: #ffff;">
+                                 <div class="row">
+                                        <!-- States / UTs Card -->
+                                        <div class="col-lg-6 col-md-12 col-sm-12 mb-3">
+                                            <div class="secondary rounded-3 p-4 h-100">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="icon">
+                                                        <!-- Placeholder for icon -->
+                                                    </div>
+                                                    <div class="ps-4 category-paragraph">
+                                                        <div style="display: flex; align-items: center;">
+                                                            <h4 id="totalState" class="fw-bold me-2">0</h4>
+                                                        </div>
+                                                        <span class="fw-bold">States / UTs</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Districts Card -->
+                                        <div class="col-lg-6 col-md-12 col-sm-12 mb-3">
+                                            <div class="primary rounded-3 p-4 h-100">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="icon">
+                                                        <!-- Placeholder for icon -->
+                                                    </div>
+                                                    <div class="ps-4 category-paragraph">
+                                                        <div style="display: flex; align-items: center;">
+                                                            <h4 id="totalDistrict" class="fw-bold me-2">0</h4>
+                                                        </div>
+                                                        <span class="fw-bold">Districts</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Tehsils Card -->
+                                        <div class="col-lg-6 col-md-12 col-sm-12 mb-3">
+                                            <div class="tertiary rounded-3 p-4 h-100">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="icon">
+                                                        <!-- Placeholder for icon -->
+                                                    </div>
+                                                    <div class="ps-4 category-paragraph">
+                                                        <div style="display: flex; align-items: center;">
+                                                            <h4 id="totalTehsil" class="fw-bold me-2">0</h4>
+                                                        </div>
+                                                        <span class="fw-bold">Tehsils</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Villages Card -->
+                                        <div class="col-lg-6 col-md-12 col-sm-12 mb-3">
+                                            <div class="gray rounded-3 p-4 h-100">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="icon">
+                                                        <!-- Placeholder for icon -->
+                                                    </div>
+                                                    <div class="ps-4 category-paragraph">
+                                                        <div style="display: flex; align-items: center;">
+                                                            <h4 id="totalVillage" class="fw-bold me-2">0</h4>
+                                                        </div>
+                                                        <span class="fw-bold">Villages</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="card card-info">
+                                <div class="card-header" style="background-color: #8ddfef;">
+                                    <div class="card-tools">
+                                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-8">
+                                            <h3 class="card-title"
+                                                style="font-size: 20px; font-family: auto; text-shadow: 2px 2px 4px #090a0a; letter-spacing: 2px;">
+                                                Top 5 States/UTs</h3>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label id="top5States" class="fw-bold text-primary" style="cursor: pointer;">
+                                                <img th:src="@{/static/images/chart.jpg}" class="circle-img" title="Chart" alt="">
+                                        </div>
+                                        <div class="col-sm-1">
+
+                                            <a th:href="@{/physical/report/top-5-state}">
+                                                <img th:src="@{/images/pdf.png}" alt="PDF Icon" class="btn-img"
+                                                     width="40" height="40"
+                                                     style="box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;" />
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <a th:href="@{/physical/report/top-5-state-excel}">
+                                                <img th:src="@{/images/excel.png}" alt="PDF Icon" class="btn-img"
+                                                     width="40" height="40"
+                                                     style="box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;" />
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body table-responsive" style="display: block;">
+
+
+
+                                    <table id="example5" class=" table table-success table-striped-columns table-responsive">
+                                        <thead>
+                                        <tr>
+                                            <th>S.No</th>
+                                            <th>State/ UT Name</th>
+                                            <th>CLR Completed Villages(%)</th>
+                                            <th>Digitized Mapsheets/FMBs/Tippans (No.)(%)</th>
+                                            <th>Villages with Cadastral Maps linked With RoR (%)</th>
+                                            <th>SRO Computerized (%)</th>
+                                            <!-- <th>SRO Integrated With Land Records(%)</th>-->
+                                            <th>Completed Modern Record Room(%)</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="card card-info">
+                                <div class="card-header" style="background-color: #8ddfef;">
+                                    <div class="card-tools">
+                                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-8">
+                                            <h3 class="card-title"
+                                                style="font-size: 20px; font-family: auto; text-shadow: 2px 2px 4px #090a0a; letter-spacing: 2px;">
+                                                Bottom 5 States/UTs</h3>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label id="bottom5States" class="fw-bold text-primary" style="cursor: pointer;">
+                                                <img th:src="@{/static/images/chart.jpg}" class="circle-img" title="Chart" alt="">
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <a th:href="@{/physical/report/bottom-5-state}">
+                                                <img th:src="@{/images/pdf.png}" alt="PDF Icon" class="btn-img"
+                                                     width="40" height="40"
+                                                     style="box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;" />
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <a th:href="@{/physical/report/bottom-5-state-excel}">
+                                                <img th:src="@{/images/excel.png}" alt="PDF Icon" class="btn-img"
+                                                     width="40" height="40"
+                                                     style="box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;" />
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body row table-responsive " style="display: block; ">
+                                    <table id="example6" class="table  table-light table-striped-columns table-responsive ">
+                                        <thead>
+                                        <tr>
+                                            <th>S.No</th>
+                                            <th>State/ UT Name</th>
+                                            <th>CLR Completed Villages(%)</th>
+                                            <th>Digitized Mapsheets/FMBs/Tippans (No.)(%)</th>
+                                            <th>Villages with Cadastral Maps linked With RoR (%)</th>
+                                            <th>SRO Computerized (%)</th>
+                                           <!-- <th>SRO Integrated With Land Records(%)</th>-->
+                                            <th>Completed Modern Record Room(%)</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        <tr>
+
+                                        </tr>
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                                <div class="modal fade" id="masterDetailsModal" tabindex="-1" role="dialog" aria-labelledby="masterDetailsLabel" aria-hidden="true" >
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content" >
+                                            <hr>
+                                            <div class="modal-body">
+                                                <div id="containerState" style="width: 100%; height: 400px;">
+
+                                            </div>
+                                            <div class="modal-footer" >
+                                                <button type="button" class="modal__btn" data-dismiss="modal">Close</button>
+                                            </div>
+                                            <a href="#modal-closed" class="link-2" data-dismiss="modal" aria-label="Close"></a>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                                <div class="modal fade" id="additionalKeyModal" tabindex="-1" role="dialog" aria-labelledby="chartModalLabel" aria-hidden="true" >
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content" >
+                                            <hr>
+                                            <div class="modal-body">
+                                                <div id="villagesDonutChart" style="width: 100%; height: 400px;">
+
+                                                </div>
+                                                <div class="modal-footer" >
+                                                    <button type="button" class="modal__btn" data-dismiss="modal">Close</button>
+                                                </div>
+                                                <a href="#modal-closed" class="link-2" data-dismiss="modal" aria-label="Close"></a>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+
+                                </div>
+
+                                <div class="modal fade" id="top5StatesModal" tabindex="-1" role="dialog" aria-labelledby="top5StatesLabel" aria-hidden="true" >
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content" >
+                                            <hr>
+                                            <div class="modal-body">
+                                                <div id="top5StatesLineChart" style="width: 100%; height: 400px;"></div>
+                                                    <hr>
+                                                <div id="top5StatesBarChart" style="width: 100%; height: 400px;"></div>
+
+                                                </div>
+                                                <div class="modal-footer" >
+                                                    <button type="button" class="modal__btn" data-dismiss="modal">Close</button>
+                                                </div>
+                                                <a href="#modal-closed" class="link-2" data-dismiss="modal" aria-label="Close"></a>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                            </div>
+                    </div>
+
+                                <div class="modal fade" id="bottom5StatesModal" tabindex="-1" role="dialog" aria-labelledby="bottom5StatesLabel" aria-hidden="true" >
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content" >
+                                            <hr>
+                                            <div class="modal-body">
+                                                <div id="bottom5StatesLineChart" style="width: 100%; height: 400px;"></div>
+                                                    <hr>
+                                                <div id="bottom5StatesBarChart" style="width: 100%; height: 400px;"></div>
+
+                                                    </div>
+                                                    <div class="modal-footer" >
+                                                        <button type="button" class="modal__btn" data-dismiss="modal">Close</button>
+                                                    </div>
+                                                    <a href="#modal-closed" class="link-2" data-dismiss="modal" aria-label="Close"></a>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                </div>
+
+
+
+
+            </div>
+
+                                <div class="modal fade" id="physicalProgressModal" tabindex="-1" role="dialog" aria-labelledby="physicalProgressLabel" aria-hidden="true" >
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content" >
+                                            <hr>
+                                            <div class="modal-body">
+                                                <div id="physicalProgressChart" style="width: 100%; height: 400px;">
+
+                                                      </div>
+                                                    <div class="modal-footer" >
+                                                        <button type="button" class="modal__btn" data-dismiss="modal">Close</button>
+                                                    </div>
+                                                    <a href="#modal-closed" class="link-2" data-dismiss="modal" aria-label="Close"></a>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+
+
+                                </div>
+        </section>
+    </div>
+</div>
+</body>
+
+</html>

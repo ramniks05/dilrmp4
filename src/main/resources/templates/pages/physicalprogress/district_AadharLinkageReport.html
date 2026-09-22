@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/dashboard">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Aadhaar Linked Report (ALR)</title>
+    <link th:href="@{/css/report/report.css}" rel="stylesheet"/>
+</head>
+
+<body>
+<div layout:fragment="content"
+     style="box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;">
+    <section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-info">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-sm-10">
+                                <h3 class="card-title"
+                                    style="font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a; letter-spacing: 2px;">
+                                    <span th:text="${labels['reportName']}"></span>&nbsp;:
+                                    <span th:text="${labels['stateUT']}"></span> -
+                                    <span th:text="${stateName}"></span>
+                                </h3>
+                            </div>
+                            <div class="col-sm-2">
+                                <a th:href="@{/physcial/report/district/pdf/district_aadhaar_linkage}">
+                                    <img th:src="@{/images/pdf.png}" alt="PDF Icon" class="btn-img" width="40"
+                                         height="40"
+                                         style="box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;"/>
+                                </a>
+                                <a th:href="@{/physcial/report/excel/aadhar-district}">
+                                    <img th:src="@{/images/excel.png}" alt="EXCEL Icon" class="btn-img" width="40"
+                                         height="40"
+                                         style="box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;"/>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <a th:href="@{/reports/physical-progress-report}" class="btn btn-primary" style="font-size: 13px;">
+                            ← Back
+                        </a>
+                        <div class="table-responsive text-nowrap">
+                            <table id="example2" class="table table-bordered  table-striped-columns table-success table-striped  table-responsive">
+                                <thead class="card-info wrap-text" style="background-color: #4a6c52; color:#ffff">
+                                <tr>
+                                    <th rowspan="3" th:text="${labels['serialNumber']}"></th>
+                                    <th rowspan="3" th:text="${labels['districtName']}"></th>
+                                    <th rowspan="3" th:text="${labels['totalTehsils']}"></th>
+                                    <th colspan="5" th:text="${labels['noOfVillages']}"></th>
+                                    <th colspan="5" th:text="${labels['ror']}"></th>
+                                </tr>
+                                <tr>
+                                    <th th:text="${labels['total']}"></th>
+                                    <th colspan="2"
+                                        th:text="${labels['at_least_one_ror_linked_with_aadhaar']}"></th>
+                                    <th colspan="2" th:text="${labels['100_percent_ror_linked_with_aadhaar']}"></th>
+                                    <th th:text="${labels['total']}"></th>
+                                    <th colspan="2" th:text="${labels['linked_with_aadhaar']}"></th>
+                                    <th colspan="2" th:text="${labels['linked_with_mobile_number']}"></th>
+                                </tr>
+                                <tr>
+                                    <th th:text="${labels['number']}"></th>
+                                    <th th:text="${labels['number']}"></th>
+                                    <th th:text="${labels['percentage']}"></th>
+                                    <th th:text="${labels['number']}"></th>
+                                    <th th:text="${labels['percentage']}"></th>
+                                    <th th:text="${labels['number']}"></th>
+                                    <th th:text="${labels['number']}"></th>
+                                    <th th:text="${labels['percentage']}"></th>
+                                    <th th:text="${labels['number']}"></th>
+                                    <th th:text="${labels['percentage']}"></th>
+                                </tr>
+                                <tr style="font-weight: bold;">
+                                    <td style="text-align: center;">1</td>
+                                    <td style="text-align: center;">2</td>
+                                    <td style="text-align: center;">3</td>
+                                    <td style="text-align: center;">4</td>
+                                    <td style="text-align: center;">5a</td>
+                                    <td style="text-align: center;">5b</td>
+                                    <td style="text-align: center;">6a</td>
+                                    <td style="text-align: center;">6b</td>
+                                    <td style="text-align: center;">7</td>
+                                    <td style="text-align: center;">8a</td>
+                                    <td style="text-align: center;">8b</td>
+                                    <td style="text-align: center;">9a</td>
+                                    <td style="text-align: center;">9b</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="report, status : ${districtAadhaarData}">
+                                    <td th:text="${status.count}"></td>
+                                    <td th:text="${report.districtName.toUpperCase()}"></td>
+                                    <td th:text="${report.totalTehsils}"></td>
+                                    <td th:text="${report.totalVillages}"></td>
+                                    <td th:text="${report.villagesWithRorLinkedAadhaar}"></td>
+                                    <td th:text="${report.villagesWithRorLinkedAadhaarPercent}"></td>
+                                    <td th:text="${report.villagesWith100PercentRorLinkedAadhaar}"></td>
+                                    <td th:text="${report.villagesWith100PercentRorLinkedAadhaarPercent != null ? (report.villagesWith100PercentRorLinkedAadhaarPercent != 0 ? report.villagesWith100PercentRorLinkedAadhaarPercent : 0.0) : 0.0}"></td>
+                                    <td th:text="${report.totalRor}"></td>
+                                    <td th:text="${report.rorLinkedWithAadhaar}"></td>
+                                    <td th:text="${report.rorLinkedWithAadhaarPercent != null ? (report.rorLinkedWithAadhaarPercent != 0 ? report.rorLinkedWithAadhaarPercent : 0.0) : 0.0}"></td>
+                                    <td th:text="${report.rorLinkedWithMobileNumber}"></td>
+                                    <td th:text="${report.rorLinkedWithMobileNumberPercent != null ? (report.rorLinkedWithMobileNumberPercent != 0 ? report.rorLinkedWithMobileNumberPercent : 0.0) : 0.0}"></td>
+                                </tr>
+                                <tr th:each="grandTotal : ${stateAadhaarData}">
+                                    <td></td>
+                                    <td style="font-weight: bold;">Grand Total</td>
+                                    <td th:text="${grandTotal.totalTehsils}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.totalVillages}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.villagesWithRorLinkedAadhaar}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.villagesWithRorLinkedAadhaarPercent != null ? (grandTotal.villagesWithRorLinkedAadhaarPercent != 0 ? grandTotal.villagesWithRorLinkedAadhaarPercent : 0.0) : 0.0}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.villagesWith100PercentRorLinkedAadhaar}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.villagesWith100PercentRorLinkedAadhaarPercent != null ? (grandTotal.villagesWith100PercentRorLinkedAadhaarPercent != 0 ? grandTotal.villagesWith100PercentRorLinkedAadhaarPercent : 0.0) : 0.0}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.totalRor}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.rorLinkedWithAadhaar}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.rorLinkedWithAadhaarPercent != null ? (grandTotal.rorLinkedWithAadhaarPercent != 0 ? grandTotal.rorLinkedWithAadhaarPercent : 0.0) : 0.0}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.rorLinkedWithMobileNumber}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.rorLinkedWithMobileNumberPercent != null ? (grandTotal.rorLinkedWithMobileNumberPercent != 0 ? grandTotal.rorLinkedWithMobileNumberPercent : 0.0) : 0.0}" style="font-weight: bold;"></td>
+                                </tr>
+                                </tbody>
+                                <tfoot>
+                                <tr th:each="grandTotal : ${stateAadhaarData}">
+                                    <td></td>
+                                    <td style="font-weight: bold;">Grand Total</td>
+                                    <td th:text="${grandTotal.totalTehsils}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.totalVillages}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.villagesWithRorLinkedAadhaar}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.villagesWithRorLinkedAadhaarPercent != null ? (grandTotal.villagesWithRorLinkedAadhaarPercent != 0 ? grandTotal.villagesWithRorLinkedAadhaarPercent : 0.0) : 0.0}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.villagesWith100PercentRorLinkedAadhaar}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.villagesWith100PercentRorLinkedAadhaarPercent != null ? (grandTotal.villagesWith100PercentRorLinkedAadhaarPercent != 0 ? grandTotal.villagesWith100PercentRorLinkedAadhaarPercent : 0.0) : 0.0}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.totalRor}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.rorLinkedWithAadhaar}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.rorLinkedWithAadhaarPercent != null ? (grandTotal.rorLinkedWithAadhaarPercent != 0 ? grandTotal.rorLinkedWithAadhaarPercent : 0.0) : 0.0}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.rorLinkedWithMobileNumber}" style="font-weight: bold;"></td>
+                                    <td th:text="${grandTotal.rorLinkedWithMobileNumberPercent != null ? (grandTotal.rorLinkedWithMobileNumberPercent != 0 ? grandTotal.rorLinkedWithMobileNumberPercent : 0.0) : 0.0}" style="font-weight: bold;"></td>
+                                </tr>
+                                </tfoot>
+                            </table>
+                            <script>
+    $(document).ready(function () {
+        $('#ddlSelect').change(function () {
+            var selectedValue = $(this).val();
+            if (selectedValue != '') {
+                $('#ascDropdown').show();
+            } else {
+                $('#ascDropdown').hide();
+            }
+        });
+    });
+    $('#resetButton').click(function () {
+        $('#searchForm')[0].reset();
+        $('#searchForm').trigger('submit');
+    });
+
+
+
+
+                            </script>
+                            <script>
+    $(document).ready(function () {
+        // Check if DataTable is already initialized on the table
+        if ($.fn.DataTable.isDataTable('#example2')) {
+            // If yes, destroy the existing DataTable instance
+            $('#example2').DataTable().destroy();
+        }
+
+        // Initialize DataTable with your table ID
+        $('#example2').DataTable({
+            // Add additional options if needed
+            paging: true,  // Enable pagination
+            lengthMenu: [10, 25, 50, 100],  // Set page length options
+            pageLength: 25,  // Default page length
+            // Callback function after each draw event
+            drawCallback: function (settings) {
+                var api = this.api();
+                var totalPages = api.page.info().pages;
+                var page = api.page.info().page;
+
+                // Check if it's the last page
+                if (page === totalPages - 1) {
+                    $('#example2 tfoot').show();
+                } else {
+                    $('#example2 tfoot').hide();
+                }
+            }
+        });
+    });
+
+
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <span id="loadingIndicator" class="indicator">Loading...</span>
+    </section>
+</div>
+</body>
+</html>

@@ -1,0 +1,41 @@
+
+<section th:fragment="slider">
+  <div>
+    <div class="swiper mySwiper image">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide"><img th:src="@{/static/images/Banner1.JPG}" alt="image"></div>
+        <div class="swiper-slide"><img th:src="@{/static/images/Banner2.jpg}" alt="image"></div>
+        <div class="swiper-slide"><img th:src="@{/static/images/Banner3.jpg}" alt="image"></div>
+      </div>
+      <div class="swiper-button-next"></div>
+      <div class="swiper-button-prev"></div>
+
+
+    </div>
+
+    <div class="options">
+      <div class="new"><a href="#" target="_blank" rel="noopener noreferrer">
+        <h1>What's New</h1>
+      </a>
+
+      </div>
+      <div class="notice">
+
+        <marquee width="100%" direction="left" scrollamount="3">
+          <div style="display: flex;">
+            <li>Bhoomi Samman Awards Programme on 18th July 2023</li>
+            <li>ULPIN Bhu-Aadhar</li>
+            <li>Minutes of the Bhumi Samvaad- National Workshop on implementation of various components/activities of Digital India Land Record Modernization</li>
+
+          </div>
+
+        </marquee>
+      </div>
+      <div class="new">
+        <a href="#" target="_blank" rel="noopener noreferrer">
+          <h1>View All</h1>
+        </a>
+      </div>
+
+    </div>
+</section>

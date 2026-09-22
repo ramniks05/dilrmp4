@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/dashboard">
+
+<head>
+    <meta charset="UTF-8">
+    <title>DILRMP-MIS 4.0</title>
+    <script type="text/javascript" th:src="@{/static/js/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/static/nlrmpmap/getDocument.js}"></script>
+
+
+
+
+
+
+    <style>
+         .ps-4 {
+    padding-left: 1.5rem !important;
+}
+
+.gy-xxl-5{--bs-gutter-y:3rem}}.table{--bs-table-color:var(--bs-body-color);--bs-table-bg:transparent;--bs-table-border-color:var(--bs-border-color);--bs-table-accent-bg:transparent;--bs-table-striped-color:var(--bs-body-color);--bs-table-striped-bg:rgba(0, 0, 0, 0.05);--bs-table-active-color:var(--bs-body-color);--bs-table-active-bg:rgba(0, 0, 0, 0.1);--bs-table-hover-color:var(--bs-body-color);--bs-table-hover-bg:rgba(0, 0, 0, 0.075);width:100%;margin-bottom:1rem;color:var(--bs-table-color);vertical-align:top;border-color:var(--bs-table-border-color)}.table>:not(caption)>*>*{padding:.5rem .5rem;background-color:var(--bs-table-bg);border-bottom-width:var(--bs-border-width);box-shadow:inset 0 0 0 9999px var(--bs-table-accent-bg)}.table>tbody{vertical-align:inherit}.table>thead{vertical-align:bottom}.table-group-divider{border-top:calc(var(--bs-border-width) * 2) solid currentcolor}.caption-top{caption-side:top}.table-sm>:not(caption)>*>*{padding:.25rem .25rem}.table-bordered>:not(caption)>*{border-width:var(--bs-border-width) 0}.table-bordered>:not(caption)>*>*{border-width:0 var(--bs-border-width)}.table-borderless>:not(caption)>*>*{border-bottom-width:0}.table-borderless>:not(:first-child){border-top-width:0}.table-striped>tbody>tr:nth-of-type(odd)>*{--bs-table-accent-bg:var(--bs-table-striped-bg);color:var(--bs-table-striped-color)}.table-striped-columns>:not(caption)>tr>:nth-child(2n){--bs-table-accent-bg:var(--bs-table-striped-bg);color:var(--bs-table-striped-color)}.table-active{--bs-table-accent-bg:var(--bs-table-active-bg);color:var(--bs-table-active-color)}.table-hover>tbody>tr:hover>*{--bs-table-accent-bg:var(--bs-table-hover-bg);color:var(--bs-table-hover-color)}.table-primary{--bs-table-color:#000;--bs-table-bg:#cfe2ff;--bs-table-border-color:#bacbe6;--bs-table-striped-bg:#c5d7f2;--bs-table-striped-color:#000;--bs-table-active-bg:#bacbe6;--bs-table-active-color:#000;--bs-table-hover-bg:#bfd1ec;--bs-table-hover-color:#000;color:var(--bs-table-color);border-color:var(--bs-table-border-color)}.table-secondary{--bs-table-color:#000;--bs-table-bg:#e2e3e5;--bs-table-border-color:#cbccce;--bs-table-striped-bg:#d7d8da;--bs-table-striped-color:#000;--bs-table-active-bg:#cbccce;--bs-table-active-color:#000;--bs-table-hover-bg:#d1d2d4;--bs-table-hover-color:#000;color:var(--bs-table-color);border-color:var(--bs-table-border-color)}.table-success{--bs-table-color:#000;--bs-table-bg:#d1e7dd;--bs-table-border-color:#bcd0c7;--bs-table-striped-bg:#c7dbd2;--bs-table-striped-color:#000;--bs-table-active-bg:#bcd0c7;--bs-table-active-color:#000;--bs-table-hover-bg:#c1d6cc;--bs-table-hover-color:#000;color:var(--bs-table-color);border-color:var(--bs-table-border-color)}
+
+
+    .bg-sky {
+    background-color: #51d4d4 !important;
+}
+
+.bg-dark {
+  background-color: #343a40 !important;
+}
+
+.bg-dark,
+.bg-dark>a {
+  color: #51d4d4 !important;
+}
+
+.bg-dark.btn:hover {
+  border-color: #51d4d4;
+  color: #51d4d4;
+}
+
+
+
+        .top-boxes p {
+            margin-bottom: 1px;
+        }
+
+        .card-tools .fa-minus {
+            margin-right: 0;
+        }
+
+        .legend-container {
+            list-style: none;
+            margin: 0 0 25px;
+            padding: 0 0 0 15px;
+            margin-top: -8%;
+        }
+
+        .scrolepopup {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .small-box>.inner {
+            min-height: 130px;
+        }
+
+        .esriControlsBR {
+            display: none !important;
+        }
+
+        .popup,
+        .popup1,
+        .popup2,
+        .popup3,
+        .popup4,
+        .popup5 {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 9999;
+        }
+
+        #popupTitle {
+            margin-bottom: 20px;
+        }
+
+        .close-btn {
+            font-size: 24px;
+            float: right;
+            color: red;
+            margin-right: 20px;
+            cursor: pointer;
+        }
+
+        .linkable-color {
+            color: blue;
+        }
+
+        .header-link {
+            color: blue;
+            text-decoration: none;
+        }
+
+        .header-link:hover {
+            text-decoration: underline;
+        }
+
+        .active-box {
+            z-index: 10;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transform: scale(1.05);
+            transition: all 0.3s ease-in-out;
+
+        }
+
+        .active-box.bg-success {
+            background-color: #28a745 !important;
+
+        }
+
+        .active-box.bg-primary {
+            background-color: #007bff !important;
+        }
+
+        /* Full-screen overlay for GIF */
+        #gifOverlay {
+            position: fixed;
+            /* Fixed position to cover the entire screen */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            /* Semi-transparent background */
+            display: flex;
+            /* Center the GIF */
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            /* Ensure it's on top of other elements */
+            display: none;
+            /* Initially hidden */
+        }
+
+        #gifOverlay img {
+            width: 150px;
+            /* Adjust size as needed */
+            height: auto;
+        }
+ }
+
+
+    .display {
+    width: 100%;
+    }
+ #wait {
+    width: 100px;
+    height: 130px;
+    text-align: center;
+    position: fixed;
+    left: 280px;
+    right: 0;
+    top: 40%;
+    z-index: 99;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.43);
+    display: none;
+    }
+    #wait img {
+    width: 100%;
+    }
+
+
+    .bg-dark1 {
+    background-color: #6ab2a4 !important;
+    style="color: #ffffff;"
+}
+
+
+
+
+  #user_table tbody tr:hover {
+    background-color: #8ddfef; /* Light blue background for hover effect */
+
+    font-weight: bold;
+
+   table, th, td {
+  border: 1px solid white;
+  border-collapse: collapse;
+   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+
+    </style>
+
+
+    <style>
+
+
+
+
+
+/*--------------------------------------------------------------
+/** 1. VARIABLES
+--------------------------------------------------------------*/
+
+/* on mobile devices below 600px
+ */
+@media screen and (max-width: 600px) {
+  :root {
+    --header-height: 100px;
+    --header-height-min: 80px;
+  }
+}
+
+/* Theme Colors */
+:root {
+  --primary-color: #4CC082;
+  --light-primary-color: #E2F3F0;
+  --secondary-color: #EC6C5A;
+  --light-secondary-color: #FFE9E5;
+  --tertiary-color: #FFEED3;
+  --dark-color: #31333A;
+  --light-color: #FFFFFF;
+  --grey-color: #BBC7D4;
+  --light-dark-color: #727272;
+  --light-grey-color: #f5f5f5;
+}
+
+/* Fonts */
+:root {
+  --body-font: 'Inter', sans-serif;
+  --heading-font: 'Inter', sans-serif;
+}
+
+body {
+
+  --bs-link-color: var(--dark-color);
+  --bs-link-hover-color: var(--dark-color);
+
+  --bs-link-color-rgb: 40, 40, 40;
+  --bs-link-hover-color-rgb: 0, 0, 0;
+
+  --bs-light-rgb: 248, 248, 248;
+
+  --bs-font-sans-serif: var(var(--body-font));
+  --bs-body-font-family: var(--bs-font-sans-serif);
+  --bs-body-font-size: 1rem;
+  --bs-body-font-weight: 400;
+  --bs-body-line-height: 1.3rem;
+  --bs-body-color: var(--dark-color);
+
+  --bs-primary: #4CC082;
+  --bs-primary-rgb: 76, 192, 130;
+  --bs-primary-bg-subtle: #E2F3F0;
+
+  --bs-border-color: #F7F7F7;
+
+  --bs-secondary: #EC6C5A;
+  --bs-secondary-rgb: 236, 108, 90;
+  --bs-secondary-bg-subtle: #FFE9E5;
+
+  --bs-tertiary: #f8be60;
+  --bs-tertiary-bg-subtle: #FFEED3;
+
+}
+
+/*----- catergory Section Style -------------------------*/
+.category-paragraph {
+  transition: all 0.3s ease-in;
+}
+
+.primary {
+  background: var(--bs-primary-bg-subtle);
+  transition: all 0.3s ease-in;
+}
+
+.svg-primary {
+  color: var(--primary-color);
+  transition: all 0.3s ease-in;
+}
+
+.primary:hover {
+  background: var(--bs-primary);
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.secondary {
+  background: var(--bs-secondary-bg-subtle);
+  transition: all 0.3s ease-in;
+}
+
+.svg-secondary {
+  color: var(--secondary-color);
+  transition: all 0.3s ease-in;
+}
+
+.secondary:hover {
+  background: var(--bs-secondary);
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.tertiary {
+  background: var(--bs-tertiary-bg-subtle);
+  transition: all 0.3s ease-in;
+}
+
+.svg-tertiary {
+  color: var(--bs-tertiary);
+  transition: all 0.3s ease-in;
+}
+
+.tertiary:hover {
+  background: var(--bs-tertiary);
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.gray {
+  background: #dbf2f7;
+  transition: all 0.3s ease-in;
+
+}
+
+.svg-gray {
+  color: var(--bs-gray);
+  transition: all 0.3s ease-in;
+}
+
+.gray:hover {
+  background: #8ddfef;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.primary:hover .svg-primary,
+.primary:hover .category-paragraph,
+.secondary:hover .svg-secondary,
+.secondary:hover .category-paragraph,
+.tertiary:hover .svg-tertiary,
+.tertiary:hover .category-paragraph,
+.gray:hover .svg-gray,
+.gray:hover .category-paragraph {
+  color: var(--light-color);
+}
+
+
+
+
+.fw-bold {
+    font-weight:  700!important;
+
+
+}
+
+a {
+    color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity, 1));
+    text-decoration: underline;
+}
+
+p {
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    unicode-bidi: isolate;
+}
+.container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    width: 100%;
+    padding-right: calc(var(--bs-gutter-x)* .5);
+    padding-left: calc(var(--bs-gutter-x)* .5);
+    margin-right: auto;
+    margin-left: auto;
+
+
+
+}
+img, svg {
+    vertical-align: middle;
+}
+.svg-primary {
+    color: var(--primary-color);
+    transition: all 0.3s ease-in;
+}
+.iconContent1 {
+    font-size: 60px;
+    color: #7cbdaa;
+
+}
+.iconContent2 {
+    font-size: 60px;
+    color: #dca605;
+}
+.iconContent3 {
+    font-size: 60px;
+    color: #db4646;
+}
+
+.iconContent4 {
+    font-size: 60px;
+    color: #24b8d0;
+}
+
+
+
+
+#example6 {
+    --bs-table-bg: #9defff;
+    --bs-table-striped-bg: #85def0;
+}
+.table-success th, .table-success td, .table-success thead th, .table-success tbody+tbody {
+    border-color: #31613c;
+}
+
+
+#example5 tbody tr:hover,
+#example6 tbody tr:hover {
+    background-color: #FFD700;
+    font-weight: bold;
+     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+/* Table, th, and td border styling */
+table, th, td {
+    border: 1px solid white;
+    border-collapse: collapse;
+}
+
+.banner-ad .banner-content .categories {
+    font-family: 'Garamond';
+    font-size: 37px;
+    text-transform: capitalize;
+    color: var(--dark-color);
+}
+
+.leads {
+    font-size: 1.75rem;
+    font-weight: 500;
+}
+
+ .line-height-lg {
+        line-height: 2.8;
+    }
+    </style>
+</head>
+
+<body >
+<div id="dashboard-content" style="display: none;">
+    <div class="content-wrapper" style=" background-color: #ffffff; margin-left:0px !important;min-height:0px !important" layout:fragment="content">
+        <div class="card-header" style="background-color: #8ddfef; text-align: center; padding: 10px;">
+            <div style="display: inline-block; background-color: #ffffff; padding: 10px 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                <marquee scrollamount="10" style="font-family: Arial, sans-serif; font-size: 16px; color: red; font-weight: bold;">
+                    <h4 style="margin: 0;">The new MIS 4.0 was launched on October 15, 2024. All States/UTs are required to complete data entry by the end of this week.</h4>
+                </marquee>
+            </div>
+        </div>
+
+
+
+
+        <section class="content" >
+            <div class="container-fluid">
+
+                <div id="wait">
+                    <img th:src="@{/images/loading.gif}"  />
+                    <br />Please Wait...
+                </div>
+
+
+                <div class="row top-boxes px-4  mt-4">
+
+                    <div class="leads">Physical Progress Report</div>
+                    <hr>
+
+
+                    <div class="row g-md-3 mt-2 row top-boxes px-4 px-lg-5 mt-3">
+
+                        <!-- Card 1 -->
+                        <div class="col-md-6 col-lg-4 col-xl-4  mb-3">
+                            <div class="primary rounded-3 p-4 h-100">
+                                <a href="/physicalProgressReports/clr/state-level"  class="small-box-footer text-dark">
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon">
+                                            <i class="fa-solid fas fa-sitemap iconContent1 category-paragraph"></i>
+                                        </div>
+                                        <div class="ps-4 category-paragraph">
+                                            <div class="d-flex align-items-center">
+                                                <h4 id="villagesComputerizationCompleted" class="fw-bold me-2 ">0</h4>
+
+                                            </div>
+                                            <p class="fw-bold mb-1">Computerization of Land Records
+                                                <span class="fw-bold">(CLR)</span>
+                                            </p>
+                                            <span class=" fw-bold line-height-lg">View details</span>
+                                             <i class="fas fa-arrow-circle-right"></i>
+
+                                        </div>
+
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div class="col-md-6 col-lg-4 col-xl-4  mb-3">
+                            <div class="tertiary rounded-3 p-4 h-100">
+                                <a href="/physicalProgressReports/map/state-level"  class="small-box-footer text-dark">
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon">
+                                            <i class="fa-solid fa-globe iconContent2 category-paragraph"></i>
+                                        </div>
+                                        <div class="ps-4 category-paragraph">
+                                            <div class="d-flex align-items-center">
+                                                <h4 id="totalDigitizedMapsFmbTippans" class="fw-bold me-2">0</h4>
+
+                                            </div>
+                                            <p class="fw-bold mb-1">Digitized Mapsheets/FMBs/Tippans
+                                                <span class="fw-bold">(MAP)</span>
+                                            </p>
+                                            <span class="fw-bold line-height-lg">View details</span>
+                                            <i class="fas fa-arrow-circle-right"></i>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Card 3 -->
+                        <div class="col-md-6 col-lg-4 col-xl-4  mb-3">
+                            <div class="secondary rounded-3 p-4 h-100">
+                                <a href="/physicalProgressReports/mrr/state-level"  class="small-box-footer text-dark">
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon">
+                                            <i class="fa-solid fa fa-edit iconContent3 category-paragraph"></i>
+                                        </div>
+                                        <div class="ps-4 category-paragraph">
+                                            <div class="d-flex align-items-center">
+                                                <h4 id="mrrCompleted" class="fw-bold me-2">0</h4>
+
+                                            </div>
+                                            <p class="fw-bold mb-1">Completed Modern Record Room
+                                                <span class="fw-bold">(MRR)</span>
+                                            </p>
+                                            <span class=" fw-bold line-height-lg">View details</span>
+                                            <i class="fas fa-arrow-circle-right"></i>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Card 4 -->
+                        <div class="col-md-6 col-lg-4 col-xl-4  mb-3">
+                            <div class="gray rounded-3 p-4 h-100">
+                                <a href="/physicalProgressReports/survey/state-level"  class="text-dark">
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon">
+                                            <i class="fa-solid fa fa-edit iconContent4 category-paragraph"></i>
+                                        </div>
+                                        <div class="ps-4 category-paragraph">
+                                            <div class="d-flex align-items-center">
+                                                <h4 id="villagesDroneFlyingCompleted" class="fw-bold me-2">0</h4>
+
+                                            </div>
+                                            <p class="fw-bold mb-1">Survey/Resurvey - Physical Progress
+                                                <span class="fw-bold">(Survey/Resurvey)</span>
+                                            </p>
+                                            <span class=" fw-bold line-height-lg">View details</span>
+                                             <i class="fas fa-arrow-circle-right"></i>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+
+
+                        <!-- Card 5 -->
+                        <div class="col-md-6 col-lg-4 col-xl-4  mb-3">
+                            <div class="secondary rounded-3 p-4 h-100">
+                                <a href="/physicalProgressReports/rcms/state-level" class="small-box-footer text-dark">
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon">
+                                            <i class="fa-solid fa-laptop iconContent3 category-paragraph"></i>
+                                        </div>
+                                        <div class="ps-4 category-paragraph">
+                                            <div class="d-flex align-items-center">
+                                                <h4 id="revenueCourtsComputerized" class="fw-bold me-2">0</h4>
+
+                                            </div>
+                                            <p class="fw-bold mb-1">Computerization of Revenue Court Management
+                                                <span class="fw-bold">(E-RCMS)</span>
+                                            </p>
+                                            <span class=" fw-bold line-height-lg">View details</span>
+                                            <i class="fas fa-arrow-circle-right"></i>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Card 6 -->
+                        <div class="col-md-6 col-lg-4 col-xl-4  mb-3">
+                            <div class="gray rounded-3 p-4 h-100">
+                                <a href="/physicalProgressReports/aadhar-link/state-level" class="small-box-footer text-dark">
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon">
+                                            <i class="fa-solid fa-link iconContent4 category-paragraph"></i>
+                                        </div>
+                                        <div class="ps-4 category-paragraph">
+                                            <div class="d-flex align-items-center">
+                                                <h4 id="villagesWith100PercentRorLinkedAadhaar" class="fw-bold me-2">0</h4>
+
+                                            </div>
+                                            <p class="fw-bold mb-1">Consent-based linkage of Aadhaar with RoR
+                                                <span class="fw-bold">(Linkage Aadhaar)</span>
+                                            </p>
+                                            <span class=" fw-bold line-height-lg">View details</span>
+                                            <i class="fas fa-arrow-circle-right"></i>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Card 7 -->
+                        <div class="col-md-6 col-lg-4 col-xl-4  mb-3">
+                            <div class="tertiary rounded-3 p-4 h-100">
+                                <a href="/physicalProgressReports/sro/state-level"  class="small-box-footer text-dark">
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon">
+                                            <i class="fa-solid fa-laptop iconContent2 category-paragraph"></i>
+                                        </div>
+                                        <div class="ps-4 category-paragraph">
+                                            <div class="d-flex align-items-center">
+                                                <h4 id="totalSro" class="fw-bold me-2">0</h4>
+
+                                            </div>
+                                            <p class="fw-bold mb-1">Computerization of Registration
+                                                <span class="fw-bold">(SRO)</span>
+                                            </p>
+                                            <span class=" fw-bold line-height-lg">View details</span>
+                                            <i class="fas fa-arrow-circle-right"></i>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+<!--
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/dashboard">
+
+<head>
+    <meta charset="UTF-8">
+    <title>DILRMP-MIS 4.0</title>
+    <script type="text/javascript" th:src="@{/static/js/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/static/nlrmpmap/getDocument.js}"></script>
+    <style>
+ .ps-4 {
+    padding-left: 1.5rem !important;
+}
+    .display {
+    width: 100%;
+    }
+ #wait {
+    width: 100px;
+    height: 130px;
+    text-align: center;
+    position: fixed;
+    left: 280px;
+    right: 0;
+    top: 40%;
+    z-index: 99;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.43);
+    display: none;
+    }
+    #wait img {
+    width: 100%;
+    }
+
+    </style>
+
+    <style>
+
+
+
+
+/*&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;
+/** 1. VARIABLES
+&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;*/
+
+/* on mobile devices below 600px
+ */
+@media screen and (max-width: 600px) {
+  :root {
+    &#45;&#45;header-height: 100px;
+    &#45;&#45;header-height-min: 80px;
+  }
+}
+
+/* Theme Colors */
+:root {
+  &#45;&#45;primary-color: #4CC082;
+  &#45;&#45;light-primary-color: #E2F3F0;
+  &#45;&#45;secondary-color: #EC6C5A;
+  &#45;&#45;light-secondary-color: #FFE9E5;
+  &#45;&#45;tertiary-color: #FFEED3;
+  &#45;&#45;dark-color: #31333A;
+  &#45;&#45;light-color: #FFFFFF;
+  &#45;&#45;grey-color: #BBC7D4;
+  &#45;&#45;light-dark-color: #727272;
+  &#45;&#45;light-grey-color: #f5f5f5;
+}
+
+/* Fonts */
+:root {
+  &#45;&#45;body-font: 'Inter', sans-serif;
+  &#45;&#45;heading-font: 'Inter', sans-serif;
+}
+
+body {
+
+  &#45;&#45;bs-link-color: var(&#45;&#45;dark-color);
+  &#45;&#45;bs-link-hover-color: var(&#45;&#45;dark-color);
+
+  &#45;&#45;bs-link-color-rgb: 40, 40, 40;
+  &#45;&#45;bs-link-hover-color-rgb: 0, 0, 0;
+
+  &#45;&#45;bs-light-rgb: 248, 248, 248;
+
+  &#45;&#45;bs-font-sans-serif: var(var(&#45;&#45;body-font));
+  &#45;&#45;bs-body-font-family: var(&#45;&#45;bs-font-sans-serif);
+  &#45;&#45;bs-body-font-size: 1rem;
+  &#45;&#45;bs-body-font-weight: 400;
+  &#45;&#45;bs-body-line-height: 1.3rem;
+  &#45;&#45;bs-body-color: var(&#45;&#45;dark-color);
+
+  &#45;&#45;bs-primary: #4CC082;
+  &#45;&#45;bs-primary-rgb: 76, 192, 130;
+  &#45;&#45;bs-primary-bg-subtle: #E2F3F0;
+
+  &#45;&#45;bs-border-color: #F7F7F7;
+
+  &#45;&#45;bs-secondary: #EC6C5A;
+  &#45;&#45;bs-secondary-rgb: 236, 108, 90;
+  &#45;&#45;bs-secondary-bg-subtle: #FFE9E5;
+
+  &#45;&#45;bs-tertiary: #f8be60;
+  &#45;&#45;bs-tertiary-bg-subtle: #FFEED3;
+
+}
+
+/*-&#45;&#45;&#45;&#45; catergory Section Style -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;*/
+.category-paragraph {
+  transition: all 0.3s ease-in;
+}
+
+.primary {
+  background: var(&#45;&#45;bs-primary-bg-subtle);
+  transition: all 0.3s ease-in;
+}
+
+.svg-primary {
+  color: var(&#45;&#45;primary-color);
+  transition: all 0.3s ease-in;
+}
+
+.primary:hover {
+  background: var(&#45;&#45;bs-primary);
+}
+
+.secondary {
+  background: var(&#45;&#45;bs-secondary-bg-subtle);
+  transition: all 0.3s ease-in;
+}
+
+.svg-secondary {
+  color: var(&#45;&#45;secondary-color);
+  transition: all 0.3s ease-in;
+}
+
+.secondary:hover {
+  background: var(&#45;&#45;bs-secondary);
+}
+
+.tertiary {
+  background: var(&#45;&#45;bs-tertiary-bg-subtle);
+  transition: all 0.3s ease-in;
+}
+
+.svg-tertiary {
+  color: var(&#45;&#45;bs-tertiary);
+  transition: all 0.3s ease-in;
+}
+
+.tertiary:hover {
+  background: var(&#45;&#45;bs-tertiary);
+}
+
+.gray {
+  background: #dbf2f7;
+  transition: all 0.3s ease-in;
+}
+
+.svg-gray {
+  color: var(&#45;&#45;bs-gray);
+  transition: all 0.3s ease-in;
+}
+
+.gray:hover {
+  background: #8ddfef;
+}
+
+.primary:hover .svg-primary,
+.primary:hover .category-paragraph,
+.secondary:hover .svg-secondary,
+.secondary:hover .category-paragraph,
+.tertiary:hover .svg-tertiary,
+.tertiary:hover .category-paragraph,
+.gray:hover .svg-gray,
+.gray:hover .category-paragraph {
+  color: var(&#45;&#45;light-color);
+}
+
+
+
+@media screen and (max-width: 800px) {
+  .product-box {
+    width: 50%;
+  }
+}
+
+.fw-bold {
+    font-weight:  500!important;
+}
+
+a {
+    color: rgba(var(&#45;&#45;bs-link-color-rgb), var(&#45;&#45;bs-link-opacity, 1));
+    text-decoration: underline;
+}
+
+p {
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    unicode-bidi: isolate;
+}
+.container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+    &#45;&#45;bs-gutter-x: 1.5rem;
+    &#45;&#45;bs-gutter-y: 0;
+    width: 100%;
+    padding-right: calc(var(&#45;&#45;bs-gutter-x)* .5);
+    padding-left: calc(var(&#45;&#45;bs-gutter-x)* .5);
+    margin-right: auto;
+    margin-left: auto;
+
+
+
+}
+img, svg {
+    vertical-align: middle;
+}
+.svg-primary {
+    color: var(&#45;&#45;primary-color);
+    transition: all 0.3s ease-in;
+}
+.iconContent1 {
+    font-size: 60px;
+    color: #7cbdaa;
+}
+
+.iconContent1 {
+    font-size: 60px;
+    color: #7cbdaa;
+}
+.iconContent2 {
+    font-size: 60px;
+    color: #dca605;
+}
+.iconContent3 {
+    font-size: 60px;
+    color: #db4646;
+}
+
+.iconContent4 {
+    font-size: 60px;
+    color: #24b8d0;
+}
+    </style>
+
+</head>
+
+<body>
+
+<hr>
+&lt;!&ndash; Content Wrapper. Contains page content &ndash;&gt;
+<div class="content" layout:fragment="content">
+    <section id="top-nav" class="bg-secondary">
+        <div class="text-center px-md-3 py-md-2" style="background: #8ddfef;font-size: 19px;">
+            <p class="py-1 m-0" style="color:#000; font-weight: bold;">New MIS 4.0 launched on 15.10.2024; Data Entry to be completed by all States / UTs by 30.11.2024
+                &lt;!&ndash;<span><a href="account.html" class="text-white text-decoration-underline">Register now</a></span>&ndash;&gt;
+            </p>
+        </div>
+
+    </section>
+
+    <section >
+        <div class="container " style="max-width: 75%;">
+            <div id="wait">
+                <img th:src="@{/images/loading.gif}"  />
+                <br />Please Wait...
+            </div>
+            <div class="row top-boxes px-4  mt-4">
+
+                <h3>Physical Progress Report</h3>
+
+
+
+            <div class="row g-md-3 mt-2">
+
+                <div class="col-md-4">
+                    <div class="primary rounded-3 p-4 my-3">
+                        <a href="/physicalProgressReports/clr/state-level"style="color: #171819;" >
+                        <div class="d-flex align-items-center">
+                            <div class="icon">
+                                <i class="fa fas fa-sitemap iconContent1 category-paragraph ">
+                                <use href="#pencil-box" class="svg-primary" />
+                                </i>
+                            </div>
+
+                              <div class="ps-4">
+                                  <h2  class="category-paragraph"  id="villagesComputerizationCompleted"></h2>
+                                <p class="category-paragraph fw-bold  mb-1">Computerization of Land Records
+                                    (CLR) <i class="fas fa-arrow-circle-right"></i></p>
+                             </div>
+
+                        </div>
+                        </a>
+                    </div>
+                    <div class="tertiary rounded-3 p-4 my-3">
+                        <a href="/physicalProgressReports/survey/state-level" style="color: #171819;">
+                        <div class="d-flex align-items-center">
+                            <div class="icon">
+                                <i class="fa fa-camera-retro iconContent2 category-paragraph"></i>
+                            </div>
+                            <div class="ps-4">
+                                <h2 class="category-paragraph"id="villagesDroneFlyingCompleted"></h2>
+                                <p class="category-paragraph fw-bold  mb-1">Survey/Resurvey - Physical Progress
+                                    (Survey/Resurvey) <i class="fas fa-arrow-circle-right"></i></p>
+
+                            </div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="secondary rounded-3 p-4 my-3">
+                        <a href="/physicalProgressReports/aadhar-link/state-level" style="color: #171819;">
+                        <div class="d-flex align-items-center">
+                            <div class="icon">
+                                <i class="fa fa-link iconContent3 category-paragraph ">
+                                    <use href="#pencil-box" class="svg-primary" />
+                                </i>
+                            </div>
+                            <div class="ps-4">
+                                <h2 class="category-paragraph" id="villagesWith100PercentRorLinkedAadhaar"></h2>
+                                <p class="category-paragraph fw-bold  mb-1">Consent-based linkage of Aadhaar with RoR
+                                    (Linkage Aadhaar) <i class="fas fa-arrow-circle-right"></i></p>
+
+                            </div>
+                        </div>
+                        </a>
+
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="gray rounded-3 p-4 my-3">
+                        <a href="/physicalProgressReports/map/state-level" style="color: #171819;">
+                        <div class="d-flex align-items-center">
+                            <div class="icon">
+                                <i class="fa-solid fa-globe iconContent4 category-paragraph"></i>
+                            </div>
+                            <div class="ps-4">
+                                <h2  class="category-paragraph" id="totalDigitizedMapsFmbTippans"></h2>
+                                <p class="category-paragraph fw-bold  mb-1">Digitized Mapsheets/FMBs/Tippans
+                                    (MAP) <i class="fas fa-arrow-circle-right"></i></p>
+
+                            </div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="secondary rounded-3 p-4 my-3">
+                        <a href="/physicalProgressReports/sro/state-level" style="color: #171819;">
+                        <div class="d-flex align-items-center">
+                            <div class="icon">
+                                <i class="fa-solid fa-laptop iconContent3 category-paragraph"></i>
+                            </div>
+                            <div class="ps-4">
+                                <h2 class="category-paragraph" id="totalSro"></h2>
+                                <p class="category-paragraph fw-bold  mb-1">Computerization of Registration (SRO)
+                                    <i class="fas fa-arrow-circle-right"></i></p>
+
+                            </div>
+                        </div>
+                        </a>
+                    </div>
+
+
+                </div>
+                <div class="col-md-4">
+                    <div class="tertiary rounded-3 p-4 my-3">
+                        <a href="/physicalProgressReports/mrr/state-level" style="color: #171819;">
+                        <div class="d-flex align-items-center">
+                            <div class="icon">
+                                <i class="fa-solid fa fa-edit iconContent2 category-paragraph"></i>
+                            </div>
+                            <div class="ps-4">
+                                <h2 class="category-paragraph" id="mrrCompleted"></h2>
+                                <p class="category-paragraph fw-bold  mb-1">Completed Modern Record Room
+                                    (MRR) <i class="fas fa-arrow-circle-right"></i></p>
+
+                            </div>
+                        </div>
+                        </a>
+
+                    </div>
+                    <div class="primary rounded-3 p-4 my-3">
+                        <a href="/physicalProgressReports/rcms/state-level" style="color: #171819;">
+                        <div class="d-flex align-items-center">
+                            <i class="fa-solid fa-address-card iconContent1 category-paragraph ">
+                                <use href="#pencil-box" class="svg-primary" />
+                            </i>
+                            <div class="ps-4">
+                                <h2 class="category-paragraph" id="revenueCourtsComputerized"></h2>
+                                <p class="category-paragraph fw-bold  mb-1" >Computerization of Revenue Court Management
+                                    (E-RCMS) <i class="fas fa-arrow-circle-right"></i></p>
+
+                            </div>
+                        </div>
+                        </a>
+
+                    </div>
+
+                </div>
+                <div class="col-md-4"></div>
+                <div class="col-md-4"></div>
+
+            </div>
+        </div>
+        </div>
+
+    </section>
+
+    &lt;!&ndash;<div class="container-fluid support">
+        <section class="content">
+            <div class="container-fluid">
+                &lt;!&ndash;<div id="wait">
+                    <img th:src="@{/images/loading.gif}"  />
+                    <br />Please Wait...
+                </div>&ndash;&gt;
+
+                <div class="row top-boxes px-4 px-lg-5 mt-4" >
+                    <div class="col-lg-12 col-12">
+                        <h4>Physical Progress Report</h4>
+                        <hr>
+                    </div>
+                </div>
+
+                <div class="row top-boxes px-6 px-lg-5 mt-4" >
+                    <div>
+
+                    </div>
+
+
+                    <div class="col-lg-3 col-6">
+                        &lt;!&ndash; small box &ndash;&gt;
+                        <a href="/physicalProgressReports/clr/state-level" style="text-decoration: none;">
+                            <div class="small-box" style="cursor: pointer; background-color: #58a068;"> &lt;!&ndash; Set custom green color &ndash;&gt;
+                                <div class="inner">
+                                    <h3 style="font-weight: bold; color: #ffffff; margin-right: 5px;" id="villagesComputerizationCompleted">
+                                    </h3>
+                                    <p style="color: #ffffff;">Computerization of Land Records</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-stats-bars" style="color: #ffffff;"></i>
+                                </div>
+                                <div class="small-box-footer" style="color: #ffffff;">
+                                    CLR <i class="fas fa-arrow-circle-right"></i>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+
+                    <div class="col-lg-3 col-6">
+                        <a href="/physicalProgressReports/map/state-level" style="text-decoration: none;">
+                            <div class="small-box" style="cursor: pointer; background-color: #17a2b8;"> &lt;!&ndash; Set custom blue color &ndash;&gt;
+                                <div class="inner">
+                                    <h3 style="font-weight: bold; color: #ffffff; margin-right: 5px;" id="totalDigitizedMapsFmbTippans">
+                                        &lt;!&ndash; Optional: Value goes here, e.g., 300 &ndash;&gt;
+                                    </h3>
+                                    <p style="color: #ffffff;">Digitized Mapsheets/FMBs/Tippans</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-stats-bars" style="color: #ffffff;"></i>
+                                </div>
+                                <div class="small-box-footer" style="color: #ffffff;">
+                                    MAP <i class="fas fa-arrow-circle-right"></i>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+
+
+                    <div class="col-lg-3 col-6">
+                        &lt;!&ndash; small box &ndash;&gt;
+                        <a href="/physicalProgressReports/mrr/state-level" style="text-decoration: none;">
+                            <div class="small-box" style="cursor: pointer; background-color: #956034;"> &lt;!&ndash; Set custom yellow color &ndash;&gt;
+                                <div class="inner">
+                                    <h3 style="font-weight: bold; color: #ffffff; margin-right: 5px;" id="mrrCompleted">
+                                        &lt;!&ndash; Optional: Value goes here, e.g., 150 &ndash;&gt;
+                                    </h3>
+                                    <p style="color: #ffffff;">Completed Modern Record Room</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-stats-bars" style="color: #ffffff;"></i>
+                                </div>
+                                <div class="small-box-footer" style="color: #ffffff;">
+                                    MRR <i class="fas fa-arrow-circle-right"></i>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+
+
+                    <div class="col-lg-3 col-6">
+                        &lt;!&ndash; small box &ndash;&gt;
+                        <a href="/physicalProgressReports/survey/state-level" style="text-decoration: none;">
+                            <div class="small-box" style="cursor: pointer; background-color: #6799a1;">
+                                <div class="inner">
+                                    <h3 style="font-weight: bold; color: #ffffff; margin-right: 5px;" id="villagesDroneFlyingCompleted">
+                                        &lt;!&ndash; Optional: Value goes here, e.g., 120 &ndash;&gt;
+                                    </h3>
+                                    <p style="color: #ffffff;">Survey/Resurvey - Physical Progress</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-stats-bars" style="color: #ffffff;"></i>
+                                </div>
+                                <div class="small-box-footer" style="color: #ffffff;">
+                                    Survey/Resurvey <i class="fas fa-arrow-circle-right"></i>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+
+
+
+
+
+
+                </div>
+                <div class="row top-boxes px-6 px-lg-5 mt-4" >
+
+
+                    <div class="col-lg-3 col-6">
+                        &lt;!&ndash; small box &ndash;&gt;
+                        <a href="/physicalProgressReports/sro/state-level" style="text-decoration: none;">
+                            <div class="small-box" style="cursor: pointer; background-color: #6ab2a4;">
+                                <div class="inner">
+                                    <h3 style="font-weight: bold; color: #ffffff; margin-right: 5px;" id="totalSro">
+                                        &lt;!&ndash; Optional: Value goes here, e.g., 200 &ndash;&gt;
+                                    </h3>
+                                    <p style="color: #ffffff;">Computerization of Registration (SRO)</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-stats-bars" style="color: #ffffff;"></i>
+                                </div>
+                                <div class="small-box-footer" style="color: #ffffff;">
+                                    SRO <i class="fas fa-arrow-circle-right"></i>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+
+                    <div class="col-lg-3 col-6">
+                        &lt;!&ndash; small box &ndash;&gt;
+                        <a href="/physicalProgressReports/rcms/state-level" style="text-decoration: none;">
+                            <div class="small-box" style="cursor: pointer; background-color: #448fe1;">
+                                <div class="inner">
+                                    <h3 style="font-weight: bold; color: #ffffff; margin-right: 5px;" id="revenueCourtsComputerized">
+                                        &lt;!&ndash; Optional: Value goes here, e.g., 150 &ndash;&gt;
+                                    </h3>
+                                    <p style="color: #ffffff;">Computerization of Revenue Court Management</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-stats-bars" style="color: #ffffff;"></i>
+                                </div>
+                                <div class="small-box-footer" style="color: #ffffff;">
+                                    E-RCMS <i class="fas fa-arrow-circle-right"></i>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+
+
+
+                    <div class="col-lg-3 col-6">
+                        &lt;!&ndash; small box &ndash;&gt;
+                        <a href="/physicalProgressReports/aadhar-link/state-level" style="text-decoration: none;">
+                            <div class="small-box" style="cursor: pointer; background-color: #8e78b6;">
+                                <div class="inner">
+                                    <h3 style="font-weight: bold; color: #ffffff; margin-right: 5px;" id="villagesWith100PercentRorLinkedAadhaar">
+                                        &lt;!&ndash; Value can be dynamically added here &ndash;&gt;
+                                    </h3>
+                                    <p style="color: #ffffff;">Consent-based linkage of Aadhaar with RoR</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-stats-bars" style="color: #ffffff;"></i>
+                                </div>
+                                <div class="small-box-footer" style="color: #ffffff;">
+                                    Linkage Aadhaar <i class="fas fa-arrow-circle-right" style="color: #ffffff;"></i>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+
+
+
+
+
+
+                </div>
+                  <div class="row top-boxes px-4 px-lg-5 mt-4" >
+                </div>
+                <div class="row top-boxes px-4 px-lg-5 mt-4" >
+                </div>
+
+            </div>
+
+        </section>
+    </div>&ndash;&gt;
+
+</div>
+</body>
+</html>-->

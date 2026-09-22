@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DILRMP MIS</title>
+    <!-- Google Font: Source Sans Pro -->
+    <!-- jQuery -->
+    <script th:src="@{/static/js/jquery.min.js}"></script>
+    <script th:src="@{/static/js/jquery.min.js}"></script>
+    <script th:src="@{/static/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/static/css/all.min-1.css}">
+    <link rel="stylesheet"  th:href="@{/static/css/choice.min.css.css}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" th:href="@{/static/css/all.min.css}">
+    <link sec:authorize="!isAuthenticated()" rel="stylesheet" th:href="@{/static/css/dilrmp.css}">
+    <!-- Theme style -->
+    <link rel="stylesheet" th:href="@{/static/css/adminlte.css}">
+    <link rel="stylesheet" th:href="@{/static/css/topnav.css}">
+    <!-- Link Swiper's CSS -->
+    <!-- <link rel="stylesheet" th:href="@{/static/css/bundle.min.css"} /> -->
+    <!-- Datatable CSS -->
+    <link rel="stylesheet" th:href="@{/static/css/dataTables.bootstrap4.min.css}">
+    <link rel="stylesheet" th:href="@{/static/css/responsive.bootstrap4.min.css}">
+    <link rel="stylesheet" th:href="@{/static/css/buttons.bootstrap4.min.css}">
+    <link rel="stylesheet" th:href="@{/static/css/adminlte.css}">
+    <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+
+</head>
+
+<body class="hold-transition sidebar-mini">
+
+<span th:replace="~{fragments/top-header :: top-header}"></span>
+<div class="wrapper">
+    <span sec:authorize="!isAuthenticated()" th:replace="~{fragments/header :: header}"></span>
+
+
+    <section layout:fragment="content" id="content"><!--dynamic content-->
+        <!--you can replace this using page-->
+    </section>
+</div>
+<span th:replace="~{fragments/footer :: footer}"></span>
+<!-- Bootstrap 4 -->
+<script th:src="@{/static/js/bootstrap.min.js}"></script>
+<!-- bs-custom-file-input -->
+<script th:src="@{/static/js/bs-custom-file-input.min.js}"></script>
+<!-- AdminLTE App -->
+<script th:src="@{/static/js/adminlte.min.js}"></script>
+<!-- Page specific script select option -->
+<script  type="text/javascript" th:src="@{/static/choices.min.js}"></script>
+<script  type="text/javascript" th:src="@{/static/swiper-bundle.min.js}"></script>
+<script th:src="@{/static/js/jquery.dataTables.min.js}"></script>
+<script th:src="@{/static/js/dataTables.bootstrap4.min.js}"></script>
+<script th:src="@{/static/js/dataTables.responsive.min.js}"></script>
+<script th:src="@{/static/js/responsive.bootstrap4.min.js}"></script>
+<script th:src="@{/static/js/dataTables.buttons.js}"></script>
+<script th:src="@{/static/js/buttons.bootstrap4.min.js}"></script>
+<script th:src="@{/static/js/adminlte.min.js}"></script>
+</body>
+</html>

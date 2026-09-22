@@ -7,6 +7,8 @@ import in.gov.dilrmp.models.reportDTO.MapDigitizationReport.DistrictMapDigitizat
 import in.gov.dilrmp.models.reportDTO.MapDigitizationReport.MapDigitizationReport;
 import in.gov.dilrmp.models.reportDTO.clr.DistrictClrReportView;
 import in.gov.dilrmp.models.reportDTO.clr.StateClrReportView;
+import in.gov.dilrmp.models.reportDTO.legacy.DistrictLegacyDigitizationReport;
+import in.gov.dilrmp.models.reportDTO.legacy.LegacyDigitizationReport;
 import in.gov.dilrmp.models.reportDTO.linkedaadhaar.DistrictLinkedAadhaarViewReport;
 import in.gov.dilrmp.models.reportDTO.linkedaadhaar.LinkedAadharViewReport;
 import in.gov.dilrmp.models.reportDTO.mrr.DistrictMrrViewReport;
@@ -16,6 +18,7 @@ import in.gov.dilrmp.models.reportDTO.rcms.RcmsReportDTO;
 import in.gov.dilrmp.models.reportDTO.surveyresurvey.DistrictSurveyResurveyViewReport;
 import in.gov.dilrmp.models.reportDTO.surveyresurvey.SurveyResurveyViewReport;
 import in.gov.dilrmp.utils.AadhaarReportExportV5Util;
+import in.gov.dilrmp.utils.LegacyDigitizationExportUtil;
 import in.gov.dilrmp.utils.MapDigitizationReportExportV5Util;
 import in.gov.dilrmp.utils.PdfExporter;
 import jakarta.servlet.http.HttpServletResponse;
@@ -812,7 +815,76 @@ public class PhysicalProgressReportDistrictLevelControllerPDF {
         PdfExporter.createPdf(pComponent, response);
     }
 
-
-
+    //v5 Legacy Digitization — district PDF
+    @GetMapping("/district_legacy_digitization")
+    public void getDistrictLegacyDigitizationPdf(HttpServletResponse response, HttpSession session) {
+        PdfExporterComponent pComponent = new PdfExporterComponent();
+        String stateName = (String) session.getAttribute("stateName");
+        String head[] = {ReportLabels.LEGACY_DIGITIZATION_REPORT, ReportLabels.STATE_UT + " - " + stateName};
+        pComponent.setReportHeading(head);
+        pComponent.setReportName(ReportLabels.LEGACY_DIGITIZATION_REPORT);
+        float col_width[] = {20f, 80f, 40f, 50f, 50f, 40f, 50f, 40f, 50f, 40f, 50f, 40f};
+        pComponent.setCol_width(col_width);
+        String col_head[] = {
+                ReportLabels.SERIAL_NUMBER, ReportLabels.DISTRICT_NAME, ReportLabels.TOTAL_TEHSILS,
+                ReportLabels.TOTAL_LEGACY_REGISTERED_DOCUMENTS, ReportLabels.LEGACY_DIGITIZED_FROM_STATE_FUNDS,
+                ReportLabels.LEGACY_SANCTIONED_UNDER_DILRMP, ReportLabels.LEGACY_COMPLETED_FROM_DILRMP_FUNDS,
+                ReportLabels.TOTAL_LEGACY_DIGITIZED, ReportLabels.LEGACY_DIGITIZED_UPTO_YEAR,
+                ReportLabels.NO_OF_PAGES, ReportLabels.PERCENTAGE, ReportLabels.NO_OF_PAGES, ReportLabels.PERCENTAGE,
+                ReportLabels.NO_OF_PAGES, ReportLabels.PERCENTAGE
+        };
+        pComponent.setCol_head(col_head);
+        Integer[] rwspn2col = {0, 1, 2, 3, 5, 8};
+        Integer[] rwspn3col = {};
+        Integer[] rwspn4col = {};
+        Integer[] rwspn5col = {};
+        Integer[] simplecell = {9, 10, 11, 12, 13, 14};
+        pComponent.setRowspn5(rwspn5col);
+        pComponent.setRowspn4(rwspn4col);
+        pComponent.setRowspn3(rwspn3col);
+        pComponent.setRowspn2(rwspn2col);
+        pComponent.setRowspan1(simplecell);
+        List<List<Integer>> colspanval = new ArrayList<List<Integer>>();
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(4, 2)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(6, 2)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(7, 2)));
+        pComponent.setColumnspan(colspanval);
+        List<List<Integer>> colsBreak = new ArrayList<List<Integer>>();
+        colsBreak.add(new ArrayList<Integer>(Arrays.asList(4, 2)));
+        colsBreak.add(new ArrayList<Integer>(Arrays.asList(6, 2)));
+        colsBreak.add(new ArrayList<Integer>(Arrays.asList(7, 2)));
+        pComponent.setColumnnumber(colsBreak);
+        pComponent.setColumnBreakCountNo(3);
+        List<List<String>> reportDataList = new ArrayList<List<String>>();
+        List<DistrictLegacyDigitizationReport> districtList =
+                (List<DistrictLegacyDigitizationReport>) session.getAttribute("districtLegacyData");
+        List<LegacyDigitizationReport> grandTotal =
+                (List<LegacyDigitizationReport>) session.getAttribute("stateLegacyData");
+        AtomicInteger indexHolder = new AtomicInteger();
+        if (districtList != null && !districtList.isEmpty()) {
+            districtList.forEach(map -> {
+                List<String> strings = new ArrayList<>();
+                strings.add(Integer.toString(indexHolder.incrementAndGet()));
+                strings.add(map.getDistrictName() != null ? map.getDistrictName().toUpperCase() : "N/A");
+                strings.add(map.getTotalTehsils() != null ? String.valueOf(map.getTotalTehsils()) : "0");
+                LegacyDigitizationExportUtil.appendDistrict(strings, map);
+                reportDataList.add(strings);
+            });
+        }
+        List<List<String>> grandTotalData = new ArrayList<>();
+        if (grandTotal != null && !grandTotal.isEmpty()) {
+            grandTotal.forEach(gt -> {
+                List<String> grandTotalList = new ArrayList<>();
+                grandTotalList.add("");
+                grandTotalList.add("Grand Total");
+                grandTotalList.add(gt.getTotalTehsils() != null ? String.valueOf(gt.getTotalTehsils()) : "0");
+                LegacyDigitizationExportUtil.appendStateRaw(grandTotalList, gt);
+                grandTotalData.add(grandTotalList);
+            });
+        }
+        pComponent.setReportDataList(reportDataList);
+        pComponent.setGrandTotal(grandTotalData);
+        PdfExporter.createPdf(pComponent, response);
+    }
 
 }

@@ -17,7 +17,9 @@ function toggleExcelLinks() {
         document.getElementById('mrrExcelUrl'),
         document.getElementById('mapExcelUrl'),
         document.getElementById('aadhaarExcelUrl'),
-        document.getElementById('rcmExcelUrl')
+        document.getElementById('rcmExcelUrl'),
+        document.getElementById('legacyExcelUrl'),
+        document.getElementById('sroModernizationExcelUrl')
     ];
 
     // Show or hide links based on the selected value
@@ -130,6 +132,18 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("sroLabel").innerText = data.sro;
             document.getElementById("sroUrl").href = data.prf_sro_url;
             document.getElementById("sroExcelUrl").href = data.excel_sro_url;
+
+            document.getElementById("legacyLabel").innerText = data.legacy_digitization;
+            document.getElementById("legacyUrl").href = data.prf_legacy_digitization_url;
+            document.getElementById("legacyExcelUrl").href = data.excel_legacy_digitization_url;
+            if (data.sro_modernization) {
+              document.getElementById("sroModernizationLabel").innerText = data.sro_modernization;
+              document.getElementById("sroModernizationUrl").href = data.prf_sro_modernization_url;
+              document.getElementById("sroModernizationExcelUrl").href = data.excel_sro_modernization_url;
+              document.getElementById("sroModernizationRow").style.display = "";
+            } else {
+              document.getElementById("sroModernizationRow").style.display = "none";
+            }
 
             // Show the table if there is data
             document.getElementById("data").style.display = "table";

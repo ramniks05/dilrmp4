@@ -1,0 +1,144 @@
+<div th:fragment="dolr-generic-mis-data">
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-info">
+                        <div class="card-header"
+                             style="background: linear-gradient(to right, #32b4c8 0%, rgb(64 101 142));">
+                            <h3 class="card-title"
+                                style="color: #eff3f6; font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a; letter-spacing: 2px;">
+                                DoLR Generic MIS Data Entry
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="dolrGenericMisForm" onsubmit="return saveDolrGenericMis(event)">
+                                <div class="table-responsive mb-3">
+                                    <table class="table table-bordered mb-0">
+                                        <tbody>
+                                        <tr>
+                                            <td style="width: 30%;"><strong>STATE / UT :</strong></td>
+                                            <td>
+                                                <select id="dolrStateId" name="stateId" class="form-control"
+                                                        hx-trigger="change"
+                                                        hx-post="/dolr/generic-mis-data/form/load"
+                                                        hx-target="#dolrGenericMisFields"
+                                                        hx-include="#dolrStateId"
+                                                        hx-indicator="#dolrGenericMisLoading">
+                                                    <option th:each="state : ${states}"
+                                                            th:value="${state.id}"
+                                                            th:text="${state.name}"
+                                                            th:selected="${state.id == selectedStateId}">
+                                                    </option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div id="dolrGenericMisLoading" class="htmx-indicator text-muted mb-2">
+                                    <i class="fas fa-spinner fa-spin"></i> Loading...
+                                </div>
+
+                                <div id="dolrGenericMisFields">
+                                    <div th:replace="~{pages/dolr/dolr_generic_mis_data_entry_form :: dolr-generic-mis-fields}"></div>
+                                </div>
+
+                                <div class="mt-3">
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script th:inline="javascript">
+        function saveDolrGenericMis(event) {
+            event.preventDefault();
+            const stateId = document.getElementById('dolrStateId').value;
+            const legacyEl = document.getElementById('legacyDilrmpSanctionedPages');
+            const sroEl = document.getElementById('srosDilrmpSanctioned');
+            const payload = {
+                stateId: stateId,
+                legacyDilrmpSanctionedPages: legacyEl ? legacyEl.value : 0,
+                srosDilrmpSanctioned: sroEl ? sroEl.value : 0
+            };
+            fetch('/dolr/generic-mis-data/save', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            }).then(function (res) {
+                return res.json().then(function (data) {
+                    if (res.ok && data.status === 'success') {
+                        if (typeof showSuccessAlert === 'function') {
+                            showSuccessAlert(data.message || 'Saved successfully.');
+                        } else {
+                            alert(data.message || 'Saved successfully.');
+                        }
+                    } else {
+                        if (typeof showErrorAlert === 'function') {
+                            showErrorAlert('Error', data.message || 'Save failed.');
+                        } else {
+                            alert(data.message || 'Save failed.');
+                        }
+                    }
+                });
+            }).catch(function () {
+                alert('Save failed. Please try again.');
+            });
+            return false;
+        }
+    </script>
+</div>
+
+<div th:fragment="dolr-generic-mis-fields">
+    <div class="row">
+        <div class="col-md-12 mb-2">
+            <div class="card-header" style="background-color: #d4edda;">
+                <div class="card-title" style="font-size: 18px; color: var(--danger);">
+                    DoLR-only questions (used in physical progress reports)
+                </div>
+            </div>
+        </div>
+
+        <!-- Legacy Digitization — sanctioned under DILRMP -->
+        <div class="col-md-12 mb-3">
+            <div class="form-group row">
+                <label for="legacyDilrmpSanctionedPages" class="col-md-8 col-form-label">
+                    <span class="red-text">[1]</span>
+                    Total no. of Legacy Registered Documents sanctioned for Digitization under DILRMP (No. of Pages):
+                </label>
+                <div class="col-md-4">
+                    <input type="number" id="legacyDilrmpSanctionedPages" name="legacyDilrmpSanctionedPages"
+                           class="form-control" min="0"
+                           th:value="${dolrMisDataEntry.legacyDilrmpSanctionedPages != null ? dolrMisDataEntry.legacyDilrmpSanctionedPages : 0}">
+                </div>
+            </div>
+        </div>
+
+        <!-- SRO Modernization — sanctioned under DILRMP -->
+        <div class="col-md-12 mb-3">
+            <div class="form-group row">
+                <label for="srosDilrmpSanctioned" class="col-md-8 col-form-label">
+                    <span class="red-text">[2]</span>
+                    Total SROs sanctioned for Modernization under DILRMP:
+                </label>
+                <div class="col-md-4">
+                    <input type="number" id="srosDilrmpSanctioned" name="srosDilrmpSanctioned"
+                           class="form-control" min="0"
+                           th:value="${dolrMisDataEntry.srosDilrmpSanctioned != null ? dolrMisDataEntry.srosDilrmpSanctioned : 0}">
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12" th:if="${dolrMisDataEntry.updateOnDate != null}">
+            <small class="text-muted">Last updated:
+                <span th:text="${dolrMisDataEntry.updateOnDate}"></span>
+            </small>
+        </div>
+    </div>
+</div>

@@ -88,4 +88,40 @@ public interface DistrictMISDataEntryRepository extends JpaRepository<DistrictMI
             + "COALESCE(SUM(e.landOwnersLinkedWithMobile), 0), COALESCE(SUM(e.landOwnersLinkedWithAddress), 0) "
             + "FROM DistrictMISDataEntry e")
     List<Object[]> sumLandOwnerLinkageNational();
+
+    //v5 Legacy Digitization aggregates
+    // row: [0]=id, [1]=totalPages(A), [2]=stateFunds(B), [3]=dilrmpSanctioned(DoLR),
+    // [4]=dilrmpCompleted, [5]=totalDigitised, [6]=maxYear
+    @Query(value = "SELECT e.state_id, "
+            + "COALESCE(SUM(e.legacy_total_pages), 0), "
+            + "COALESCE(SUM(e.legacy_digitised_state_funds_pages), 0), "
+            + "COALESCE(SUM(e.legacy_dilrmp_sanctioned_pages), 0), "
+            + "COALESCE(SUM(e.legacy_digitised_dilrmp_funds_pages), 0), "
+            + "COALESCE(SUM(e.legacy_total_digitised_pages), 0), "
+            + "COALESCE(MAX(e.legacy_digitised_upto_year), 0) "
+            + "FROM district_mis_data_entry e "
+            + "GROUP BY e.state_id", nativeQuery = true)
+    List<Object[]> sumLegacyDigitizationByStateId();
+
+    @Query(value = "SELECT e.district_id, "
+            + "COALESCE(SUM(e.legacy_total_pages), 0), "
+            + "COALESCE(SUM(e.legacy_digitised_state_funds_pages), 0), "
+            + "COALESCE(SUM(e.legacy_dilrmp_sanctioned_pages), 0), "
+            + "COALESCE(SUM(e.legacy_digitised_dilrmp_funds_pages), 0), "
+            + "COALESCE(SUM(e.legacy_total_digitised_pages), 0), "
+            + "COALESCE(MAX(e.legacy_digitised_upto_year), 0) "
+            + "FROM district_mis_data_entry e "
+            + "WHERE e.state_id = :stateId "
+            + "GROUP BY e.district_id", nativeQuery = true)
+    List<Object[]> sumLegacyDigitizationByDistrictForStateId(@Param("stateId") Long stateId);
+
+    @Query(value = "SELECT "
+            + "COALESCE(SUM(e.legacy_total_pages), 0), "
+            + "COALESCE(SUM(e.legacy_digitised_state_funds_pages), 0), "
+            + "COALESCE(SUM(e.legacy_dilrmp_sanctioned_pages), 0), "
+            + "COALESCE(SUM(e.legacy_digitised_dilrmp_funds_pages), 0), "
+            + "COALESCE(SUM(e.legacy_total_digitised_pages), 0), "
+            + "COALESCE(MAX(e.legacy_digitised_upto_year), 0) "
+            + "FROM district_mis_data_entry e", nativeQuery = true)
+    List<Object[]> sumLegacyDigitizationNational();
 }

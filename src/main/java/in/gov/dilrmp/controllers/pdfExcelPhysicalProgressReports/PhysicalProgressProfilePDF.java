@@ -4,6 +4,7 @@ import in.gov.dilrmp.component.PdfExporterComponent;
 import in.gov.dilrmp.constants.ReportLabels;
 import in.gov.dilrmp.models.reportDTO.MapDigitizationReport.MapDigitizationReport;
 import in.gov.dilrmp.models.reportDTO.clr.StateClrReportView;
+import in.gov.dilrmp.models.reportDTO.legacy.LegacyDigitizationReport;
 import in.gov.dilrmp.models.reportDTO.linkedaadhaar.LinkedAadharViewReport;
 import in.gov.dilrmp.models.reportDTO.mrr.MrrViewReport;
 import in.gov.dilrmp.models.reportDTO.rcms.RcmsReportDTO;
@@ -11,6 +12,7 @@ import in.gov.dilrmp.models.reportDTO.sro.SroReportDTO;
 import in.gov.dilrmp.models.reportDTO.surveyresurvey.SurveyResurveyViewReport;
 import in.gov.dilrmp.services.physicalProgressServices.*;
 import in.gov.dilrmp.utils.AadhaarReportExportV5Util;
+import in.gov.dilrmp.utils.LegacyDigitizationExportUtil;
 import in.gov.dilrmp.utils.PdfExporter;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -45,6 +47,8 @@ public class PhysicalProgressProfilePDF {
     StateRCMSService stateRCMSService;
     @Autowired
     StateAadharService stateAadharService;
+    @Autowired
+    LegacyDigitizationReportService legacyDigitizationReportService;
     SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 
     @GetMapping("/nationalProfile")
@@ -607,6 +611,57 @@ public class PhysicalProgressProfilePDF {
             System.out.println("No MRR data found.");
         }
 
+        //v5 Legacy Digitization — national profile PDF section 8
+        PdfExporterComponent pComponentLegacy = new PdfExporterComponent();
+        String[] headLegacy = {"", "8. " + ReportLabels.LEGACY_DIGITIZATION_REPORT};
+        pComponentLegacy.setReportHeading(headLegacy);
+        pComponentLegacy.setReportName(ReportLabels.LEGACY_DIGITIZATION_REPORT);
+        float[] col_widthLegacy = {20f, 40f, 40f, 40f, 50f, 50f, 40f, 50f, 40f, 50f, 40f, 50f, 40f};
+        pComponentLegacy.setCol_width(col_widthLegacy);
+        String[] col_headLegacy = {
+                ReportLabels.SERIAL_NUMBER, ReportLabels.TOTAL_STATE_UT, ReportLabels.TOTAL_DISTRICTS, ReportLabels.TOTAL_TEHSILS,
+                ReportLabels.TOTAL_LEGACY_REGISTERED_DOCUMENTS, ReportLabels.LEGACY_DIGITIZED_FROM_STATE_FUNDS,
+                ReportLabels.LEGACY_SANCTIONED_UNDER_DILRMP, ReportLabels.LEGACY_COMPLETED_FROM_DILRMP_FUNDS,
+                ReportLabels.TOTAL_LEGACY_DIGITIZED, ReportLabels.LEGACY_DIGITIZED_UPTO_YEAR,
+                ReportLabels.NO_OF_PAGES, ReportLabels.PERCENTAGE, ReportLabels.NO_OF_PAGES, ReportLabels.PERCENTAGE,
+                ReportLabels.NO_OF_PAGES, ReportLabels.PERCENTAGE
+        };
+        pComponentLegacy.setCol_head(col_headLegacy);
+        Integer[] rwspn2colLegacy = {0, 1, 2, 3, 4, 6, 9};
+        Integer[] rwspn3colLegacy = {};
+        Integer[] rwspn4colLegacy = {};
+        Integer[] rwspn5colLegacy = {};
+        Integer[] simplecellLegacy = {10, 11, 12, 13, 14, 15};
+        pComponentLegacy.setRowspn5(rwspn5colLegacy);
+        pComponentLegacy.setRowspn4(rwspn4colLegacy);
+        pComponentLegacy.setRowspn3(rwspn3colLegacy);
+        pComponentLegacy.setRowspn2(rwspn2colLegacy);
+        pComponentLegacy.setRowspan1(simplecellLegacy);
+        List<List<Integer>> colspanvalLegacy = new ArrayList<List<Integer>>();
+        colspanvalLegacy.add(new ArrayList<Integer>(Arrays.asList(5, 2)));
+        colspanvalLegacy.add(new ArrayList<Integer>(Arrays.asList(7, 2)));
+        colspanvalLegacy.add(new ArrayList<Integer>(Arrays.asList(8, 2)));
+        pComponentLegacy.setColumnspan(colspanvalLegacy);
+        List<List<Integer>> colsBreakLegacy = new ArrayList<List<Integer>>();
+        colsBreakLegacy.add(new ArrayList<Integer>(Arrays.asList(5, 2)));
+        colsBreakLegacy.add(new ArrayList<Integer>(Arrays.asList(7, 2)));
+        colsBreakLegacy.add(new ArrayList<Integer>(Arrays.asList(8, 2)));
+        pComponentLegacy.setColumnnumber(colsBreakLegacy);
+        pComponentLegacy.setColumnBreakCountNo(3);
+        List<List<String>> reportDataListLegacy = new ArrayList<>();
+        List<LegacyDigitizationReport> legacyResultList = legacyDigitizationReportService.getGrandTotalRaw();
+        if (legacyResultList != null && !legacyResultList.isEmpty()) {
+            for (LegacyDigitizationReport obj : legacyResultList) {
+                List<String> rowData = new ArrayList<>();
+                rowData.add("1");
+                rowData.add("36");
+                rowData.add(obj.getTotalDistrict() != null ? String.valueOf(obj.getTotalDistrict()) : "0");
+                rowData.add(obj.getTotalTehsils() != null ? String.valueOf(obj.getTotalTehsils()) : "0");
+                LegacyDigitizationExportUtil.appendStateRaw(rowData, obj);
+                reportDataListLegacy.add(rowData);
+            }
+            pComponentLegacy.setReportDataList(reportDataListLegacy);
+        }
 
         //All adding PDF in pdfexporterList
         pdfexporterList.add(pComponent);
@@ -616,6 +671,7 @@ public class PhysicalProgressProfilePDF {
         pdfexporterList.add(pComponentRCMS);
         pdfexporterList.add(pComponentAadhar);
         pdfexporterList.add(pComponentMrr);
+        pdfexporterList.add(pComponentLegacy);
         PdfExporter.createPdf(pdfexporterList, response);
     }
 
@@ -1161,6 +1217,58 @@ public class PhysicalProgressProfilePDF {
         } else {
             System.out.println("No MRR data found.");
         }
+        //v5 Legacy Digitization — state profile PDF section 8
+        PdfExporterComponent pComponentLegacy = new PdfExporterComponent();
+        String[] headLegacy = {"", "8. " + ReportLabels.LEGACY_DIGITIZATION_REPORT};
+        pComponentLegacy.setReportHeading(headLegacy);
+        pComponentLegacy.setReportName(ReportLabels.LEGACY_DIGITIZATION_REPORT);
+        float[] col_widthLegacy = {20f, 40f, 40f, 50f, 50f, 40f, 50f, 40f, 50f, 40f, 50f, 40f};
+        pComponentLegacy.setCol_width(col_widthLegacy);
+        String[] col_headLegacy = {
+                ReportLabels.SERIAL_NUMBER, ReportLabels.TOTAL_DISTRICTS, ReportLabels.TOTAL_TEHSILS,
+                ReportLabels.TOTAL_LEGACY_REGISTERED_DOCUMENTS, ReportLabels.LEGACY_DIGITIZED_FROM_STATE_FUNDS,
+                ReportLabels.LEGACY_SANCTIONED_UNDER_DILRMP, ReportLabels.LEGACY_COMPLETED_FROM_DILRMP_FUNDS,
+                ReportLabels.TOTAL_LEGACY_DIGITIZED, ReportLabels.LEGACY_DIGITIZED_UPTO_YEAR,
+                ReportLabels.NO_OF_PAGES, ReportLabels.PERCENTAGE, ReportLabels.NO_OF_PAGES, ReportLabels.PERCENTAGE,
+                ReportLabels.NO_OF_PAGES, ReportLabels.PERCENTAGE
+        };
+        pComponentLegacy.setCol_head(col_headLegacy);
+        Integer[] rwspn2colLegacy = {0, 1, 2, 3, 5, 8};
+        Integer[] rwspn3colLegacy = {};
+        Integer[] rwspn4colLegacy = {};
+        Integer[] rwspn5colLegacy = {};
+        Integer[] simplecellLegacy = {9, 10, 11, 12, 13, 14};
+        pComponentLegacy.setRowspn5(rwspn5colLegacy);
+        pComponentLegacy.setRowspn4(rwspn4colLegacy);
+        pComponentLegacy.setRowspn3(rwspn3colLegacy);
+        pComponentLegacy.setRowspn2(rwspn2colLegacy);
+        pComponentLegacy.setRowspan1(simplecellLegacy);
+        List<List<Integer>> colspanvalLegacy = new ArrayList<List<Integer>>();
+        colspanvalLegacy.add(new ArrayList<Integer>(Arrays.asList(4, 2)));
+        colspanvalLegacy.add(new ArrayList<Integer>(Arrays.asList(6, 2)));
+        colspanvalLegacy.add(new ArrayList<Integer>(Arrays.asList(7, 2)));
+        pComponentLegacy.setColumnspan(colspanvalLegacy);
+        List<List<Integer>> colsBreakLegacy = new ArrayList<List<Integer>>();
+        colsBreakLegacy.add(new ArrayList<Integer>(Arrays.asList(4, 2)));
+        colsBreakLegacy.add(new ArrayList<Integer>(Arrays.asList(6, 2)));
+        colsBreakLegacy.add(new ArrayList<Integer>(Arrays.asList(7, 2)));
+        pComponentLegacy.setColumnnumber(colsBreakLegacy);
+        pComponentLegacy.setColumnBreakCountNo(3);
+        List<List<String>> reportDataListLegacy = new ArrayList<>();
+        List<LegacyDigitizationReport> legacyResultList =
+                (List<LegacyDigitizationReport>) session.getAttribute("legacyData");
+        if (legacyResultList != null && !legacyResultList.isEmpty()) {
+            int serialNo = 1;
+            for (LegacyDigitizationReport obj : legacyResultList) {
+                List<String> rowData = new ArrayList<>();
+                rowData.add(String.valueOf(serialNo++));
+                rowData.add(obj.getTotalDistrict() != null ? String.valueOf(obj.getTotalDistrict()) : "0");
+                rowData.add(obj.getTotalTehsils() != null ? String.valueOf(obj.getTotalTehsils()) : "0");
+                LegacyDigitizationExportUtil.appendStateRaw(rowData, obj);
+                reportDataListLegacy.add(rowData);
+            }
+            pComponentLegacy.setReportDataList(reportDataListLegacy);
+        }
         //All adding PDF in pdfexporterList
         pdfexporterList.add(pComponent);
         pdfexporterList.add(pComponentMapDigitization);
@@ -1169,6 +1277,7 @@ public class PhysicalProgressProfilePDF {
         pdfexporterList.add(pComponentRCMS);
         pdfexporterList.add(pComponentAadhar);
         pdfexporterList.add(pComponentMrr);
+        pdfexporterList.add(pComponentLegacy);
         PdfExporter.createPdf(pdfexporterList, response);
     }
 

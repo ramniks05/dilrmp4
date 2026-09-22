@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/dashboard">
+<head>
+    <meta charset="UTF-8">
+    <title>Legacy Digitization - District</title>
+    <link th:href="@{/css/report/report.css}" rel="stylesheet"/>
+</head>
+<body>
+<div layout:fragment="content"
+     style="box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;">
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-info">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-sm-10">
+                                    <h3 class="card-title"
+                                        style="font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a; letter-spacing: 2px;">
+                                        <span th:text="${labels['reportName']}">Legacy Digitization</span>&nbsp;:
+                                        <span th:text="${labels['stateUT']}">State/ UT</span> -
+                                        <span th:text="${stateName}">State</span>
+                                    </h3>
+                                </div>
+                                <div class="col-sm-2">
+                                    <a th:href="@{/physcial/report/district/pdf/district_legacy_digitization}">
+                                        <img th:src="@{/images/pdf.png}" alt="PDF" class="btn-img" width="40" height="40"/>
+                                    </a>
+                                    <a th:href="@{/physcial/report/excel/legacy-digitization-district}">
+                                        <img th:src="@{/images/excel.png}" alt="Excel" class="btn-img" width="40" height="40"/>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <a th:href="@{/physicalProgressReports/legacy-digitization/state-level}" class="btn btn-primary" style="font-size: 13px;">&larr; Back</a>
+                            <div class="table-responsive text-nowrap mt-3">
+                                <table id="example2" class="table table-bordered table-striped-columns table-success table-striped">
+                                    <thead class="card-info wrap-text" style="background-color: #4a6c52; color:#ffff">
+                                    <tr>
+                                        <th rowspan="2" th:text="${labels['serialNumber']}">S.No.</th>
+                                        <th rowspan="2" th:text="${labels['districtName']}">District</th>
+                                        <th rowspan="2" th:text="${labels['totalTehsils']}">Total Tehsils</th>
+                                        <th th:text="${labels['totalLegacy']}">Total Legacy</th>
+                                        <th colspan="2" th:text="${labels['digitisedStateFunds']}">State Funds</th>
+                                        <th th:text="${labels['sanctionedDilrmp']}">Sanctioned</th>
+                                        <th colspan="2" th:text="${labels['completedDilrmp']}">Completed</th>
+                                        <th colspan="2" th:text="${labels['totalDigitised']}">Total Digitized</th>
+                                        <th rowspan="2" th:text="${labels['uptoYear']}">Year</th>
+                                    </tr>
+                                    <tr>
+                                        <th th:text="${labels['noOfPages']}">No. of Pages</th>
+                                        <th th:text="${labels['noOfPages']}">No. of Pages</th>
+                                        <th th:text="${labels['percentage']}">%</th>
+                                        <th th:text="${labels['noOfPages']}">No. of Pages</th>
+                                        <th th:text="${labels['noOfPages']}">No. of Pages</th>
+                                        <th th:text="${labels['percentage']}">%</th>
+                                        <th th:text="${labels['noOfPages']}">No. of Pages</th>
+                                        <th th:text="${labels['percentage']}">%</th>
+                                    </tr>
+                                    <tr style="font-weight: bold;">
+                                        <td style="text-align: center;">1</td>
+                                        <td style="text-align: center;">2</td>
+                                        <td style="text-align: center;">3</td>
+                                        <td style="text-align: center;">4 (A)</td>
+                                        <td style="text-align: center;">5a (B)</td>
+                                        <td style="text-align: center;">5b (B/A)</td>
+                                        <td style="text-align: center;">6</td>
+                                        <td style="text-align: center;">7a</td>
+                                        <td style="text-align: center;">7b</td>
+                                        <td style="text-align: center;">8a</td>
+                                        <td style="text-align: center;">8b</td>
+                                        <td style="text-align: center;">9</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="data, iterator : ${districtLegacyData}">
+                                        <td th:text="${iterator.count}">1</td>
+                                        <td th:text="${data.districtName != null ? data.districtName.toUpperCase() : ''}">DISTRICT</td>
+                                        <td th:text="${data.totalTehsils}">0</td>
+                                        <td th:text="${data.legacyTotalPages}">0</td>
+                                        <td th:text="${data.legacyDigitisedStateFundsPages}">0</td>
+                                        <td th:text="${data.legacyDigitisedStateFundsPercent}">0</td>
+                                        <td th:text="${data.legacyDilrmpSanctionedPages}">0</td>
+                                        <td th:text="${data.legacyDigitisedDilrmpFundsPages}">0</td>
+                                        <td th:text="${data.legacyDigitisedDilrmpFundsPercent}">0</td>
+                                        <td th:text="${data.legacyTotalDigitisedPages}">0</td>
+                                        <td th:text="${data.legacyTotalDigitisedPercent}">0</td>
+                                        <td th:text="${data.legacyDigitisedUptoYear}">0</td>
+                                    </tr>
+                                    <tr th:each="data : ${stateLegacyData}">
+                                        <td></td>
+                                        <td style="font-weight: bold;">Grand Total</td>
+                                        <td style="font-weight: bold;" th:text="${data.totalTehsils}">0</td>
+                                        <td style="font-weight: bold;" th:text="${data.legacyTotalPages}">0</td>
+                                        <td style="font-weight: bold;" th:text="${data.legacyDigitisedStateFundsPages}">0</td>
+                                        <td style="font-weight: bold;" th:text="${data.legacyDigitisedStateFundsPercent}">0</td>
+                                        <td style="font-weight: bold;" th:text="${data.legacyDilrmpSanctionedPages}">0</td>
+                                        <td style="font-weight: bold;" th:text="${data.legacyDigitisedDilrmpFundsPages}">0</td>
+                                        <td style="font-weight: bold;" th:text="${data.legacyDigitisedDilrmpFundsPercent}">0</td>
+                                        <td style="font-weight: bold;" th:text="${data.legacyTotalDigitisedPages}">0</td>
+                                        <td style="font-weight: bold;" th:text="${data.legacyTotalDigitisedPercent}">0</td>
+                                        <td style="font-weight: bold;" th:text="${data.legacyDigitisedUptoYear}">0</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>

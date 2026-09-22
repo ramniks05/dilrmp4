@@ -11,10 +11,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import in.gov.dilrmp.models.dashboard.DashBordDTO;
 import in.gov.dilrmp.models.reportDTO.MapDigitizationReport.MapDigitizationReport;
 import in.gov.dilrmp.models.reportDTO.clr.StateClrReportView;
+import in.gov.dilrmp.models.reportDTO.legacy.LegacyDigitizationReport;
 import in.gov.dilrmp.models.reportDTO.linkedaadhaar.LinkedAadharViewReport;
 import in.gov.dilrmp.models.reportDTO.mrr.MrrViewReport;
 import in.gov.dilrmp.models.reportDTO.rcms.RcmsReportDTO;
 import in.gov.dilrmp.models.reportDTO.sro.SroReportDTO;
+import in.gov.dilrmp.models.reportDTO.sroModernization.SroModernizationReport;
 import in.gov.dilrmp.models.reportDTO.surveyresurvey.SurveyResurveyViewReport;
 import in.gov.dilrmp.services.DataEntryForm.StateMISDataEntryService;
 import in.gov.dilrmp.services.physicalProgressServices.*;
@@ -27,8 +29,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import in.gov.dilrmp.component.PdfExporterComponent;
 import in.gov.dilrmp.constants.ReportLabels;
 import in.gov.dilrmp.utils.AadhaarReportExportV5Util;
+import in.gov.dilrmp.utils.LegacyDigitizationExportUtil;
 import in.gov.dilrmp.utils.MapDigitizationReportExportV5Util;
 import in.gov.dilrmp.utils.PdfExporter;
+import in.gov.dilrmp.utils.SroModernizationExportUtil;
 
 @Controller
 @RequestMapping("physcial/report/pdf")
@@ -1107,6 +1111,166 @@ public void getCLRNEWPdf(HttpServletResponse response, HttpSession session) {
         pComponent.setReportDataList(reportDataList);
         PdfExporter.createPdf(pComponent, response);
 
+    }
+
+    //v5 Legacy Registered Documents Digitization — state PDF
+    @GetMapping("/legacy-digitization")
+    public void getLegacyDigitizationPdf(HttpServletResponse response, HttpSession session) {
+        PdfExporterComponent pComponent = new PdfExporterComponent();
+        String head[] = {ReportLabels.LEGACY_DIGITIZATION_REPORT};
+        pComponent.setReportHeading(head);
+        pComponent.setReportName(ReportLabels.LEGACY_DIGITIZATION_REPORT);
+        float col_width[] = {20f, 65f, 40f, 40f, 50f, 50f, 40f, 50f, 40f, 50f, 40f, 50f, 40f};
+        pComponent.setCol_width(col_width);
+        String col_head[] = {
+                ReportLabels.SERIAL_NUMBER, ReportLabels.STATE_UT, ReportLabels.TOTAL_DISTRICTS, ReportLabels.TOTAL_TEHSILS,
+                ReportLabels.TOTAL_LEGACY_REGISTERED_DOCUMENTS, ReportLabels.LEGACY_DIGITIZED_FROM_STATE_FUNDS,
+                ReportLabels.LEGACY_SANCTIONED_UNDER_DILRMP, ReportLabels.LEGACY_COMPLETED_FROM_DILRMP_FUNDS,
+                ReportLabels.TOTAL_LEGACY_DIGITIZED, ReportLabels.LEGACY_DIGITIZED_UPTO_YEAR,
+                ReportLabels.NO_OF_PAGES, ReportLabels.PERCENTAGE, ReportLabels.NO_OF_PAGES, ReportLabels.PERCENTAGE,
+                ReportLabels.NO_OF_PAGES, ReportLabels.PERCENTAGE
+        };
+        pComponent.setCol_head(col_head);
+        Integer[] rwspn2col = {0, 1, 2, 3, 4, 6, 9};
+        Integer[] rwspn3col = {};
+        Integer[] rwspn4col = {};
+        Integer[] rwspn5col = {};
+        Integer[] simplecell = {10, 11, 12, 13, 14, 15};
+        pComponent.setRowspn5(rwspn5col);
+        pComponent.setRowspn4(rwspn4col);
+        pComponent.setRowspn3(rwspn3col);
+        pComponent.setRowspn2(rwspn2col);
+        pComponent.setRowspan1(simplecell);
+        List<List<Integer>> colspanval = new ArrayList<List<Integer>>();
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(5, 2)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(7, 2)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(8, 2)));
+        pComponent.setColumnspan(colspanval);
+        List<List<Integer>> colsBreak = new ArrayList<List<Integer>>();
+        colsBreak.add(new ArrayList<Integer>(Arrays.asList(5, 2)));
+        colsBreak.add(new ArrayList<Integer>(Arrays.asList(7, 2)));
+        colsBreak.add(new ArrayList<Integer>(Arrays.asList(8, 2)));
+        pComponent.setColumnnumber(colsBreak);
+        pComponent.setColumnBreakCountNo(3);
+        List<List<String>> reportDataList = new ArrayList<List<String>>();
+        List<LegacyDigitizationReport> legacyList =
+                (List<LegacyDigitizationReport>) session.getAttribute("legacyList");
+        List<LegacyDigitizationReport> grandTotal =
+                (List<LegacyDigitizationReport>) session.getAttribute("legacyGrandTotal");
+        AtomicInteger indexHolder = new AtomicInteger();
+        if (legacyList != null && !legacyList.isEmpty()) {
+            legacyList.forEach(map -> {
+                if (map.getStateId() == null || map.getStateId() != 999) {
+                    List<String> strings = new ArrayList<>();
+                    strings.add(Integer.toString(indexHolder.incrementAndGet()));
+                    strings.add(map.getStateName() != null ? map.getStateName() : "N/A");
+                    strings.add(map.getFormattingTotalDistrict() != null ? map.getFormattingTotalDistrict() : "0");
+                    strings.add(map.getFormattingTotalTehsils() != null ? map.getFormattingTotalTehsils() : "0");
+                    LegacyDigitizationExportUtil.appendStateFormatted(strings, map);
+                    reportDataList.add(strings);
+                }
+            });
+        }
+        List<List<String>> grandTotalData = new ArrayList<>();
+        if (grandTotal != null && !grandTotal.isEmpty()) {
+            grandTotal.forEach(gt -> {
+                List<String> grandTotalList = new ArrayList<>();
+                grandTotalList.add("");
+                grandTotalList.add(gt.getStateName() != null ? gt.getStateName() : "Grand Total");
+                grandTotalList.add(gt.getFormattingTotalDistrict() != null ? gt.getFormattingTotalDistrict() : "0");
+                grandTotalList.add(gt.getFormattingTotalTehsils() != null ? gt.getFormattingTotalTehsils() : "0");
+                LegacyDigitizationExportUtil.appendStateFormatted(grandTotalList, gt);
+                grandTotalData.add(grandTotalList);
+            });
+        }
+        pComponent.setReportDataList(reportDataList);
+        pComponent.setGrandTotal(grandTotalData);
+        PdfExporter.createPdf(pComponent, response);
+    }
+
+    //v5 Modernization of Registration Office (SRO) — state PDF
+    @GetMapping("/sro-modernization")
+    public void getSroModernizationPdf(HttpServletResponse response, HttpSession session) {
+        PdfExporterComponent pComponent = new PdfExporterComponent();
+        String head[] = {ReportLabels.SRO_MODERNIZATION_REPORT};
+        pComponent.setReportHeading(head);
+        pComponent.setReportName(ReportLabels.SRO_MODERNIZATION_REPORT);
+        float col_width[] = {18f, 58f, 36f, 36f, 52f, 42f, 36f, 48f, 42f, 36f, 42f, 42f};
+        pComponent.setCol_width(col_width);
+        // Row1 titles (indices 0-8) + Row2 sub-heads (9-14): Nos. / %
+        String col_head[] = {
+                ReportLabels.SERIAL_NUMBER,
+                ReportLabels.STATE_UT,
+                ReportLabels.TOTAL_DISTRICTS,
+                ReportLabels.TOTAL_SROS,
+                ReportLabels.SROS_USING_ONLINE_REGISTRATION_A,
+                ReportLabels.SROS_MODERNISED_STATE_FUNDS,
+                ReportLabels.SROS_SANCTIONED_DILRMP,
+                ReportLabels.SROS_MODERNISED_DILRMP_FUNDS,
+                ReportLabels.SROS_MODERNISED_TOTAL,
+                ReportLabels.NOS,
+                ReportLabels.PERCENTAGE,
+                ReportLabels.NOS,
+                ReportLabels.PERCENTAGE,
+                ReportLabels.NOS,
+                ReportLabels.PERCENTAGE
+        };
+        pComponent.setCol_head(col_head);
+        Integer[] rwspn2col = {0, 1, 2, 3, 4, 6};
+        Integer[] rwspn3col = {};
+        Integer[] rwspn4col = {};
+        Integer[] rwspn5col = {};
+        Integer[] simplecell = {9, 10, 11, 12, 13, 14};
+        pComponent.setRowspn5(rwspn5col);
+        pComponent.setRowspn4(rwspn4col);
+        pComponent.setRowspn3(rwspn3col);
+        pComponent.setRowspn2(rwspn2col);
+        pComponent.setRowspan1(simplecell);
+        List<List<Integer>> colspanval = new ArrayList<List<Integer>>();
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(5, 2)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(7, 2)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(8, 2)));
+        pComponent.setColumnspan(colspanval);
+        List<List<Integer>> colsBreak = new ArrayList<List<Integer>>();
+        colsBreak.add(new ArrayList<Integer>(Arrays.asList(5, 2)));
+        colsBreak.add(new ArrayList<Integer>(Arrays.asList(7, 2)));
+        colsBreak.add(new ArrayList<Integer>(Arrays.asList(8, 2)));
+        pComponent.setColumnnumber(colsBreak);
+        pComponent.setColumnBreakCountNo(3);
+        List<List<String>> reportDataList = new ArrayList<List<String>>();
+        List<SroModernizationReport> list =
+                (List<SroModernizationReport>) session.getAttribute("sroModernizationList");
+        List<SroModernizationReport> grandTotal =
+                (List<SroModernizationReport>) session.getAttribute("sroModernizationGrandTotal");
+        AtomicInteger indexHolder = new AtomicInteger();
+        if (list != null && !list.isEmpty()) {
+            list.forEach(map -> {
+                if (map.getStateId() == null || map.getStateId() != 999) {
+                    List<String> strings = new ArrayList<>();
+                    strings.add(Integer.toString(indexHolder.incrementAndGet()));
+                    strings.add(map.getStateName() != null ? map.getStateName() : "N/A");
+                    strings.add(map.getFormattingTotalDistricts() != null ? map.getFormattingTotalDistricts() : "0");
+                    strings.add(map.getFormattingTotalSros() != null ? map.getFormattingTotalSros() : "0");
+                    SroModernizationExportUtil.appendStateFormatted(strings, map);
+                    reportDataList.add(strings);
+                }
+            });
+        }
+        List<List<String>> grandTotalData = new ArrayList<>();
+        if (grandTotal != null && !grandTotal.isEmpty()) {
+            grandTotal.forEach(gt -> {
+                List<String> grandTotalList = new ArrayList<>();
+                grandTotalList.add("");
+                grandTotalList.add(gt.getStateName() != null ? gt.getStateName() : "Grand Total");
+                grandTotalList.add(gt.getFormattingTotalDistricts() != null ? gt.getFormattingTotalDistricts() : "0");
+                grandTotalList.add(gt.getFormattingTotalSros() != null ? gt.getFormattingTotalSros() : "0");
+                SroModernizationExportUtil.appendStateFormatted(grandTotalList, gt);
+                grandTotalData.add(grandTotalList);
+            });
+        }
+        pComponent.setReportDataList(reportDataList);
+        pComponent.setGrandTotal(grandTotalData);
+        PdfExporter.createPdf(pComponent, response);
     }
 
 }

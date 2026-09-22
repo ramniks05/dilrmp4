@@ -101,6 +101,13 @@ public class DistrictMISDataEntryBackup {
     //v5 Aadhaar: Land owners [45]-[46]
     private Integer landOwnersLinkedWithMobile;
     private Integer landOwnersLinkedWithAddress;
+    //v5 Legacy Digitization
+    private Integer legacyTotalPages;
+    private Integer legacyDigitisedStateFundsPages;
+    private Integer legacyDilrmpSanctionedPages;
+    private Integer legacyDigitisedDilrmpFundsPages;
+    private Integer legacyTotalDigitisedPages;
+    private Integer legacyDigitisedUptoYear;
     // Additional fieldsa
     private LocalDateTime updateOnDate;
     @ManyToOne

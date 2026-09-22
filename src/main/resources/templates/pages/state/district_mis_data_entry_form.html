@@ -86,6 +86,12 @@
                     <i class="fas fa-id-card"></i> Aadhaar Linkage
                   </a>
                 </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="legacy-digitization-tab" data-toggle="tab" href="#legacy-digitization" role="tab"
+                    aria-controls="legacy-digitization" aria-selected="false" data-tab-state="disabled">
+                    <i class="fas fa-file-alt"></i> Legacy Digitization
+                  </a>
+                </li>
               </ul>
 
 
@@ -779,6 +785,76 @@
 
                 </div>
 
+                <!--================================== Component 8: Legacy Registered Documents Digitization ===========================================-->
+                <div class="tab-pane fade" id="legacy-digitization" role="tabpanel" aria-labelledby="legacy-digitization-tab">
+                  <div class="form-group row">
+                    <div class="card-header p-2"
+                      style="font-size: 24px;font-family: auto; letter-spacing: 2px; color: var(--danger);">
+                      <ul class="nav nav-pills">
+                        <li class="nav-item">Component 8: Legacy Registered Documents Digitization
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="legacyTotalPages" class="col-sm-8 col-form-label"><span
+                        class="red-text">[47]</span>
+                      Total no. of Legacy Registered Documents (No. of Pages):</label>
+                    <div class="col-sm-4">
+                      <input type="text" id="legacyTotalPages" name="legacyTotalPages"
+                        th:field="*{legacyTotalPages}" onchange="validateLegacyDigitization()"
+                             oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="0" maxlength="12" class="form-control">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="legacyDigitisedStateFundsPages" class="col-sm-8 col-form-label"><span
+                        class="red-text">[48]</span>
+                      Total no. of Legacy Registered Documents digitized from State/UT funds (No. of Pages):</label>
+                    <div class="col-sm-4">
+                      <input type="text" id="legacyDigitisedStateFundsPages" name="legacyDigitisedStateFundsPages"
+                        th:field="*{legacyDigitisedStateFundsPages}" onchange="validateLegacyDigitization()"
+                             oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="0" maxlength="12" class="form-control">
+                    </div>
+                  </div>
+
+                  <!-- DoLR sanctioned [DILRMP] — report-only for now; no question on district form -->
+
+                  <div class="form-group row">
+                    <label for="legacyDigitisedDilrmpFundsPages" class="col-sm-8 col-form-label"><span
+                        class="red-text">[49]</span>
+                      Total no. of Legacy Registered Documents completed from sanctioned funds under DILRMP (No. of Pages):</label>
+                    <div class="col-sm-4">
+                      <input type="text" id="legacyDigitisedDilrmpFundsPages" name="legacyDigitisedDilrmpFundsPages"
+                        th:field="*{legacyDigitisedDilrmpFundsPages}" onchange="validateLegacyDigitization()"
+                             oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="0" maxlength="12" class="form-control">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="legacyTotalDigitisedPages" class="col-sm-8 col-form-label"><span
+                        class="red-text">[50]</span>
+                      Total Legacy Registered Documents Digitized (No. of Pages):</label>
+                    <div class="col-sm-4">
+                      <input type="text" id="legacyTotalDigitisedPages" name="legacyTotalDigitisedPages"
+                        th:field="*{legacyTotalDigitisedPages}" onchange="validateLegacyDigitization()"
+                             oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="0" maxlength="12" class="form-control">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="legacyDigitisedUptoYear" class="col-sm-8 col-form-label"><span
+                        class="red-text">[51]</span>
+                      Year up to which Legacy Registered Documents digitized (YYYY):</label>
+                    <div class="col-sm-4">
+                      <input type="text" id="legacyDigitisedUptoYear" name="legacyDigitisedUptoYear"
+                        th:field="*{legacyDigitisedUptoYear}" onchange="validateLegacyDigitization()"
+                             oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="0" maxlength="4" class="form-control">
+                    </div>
+                  </div>
+                </div>
+
                 <div class="form-group mt-4">
                   <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save</button>
                 </div>
@@ -830,7 +906,11 @@
                   rorLinkedWithAddress: 43,
                   landOwnersAadhar: 44,
                   landOwnersLinkedWithMobile: 45,
-                  landOwnersLinkedWithAddress: 46
+                  landOwnersLinkedWithAddress: 46,
+                  legacyTotalPages: 47,
+                  legacyDigitisedStateFundsPages: 48,
+                  legacyDigitisedDilrmpFundsPages: 49,
+                  legacyTotalDigitisedPages: 50
                 };
 
                 function isDistrictMisIncreaseOnly() {
@@ -1078,6 +1158,7 @@ $(document).ready(function() {
             $('#survey-tab').removeAttr('data-tab-state');
             $('#e-rcms-tab').removeAttr('data-tab-state');
             $('#aadhaar-tab').removeAttr('data-tab-state');
+            $('#legacy-digitization-tab').removeAttr('data-tab-state');
         } else {
             $('#clr-tab').attr('data-tab-state', 'disabled');
             $('#map-digitization-tab').attr('data-tab-state', 'disabled');
@@ -1086,6 +1167,7 @@ $(document).ready(function() {
             $('#survey-tab').attr('data-tab-state', 'disabled');
             $('#e-rcms-tab').attr('data-tab-state', 'disabled');
             $('#aadhaar-tab').attr('data-tab-state', 'disabled');
+            $('#legacy-digitization-tab').attr('data-tab-state', 'disabled');
         }
     }
     $('#formTabs').on('click', 'a.nav-link', function(e) {
@@ -1364,6 +1446,40 @@ $(document).ready(function() {
       alert("S.No. [46] must be equal to or lesser than S.No. [7].");
       landOwnersAddressEl.value = 0;
     }
+   }
+
+    //v5 Legacy Digitization [47]-[51]
+    function validateLegacyDigitization() {
+      const totalEl = document.getElementById("legacyTotalPages");
+      const stateFundsEl = document.getElementById("legacyDigitisedStateFundsPages");
+      const dilrmpDoneEl = document.getElementById("legacyDigitisedDilrmpFundsPages");
+      const totalDigitisedEl = document.getElementById("legacyTotalDigitisedPages");
+      const yearEl = document.getElementById("legacyDigitisedUptoYear");
+
+      [totalEl, stateFundsEl, dilrmpDoneEl, totalDigitisedEl, yearEl].forEach(function (el) {
+        if (el && (el.value === '' || el.value === null)) {
+          el.value = 0;
+        }
+      });
+
+      const total = parseInt(totalEl ? totalEl.value || 0 : 0, 10);
+      const stateFunds = parseInt(stateFundsEl ? stateFundsEl.value || 0 : 0, 10);
+      const dilrmpDone = parseInt(dilrmpDoneEl ? dilrmpDoneEl.value || 0 : 0, 10);
+      const totalDigitised = parseInt(totalDigitisedEl ? totalDigitisedEl.value || 0 : 0, 10);
+      const year = parseInt(yearEl ? yearEl.value || 0 : 0, 10);
+
+      if (stateFunds > total) {
+        alert("S.No. [48] must be equal to or lesser than S.No. [47].");
+        if (stateFundsEl) stateFundsEl.value = 0;
+      }
+      if (totalDigitised > total) {
+        alert("S.No. [50] must be equal to or lesser than S.No. [47].");
+        if (totalDigitisedEl) totalDigitisedEl.value = 0;
+      }
+      if (yearEl && year !== 0 && (year < 1900 || year > 2100)) {
+        alert("S.No. [51] must be a valid year (YYYY).");
+        yearEl.value = 0;
+      }
    }
   }
 

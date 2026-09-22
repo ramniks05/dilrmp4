@@ -230,6 +230,26 @@ public class DistrictMISDataEntry {
     @Column(name = "land_owners_linked_with_address", columnDefinition = "int default 0")
     private Integer landOwnersLinkedWithAddress = 0;
 
+    //v5 Legacy Registered Documents Digitization (State/UT entry; DoLR sanctioned has no form yet)
+    @Column(name = "legacy_total_pages", columnDefinition = "int default 0")
+    private Integer legacyTotalPages = 0;
+
+    @Column(name = "legacy_digitised_state_funds_pages", columnDefinition = "int default 0")
+    private Integer legacyDigitisedStateFundsPages = 0;
+
+    /** DoLR-entered later — shown in report only; no district form question. */
+    @Column(name = "legacy_dilrmp_sanctioned_pages", columnDefinition = "int default 0")
+    private Integer legacyDilrmpSanctionedPages = 0;
+
+    @Column(name = "legacy_digitised_dilrmp_funds_pages", columnDefinition = "int default 0")
+    private Integer legacyDigitisedDilrmpFundsPages = 0;
+
+    @Column(name = "legacy_total_digitised_pages", columnDefinition = "int default 0")
+    private Integer legacyTotalDigitisedPages = 0;
+
+    @Column(name = "legacy_digitised_upto_year", columnDefinition = "int default 0")
+    private Integer legacyDigitisedUptoYear = 0;
+
       // Additional fieldsa
     @Column(name = "last_update_on_date")
     private LocalDateTime updateOnDate;

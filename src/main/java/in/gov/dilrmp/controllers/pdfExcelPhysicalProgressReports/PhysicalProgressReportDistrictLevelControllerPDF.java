@@ -15,6 +15,8 @@ import in.gov.dilrmp.models.reportDTO.rcms.DistrictRcmsReportDTO;
 import in.gov.dilrmp.models.reportDTO.rcms.RcmsReportDTO;
 import in.gov.dilrmp.models.reportDTO.surveyresurvey.DistrictSurveyResurveyViewReport;
 import in.gov.dilrmp.models.reportDTO.surveyresurvey.SurveyResurveyViewReport;
+import in.gov.dilrmp.utils.AadhaarReportExportV5Util;
+import in.gov.dilrmp.utils.MapDigitizationReportExportV5Util;
 import in.gov.dilrmp.utils.PdfExporter;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -43,35 +45,35 @@ public class PhysicalProgressReportDistrictLevelControllerPDF {
         String head[] = {ReportLabels.CLR_REPORT,ReportLabels.STATE_UT +" - "+stateName,ReportLabels.GENDER_OWNERSHIP_HEADING + " " + woner};
         pComponent.setReportHeading(head);
         pComponent.setReportName(ReportLabels.CLR_REPORT);
-        float col_width[] = {45f, 90f, 50f, 50f, 50f, 50f, 90f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f};
+        float col_width[] = {45f, 90f, 50f, 50f, 50f, 50f, 90f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f};
         pComponent.setCol_width(col_width);
         String col_head[] = {ReportLabels.SERIAL_NUMBER, ReportLabels.DISTRICT_NAME, ReportLabels.TOTAL_TEHSILS,
                 ReportLabels.TOTAL_VILLAGES, ReportLabels.RoR, ReportLabels.NUMBER_OF_VILLAGES_WHERE_CLR_COMPLETED,
                 ReportLabels.TOTAL_NO_OF_LAND_OWNERS, ReportLabels.AVAILABILITY_OF_GENDER_BASED_LAND_OWNERSHIP,
                 ReportLabels.WHETHER_ROR_AVAILABLE_ONLINE,ReportLabels.WHETHER_DIGITALLY_SIGNED_ROR_AVAILABLE_ONLINE,
                 ReportLabels.WHETHER_DIGITALLY_SIGNED_ROR_LEGALLY_VALID_IN_STATE,ReportLabels.WHETHER_MUTATION_APPLICATION_SUBMITTED_ONLINE,
-                ReportLabels.WHETHER_AUTO_TRIGGERED_MUTATION_FACILITY_AVAILABLE,
+                ReportLabels.WHETHER_AUTO_TRIGGERED_MUTATION_FACILITY_AVAILABLE,ReportLabels.WHETHER_AUTO_MUTATION_FACILITY_AVAILABLE,
                 ReportLabels.WHETHER_LAND_RECORDS_BE_CHECKED_ONLINE_BY_SRO,ReportLabels.WHETHER_LAND_RECORDS_BE_CHECKED_ONLINE_BY_REVENUE_COURTS,
                 ReportLabels.WHETHER_LAND_RECORDS_BE_CHECKED_ONLINE_BY_CIVIL_COURTS_THROUGH_E_COURTS_SYSTEM,
-                ReportLabels.TOTAL,ReportLabels.COMPUTERIZED,ReportLabels.PERCENTAGE,ReportLabels.NO,ReportLabels.PERCENTAGE,
+                //v5 RoR leaf includes with Cadastral Map
+                ReportLabels.TOTAL,ReportLabels.COMPUTERIZED,ReportLabels.PERCENTAGE,ReportLabels.ROR_WITH_CADASTRAL_MAP,ReportLabels.PERCENTAGE,ReportLabels.NO,ReportLabels.PERCENTAGE,
                 ReportLabels.NUMBER_OF_DISTRICTS_WHERE_AVAILABLE,ReportLabels.MALE,ReportLabels.FEMALE,ReportLabels.TOTAL,ReportLabels.YES_NO,
                 ReportLabels.YES_NO,ReportLabels.YES_NO,ReportLabels.YES_NO,ReportLabels.YES_NO,ReportLabels.YES_NO,ReportLabels.YES_NO,
-                ReportLabels.YES_NO
+                ReportLabels.YES_NO,ReportLabels.YES_NO
         };
         pComponent.setCol_head(col_head);
         Integer[] rwspn2col = {0, 1, 2, 3,6};
         Integer[] rwspn3col = {};
         Integer[] rwspn4col = {};
         Integer[] rwspn5col = {};
-        Integer[] simplecell = {16,17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,31,32};
+        Integer[] simplecell = {17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35};
         pComponent.setRowspn5(rwspn5col);
         pComponent.setRowspn4(rwspn4col);
         pComponent.setRowspn3(rwspn3col);
         pComponent.setRowspn2(rwspn2col);
         pComponent.setRowspan1(simplecell);
         List<List<Integer>> colspanval = new ArrayList<List<Integer>>();
-        // Example: colspanval.add(new ArrayList<Integer>(Arrays.asList(2, 4)));
-        colspanval.add(new ArrayList<Integer>(Arrays.asList(4, 3)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(4, 5))); //v5 RoR 3->5
         colspanval.add(new ArrayList<Integer>(Arrays.asList(5, 2)));
         colspanval.add(new ArrayList<Integer>(Arrays.asList(7, 4)));
         colspanval.add(new ArrayList<Integer>(Arrays.asList(8, 1)));
@@ -79,17 +81,17 @@ public class PhysicalProgressReportDistrictLevelControllerPDF {
         colspanval.add(new ArrayList<Integer>(Arrays.asList(10, 1)));
         colspanval.add(new ArrayList<Integer>(Arrays.asList(11, 1)));
         colspanval.add(new ArrayList<Integer>(Arrays.asList(12, 1)));
-        colspanval.add(new ArrayList<Integer>(Arrays.asList(13, 1)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(13, 1))); //v5 Auto-Mutation
         colspanval.add(new ArrayList<Integer>(Arrays.asList(14, 1)));
         colspanval.add(new ArrayList<Integer>(Arrays.asList(15, 1)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(16, 1)));
         pComponent.setColumnspan(colspanval);
         List<List<Integer>> colsBreak = new ArrayList<List<Integer>>();
-        // Example: colsBreak.add(new ArrayList<Integer>(Arrays.asList(4, 2)));
-        colsBreak.add(new ArrayList<Integer>(Arrays.asList(4, 3)));
+        colsBreak.add(new ArrayList<Integer>(Arrays.asList(4, 5))); //v5
         colsBreak.add(new ArrayList<Integer>(Arrays.asList(5, 2)));
         colsBreak.add(new ArrayList<Integer>(Arrays.asList(7, 4)));
         pComponent.setColumnnumber(colsBreak);
-        pComponent.setColumnBreakCountNo(6);
+        pComponent.setColumnBreakCountNo(8); //v5: 25-17=8 (was 6; +2 RoR leaf)
         List<DistrictClrReportView> districtClrList = (List<DistrictClrReportView>) session.getAttribute("districtClrData");
         List<StateClrReportView> grandTotal = (List<StateClrReportView>) session.getAttribute("stateClrData");
         List<List<String>> reportDataList = new ArrayList<>();
@@ -105,6 +107,9 @@ public class PhysicalProgressReportDistrictLevelControllerPDF {
                 strings.add(map.getTotalRor() != null ? map.getTotalRor().toString() : "0");
                 strings.add(map.getRorComputerized() != null ? map.getRorComputerized().toString() : "0");
                 strings.add(map.getRorComputerizedPercent() != null && map.getRorComputerizedPercent().compareTo(BigDecimal.ZERO) != 0 ? map.getRorComputerizedPercent().toString() : "0.0");
+                //v5
+                strings.add(map.getRorWithCadastralMap() != null ? map.getRorWithCadastralMap().toString() : "0");
+                strings.add(map.getRorWithCadastralMapPercent() != null && map.getRorWithCadastralMapPercent().compareTo(BigDecimal.ZERO) != 0 ? map.getRorWithCadastralMapPercent().toString() : "0.0");
                 strings.add(map.getVillagesClrCompleted() != null ? map.getVillagesClrCompleted().toString() : "0");
                 strings.add(map.getClrCompletionPercent() != null && map.getClrCompletionPercent().compareTo(BigDecimal.ZERO) != 0 ? map.getClrCompletionPercent().toString() : "0.0");
                 strings.add(map.getTotalLandOwners() != null ? map.getTotalLandOwners().toString() : "0");
@@ -119,6 +124,8 @@ public class PhysicalProgressReportDistrictLevelControllerPDF {
                 strings.add(map.getDigitallySignedRorLegallyValid() != null ? map.getDigitallySignedRorLegallyValid() : "NO");
                 strings.add(map.getOnlineMutationFacility() != null ? map.getOnlineMutationFacility() : "NO");
                 strings.add(map.getAutoTriggerMutation() != null ? map.getAutoTriggerMutation() : "NO");
+                //v5
+                strings.add(map.getAutoMutationFacility() != null ? map.getAutoMutationFacility() : "NO");
                 strings.add(map.getLandRecordsOnlineFromRegistrationSystem() != null ? map.getLandRecordsOnlineFromRegistrationSystem() : "NO");
                 strings.add(map.getRevenueCourtProceedingsPaperless() != null ? map.getRevenueCourtProceedingsPaperless() : "NO");
                 strings.add(map.getCaseFilingRedFlaggedInLandRecordsFromCivilCourts() != null ? map.getCaseFilingRedFlaggedInLandRecordsFromCivilCourts() : "NO");
@@ -139,6 +146,9 @@ public class PhysicalProgressReportDistrictLevelControllerPDF {
                 grandTotalList.add(gt.getTotalRor() != null ? String.valueOf(gt.getTotalRor()) : "0");
                 grandTotalList.add(gt.getRorComputerized() != null ? String.valueOf(gt.getRorComputerized()) : "0");
                 grandTotalList.add(gt.getRorComputerizedPercent() != null && gt.getRorComputerizedPercent().compareTo(BigDecimal.ZERO) != 0 ? String.valueOf(gt.getRorComputerizedPercent()) : "0.0");
+                //v5
+                grandTotalList.add(gt.getRorWithCadastralMap() != null ? String.valueOf(gt.getRorWithCadastralMap()) : "0");
+                grandTotalList.add(gt.getRorWithCadastralMapPercent() != null && gt.getRorWithCadastralMapPercent().compareTo(BigDecimal.ZERO) != 0 ? String.valueOf(gt.getRorWithCadastralMapPercent()) : "0.0");
                 grandTotalList.add(gt.getVillagesClrCompleted() != null ? String.valueOf(gt.getVillagesClrCompleted()) : "0");
                 grandTotalList.add(gt.getClrCompletionPercent() != null && gt.getClrCompletionPercent().compareTo(BigDecimal.ZERO) != 0 ? String.valueOf(gt.getClrCompletionPercent()) : "0.0");
                 grandTotalList.add(gt.getTotalLandOwners() != null ? String.valueOf(gt.getTotalLandOwners()) : "0");
@@ -153,7 +163,8 @@ public class PhysicalProgressReportDistrictLevelControllerPDF {
                 grandTotalList.add("");
                 grandTotalList.add("");
                 grandTotalList.add("");
-                grandTotalList.add("");;
+                grandTotalList.add("");
+                grandTotalList.add("");
                 grandTotalData.add(grandTotalList);
             });
         }
@@ -266,31 +277,33 @@ public class PhysicalProgressReportDistrictLevelControllerPDF {
         String head[] = {ReportLabels.MAP_DIGITIZATION_REPORT,ReportLabels.STATE_UT +" - "+stateName};
         pComponent.setReportHeading(head);
         pComponent.setReportName(ReportLabels.MAP_DIGITIZATION_REPORT);
-        float col_width[] = {30f, 90f, 50f, 50f, 90f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 40f, 40f, 50f, 50f, 50f, 50f, 40f, 40f, 50f, 50f, 50f, 50f, 50f, 50f, 50f,50f,50f,50f,50f};
+        //v5: +3 cadastral columns
+        float col_width[] = {30f, 90f, 50f, 50f, 50f, 50f, 90f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 40f, 40f, 50f, 50f, 50f, 50f, 40f, 40f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f};
         pComponent.setCol_width(col_width);
         String col_head[] = {ReportLabels.SERIAL_NUMBER, ReportLabels.DISTRICT_NAME, ReportLabels.TOTAL_TEHSILS, ReportLabels.NO_OF_CADASTRAL_MAPS_FMBS_TIPPANS, ReportLabels.CADASTRAL_MAPS_FMBS_TIPPANS
                 , ReportLabels.NUMBER_OF_VILLAGES, ReportLabels.NO_OF_LAND_PARCELS,ReportLabels.SHOWING_CURRENT_OWNERSHIP,
                 ReportLabels.CADASTRAL_MAPS, ReportLabels.FMBs, ReportLabels.TIPPANS, ReportLabels.TOTAL, ReportLabels.DIGITIZED, ReportLabels.GEO_REFERENCED, ReportLabels.TOTAL, ReportLabels.CADASTRAL_MAPS_FMBS_TIPPANS_LINKED_TO_ROR, ReportLabels.CADASTRAL_MAPS_FMBS_TIPPANS_GEO_REFERENCED, ReportLabels.ULPIN_ASSIGNED, ReportLabels.TOTAL, ReportLabels.GEO_REFERENCED, ReportLabels.ULPIN_ASSIGNED,ReportLabels.YES_NO,ReportLabels.IF_NO_YEAR_UPTO_WHICH_ARE_UPDATED,
-                ReportLabels.TOTAL, ReportLabels.DIGITIZED, ReportLabels.PERCENTAGE, ReportLabels.TOTAL, ReportLabels.DIGITIZED, ReportLabels.PERCENTAGE, ReportLabels.TOTAL, ReportLabels.DIGITIZED, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO,ReportLabels.PERCENTAGE};
+                //v5 leaf headers for Cadastral Maps
+                ReportLabels.TOTAL, ReportLabels.TOTAL_DAMAGED_MISSING_MAPS, ReportLabels.MAP_IN_GOOD_CONDITION, ReportLabels.DIGITIZED, ReportLabels.DIGITIZED_PERCENT_OF_TOTAL_CADASTRAL_MAPS, ReportLabels.DIGITIZED_PERCENT_OF_GOOD_CONDITION_MAPS,
+                ReportLabels.TOTAL, ReportLabels.DIGITIZED, ReportLabels.PERCENTAGE, ReportLabels.TOTAL, ReportLabels.DIGITIZED, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO,ReportLabels.PERCENTAGE};
         pComponent.setCol_head(col_head);
         Integer[] rwspn2col = {21,22};
         Integer[] rwspn3col = {0, 1, 2};
         Integer[] rwspn4col = {};
         Integer[] rwspn5col = {};
-        Integer[] simplecell = {23,24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46,47,48};
+        Integer[] simplecell = {23,24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46,47,48,49,50,51};
         pComponent.setRowspn5(rwspn5col);
         pComponent.setRowspn4(rwspn4col);
         pComponent.setRowspn3(rwspn3col);
         pComponent.setRowspn2(rwspn2col);
         pComponent.setRowspan1(simplecell);
         List<List<Integer>> colspanval = new ArrayList<List<Integer>>();
-        // Example: colspanval.add(new ArrayList<Integer>(Arrays.asList(2, 4)));
-        colspanval.add(new ArrayList<Integer>(Arrays.asList(3, 9)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(3, 12))); //v5 9->12
         colspanval.add(new ArrayList<Integer>(Arrays.asList(4, 5)));
         colspanval.add(new ArrayList<Integer>(Arrays.asList(5, 7)));
         colspanval.add(new ArrayList<Integer>(Arrays.asList(6, 5)));
         colspanval.add(new ArrayList<Integer>(Arrays.asList(7, 2)));
-        colspanval.add(new ArrayList<Integer>(Arrays.asList(8, 3)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(8, 6))); //v5 3->6
         colspanval.add(new ArrayList<Integer>(Arrays.asList(9, 3)));
         colspanval.add(new ArrayList<Integer>(Arrays.asList(10, 3)));
         colspanval.add(new ArrayList<Integer>(Arrays.asList(11, 1)));
@@ -306,8 +319,7 @@ public class PhysicalProgressReportDistrictLevelControllerPDF {
 
         pComponent.setColumnspan(colspanval);
         List<List<Integer>> colsBreak = new ArrayList<List<Integer>>();
-        // Example: colsBreak.add(new ArrayList<Integer>(Arrays.asList(4, 2)));
-        colsBreak.add(new ArrayList<Integer>(Arrays.asList(3, 3)));
+        colsBreak.add(new ArrayList<Integer>(Arrays.asList(3, 6))); //v5 3->6
         colsBreak.add(new ArrayList<Integer>(Arrays.asList(4, 3)));
         colsBreak.add(new ArrayList<Integer>(Arrays.asList(5, 3)));
         colsBreak.add(new ArrayList<Integer>(Arrays.asList(7, 2)));
@@ -319,7 +331,7 @@ public class PhysicalProgressReportDistrictLevelControllerPDF {
         colsBreak.add(new ArrayList<Integer>(Arrays.asList(15, 2)));
         colsBreak.add(new ArrayList<Integer>(Arrays.asList(16, 2)));
         pComponent.setColumnnumber(colsBreak);
-        pComponent.setColumnBreakCountNo(14);
+        pComponent.setColumnBreakCountNo(17); //v5: was 14; +3 extras for 6 cadastral leaf cols
         List<List<String>> reportDataList = new ArrayList<List<String>>();
         List<DistrictMapDigitizationReport> districtMapList = (List<DistrictMapDigitizationReport>) session.getAttribute("reportData");
         List<MapDigitizationReport> grandTotal = (List<MapDigitizationReport>) session.getAttribute("stateMapData");
@@ -331,9 +343,7 @@ public class PhysicalProgressReportDistrictLevelControllerPDF {
                 strings.add(Integer.toString(indexHolder.incrementAndGet()));
                 strings.add(map.getDistrictName().toUpperCase());
                 strings.add(Integer.toString(Math.toIntExact(map.getTotalTehsils())));
-                strings.add(Integer.toString(map.getTotalCadastralMaps()));
-                strings.add(Integer.toString(map.getDigitizedCadastralMaps()));
-                strings.add(df.format(map.getDigitizedCadastralMapsPercent()));
+                MapDigitizationReportExportV5Util.appendCadastralMapRowV5(strings, map, df); //v5
                 strings.add(Integer.toString(map.getTotalFmbs()));
                 strings.add(Integer.toString(map.getDigitizedFmbs()));
                 strings.add(df.format(map.getDigitizedFmbsPercent()));
@@ -371,9 +381,7 @@ public class PhysicalProgressReportDistrictLevelControllerPDF {
                 stringList.add("");
                 stringList.add("Grand Total");
                 stringList.add(Integer.toString(gt.getTotalTehsils()));
-                stringList.add(Integer.toString(gt.getTotalCadastralMaps()));
-                stringList.add(Integer.toString(gt.getDigitizedCadastralMaps()));
-                stringList.add(df.format(gt.getDigitizedCadastralMapsPercent()));
+                MapDigitizationReportExportV5Util.appendCadastralMapRowV5Raw(stringList, gt, df); //v5
                 stringList.add(Integer.toString(gt.getTotalFmbs()));
                 stringList.add(Integer.toString(gt.getDigitizedFmbs()));
                 stringList.add(df.format(gt.getDigitizedFmbsPercent()));
@@ -496,17 +504,20 @@ public class PhysicalProgressReportDistrictLevelControllerPDF {
         String head[] = {ReportLabels.AADHAR_REPORT,ReportLabels.STATE_UT +" - "+stateName};
         pComponent.setReportHeading(head);
         pComponent.setReportName(ReportLabels.AADHAR_REPORT);
-        float col_width[] = {20f, 65f, 50f, 50f, 90f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f};
+        //v5: +2 RoR Address +7 Land owners
+        float col_width[] = {20f, 65f, 50f, 50f, 90f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f};
         pComponent.setCol_width(col_width);
-        String col_head[] = {ReportLabels.SERIAL_NUMBER, ReportLabels.DISTRICT_NAME, ReportLabels.TOTAL_TEHSILS, ReportLabels.NUMBER_OF_VILLAGES, ReportLabels.RoR,
-                ReportLabels.TOTAL,ReportLabels.WHERE_AT_LEAST_ONE_RoR_LINKED_WITH_AADHAAR,ReportLabels.WHERE_100_PERCENT_RoR_LINKED_WITH_AADHAAR,ReportLabels.TOTAL,ReportLabels.LINKED_WITH_AADHAAR,ReportLabels.LINKED_WITH_MOBILE_NUMBER,
-                ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE,ReportLabels.NO,ReportLabels.NO, ReportLabels.PERCENTAGE,ReportLabels.NO, ReportLabels.PERCENTAGE};
+        String col_head[] = {ReportLabels.SERIAL_NUMBER, ReportLabels.DISTRICT_NAME, ReportLabels.TOTAL_TEHSILS, ReportLabels.NUMBER_OF_VILLAGES, ReportLabels.RoR, ReportLabels.NUMBER_OF_LAND_OWNERS,
+                ReportLabels.TOTAL,ReportLabels.WHERE_AT_LEAST_ONE_RoR_LINKED_WITH_AADHAAR,ReportLabels.WHERE_100_PERCENT_RoR_LINKED_WITH_AADHAAR,ReportLabels.TOTAL,ReportLabels.LINKED_WITH_AADHAAR,ReportLabels.LINKED_WITH_MOBILE_NUMBER,ReportLabels.LINKED_WITH_ADDRESS,
+                ReportLabels.TOTAL,ReportLabels.LINKED_WITH_AADHAAR,ReportLabels.LINKED_WITH_MOBILE_NUMBER,ReportLabels.LINKED_WITH_ADDRESS,
+                ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE,ReportLabels.NO,ReportLabels.NO, ReportLabels.PERCENTAGE,ReportLabels.NO, ReportLabels.PERCENTAGE,ReportLabels.NO, ReportLabels.PERCENTAGE,
+                ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE};
         pComponent.setCol_head(col_head);
-        Integer[] rwspn2col = {5,6,7,8, 9,10};
+        Integer[] rwspn2col = {6,7,8,9,10,11,12,13,14,15,16};
         Integer[] rwspn3col = {};
         Integer[] rwspn4col = {0, 1, 2};
         Integer[] rwspn5col = {};
-        Integer[] simplecell = {11,12,13,14,15,16, 17, 18, 19, 20};
+        Integer[] simplecell = {17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35};
         pComponent.setRowspn5(rwspn5col);
         pComponent.setRowspn4(rwspn4col);
         pComponent.setRowspn3(rwspn3col);
@@ -514,23 +525,31 @@ public class PhysicalProgressReportDistrictLevelControllerPDF {
         pComponent.setRowspan1(simplecell);
         List<List<Integer>> colspanval = new ArrayList<List<Integer>>();
         colspanval.add(new ArrayList<Integer>(Arrays.asList(3, 5)));
-        colspanval.add(new ArrayList<Integer>(Arrays.asList(4, 5)));
-        colspanval.add(new ArrayList<Integer>(Arrays.asList(5, 1)));
-        colspanval.add(new ArrayList<Integer>(Arrays.asList(6, 2)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(4, 7)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(5, 7)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(6, 1)));
         colspanval.add(new ArrayList<Integer>(Arrays.asList(7, 2)));
-        colspanval.add(new ArrayList<Integer>(Arrays.asList(8, 1)));
-        colspanval.add(new ArrayList<Integer>(Arrays.asList(9, 2)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(8, 2)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(9, 1)));
         colspanval.add(new ArrayList<Integer>(Arrays.asList(10, 2)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(11, 2)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(12, 2)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(13, 1)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(14, 2)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(15, 2)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(16, 2)));
         pComponent.setColumnspan(colspanval);
         List<List<Integer>> colsBreak = new ArrayList<List<Integer>>();
-        // Example: colsBreak.add(new ArrayList<Integer>(Arrays.asList(4, 2)));
-//        colsBreak.add(new ArrayList<Integer>(Arrays.asList(5, 1)));
         colsBreak.add(new ArrayList<Integer>(Arrays.asList(4, 2)));
         colsBreak.add(new ArrayList<Integer>(Arrays.asList(5, 2)));
         colsBreak.add(new ArrayList<Integer>(Arrays.asList(7, 2)));
         colsBreak.add(new ArrayList<Integer>(Arrays.asList(8, 2)));
+        colsBreak.add(new ArrayList<Integer>(Arrays.asList(9, 2)));
+        colsBreak.add(new ArrayList<Integer>(Arrays.asList(11, 2)));
+        colsBreak.add(new ArrayList<Integer>(Arrays.asList(12, 2)));
+        colsBreak.add(new ArrayList<Integer>(Arrays.asList(13, 2)));
         pComponent.setColumnnumber(colsBreak);
-        pComponent.setColumnBreakCountNo(4);
+        pComponent.setColumnBreakCountNo(8); //v5
         List<List<String>> reportDataList = new ArrayList<List<String>>();
         List<DistrictLinkedAadhaarViewReport> districtAadhaarList = (List<DistrictLinkedAadhaarViewReport>) session.getAttribute("districtAadhaarData");
         List<LinkedAadharViewReport> grandTotal = (List<LinkedAadharViewReport>) session.getAttribute("stateAadhaarData");
@@ -539,7 +558,6 @@ public class PhysicalProgressReportDistrictLevelControllerPDF {
         if (districtAadhaarList != null && !districtAadhaarList.isEmpty()) {
             districtAadhaarList.forEach(map -> {
                 List<String> strings = new ArrayList<>();
-                    // Populate normal row data
                     strings.add(Integer.toString(indexHolder.incrementAndGet()));
                     strings.add(String.valueOf(map.getDistrictName() != null ? map.getDistrictName().toUpperCase() : "N/A"));
                     strings.add(String.valueOf(map.getTotalTehsils() != null ? map.getTotalTehsils() : "0"));
@@ -553,7 +571,8 @@ public class PhysicalProgressReportDistrictLevelControllerPDF {
                     strings.add(String.valueOf(map.getRorLinkedWithAadhaarPercent() != null ? map.getRorLinkedWithAadhaarPercent() : ".00"));
                     strings.add(String.valueOf(map.getRorLinkedWithMobileNumber() != null ? map.getRorLinkedWithMobileNumber() : "0"));
                     strings.add(String.valueOf(map.getRorLinkedWithMobileNumberPercent() != null ? map.getRorLinkedWithMobileNumberPercent() : "0.0"));
-
+                    AadhaarReportExportV5Util.appendAddressRowDistrict(strings, map); //v5
+                    AadhaarReportExportV5Util.appendLandOwnerRowDistrict(strings, map); //v5
                     reportDataList.add(strings);
             });
         }
@@ -575,7 +594,8 @@ public class PhysicalProgressReportDistrictLevelControllerPDF {
                 grandTotalList.add(gt.getRorLinkedWithAadhaarPercent() != null && gt.getRorLinkedWithAadhaarPercent().compareTo(BigDecimal.ZERO) != 0 ? String.valueOf(gt.getRorLinkedWithAadhaarPercent()) : "0.0");
                 grandTotalList.add(gt.getRorLinkedWithMobileNumber() != null ? String.valueOf(gt.getRorLinkedWithMobileNumber()) : "0");
                 grandTotalList.add(gt.getRorLinkedWithMobileNumberPercent() != null && gt.getRorLinkedWithMobileNumberPercent().compareTo(BigDecimal.ZERO) != 0 ? String.valueOf(gt.getRorLinkedWithMobileNumberPercent()) : "0.0");
-
+                AadhaarReportExportV5Util.appendAddressRowRaw(grandTotalList, gt); //v5
+                AadhaarReportExportV5Util.appendLandOwnerRowRaw(grandTotalList, gt); //v5
                 grandTotalData.add(grandTotalList);
             });
         }

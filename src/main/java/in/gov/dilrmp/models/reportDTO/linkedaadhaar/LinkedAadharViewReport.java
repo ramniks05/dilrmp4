@@ -80,4 +80,36 @@ public class LinkedAadharViewReport {
     @Column(name = "ror_linked_with_mobile_number_percent")
     private BigDecimal rorLinkedWithMobileNumberPercent;
 
+    //v5 Aadhaar: RoR Linked with Address
+    @Transient
+    private Integer rorLinkedWithAddress;
+    @Transient
+    private String formattingrorLinkedWithAddress;
+    @Transient
+    private BigDecimal rorLinkedWithAddressPercent;
+
+    //v5 Aadhaar: No. of Land owners block
+    @Transient
+    private Integer totalLandOwners;
+    @Transient
+    private String formattingTotalLandOwners;
+    @Transient
+    private Integer landOwnersLinkedWithAadhaar;
+    @Transient
+    private String formattingLandOwnersLinkedWithAadhaar;
+    @Transient
+    private BigDecimal landOwnersLinkedWithAadhaarPercent;
+    @Transient
+    private Integer landOwnersLinkedWithMobile;
+    @Transient
+    private String formattingLandOwnersLinkedWithMobile;
+    @Transient
+    private BigDecimal landOwnersLinkedWithMobilePercent;
+    @Transient
+    private Integer landOwnersLinkedWithAddress;
+    @Transient
+    private String formattingLandOwnersLinkedWithAddress;
+    @Transient
+    private BigDecimal landOwnersLinkedWithAddressPercent;
+
 }

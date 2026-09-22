@@ -27,6 +27,8 @@ public class StateMISDataEntryBackup {
     private Boolean onlineMutationFacility;
     private Boolean landRecordsOnlineFromRegistrationSystem;
     private Boolean autoTriggerMutation;
+    //v5: S.No. [11] Whether Auto-Mutation Facility Available
+    private Boolean autoMutationFacility;
     private Boolean eRCMSAvailable = false;
     private String eRCMSNameUrl;
     private Integer totalRevenueCourts;

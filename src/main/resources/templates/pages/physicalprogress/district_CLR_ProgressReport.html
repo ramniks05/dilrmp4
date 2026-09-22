@@ -67,7 +67,7 @@
                                         <th rowspan="2" th:text="${labels['districtName']}"></th>
                                         <th rowspan="2" th:text="${labels['totalTehsils']}"></th>
                                         <th rowspan="2" th:text="${labels['totalVillages']}"></th>
-                                        <th colspan="3" th:text="${labels['RoR']}"></th>
+                                        <th colspan="5" th:text="${labels['RoR']}"></th>
                                         <th colspan="2" th:text="${labels['numberOfVillagesWhererCLRCompleted']}"></th>
                                         <th rowspan="2" th:text="${labels['totalNoOfLandOwners']}"></th>
                                         <th colspan="4" th:text="${labels['availabilityOfGenderBasedLandOwnership']}">
@@ -81,6 +81,9 @@
                                             th:text="${labels['whetherMutationApplicationSubmittedOnline']}"></th>
                                         <th colspan="1"
                                             th:text="${labels['whetherAutoTriggeredMutationFacilityAvailable']}"></th>
+                                        <!-- //v5 after Auto-Triggered Mutation -->
+                                        <th colspan="1"
+                                            th:text="${labels['whetherAutoMutationFacilityAvailable']}"></th>
                                         <th colspan="1" th:text="${labels['whetherLandRecordsCheckedOnlineBySRO']}">
                                         </th>
                                         <th colspan="1"
@@ -90,8 +93,11 @@
                                         </th>
                                     </tr>
                                     <tr>
+                                        <!-- //v5 No. of RoR: Total, Computerized, %, with Cadastral Map, % -->
                                         <th th:text="${labels['total']}"></th>
                                         <th th:text="${labels['computerized']}"></th>
+                                        <th th:text="${labels['percentage']}"></th>
+                                        <th th:text="${labels['rorWithCadastralMap']}"></th>
                                         <th th:text="${labels['percentage']}"></th>
                                         <th th:text="${labels['number']}"></th>
                                         <th th:text="${labels['percentage']}"></th>
@@ -99,6 +105,7 @@
                                         <th th:text="${labels['male']}"></th>
                                         <th th:text="${labels['female']}"></th>
                                         <th th:text="${labels['total']}"></th>
+                                        <th th:text="${labels['yesNo']}"></th>
                                         <th th:text="${labels['yesNo']}"></th>
                                         <th th:text="${labels['yesNo']}"></th>
                                         <th th:text="${labels['yesNo']}"></th>
@@ -116,6 +123,8 @@
                                         <td style="text-align: center;">5a</td>
                                         <td style="text-align: center;">5b</td>
                                         <td style="text-align: center;">5c</td>
+                                        <td style="text-align: center;">5d</td>
+                                        <td style="text-align: center;">5e</td>
                                         <td style="text-align: center;">6a</td>
                                         <td style="text-align: center;">6b</td>
                                         <td style="text-align: center;">7</td>
@@ -131,6 +140,7 @@
                                         <td style="text-align: center;">14</td>
                                         <td style="text-align: center;">15</td>
                                         <td style="text-align: center;">16</td>
+                                        <td style="text-align: center;">17</td>
                                     </tr>
                                     </thead>
                                     <thead>
@@ -147,6 +157,10 @@
                                             style="font-weight: bold;"></td>
                                         <td th:text="${grandTotal.rorComputerizedPercent != null ? grandTotal.rorComputerizedPercent : 0.0}"
                                             style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.rorWithCadastralMap != null ? grandTotal.rorWithCadastralMap : 0}"
+                                            style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.rorWithCadastralMapPercent != null ? grandTotal.rorWithCadastralMapPercent : 0.0}"
+                                            style="font-weight: bold;"></td>
                                         <td th:text="${grandTotal.villagesClrCompleted != null ? grandTotal.villagesClrCompleted : 0}"
                                             style="font-weight: bold;"></td>
                                         <td th:text="${grandTotal.clrCompletionPercent != null ? grandTotal.clrCompletionPercent : 0.0}"
@@ -161,6 +175,7 @@
                                             style="font-weight: bold;"></td>
                                         <td th:text="${grandTotal.totalOwners != null ? grandTotal.totalOwners : 0}"
                                             style="font-weight: bold;"></td>
+                                        <td></td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
@@ -181,6 +196,8 @@
                                         <td th:text="${report.totalRor}"></td>
                                         <td th:text="${report.rorComputerized}"></td>
                                         <td th:text="${report.rorComputerizedPercent != null ? (report.rorComputerizedPercent != 0 ? report.rorComputerizedPercent : 0.0) : 0.0}"></td>
+                                        <td th:text="${report.rorWithCadastralMap != null ? report.rorWithCadastralMap : 0}"></td>
+                                        <td th:text="${report.rorWithCadastralMapPercent != null ? report.rorWithCadastralMapPercent : 0.0}"></td>
                                         <td th:text="${report.villagesClrCompleted}"></td>
                                         <td th:text="${report.clrCompletionPercent != null ? (report.clrCompletionPercent != 0 ? report.clrCompletionPercent : 0.0) : 0.0}"></td>
                                         <td th:text="${report.totalLandOwners}"></td>
@@ -193,6 +210,7 @@
                                         <td th:text="${report.digitallySignedRorLegallyValid != null && report.digitallySignedRorLegallyValid ? 'Yes' : 'No'}"></td>
                                         <td th:text="${report.onlineMutationFacility != null && report.onlineMutationFacility ? 'Yes' : 'No'}"></td>
                                         <td th:text="${report.autoTriggerMutation != null && report.autoTriggerMutation ? 'Yes' : 'No'}"></td>
+                                        <td th:text="${report.autoMutationFacility != null ? report.autoMutationFacility : 'No'}"></td>
                                         <td th:text="${report.landRecordsOnlineFromRegistrationSystem != null && report.landRecordsOnlineFromRegistrationSystem ? 'Yes' : 'No'}"></td>
                                         <td th:text="${report.revenueCourtProceedingsPaperless != null && report.revenueCourtProceedingsPaperless ? 'Yes' : 'No'}"></td>
                                         <td th:text="${report.caseFilingRedFlaggedInLandRecordsFromCivilCourts != null && report.caseFilingRedFlaggedInLandRecordsFromCivilCourts ? 'Yes' : 'No'}"></td>
@@ -212,6 +230,10 @@
                                             style="font-weight: bold;"></td>
                                         <td th:text="${grandTotal.rorComputerizedPercent != null ? grandTotal.rorComputerizedPercent : 0.0}"
                                             style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.rorWithCadastralMap != null ? grandTotal.rorWithCadastralMap : 0}"
+                                            style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.rorWithCadastralMapPercent != null ? grandTotal.rorWithCadastralMapPercent : 0.0}"
+                                            style="font-weight: bold;"></td>
                                         <td th:text="${grandTotal.villagesClrCompleted != null ? grandTotal.villagesClrCompleted : 0}"
                                             style="font-weight: bold;"></td>
                                         <td th:text="${grandTotal.clrCompletionPercent != null ? grandTotal.clrCompletionPercent : 0.0}"
@@ -226,6 +248,7 @@
                                             style="font-weight: bold;"></td>
                                         <td th:text="${grandTotal.totalOwners != null ? grandTotal.totalOwners : 0}"
                                             style="font-weight: bold;"></td>
+                                        <td></td>
                                         <td></td>
                                         <td></td>
                                         <td></td>

@@ -30,6 +30,8 @@ public class DistrictMISDataEntryBackup {
     private Integer villagesComputerizationCompleted;
     private Integer totalRoR;
     private Integer rorComputerized;
+    //v5 CLR: S.No. [6.1] Number of RoR with Cadastral Map
+    private Integer rorWithCadastralMap;
     private Integer totalLandOwners;
     private Boolean genderBasedLandOwnership;
     private Integer totalMaleLandOwners;
@@ -57,6 +59,9 @@ public class DistrictMISDataEntryBackup {
     private Integer georeferencedLandParcels;
     private Integer villagesWithULIPN;
     private Integer landParcelsWithULIPN;
+
+    //v5 Map Digitization: S.No. [11.1] Total Damaged/Missing Maps (Cadastral; validated vs [11] only)
+    private Integer totalDamagedMissingMaps;
 
     //Component 3: Computerization of Registration (SRO)
     private Integer totalSRO;
@@ -91,6 +96,11 @@ public class DistrictMISDataEntryBackup {
     private Integer landOwnersAadhar;
     private Integer rorLinkedWithAadhaar;
     private Integer rorLinkedWithMobileNumber;
+    //v5 Aadhaar: S.No. [43] Number of RoR linked with Address
+    private Integer rorLinkedWithAddress;
+    //v5 Aadhaar: Land owners [45]-[46]
+    private Integer landOwnersLinkedWithMobile;
+    private Integer landOwnersLinkedWithAddress;
     // Additional fieldsa
     private LocalDateTime updateOnDate;
     @ManyToOne

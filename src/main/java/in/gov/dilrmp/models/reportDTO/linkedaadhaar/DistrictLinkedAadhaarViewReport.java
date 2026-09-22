@@ -62,4 +62,26 @@ public class DistrictLinkedAadhaarViewReport {
 
     @Column(name = "ror_linked_with_mobile_number_percent")
     private Double rorLinkedWithMobileNumberPercent;
+
+    //v5 Aadhaar: RoR Linked with Address
+    @jakarta.persistence.Transient
+    private Integer rorLinkedWithAddress;
+    @jakarta.persistence.Transient
+    private Double rorLinkedWithAddressPercent;
+
+    //v5 Aadhaar: No. of Land owners block
+    @jakarta.persistence.Transient
+    private Integer totalLandOwners;
+    @jakarta.persistence.Transient
+    private Integer landOwnersLinkedWithAadhaar;
+    @jakarta.persistence.Transient
+    private Double landOwnersLinkedWithAadhaarPercent;
+    @jakarta.persistence.Transient
+    private Integer landOwnersLinkedWithMobile;
+    @jakarta.persistence.Transient
+    private Double landOwnersLinkedWithMobilePercent;
+    @jakarta.persistence.Transient
+    private Integer landOwnersLinkedWithAddress;
+    @jakarta.persistence.Transient
+    private Double landOwnersLinkedWithAddressPercent;
 }

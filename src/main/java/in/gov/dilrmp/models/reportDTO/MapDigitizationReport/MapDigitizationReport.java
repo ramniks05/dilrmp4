@@ -42,6 +42,19 @@ public class MapDigitizationReport {
     @Transient
     private String formattingdigitizedCadastralMaps;
 
+    //v5 Cadastral Maps report (S.No. [11.1], good condition, display formatting)
+    @Transient
+    private Integer totalDamagedMissingMaps;
+    @Transient
+    private String formattingTotalDamagedMissingMaps;
+    @Transient
+    private Integer mapsInGoodCondition;
+    @Transient
+    private String formattingMapsInGoodCondition;
+    //v5 Digitized % vs maps in good condition (denominator [11]-[11.1]); total-based % uses digitizedCadastralMapsPercent
+    @Transient
+    private Double digitizedCadastralMapsPercentGoodCondition;
+
 
     private Integer totalFmbs;
     @Transient

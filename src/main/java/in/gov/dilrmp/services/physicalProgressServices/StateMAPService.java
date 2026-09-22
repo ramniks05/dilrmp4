@@ -31,6 +31,10 @@ public class StateMAPService {
         labels.put("noOfCadastralMapsFmBsTippans", ReportLabels.NO_OF_CADASTRAL_MAPS_FMBS_TIPPANS);
         labels.put("cadastralMapsFmBsTippans", ReportLabels.CADASTRAL_MAPS_FMBS_TIPPANS);
         labels.put("cadastralMaps", ReportLabels.CADASTRAL_MAPS);
+        labels.put("totalDamagedMissingMaps", ReportLabels.TOTAL_DAMAGED_MISSING_MAPS); //v5
+        labels.put("mapsInGoodCondition", ReportLabels.MAP_IN_GOOD_CONDITION); //v5
+        labels.put("digitizedPercentOfTotalCadastralMaps", ReportLabels.DIGITIZED_PERCENT_OF_TOTAL_CADASTRAL_MAPS); //v5
+        labels.put("digitizedPercentOfGoodConditionMaps", ReportLabels.DIGITIZED_PERCENT_OF_GOOD_CONDITION_MAPS); //v5
         labels.put("fmbs", ReportLabels.FMBs);
         labels.put("tippans", ReportLabels.TIPPANS);
         labels.put("total", ReportLabels.TOTAL);

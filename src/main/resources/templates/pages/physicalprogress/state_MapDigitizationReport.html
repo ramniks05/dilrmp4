@@ -408,14 +408,14 @@
                                     <th rowspan="3" th:text="${labels['stateUT']}"></th>
                                     <th rowspan="3" th:text="${labels['totalDistricts']}"></th>
                                     <th rowspan="3" th:text="${labels['totalTehsil']}"></th>
-                                    <th colspan="9" th:text="${labels['noOfCadastralMapsFmBsTippans']}"></th>
+                                    <th colspan="12" th:text="${labels['noOfCadastralMapsFmBsTippans']}"></th>
                                     <th colspan="5" th:text="${labels['cadastralMapsFmBsTippans']}"></th>
                                     <th colspan="7" th:text="${labels['numberOfVillages']}"></th>
                                     <th colspan="5" th:text="${labels['noOfLandParcels']}"></th>
                                     <th rowspan="2" th:text="${labels['noOfDistrictWhereCadastalMAPfmbTippanpdatedShowingCurrentOwnership']}"></th>
                                 </tr>
                                 <tr>
-                                    <th colspan="3" th:text="${labels['cadastralMaps']}"></th>
+                                    <th colspan="6" th:text="${labels['cadastralMaps']}"></th>
                                     <th colspan="3" th:text="${labels['fmbs']}"></th>
                                     <th colspan="3" th:text="${labels['tippans']}"></th>
                                     <th th:text="${labels['total']}"></th>
@@ -431,9 +431,13 @@
                                     <th colspan="2" th:text="${labels['ulpinAssigned']}"></th>
                                 </tr>
                                 <tr>
+                                    <!-- //v5 Cadastral Maps: Total, Damaged/Missing, Good Condition, Digitized, two % columns -->
                                     <th th:text="${labels['total']}"></th>
+                                    <th th:text="${labels['totalDamagedMissingMaps']}"></th>
+                                    <th th:text="${labels['mapsInGoodCondition']}"></th>
                                     <th th:text="${labels['digitized']}"></th>
-                                    <th th:text="${labels['percentage']}"></th>
+                                    <th th:text="${labels['digitizedPercentOfTotalCadastralMaps']}"></th>
+                                    <th th:text="${labels['digitizedPercentOfGoodConditionMaps']}"></th>
                                     <th th:text="${labels['total']}"></th>
                                     <th th:text="${labels['digitized']}"></th>
                                     <th th:text="${labels['percentage']}"></th>
@@ -467,6 +471,9 @@
                                     <td style="text-align: center;">5a</td>
                                     <td style="text-align: center;">5b</td>
                                     <td style="text-align: center;">5c</td>
+                                    <td style="text-align: center;">5d</td>
+                                    <td style="text-align: center;">5e</td>
+                                    <td style="text-align: center;">5f</td>
                                     <td style="text-align: center;">6a</td>
                                     <td style="text-align: center;">6b</td>
                                     <td style="text-align: center;">6c</td>
@@ -502,8 +509,11 @@
                                     <td th:text="${data.formattingTotalTehsils}" style="font-weight: bold;"></td>
 
                                     <td th:text="${data.formattingtotalCadastralMaps}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.formattingTotalDamagedMissingMaps}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.formattingMapsInGoodCondition}" style="font-weight: bold;"></td>
                                     <td th:text="${data.formattingdigitizedCadastralMaps}" style="font-weight: bold;"></td>
                                     <td th:text="${data.digitizedCadastralMapsPercent}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.digitizedCadastralMapsPercentGoodCondition}" style="font-weight: bold;"></td>
 
                                     <td th:text="${data.formattingtotalFmbs}" style="font-weight: bold;"></td>
                                     <td th:text="${data.formattingdigitizedFmbs}" style="font-weight: bold;"></td>
@@ -549,8 +559,11 @@
                                     <td th:text="${data.formattingTotalTehsils}"></td>
 
                                     <td th:text="${data.formattingtotalCadastralMaps}"></td>
+                                    <td th:text="${data.formattingTotalDamagedMissingMaps}"></td>
+                                    <td th:text="${data.formattingMapsInGoodCondition}"></td>
                                     <td th:text="${data.formattingdigitizedCadastralMaps}"></td>
                                     <td th:text="${data.digitizedCadastralMapsPercent}"></td>
+                                    <td th:text="${data.digitizedCadastralMapsPercentGoodCondition}"></td>
 
                                     <td th:text="${data.formattingtotalFmbs}"></td>
                                     <td th:text="${data.formattingdigitizedFmbs}"></td>
@@ -593,8 +606,11 @@
                                     <td th:text="${data.formattingTotalTehsils}" style="font-weight: bold;"></td>
 
                                     <td th:text="${data.formattingtotalCadastralMaps}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.formattingTotalDamagedMissingMaps}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.formattingMapsInGoodCondition}" style="font-weight: bold;"></td>
                                     <td th:text="${data.formattingdigitizedCadastralMaps}" style="font-weight: bold;"></td>
                                     <td th:text="${data.digitizedCadastralMapsPercent}" style="font-weight: bold;"></td>
+                                    <td th:text="${data.digitizedCadastralMapsPercentGoodCondition}" style="font-weight: bold;"></td>
 
                                     <td th:text="${data.formattingtotalFmbs}" style="font-weight: bold;"></td>
                                     <td th:text="${data.formattingdigitizedFmbs}" style="font-weight: bold;"></td>

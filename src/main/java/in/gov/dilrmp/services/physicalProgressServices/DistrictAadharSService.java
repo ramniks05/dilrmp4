@@ -4,6 +4,7 @@ import in.gov.dilrmp.models.reportDTO.linkedaadhaar.DistrictLinkedAadhaarViewRep
 import in.gov.dilrmp.models.reportDTO.linkedaadhaar.LinkedAadharViewReport;
 import in.gov.dilrmp.repositories.physicalProgressRepositories.DistrictAadhaarLinkingRepository;
 import in.gov.dilrmp.repositories.physicalProgressRepositories.LinkedAadhaarReportRepository;
+import in.gov.dilrmp.utils.AadhaarReportV5Enricher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,18 +19,22 @@ public class DistrictAadharSService {
     DistrictAadhaarLinkingRepository districtAadhaarLinkingRepository;
     @Autowired
     LinkedAadhaarReportRepository linkedAadhaarReportRepository;
+    @Autowired
+    AadhaarReportV5Enricher aadhaarReportV5Enricher;
 
     private Logger logger = LoggerFactory.getLogger(StateRCMSService.class);
 
 
     public List<DistrictLinkedAadhaarViewReport> getDistrictListByStateId(Long stateId){
-
-        return districtAadhaarLinkingRepository.findAllByStateId(stateId);
+        List<DistrictLinkedAadhaarViewReport> reports = districtAadhaarLinkingRepository.findAllByStateId(stateId);
+        aadhaarReportV5Enricher.enrichDistrictReports(reports, stateId);
+        return reports;
     }
 
     public List<LinkedAadharViewReport> getStateListByStateList(Long stateId){
-
-        return linkedAadhaarReportRepository.findAllAadhaarByStateId(stateId);
+        List<LinkedAadharViewReport> reports = linkedAadhaarReportRepository.findAllAadhaarByStateId(stateId);
+        aadhaarReportV5Enricher.enrichStateReportListForDistrictPage(reports, stateId);
+        return reports;
     }
 
 }

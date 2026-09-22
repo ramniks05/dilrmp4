@@ -95,9 +95,8 @@ function fillColorOnMap(j) {
 
 function statemap(cat, xmin, ymin, xmax, ymax) {
     var serviceUrl = 'https://mapservice.gov.in/gismapservice/rest/services/BharatMapService/Admin_Boundary_Village/MapServer';
-    var serviceUrlToken = '?Token=vjy7e0tKr_2n_-Etb0dkbPk-CzVfD-zWGgnmkaMXPVDDwY6P1WV6RsBvv94w3TGElGUBj1zH3CkS5xvlYF2AEg..';
-
-   // var serviceUrlToken = '?Token=AYoPi0yUpPCJsWAW5QDg0G6c0ZjH0nsJC_OIdBDIrZ-MT1nDB8SXhGmhjcKXeYnw';
+    var serviceUrlToken = '?Token=n1OHCwv4orL1CquVESNMXRMgb2oQXq6sh8DPlD7YCc9MhZUwsNNK7dwFt7VKAK3H';
+   // var serviceUrlToken = '?Token=vjy7e0tKr_2n_-Etb0dkbPk-CzVfD-zWGgnmkaMXPVDDwY6P1WV6RsBvv94w3TGElGUBj1zH3CkS5xvlYF2AEg..';
 
 
 

@@ -25,6 +25,16 @@ public class DistrictMapDigitizationReport {
     private Integer totalTehsils;
     private Integer totalCadastralMaps;
     private Integer digitizedCadastralMaps;
+
+    //v5 Cadastral Maps report (S.No. [11.1], good condition — computed at read time)
+    @Transient
+    private Integer totalDamagedMissingMaps;
+    @Transient
+    private Integer mapsInGoodCondition;
+    //v5 Digitized % vs maps in good condition
+    @Transient
+    private Double digitizedCadastralMapsPercentGoodCondition;
+
     private Integer totalFmbs;
     private Integer digitizedFmbs;
     private Integer totalTippans;

@@ -5,6 +5,7 @@ import in.gov.dilrmp.models.reportDTO.clr.StateClrReportView;
 import in.gov.dilrmp.models.reportDTO.mrr.MrrViewReport;
 import in.gov.dilrmp.repositories.physicalProgressRepositories.MapDigitizationReportRepository;
 import in.gov.dilrmp.utils.DateUtils;
+import in.gov.dilrmp.utils.MapDigitizationReportV5Enricher;
 import in.gov.dilrmp.utils.NumberFormatterUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -22,6 +23,8 @@ import org.slf4j.LoggerFactory;
 public class MapDigitizationReportService {
     @Autowired
     MapDigitizationReportRepository reportRepository;
+    @Autowired
+    MapDigitizationReportV5Enricher mapDigitizationReportV5Enricher;
     private static final Logger logger = LoggerFactory.getLogger(MapDigitizationReportService.class);
 
     public List<MapDigitizationReport> getAllMapDigitizationReport(){
@@ -66,6 +69,7 @@ public class MapDigitizationReportService {
                 })
                 .collect(Collectors.toList());
 
+        mapDigitizationReportV5Enricher.enrichStateReports(mapDigitizationReports);
         return mapDigitizationReports;
     }
 
@@ -125,6 +129,7 @@ public class MapDigitizationReportService {
                     return mapL;
                 })
                 .collect(Collectors.toList());
+        mapDigitizationReportV5Enricher.enrichStateReports(mapList);
         return mapList;
     }
 
@@ -190,7 +195,7 @@ public class MapDigitizationReportService {
         if ("DESC".equals(ascDesc)) {
             comparator = comparator.reversed();
         }
-        return   mapDigitizationReports.stream()
+        List<MapDigitizationReport> sortedReports = mapDigitizationReports.stream()
                 .filter(mapL -> !mapL.getLgdCode().equals(999))
                 .map(mapL -> {
                     mapL.setFormattingTotalDistrict(NumberFormatterUtil.formatWithCommas(mapL.getTotalDistrict()));
@@ -218,6 +223,8 @@ public class MapDigitizationReportService {
                 })
                 .sorted(comparator)
                 .collect(Collectors.toList());
+        mapDigitizationReportV5Enricher.enrichStateReports(sortedReports);
+        return sortedReports;
     }
 
 

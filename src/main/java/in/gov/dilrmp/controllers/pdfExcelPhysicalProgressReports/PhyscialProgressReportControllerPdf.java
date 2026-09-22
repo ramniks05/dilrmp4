@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import in.gov.dilrmp.component.PdfExporterComponent;
 import in.gov.dilrmp.constants.ReportLabels;
+import in.gov.dilrmp.utils.AadhaarReportExportV5Util;
+import in.gov.dilrmp.utils.MapDigitizationReportExportV5Util;
 import in.gov.dilrmp.utils.PdfExporter;
 
 @Controller
@@ -60,19 +62,21 @@ public void getCLRNEWPdf(HttpServletResponse response, HttpSession session) {
     String head[] = {ReportLabels.CLR_REPORT};
     pComponent.setReportHeading(head);
     pComponent.setReportName(ReportLabels.CLR_REPORT);
-    float col_width[] = {45f, 90f, 50f, 50f, 50f, 50f, 90f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f};
+    //v5: +2 RoR leaf cols +1 Auto-Mutation Facility col
+    float col_width[] = {45f, 90f, 50f, 50f, 50f, 50f, 90f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f};
     pComponent.setCol_width(col_width);
     String col_head[] = {ReportLabels.SERIAL_NUMBER, ReportLabels.STATE_UT, ReportLabels.TOTAL_DISTRICTS, ReportLabels.TOTAL_TEHSILS,
             ReportLabels.TOTAL_VILLAGES, ReportLabels.RoR, ReportLabels.NUMBER_OF_VILLAGES_WHERE_CLR_COMPLETED,
             ReportLabels.TOTAL_NO_OF_LAND_OWNERS, ReportLabels.AVAILABILITY_OF_GENDER_BASED_LAND_OWNERSHIP,
             ReportLabels.WHETHER_ROR_AVAILABLE_ONLINE,ReportLabels.WHETHER_DIGITALLY_SIGNED_ROR_AVAILABLE_ONLINE,
             ReportLabels.WHETHER_DIGITALLY_SIGNED_ROR_LEGALLY_VALID_IN_STATE,ReportLabels.WHETHER_MUTATION_APPLICATION_SUBMITTED_ONLINE,
-            ReportLabels.WHETHER_AUTO_TRIGGERED_MUTATION_FACILITY_AVAILABLE,ReportLabels.WHETHER_BANKS_AUTHORIZED_TO_CREATE_CLEAR_MORTGAGE_CHARGE_IN_ROR,
+            ReportLabels.WHETHER_AUTO_TRIGGERED_MUTATION_FACILITY_AVAILABLE,ReportLabels.WHETHER_AUTO_MUTATION_FACILITY_AVAILABLE,ReportLabels.WHETHER_BANKS_AUTHORIZED_TO_CREATE_CLEAR_MORTGAGE_CHARGE_IN_ROR,
             ReportLabels.WHETHER_LAND_RECORDS_BE_CHECKED_ONLINE_BY_SRO,ReportLabels.WHETHER_LAND_RECORDS_BE_CHECKED_ONLINE_BY_REVENUE_COURTS,
             ReportLabels.WHETHER_LAND_RECORDS_BE_CHECKED_ONLINE_BY_CIVIL_COURTS_THROUGH_E_COURTS_SYSTEM,
-            ReportLabels.TOTAL,ReportLabels.COMPUTERIZED,ReportLabels.PERCENTAGE,ReportLabels.NO,ReportLabels.PERCENTAGE,
+            //v5 RoR leaf: Total, Computerized, %, with Cadastral Map, %
+            ReportLabels.TOTAL,ReportLabels.COMPUTERIZED,ReportLabels.PERCENTAGE,ReportLabels.ROR_WITH_CADASTRAL_MAP,ReportLabels.PERCENTAGE,ReportLabels.NO,ReportLabels.PERCENTAGE,
             ReportLabels.NUMBER_OF_DISTRICTS_WHERE_AVAILABLE,ReportLabels.MALE,ReportLabels.FEMALE,ReportLabels.TOTAL,ReportLabels.YES_NO,
-            ReportLabels.YES_NO,ReportLabels.YES_NO,ReportLabels.YES_NO,ReportLabels.YES_NO,ReportLabels.YES_NO,
+            ReportLabels.YES_NO,ReportLabels.YES_NO,ReportLabels.YES_NO,ReportLabels.YES_NO,ReportLabels.YES_NO,ReportLabels.YES_NO,
             ReportLabels.NUMBER_OF_DISTRICTS_AUTHORIZED,ReportLabels.NUMBER_OF_BANK_BRANCHES_AUTHORIZED,ReportLabels.YES_NO,ReportLabels.YES_NO,
             ReportLabels.YES_NO
     };
@@ -81,7 +85,7 @@ public void getCLRNEWPdf(HttpServletResponse response, HttpSession session) {
     Integer[] rwspn3col = {};
     Integer[] rwspn4col = {};
     Integer[] rwspn5col = {};
-    Integer[] simplecell = {18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,31,32,33,34,35,36};
+    Integer[] simplecell = {19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40};
     pComponent.setRowspn5(rwspn5col);
     pComponent.setRowspn4(rwspn4col);
     pComponent.setRowspn3(rwspn3col);
@@ -89,7 +93,7 @@ public void getCLRNEWPdf(HttpServletResponse response, HttpSession session) {
     pComponent.setRowspan1(simplecell);
     List<List<Integer>> colspanval = new ArrayList<List<Integer>>();
     // Example: colspanval.add(new ArrayList<Integer>(Arrays.asList(2, 4)));
-    colspanval.add(new ArrayList<Integer>(Arrays.asList(5, 3)));
+    colspanval.add(new ArrayList<Integer>(Arrays.asList(5, 5))); //v5 RoR 3->5
     colspanval.add(new ArrayList<Integer>(Arrays.asList(6, 2)));
     colspanval.add(new ArrayList<Integer>(Arrays.asList(8, 4)));
     colspanval.add(new ArrayList<Integer>(Arrays.asList(9, 1)));
@@ -97,19 +101,20 @@ public void getCLRNEWPdf(HttpServletResponse response, HttpSession session) {
     colspanval.add(new ArrayList<Integer>(Arrays.asList(11, 1)));
     colspanval.add(new ArrayList<Integer>(Arrays.asList(12, 1)));
     colspanval.add(new ArrayList<Integer>(Arrays.asList(13, 1)));
-    colspanval.add(new ArrayList<Integer>(Arrays.asList(14, 3)));
-    colspanval.add(new ArrayList<Integer>(Arrays.asList(15, 1)));
+    colspanval.add(new ArrayList<Integer>(Arrays.asList(14, 1))); //v5 Auto-Mutation Facility
+    colspanval.add(new ArrayList<Integer>(Arrays.asList(15, 3)));
     colspanval.add(new ArrayList<Integer>(Arrays.asList(16, 1)));
     colspanval.add(new ArrayList<Integer>(Arrays.asList(17, 1)));
+    colspanval.add(new ArrayList<Integer>(Arrays.asList(18, 1)));
     pComponent.setColumnspan(colspanval);
     List<List<Integer>> colsBreak = new ArrayList<List<Integer>>();
     // Example: colsBreak.add(new ArrayList<Integer>(Arrays.asList(4, 2)));
-    colsBreak.add(new ArrayList<Integer>(Arrays.asList(5, 3)));
+    colsBreak.add(new ArrayList<Integer>(Arrays.asList(5, 5))); //v5 RoR leaf 3->5
     colsBreak.add(new ArrayList<Integer>(Arrays.asList(6, 2)));
     colsBreak.add(new ArrayList<Integer>(Arrays.asList(8, 4)));
-    colsBreak.add(new ArrayList<Integer>(Arrays.asList(14, 3)));
+    colsBreak.add(new ArrayList<Integer>(Arrays.asList(15, 3))); //v5 banks shifted after Auto-Mutation
     pComponent.setColumnnumber(colsBreak);
-    pComponent.setColumnBreakCountNo(8);
+    pComponent.setColumnBreakCountNo(10); //v5: first-level 19, data cols 29 → 29-19=10
     List<StateClrReportView> clrList = (List<StateClrReportView>) session.getAttribute("stateClrList");
     List<StateClrReportView> grandTotal = (List<StateClrReportView>) session.getAttribute("clrGrandTotal");
     List<List<String>> reportDataList = new ArrayList<>();
@@ -127,6 +132,9 @@ public void getCLRNEWPdf(HttpServletResponse response, HttpSession session) {
                 strings.add(map.getFormattingTotalRor() != null ? map.getFormattingTotalRor().toString() : "0");
                 strings.add(map.getFormattingRorComputerized() != null ? map.getFormattingRorComputerized().toString() : "0");
                 strings.add(map.getRorComputerizedPercent() != null && map.getRorComputerizedPercent().compareTo(BigDecimal.ZERO) != 0 ? map.getRorComputerizedPercent().toString() : "0.0");
+                //v5
+                strings.add(map.getFormattingRorWithCadastralMap() != null ? map.getFormattingRorWithCadastralMap() : "0");
+                strings.add(map.getRorWithCadastralMapPercent() != null && map.getRorWithCadastralMapPercent().compareTo(BigDecimal.ZERO) != 0 ? map.getRorWithCadastralMapPercent().toString() : "0.0");
                 strings.add(map.getFormattingvillagesClrCompleted() != null ? map.getFormattingvillagesClrCompleted().toString() : "0");
                 strings.add(map.getClrCompletionPercent() != null && map.getClrCompletionPercent().compareTo(BigDecimal.ZERO) != 0 ? map.getClrCompletionPercent().toString() : "0.0");
                 strings.add(map.getFormattingTotalLandOwners() != null ? map.getFormattingTotalLandOwners().toString() : "0");
@@ -140,6 +148,8 @@ public void getCLRNEWPdf(HttpServletResponse response, HttpSession session) {
                 strings.add(map.getDigitallySignedRorLegallyValid() != null ? map.getDigitallySignedRorLegallyValid() : "NO");
                 strings.add(map.getOnlineMutationFacility() != null ? map.getOnlineMutationFacility() : "NO");
                 strings.add(map.getAutoTriggerMutation() != null ? map.getAutoTriggerMutation() : "NO");
+                //v5
+                strings.add(map.getAutoMutationFacility() != null ? map.getAutoMutationFacility() : "NO");
                 strings.add(map.getBankRedFlagMortgageInLandRecords() != null ? map.getBankRedFlagMortgageInLandRecords() : "NO");
                 strings.add(map.getFormattingDistrictsWithBankRedFlagMortgage() != null ? map.getFormattingDistrictsWithBankRedFlagMortgage().toString() : "0");
                 strings.add(map.getFormattingBankBranchesWithRedFlagMortgage() != null ? map.getFormattingBankBranchesWithRedFlagMortgage().toString() : "0");
@@ -162,6 +172,9 @@ public void getCLRNEWPdf(HttpServletResponse response, HttpSession session) {
             grandTotalList.add(gt.getFormattingTotalRor() != null ? gt.getFormattingTotalRor() : "0");
             grandTotalList.add(gt.getFormattingRorComputerized() != null ? gt.getFormattingRorComputerized() : "0");
             grandTotalList.add(gt.getRorComputerizedPercent() != null && gt.getRorComputerizedPercent().compareTo(BigDecimal.ZERO) != 0 ? String.valueOf(gt.getRorComputerizedPercent()) : "0.0");
+            //v5
+            grandTotalList.add(gt.getFormattingRorWithCadastralMap() != null ? gt.getFormattingRorWithCadastralMap() : "0");
+            grandTotalList.add(gt.getRorWithCadastralMapPercent() != null && gt.getRorWithCadastralMapPercent().compareTo(BigDecimal.ZERO) != 0 ? String.valueOf(gt.getRorWithCadastralMapPercent()) : "0.0");
             grandTotalList.add(gt.getFormattingvillagesClrCompleted() != null ? gt.getFormattingvillagesClrCompleted() : "0");
             grandTotalList.add(gt.getClrCompletionPercent() != null && gt.getClrCompletionPercent().compareTo(BigDecimal.ZERO) != 0 ? String.valueOf(gt.getClrCompletionPercent()) : "0.0");
             grandTotalList.add(gt.getFormattingTotalLandOwners() != null ? gt.getFormattingTotalLandOwners() : "0");
@@ -174,6 +187,8 @@ public void getCLRNEWPdf(HttpServletResponse response, HttpSession session) {
             grandTotalList.add(gt.getDigitallySignedRorLegallyValid() != null ? gt.getDigitallySignedRorLegallyValid() : "0");
             grandTotalList.add(gt.getOnlineMutationFacility() != null ? gt.getOnlineMutationFacility() : "0");
             grandTotalList.add(gt.getAutoTriggerMutation() != null ? gt.getAutoTriggerMutation() : "0");
+            //v5
+            grandTotalList.add(gt.getAutoMutationFacility() != null ? gt.getAutoMutationFacility() : "0");
             grandTotalList.add(gt.getBankRedFlagMortgageInLandRecords() != null ? gt.getBankRedFlagMortgageInLandRecords() : "0");
             grandTotalList.add(gt.getFormattingDistrictsWithBankRedFlagMortgage() != null ? gt.getFormattingDistrictsWithBankRedFlagMortgage() : "0");
             grandTotalList.add(gt.getFormattingBankBranchesWithRedFlagMortgage() != null ? gt.getFormattingBankBranchesWithRedFlagMortgage() : "0");
@@ -195,31 +210,33 @@ public void getCLRNEWPdf(HttpServletResponse response, HttpSession session) {
         String head[] = {ReportLabels.MAP_DIGITIZATION_REPORT};
         pComponent.setReportHeading(head);
         pComponent.setReportName(ReportLabels.MAP_DIGITIZATION_REPORT);
-        float col_width[] = {30f, 90f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f,40f,40f, 40f, 50f, 50f, 50f, 40f, 50f, 40f, 40f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 90f};
+        //v5: +3 cadastral columns (damaged/missing, good condition, second %)
+        float col_width[] = {30f, 90f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 40f, 40f, 40f, 50f, 50f, 50f, 40f, 50f, 40f, 40f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 90f};
         pComponent.setCol_width(col_width);
         String col_head[] = {ReportLabels.SERIAL_NUMBER, ReportLabels.TOTAL_STATE_UT, ReportLabels.TOTAL_DISTRICTS, ReportLabels.TOTAL_TEHSILS, ReportLabels.NO_OF_CADASTRAL_MAPS_FMBS_TIPPANS, ReportLabels.CADASTRAL_MAPS_FMBS_TIPPANS
-                , ReportLabels.NUMBER_OF_VILLAGES, ReportLabels.NO_OF_LAND_PARCELS,ReportLabels.NUMBER_OF_DISTRICT_WHERE_CADMAP_FMB_TIPPAN_SHOWING_CURRENT_OWNERSHIP,
+                , ReportLabels.NUMBER_OF_VILLAGES, ReportLabels.NO_OF_LAND_PARCELS, ReportLabels.NUMBER_OF_DISTRICT_WHERE_CADMAP_FMB_TIPPAN_SHOWING_CURRENT_OWNERSHIP,
                 ReportLabels.CADASTRAL_MAPS, ReportLabels.FMBs, ReportLabels.TIPPANS, ReportLabels.TOTAL, ReportLabels.DIGITIZED, ReportLabels.GEO_REFERENCED, ReportLabels.TOTAL, ReportLabels.CADASTRAL_MAPS_FMBS_TIPPANS_LINKED_TO_ROR, ReportLabels.CADASTRAL_MAPS_FMBS_TIPPANS_GEO_REFERENCED, ReportLabels.ULPIN_ASSIGNED, ReportLabels.TOTAL, ReportLabels.GEO_REFERENCED, ReportLabels.ULPIN_ASSIGNED,
-                ReportLabels.TOTAL, ReportLabels.DIGITIZED, ReportLabels.PERCENTAGE, ReportLabels.TOTAL, ReportLabels.DIGITIZED, ReportLabels.PERCENTAGE, ReportLabels.TOTAL, ReportLabels.DIGITIZED, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO,ReportLabels.PERCENTAGE,ReportLabels.NO};
+                //v5 leaf headers for Cadastral Maps
+                ReportLabels.TOTAL, ReportLabels.TOTAL_DAMAGED_MISSING_MAPS, ReportLabels.MAP_IN_GOOD_CONDITION, ReportLabels.DIGITIZED, ReportLabels.DIGITIZED_PERCENT_OF_TOTAL_CADASTRAL_MAPS, ReportLabels.DIGITIZED_PERCENT_OF_GOOD_CONDITION_MAPS,
+                ReportLabels.TOTAL, ReportLabels.DIGITIZED, ReportLabels.PERCENTAGE, ReportLabels.TOTAL, ReportLabels.DIGITIZED, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO};
         pComponent.setCol_head(col_head);
         Integer[] rwspn2col = {8};
         Integer[] rwspn3col = {0, 1, 2, 3};
         Integer[] rwspn4col = {};
         Integer[] rwspn5col = {};
-        Integer[] simplecell = {22,23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46,47,48,49};
+        Integer[] simplecell = {22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52};
         pComponent.setRowspn5(rwspn5col);
         pComponent.setRowspn4(rwspn4col);
         pComponent.setRowspn3(rwspn3col);
         pComponent.setRowspn2(rwspn2col);
         pComponent.setRowspan1(simplecell);
         List<List<Integer>> colspanval = new ArrayList<List<Integer>>();
-        // Example: colspanval.add(new ArrayList<Integer>(Arrays.asList(2, 4)));
-        colspanval.add(new ArrayList<Integer>(Arrays.asList(4, 9)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(4, 12))); //v5 NO_OF_CADASTRAL 9->12
         colspanval.add(new ArrayList<Integer>(Arrays.asList(5, 5)));
         colspanval.add(new ArrayList<Integer>(Arrays.asList(6, 7)));
         colspanval.add(new ArrayList<Integer>(Arrays.asList(7, 5)));
         colspanval.add(new ArrayList<Integer>(Arrays.asList(8, 1)));
-        colspanval.add(new ArrayList<Integer>(Arrays.asList(9, 3)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(9, 6))); //v5 Cadastral Maps 3->6
         colspanval.add(new ArrayList<Integer>(Arrays.asList(10, 3)));
         colspanval.add(new ArrayList<Integer>(Arrays.asList(11, 3)));
         colspanval.add(new ArrayList<Integer>(Arrays.asList(12, 1)));
@@ -234,8 +251,7 @@ public void getCLRNEWPdf(HttpServletResponse response, HttpSession session) {
         colspanval.add(new ArrayList<Integer>(Arrays.asList(21, 2)));
         pComponent.setColumnspan(colspanval);
         List<List<Integer>> colsBreak = new ArrayList<List<Integer>>();
-        // Example: colsBreak.add(new ArrayList<Integer>(Arrays.asList(4, 2)));
-        colsBreak.add(new ArrayList<Integer>(Arrays.asList(4, 3)));
+        colsBreak.add(new ArrayList<Integer>(Arrays.asList(4, 6))); //v5 cadastral leaf 3->6
         colsBreak.add(new ArrayList<Integer>(Arrays.asList(5, 3)));
         colsBreak.add(new ArrayList<Integer>(Arrays.asList(6, 3)));
         colsBreak.add(new ArrayList<Integer>(Arrays.asList(8, 2)));
@@ -246,7 +262,7 @@ public void getCLRNEWPdf(HttpServletResponse response, HttpSession session) {
         colsBreak.add(new ArrayList<Integer>(Arrays.asList(15, 2)));
         colsBreak.add(new ArrayList<Integer>(Arrays.asList(16, 2)));
         pComponent.setColumnnumber(colsBreak);
-        pComponent.setColumnBreakCountNo(13);
+        pComponent.setColumnBreakCountNo(16); //v5: was 13; +3 extras for 6 cadastral leaf cols
         List<List<String>> reportDataList = new ArrayList<List<String>>();
         List<MapDigitizationReport> mapList = (List<MapDigitizationReport>) session.getAttribute("reportData");
         List<MapDigitizationReport> grandTotal = (List<MapDigitizationReport>) session.getAttribute("mapGrandTotal");
@@ -261,9 +277,7 @@ public void getCLRNEWPdf(HttpServletResponse response, HttpSession session) {
                     strings.add(map.getStateName());
                     strings.add(map.getFormattingTotalDistrict());
                     strings.add(map.getFormattingTotalTehsils());
-                    strings.add(map.getFormattingtotalCadastralMaps());
-                    strings.add(map.getFormattingdigitizedCadastralMaps());
-                    strings.add(df.format(map.getDigitizedCadastralMapsPercent()));
+                    MapDigitizationReportExportV5Util.appendCadastralMapRowV5(strings, map, df); //v5
                     strings.add(map.getFormattingtotalFmbs());
                     strings.add(map.getFormattingdigitizedFmbs());
                     strings.add(df.format(map.getDigitizedFmbsPercent()));
@@ -302,9 +316,7 @@ public void getCLRNEWPdf(HttpServletResponse response, HttpSession session) {
                 strings.add(map.getStateName());
                 strings.add(map.getFormattingTotalDistrict());
                 strings.add(map.getFormattingTotalTehsils());
-                strings.add(map.getFormattingtotalCadastralMaps());
-                strings.add(map.getFormattingdigitizedCadastralMaps());
-                strings.add(df.format(map.getDigitizedCadastralMapsPercent()));
+                MapDigitizationReportExportV5Util.appendCadastralMapRowV5(strings, map, df); //v5
                 strings.add(map.getFormattingtotalFmbs());
                 strings.add(map.getFormattingdigitizedFmbs());
                 strings.add(df.format(map.getDigitizedFmbsPercent()));
@@ -855,43 +867,52 @@ public void getCLRNEWPdf(HttpServletResponse response, HttpSession session) {
         String head[] = {ReportLabels.AADHAR_REPORT};
         pComponent.setReportHeading(head);
         pComponent.setReportName(ReportLabels.AADHAR_REPORT);
-        //, 50f, 50f,50F , ReportLabels.NO_OF_LAND_PARCELS,ReportLabels.TOTAL, ReportLabels.WHERE_AT_LEAST_ONE_RoR_LINKED_WITH_AADHAAR,
-        float col_width[] = {20f, 65f, 50f, 50f, 90f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f};
+        //v5: +2 RoR Address +7 Land owners
+        float col_width[] = {20f, 65f, 50f, 50f, 90f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f};
         pComponent.setCol_width(col_width);
-        String col_head[] = {ReportLabels.SERIAL_NUMBER, ReportLabels.STATE_UT, ReportLabels.TOTAL_DISTRICTS, ReportLabels.TOTAL_TEHSILS, ReportLabels.NUMBER_OF_VILLAGES, ReportLabels.RoR,
-                ReportLabels.TOTAL,ReportLabels.WHERE_AT_LEAST_ONE_RoR_LINKED_WITH_AADHAAR,ReportLabels.WHERE_100_PERCENT_RoR_LINKED_WITH_AADHAAR,ReportLabels.TOTAL,ReportLabels.LINKED_WITH_AADHAAR,ReportLabels.LINKED_WITH_MOBILE_NUMBER,
-                ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE,ReportLabels.NO,ReportLabels.NO, ReportLabels.PERCENTAGE,ReportLabels.NO, ReportLabels.PERCENTAGE};
+        String col_head[] = {ReportLabels.SERIAL_NUMBER, ReportLabels.STATE_UT, ReportLabels.TOTAL_DISTRICTS, ReportLabels.TOTAL_TEHSILS, ReportLabels.NUMBER_OF_VILLAGES, ReportLabels.RoR, ReportLabels.NUMBER_OF_LAND_OWNERS,
+                ReportLabels.TOTAL,ReportLabels.WHERE_AT_LEAST_ONE_RoR_LINKED_WITH_AADHAAR,ReportLabels.WHERE_100_PERCENT_RoR_LINKED_WITH_AADHAAR,ReportLabels.TOTAL,ReportLabels.LINKED_WITH_AADHAAR,ReportLabels.LINKED_WITH_MOBILE_NUMBER,ReportLabels.LINKED_WITH_ADDRESS,
+                ReportLabels.TOTAL,ReportLabels.LINKED_WITH_AADHAAR,ReportLabels.LINKED_WITH_MOBILE_NUMBER,ReportLabels.LINKED_WITH_ADDRESS,
+                ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE,ReportLabels.NO,ReportLabels.NO, ReportLabels.PERCENTAGE,ReportLabels.NO, ReportLabels.PERCENTAGE,ReportLabels.NO, ReportLabels.PERCENTAGE,
+                ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE};
         pComponent.setCol_head(col_head);
-        Integer[] rwspn2col = {6,7,8, 9,10,11};
+        Integer[] rwspn2col = {7,8,9,10,11,12,13,14,15,16,17};
         Integer[] rwspn3col = {};
         Integer[] rwspn4col = {0, 1, 2, 3};
         Integer[] rwspn5col = {};
-        Integer[] simplecell = {12,13,14,15,16, 17, 18, 19, 20, 21};
+        Integer[] simplecell = {18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36};
         pComponent.setRowspn5(rwspn5col);
         pComponent.setRowspn4(rwspn4col);
         pComponent.setRowspn3(rwspn3col);
         pComponent.setRowspn2(rwspn2col);
         pComponent.setRowspan1(simplecell);
         List<List<Integer>> colspanval = new ArrayList<List<Integer>>();
-        // Example: colspanval.add(new ArrayList<Integer>(Arrays.asList(2, 4)));
         colspanval.add(new ArrayList<Integer>(Arrays.asList(4, 5)));
-        //colspanval.add(new ArrayList<Integer>(Arrays.asList(5, 3)));
-        colspanval.add(new ArrayList<Integer>(Arrays.asList(5, 5)));
-        colspanval.add(new ArrayList<Integer>(Arrays.asList(6, 1)));
-        colspanval.add(new ArrayList<Integer>(Arrays.asList(7, 2)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(5, 7))); //v5 RoR
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(6, 7))); //v5 Land owners
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(7, 1)));
         colspanval.add(new ArrayList<Integer>(Arrays.asList(8, 2)));
-        colspanval.add(new ArrayList<Integer>(Arrays.asList(9, 1)));
-        colspanval.add(new ArrayList<Integer>(Arrays.asList(10, 2)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(9, 2)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(10, 1)));
         colspanval.add(new ArrayList<Integer>(Arrays.asList(11, 2)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(12, 2)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(13, 2)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(14, 1)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(15, 2)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(16, 2)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(17, 2)));
         pComponent.setColumnspan(colspanval);
         List<List<Integer>> colsBreak = new ArrayList<List<Integer>>();
-        // Example: colsBreak.add(new ArrayList<Integer>(Arrays.asList(4, 2)));
         colsBreak.add(new ArrayList<Integer>(Arrays.asList(5, 2)));
         colsBreak.add(new ArrayList<Integer>(Arrays.asList(6, 2)));
         colsBreak.add(new ArrayList<Integer>(Arrays.asList(8, 2)));
         colsBreak.add(new ArrayList<Integer>(Arrays.asList(9, 2)));
+        colsBreak.add(new ArrayList<Integer>(Arrays.asList(10, 2)));
+        colsBreak.add(new ArrayList<Integer>(Arrays.asList(12, 2)));
+        colsBreak.add(new ArrayList<Integer>(Arrays.asList(13, 2)));
+        colsBreak.add(new ArrayList<Integer>(Arrays.asList(14, 2)));
         pComponent.setColumnnumber(colsBreak);
-        pComponent.setColumnBreakCountNo(4);
+        pComponent.setColumnBreakCountNo(8); //v5
         List<List<String>> reportDataList = new ArrayList<List<String>>();
         List<LinkedAadharViewReport> aadharList = (List<LinkedAadharViewReport>) session.getAttribute("linkedAadharViewReportList");
         List<LinkedAadharViewReport> grandTotal = (List<LinkedAadharViewReport>) session.getAttribute("linkedAadharGrandTotal");
@@ -901,7 +922,6 @@ public void getCLRNEWPdf(HttpServletResponse response, HttpSession session) {
             aadharList.forEach(map -> {
                 List<String> strings = new ArrayList<>();
                 if (map.getStateId() != 999) {
-                    // Populate normal row data
                     strings.add(Integer.toString(indexHolder.incrementAndGet()));
                     strings.add(map.getStateName() != null ? map.getStateName() : "N/A");
                     strings.add(map.getFormattingTotalDistrict() != null ? map.getFormattingTotalDistrict() : "0");
@@ -916,6 +936,8 @@ public void getCLRNEWPdf(HttpServletResponse response, HttpSession session) {
                     strings.add(map.getRorLinkedWithAadhaarPercent() != null && map.getRorLinkedWithAadhaarPercent().compareTo(BigDecimal.ZERO) != 0 ? map.getRorLinkedWithAadhaarPercent().toString() : "0.0");
                     strings.add(map.getFormattingrorLinkedWithMobileNumber() != null ? map.getFormattingrorLinkedWithMobileNumber() : "0");
                     strings.add(map.getRorLinkedWithMobileNumberPercent() != null && map.getRorLinkedWithMobileNumberPercent().compareTo(BigDecimal.ZERO) != 0 ? map.getRorLinkedWithMobileNumberPercent().toString() : "0.0");
+                    AadhaarReportExportV5Util.appendAddressRowFormatted(strings, map); //v5
+                    AadhaarReportExportV5Util.appendLandOwnerRowFormatted(strings, map); //v5
                     reportDataList.add(strings);
                 }
             });
@@ -938,7 +960,8 @@ public void getCLRNEWPdf(HttpServletResponse response, HttpSession session) {
                 grandTotalList.add(gt.getRorLinkedWithAadhaarPercent() != null && gt.getRorLinkedWithAadhaarPercent().compareTo(BigDecimal.ZERO) != 0 ? String.valueOf(gt.getRorLinkedWithAadhaarPercent()) : "0.0");
                 grandTotalList.add(gt.getFormattingrorLinkedWithMobileNumber() != null ? gt.getFormattingrorLinkedWithMobileNumber() : "0");
                 grandTotalList.add(gt.getRorLinkedWithMobileNumberPercent() != null && gt.getRorLinkedWithMobileNumberPercent().compareTo(BigDecimal.ZERO) != 0 ? String.valueOf(gt.getRorLinkedWithMobileNumberPercent()) : "0.0");
-
+                AadhaarReportExportV5Util.appendAddressRowFormatted(grandTotalList, gt); //v5
+                AadhaarReportExportV5Util.appendLandOwnerRowFormatted(grandTotalList, gt); //v5
                 grandTotalData.add(grandTotalList);
             });
         }

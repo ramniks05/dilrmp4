@@ -56,6 +56,10 @@ public class StateMISDataEntry {
     @Column(name = "auto_trigger_mutation", columnDefinition = "boolean default false")
     private Boolean autoTriggerMutation = false;
 
+    //v5: S.No. [11] Whether Auto-Mutation Facility Available
+    @Column(name = "auto_mutation_facility", columnDefinition = "boolean default false")
+    private Boolean autoMutationFacility = false;
+
     @Column(name = "e_rcms_available", columnDefinition = "boolean default false")
     private Boolean eRCMSAvailable = false;
 

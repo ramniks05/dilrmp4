@@ -35,7 +35,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import in.gov.dilrmp.component.ExcelExporterComponent;
 import in.gov.dilrmp.constants.ReportLabels;
+import in.gov.dilrmp.utils.AadhaarReportExportV5Util;
 import in.gov.dilrmp.utils.ExcelExporter;
+import in.gov.dilrmp.utils.MapDigitizationReportExportV5Util;
 
 @Controller
 @RequestMapping("physcial/report/excel")
@@ -66,7 +68,7 @@ public class PhyscialProgressReportControllerExcel {
     public void exportCLRExcelFile(HttpServletResponse response, HttpSession session) {
         ExcelExporterComponent eComponent = new ExcelExporterComponent();
 
-        // Header text array
+        // Header text array — v5: RoR 5 leaf cols + Auto-Mutation Facility after Auto-Triggered
         String[] headerText = {
                 "Department of Land Resources",
                 "Ministry of Rural Development, Government of India",
@@ -77,6 +79,7 @@ public class PhyscialProgressReportControllerExcel {
                 ReportLabels.RoR, ReportLabels.NUMBER_OF_VILLAGES_WHERE_CLR_COMPLETED,
                 ReportLabels.TOTAL_NO_OF_LAND_OWNERS,
                 ReportLabels.TOTAL, ReportLabels.COMPUTERIZED, ReportLabels.PERCENTAGE,
+                ReportLabels.ROR_WITH_CADASTRAL_MAP, ReportLabels.PERCENTAGE,
                 ReportLabels.NO, ReportLabels.PERCENTAGE,
                 ReportLabels.AVAILABILITY_OF_GENDER_BASED_LAND_OWNERSHIP,
                 ReportLabels.NUMBER_OF_DISTRICTS_WHERE_AVAILABLE, ReportLabels.MALE, ReportLabels.FEMALE, ReportLabels.TOTAL,
@@ -85,6 +88,7 @@ public class PhyscialProgressReportControllerExcel {
                 ReportLabels.WHETHER_DIGITALLY_SIGNED_ROR_LEGALLY_VALID_IN_STATE,
                 ReportLabels.WHETHER_MUTATION_APPLICATION_SUBMITTED_ONLINE,
                 ReportLabels.WHETHER_AUTO_TRIGGERED_MUTATION_FACILITY_AVAILABLE,
+                ReportLabels.WHETHER_AUTO_MUTATION_FACILITY_AVAILABLE,
                 ReportLabels.WHETHER_BANKS_AUTHORIZED_TO_CREATE_CLEAR_MORTGAGE_CHARGE_IN_ROR,
                 ReportLabels.YES_NO, ReportLabels.NUMBER_OF_DISTRICTS_AUTHORIZED, ReportLabels.NUMBER_OF_BANK_BRANCHES_AUTHORIZED,
                 ReportLabels.WHETHER_LAND_RECORDS_BE_CHECKED_ONLINE_BY_SRO,
@@ -98,18 +102,23 @@ public class PhyscialProgressReportControllerExcel {
                 ReportLabels.YES_NO,
                 ReportLabels.YES_NO,
                 ReportLabels.YES_NO,
+                ReportLabels.YES_NO,
 
         };
 
-        // Header spans for merged and unmerged cells
+        // Header spans: F-J = 5 RoR; V = Auto-Triggered; W = Auto-Mutation (v5); X-Z = Banks
         String[] headerSpanMerged = {
-                "A1:X1", "A2:X2", "A3:X3", "A4:X4", "A5:X5", "A6:A8", "B6:B8", "C6:C8", "D6:D8", "E6:E8",
-                "F6:H6", "I6:J6", "K6:K8",
-                "F7:F8", "G7:G8", "H7:H8", "I7:I8", "J7:J8", "L6:O6", "L7:L8", "M7:M8", "N7:N8", "O7:O8", "P6:P7", "Q6:Q7", "R6:R7", "S6:S7", "T6:T7", "U6:W6", "U7:U8", "V7:V8", "W7:W8", "X6:X7", "Y6:Y7", "Z6:Z7"
+                "A1:AC1", "A2:AC2", "A3:AC3", "A4:AC4", "A5:AC5", "A6:A8", "B6:B8", "C6:C8", "D6:D8", "E6:E8",
+                "F6:J6", "K6:L6", "M6:M8",
+                "F7:F8", "G7:G8", "H7:H8", "I7:I8", "J7:J8", "K7:K8", "L7:L8",
+                "N6:Q6", "N7:N8", "O7:O8", "P7:P8", "Q7:Q8",
+                "R6:R7", "S6:S7", "T6:T7", "U6:U7", "V6:V7", "W6:W7",
+                "X6:Z6", "X7:X8", "Y7:Y8", "Z7:Z8",
+                "AA6:AA7", "AB6:AB7", "AC6:AC7"
         };
-        String[] headerSpanUnmerged = {"P8", "Q8", "R8", "S8", "T8", "X8", "Y8", "Z8"};
+        String[] headerSpanUnmerged = {"R8", "S8", "T8", "U8", "V8", "W8", "AA8", "AB8", "AC8"};
         eComponent.setReportName(ReportLabels.CLR_REPORT);
-        eComponent.setNoOfColumns(26);
+        eComponent.setNoOfColumns(29);
         eComponent.setNoOfheaderRows(8);
         eComponent.setHeaderText(headerText);
         eComponent.setHeaderSpanMerged(headerSpanMerged);
@@ -136,6 +145,9 @@ public class PhyscialProgressReportControllerExcel {
                     strings.add(map.getFormattingTotalRor() != null ? map.getFormattingTotalRor().toString() : "0");
                     strings.add(map.getFormattingRorComputerized() != null ? map.getFormattingRorComputerized().toString() : "0");
                     strings.add(map.getRorComputerizedPercent() != null && map.getRorComputerizedPercent().compareTo(BigDecimal.ZERO) != 0 ? map.getRorComputerizedPercent().toString() : "0.0");
+                    //v5
+                    strings.add(map.getFormattingRorWithCadastralMap() != null ? map.getFormattingRorWithCadastralMap() : "0");
+                    strings.add(map.getRorWithCadastralMapPercent() != null && map.getRorWithCadastralMapPercent().compareTo(BigDecimal.ZERO) != 0 ? map.getRorWithCadastralMapPercent().toString() : "0.0");
                     strings.add(map.getFormattingvillagesClrCompleted() != null ? map.getFormattingvillagesClrCompleted().toString() : "0");
                     strings.add(map.getClrCompletionPercent() != null && map.getClrCompletionPercent().compareTo(BigDecimal.ZERO) != 0 ? map.getClrCompletionPercent().toString() : "0.0");
                     strings.add(map.getFormattingTotalLandOwners() != null ? map.getFormattingTotalLandOwners().toString() : "0");
@@ -149,6 +161,8 @@ public class PhyscialProgressReportControllerExcel {
                     strings.add(map.getDigitallySignedRorLegallyValid() != null ? map.getDigitallySignedRorLegallyValid() : "NO");
                     strings.add(map.getOnlineMutationFacility() != null ? map.getOnlineMutationFacility() : "NO");
                     strings.add(map.getAutoTriggerMutation() != null ? map.getAutoTriggerMutation() : "NO");
+                    //v5
+                    strings.add(map.getAutoMutationFacility() != null ? map.getAutoMutationFacility() : "NO");
                     strings.add(map.getBankRedFlagMortgageInLandRecords() != null ? map.getBankRedFlagMortgageInLandRecords() : "NO");
                     strings.add(map.getFormattingDistrictsWithBankRedFlagMortgage() != null ? map.getFormattingDistrictsWithBankRedFlagMortgage().toString() : "0");
                     strings.add(map.getFormattingBankBranchesWithRedFlagMortgage() != null ? map.getFormattingBankBranchesWithRedFlagMortgage().toString() : "0");
@@ -170,6 +184,9 @@ public class PhyscialProgressReportControllerExcel {
                 grandTotalList.add(gt.getFormattingTotalRor() != null ? gt.getFormattingTotalRor() : "0");
                 grandTotalList.add(gt.getFormattingRorComputerized() != null ? gt.getFormattingRorComputerized() : "0");
                 grandTotalList.add(gt.getRorComputerizedPercent() != null && gt.getRorComputerizedPercent().compareTo(BigDecimal.ZERO) != 0 ? String.valueOf(gt.getRorComputerizedPercent()) : "0.0");
+                //v5
+                grandTotalList.add(gt.getFormattingRorWithCadastralMap() != null ? gt.getFormattingRorWithCadastralMap() : "0");
+                grandTotalList.add(gt.getRorWithCadastralMapPercent() != null && gt.getRorWithCadastralMapPercent().compareTo(BigDecimal.ZERO) != 0 ? String.valueOf(gt.getRorWithCadastralMapPercent()) : "0.0");
                 grandTotalList.add(gt.getFormattingvillagesClrCompleted() != null ? gt.getFormattingvillagesClrCompleted() : "0");
                 grandTotalList.add(gt.getClrCompletionPercent() != null && gt.getClrCompletionPercent().compareTo(BigDecimal.ZERO) != 0 ? String.valueOf(gt.getClrCompletionPercent()) : "0.0");
                 grandTotalList.add(gt.getFormattingTotalLandOwners() != null ? gt.getFormattingTotalLandOwners() : "0");
@@ -182,6 +199,8 @@ public class PhyscialProgressReportControllerExcel {
                 grandTotalList.add(gt.getDigitallySignedRorLegallyValid() != null ? gt.getDigitallySignedRorLegallyValid() : "0");
                 grandTotalList.add(gt.getOnlineMutationFacility() != null ? gt.getOnlineMutationFacility() : "0");
                 grandTotalList.add(gt.getAutoTriggerMutation() != null ? gt.getAutoTriggerMutation() : "0");
+                //v5
+                grandTotalList.add(gt.getAutoMutationFacility() != null ? gt.getAutoMutationFacility() : "0");
                 grandTotalList.add(gt.getBankRedFlagMortgageInLandRecords() != null ? gt.getBankRedFlagMortgageInLandRecords() : "0");
                 grandTotalList.add(gt.getFormattingDistrictsWithBankRedFlagMortgage() != null ? gt.getFormattingDistrictsWithBankRedFlagMortgage() : "0");
                 grandTotalList.add(gt.getFormattingBankBranchesWithRedFlagMortgage() != null ? gt.getFormattingBankBranchesWithRedFlagMortgage() : "0");
@@ -209,7 +228,7 @@ public class PhyscialProgressReportControllerExcel {
         String stateName = (String) session.getAttribute("stateName");
         String woner = (String) session.getAttribute("Wonership");
 
-        // Header text array
+        // Header text array — v5: RoR 5 leaf cols + Auto-Mutation Facility after Auto-Triggered
         String[] headerText = {
                 "Department of Land Resources",
                 "Ministry of Rural Development, Government of India",
@@ -219,6 +238,7 @@ public class PhyscialProgressReportControllerExcel {
                 ReportLabels.TOTAL_TEHSILS, ReportLabels.TOTAL_VILLAGES,
                 ReportLabels.RoR, ReportLabels.NUMBER_OF_VILLAGES_WHERE_CLR_COMPLETED,
                 ReportLabels.TOTAL, ReportLabels.COMPUTERIZED, ReportLabels.PERCENTAGE,
+                ReportLabels.ROR_WITH_CADASTRAL_MAP, ReportLabels.PERCENTAGE,
                 ReportLabels.NO, ReportLabels.PERCENTAGE,
                 ReportLabels.TOTAL_NO_OF_LAND_OWNERS,
                 ReportLabels.AVAILABILITY_OF_GENDER_BASED_LAND_OWNERSHIP,
@@ -228,9 +248,11 @@ public class PhyscialProgressReportControllerExcel {
                 ReportLabels.WHETHER_DIGITALLY_SIGNED_ROR_LEGALLY_VALID_IN_STATE,
                 ReportLabels.WHETHER_MUTATION_APPLICATION_SUBMITTED_ONLINE,
                 ReportLabels.WHETHER_AUTO_TRIGGERED_MUTATION_FACILITY_AVAILABLE,
+                ReportLabels.WHETHER_AUTO_MUTATION_FACILITY_AVAILABLE,
                 ReportLabels.WHETHER_LAND_RECORDS_BE_CHECKED_ONLINE_BY_SRO,
                 ReportLabels.WHETHER_LAND_RECORDS_BE_CHECKED_ONLINE_BY_REVENUE_COURTS,
                 ReportLabels.WHETHER_LAND_RECORDS_BE_CHECKED_ONLINE_BY_CIVIL_COURTS_THROUGH_E_COURTS_SYSTEM,
+                ReportLabels.YES_NO,
                 ReportLabels.YES_NO,
                 ReportLabels.YES_NO,
                 ReportLabels.YES_NO,
@@ -243,20 +265,19 @@ public class PhyscialProgressReportControllerExcel {
 
         };
 
-        // Header spans for merged and unmerged cells
+        // Header spans: E-I = 5 RoR; U = Auto-Triggered; V = Auto-Mutation (v5)
         String[] headerSpanMerged = {
-                "A1:V1", "A2:V2", "A3:V3", "A4:V4", "A5:V5", "A6:V6",
+                "A1:Y1", "A2:Y2", "A3:Y3", "A4:Y4", "A5:Y5", "A6:Y6",
                 "A7:A9", "B7:B9", "C7:C9", "D7:D9",
-                "E7:G7", "H7:I7",
-                "E8:E9", "F8:F9", "G8:G9", "H8:H9", "I8:I9",
-                "J7:J9",
-                "K7:N7", "K8:K9", "L8:L9", "M8:M9", "N8:N9",
-                "O7:O8", "P7:P8", "Q7:Q8", "R7:R8", "S7:S8", "T7:T8", "U7:U8", "V7:V8"
+                "E7:I7", "J7:K7",
+                "E8:E9", "F8:F9", "G8:G9", "H8:H9", "I8:I9", "J8:J9", "K8:K9",
+                "L7:L9",
+                "M7:P7", "M8:M9", "N8:N9", "O8:O9", "P8:P9",
+                "Q7:Q8", "R7:R8", "S7:S8", "T7:T8", "U7:U8", "V7:V8", "W7:W8", "X7:X8", "Y7:Y8"
         };
-        //"O9","P9", "Q9", "R9", "S9", "T9","U9","V9"
-        String[] headerSpanUnmerged = {"O9", "P9", "Q9", "R9", "S9", "T9", "U9", "V9"};
+        String[] headerSpanUnmerged = {"Q9", "R9", "S9", "T9", "U9", "V9", "W9", "X9", "Y9"};
         eComponent.setReportName(ReportLabels.CLR_REPORT);
-        eComponent.setNoOfColumns(22);
+        eComponent.setNoOfColumns(25);
         eComponent.setNoOfheaderRows(9);
         eComponent.setHeaderText(headerText);
         eComponent.setHeaderSpanMerged(headerSpanMerged);
@@ -282,6 +303,9 @@ public class PhyscialProgressReportControllerExcel {
                     strings.add(map.getTotalRor() != null ? map.getTotalRor().toString() : "0");
                     strings.add(map.getRorComputerized() != null ? map.getRorComputerized().toString() : "0");
                     strings.add(map.getRorComputerizedPercent() != null && map.getRorComputerizedPercent().compareTo(BigDecimal.ZERO) != 0 ? map.getRorComputerizedPercent().toString() : "0.0");
+                    //v5
+                    strings.add(map.getRorWithCadastralMap() != null ? map.getRorWithCadastralMap().toString() : "0");
+                    strings.add(map.getRorWithCadastralMapPercent() != null && map.getRorWithCadastralMapPercent().compareTo(BigDecimal.ZERO) != 0 ? map.getRorWithCadastralMapPercent().toString() : "0.0");
                     strings.add(map.getVillagesClrCompleted() != null ? map.getVillagesClrCompleted().toString() : "0");
                     strings.add(map.getClrCompletionPercent() != null && map.getClrCompletionPercent().compareTo(BigDecimal.ZERO) != 0 ? map.getClrCompletionPercent().toString() : "0.0");
                     strings.add(map.getTotalLandOwners() != null ? map.getTotalLandOwners().toString() : "0");
@@ -296,6 +320,8 @@ public class PhyscialProgressReportControllerExcel {
                     strings.add(map.getDigitallySignedRorLegallyValid() != null ? map.getDigitallySignedRorLegallyValid() : "NO");
                     strings.add(map.getOnlineMutationFacility() != null ? map.getOnlineMutationFacility() : "NO");
                     strings.add(map.getAutoTriggerMutation() != null ? map.getAutoTriggerMutation() : "NO");
+                    //v5
+                    strings.add(map.getAutoMutationFacility() != null ? map.getAutoMutationFacility() : "NO");
                     strings.add(map.getLandRecordsOnlineFromRegistrationSystem() != null ? map.getLandRecordsOnlineFromRegistrationSystem() : "NO");
                     strings.add(map.getRevenueCourtProceedingsPaperless() != null ? map.getRevenueCourtProceedingsPaperless() : "NO");
                     strings.add(map.getCaseFilingRedFlaggedInLandRecordsFromCivilCourts() != null ? map.getCaseFilingRedFlaggedInLandRecordsFromCivilCourts() : "NO");
@@ -316,6 +342,9 @@ public class PhyscialProgressReportControllerExcel {
                 grandTotalList.add(gt.getTotalRor() != null ? String.valueOf(gt.getTotalRor()) : "0");
                 grandTotalList.add(gt.getRorComputerized() != null ? String.valueOf(gt.getRorComputerized()) : "0");
                 grandTotalList.add(gt.getRorComputerizedPercent() != null && gt.getRorComputerizedPercent().compareTo(BigDecimal.ZERO) != 0 ? String.valueOf(gt.getRorComputerizedPercent()) : "0.0");
+                //v5
+                grandTotalList.add(gt.getRorWithCadastralMap() != null ? String.valueOf(gt.getRorWithCadastralMap()) : "0");
+                grandTotalList.add(gt.getRorWithCadastralMapPercent() != null && gt.getRorWithCadastralMapPercent().compareTo(BigDecimal.ZERO) != 0 ? String.valueOf(gt.getRorWithCadastralMapPercent()) : "0.0");
                 grandTotalList.add(gt.getVillagesClrCompleted() != null ? String.valueOf(gt.getVillagesClrCompleted()) : "0");
                 grandTotalList.add(gt.getClrCompletionPercent() != null && gt.getClrCompletionPercent().compareTo(BigDecimal.ZERO) != 0 ? String.valueOf(gt.getClrCompletionPercent()) : "0.0");
                 grandTotalList.add(gt.getTotalLandOwners() != null ? String.valueOf(gt.getTotalLandOwners()) : "0");
@@ -323,6 +352,7 @@ public class PhyscialProgressReportControllerExcel {
                 grandTotalList.add(gt.getTotalMaleLandOwners() != null ? String.valueOf(gt.getTotalMaleLandOwners()) : "0");
                 grandTotalList.add(gt.getTotalFemaleLandOwners() != null ? String.valueOf(gt.getTotalFemaleLandOwners()) : "0");
                 grandTotalList.add(gt.getTotalOwners() != null ? String.valueOf(gt.getTotalOwners()) : "0");
+                grandTotalList.add("");
                 grandTotalList.add("");
                 grandTotalList.add("");
                 grandTotalList.add("");
@@ -352,7 +382,7 @@ public class PhyscialProgressReportControllerExcel {
     public void exportMAPExcelFile(HttpServletResponse response, HttpSession session) {
         ExcelExporterComponent eComponent = new ExcelExporterComponent();
 
-        // Header text array
+        // Header text array — v5: Cadastral Maps has 6 leaf columns
         String[] headerText = {
                 "Department of Land Resources",
                 "Ministry of Rural Development, Government of India",
@@ -367,35 +397,34 @@ public class PhyscialProgressReportControllerExcel {
                 ReportLabels.NO_OF_LAND_PARCELS,
                 ReportLabels.NUMBER_OF_DISTRICT_WHERE_CADMAP_FMB_TIPPAN_SHOWING_CURRENT_OWNERSHIP,
                 ReportLabels.CADASTRAL_MAPS, ReportLabels.FMBs, ReportLabels.TIPPANS, ReportLabels.DIGITIZED, ReportLabels.GEO_REFERENCED, ReportLabels.CADASTRAL_MAPS_FMBS_TIPPANS_LINKED_TO_ROR, ReportLabels.CADASTRAL_MAPS_FMBS_TIPPANS_GEO_REFERENCED, ReportLabels.ULPIN_ASSIGNED, ReportLabels.GEO_REFERENCED, ReportLabels.ULPIN_ASSIGNED, ReportLabels.TOTAL, ReportLabels.TOTAL, ReportLabels.TOTAL
-                , ReportLabels.TOTAL, ReportLabels.DIGITIZED, ReportLabels.PERCENTAGE, ReportLabels.TOTAL, ReportLabels.DIGITIZED, ReportLabels.PERCENTAGE, ReportLabels.TOTAL, ReportLabels.DIGITIZED, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO
+                , ReportLabels.TOTAL, ReportLabels.TOTAL_DAMAGED_MISSING_MAPS, ReportLabels.MAP_IN_GOOD_CONDITION, ReportLabels.DIGITIZED, ReportLabels.DIGITIZED_PERCENT_OF_TOTAL_CADASTRAL_MAPS, ReportLabels.DIGITIZED_PERCENT_OF_GOOD_CONDITION_MAPS,
+                ReportLabels.TOTAL, ReportLabels.DIGITIZED, ReportLabels.PERCENTAGE, ReportLabels.TOTAL, ReportLabels.DIGITIZED, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO
 
         };
 
-        // Header spans for merged and unmerged cells
+        // Header spans: E-P = 12 cadastral group; E-J = 6 cadastral maps sub-group
         String[] headerSpanMerged = {
-                "A1:X1", "A2:X2", "A3:X3", "A4:X4", "A5:X5", "A6:A8", "B6:B8", "C6:C8", "D6:D8",
-                "E6:M6", "N6:R6", "S6:Y6", "Z6:AD6", "AE6:AE7",
-                "E7:G7", "H7:J7", "K7:M7", "O7:P7", "Q7:R7"
-                , "T7:U7", "V7:W7", "X7:Y7",
-                "AA7:AB7"
-                , "AC7:AD7"
+                "A1:AH1", "A2:AH2", "A3:AH3", "A4:AH4", "A5:AH5", "A6:A8", "B6:B8", "C6:C8", "D6:D8",
+                "E6:P6", "Q6:U6", "V6:AB6", "AC6:AG6", "AH6:AH7",
+                "E7:J7", "K7:M7", "N7:P7", "R7:S7", "T7:U7"
+                , "W7:X7", "Y7:Z7", "AA7:AB7",
+                "AD7:AE7"
+                , "AF7:AG7"
         };
-        String[] headerSpanUnmerged = {"N7", "S7", "Z7",
+        String[] headerSpanUnmerged = {"Q7", "V7", "AC7",
                 "E8", "F8", "G8", "H8", "I8", "J8", "K8", "L8", "M8", "N8",
                 "O8", "P8", "Q8", "R8", "S8", "T8", "U8", "V8", "W8", "X8",
-                "Y8", "Z8", "AA8", "AB8", "AC8", "AD8", "AE8"};
+                "Y8", "Z8", "AA8", "AB8", "AC8", "AD8", "AE8", "AF8", "AG8", "AH8"};
         eComponent.setReportName(ReportLabels.MAP_DIGITIZATION_REPORT);
-        eComponent.setNoOfColumns(32);
+        eComponent.setNoOfColumns(34);
         eComponent.setNoOfheaderRows(9);
         eComponent.setHeaderText(headerText);
         eComponent.setHeaderSpanMerged(headerSpanMerged);
         eComponent.setHeaderSpanUnMerged(headerSpanUnmerged);
-        // Get the CLR report data from session
         List<MapDigitizationReport> mapList = (List<MapDigitizationReport>) session.getAttribute("reportData");
         List<MapDigitizationReport> grandTotal = (List<MapDigitizationReport>) session.getAttribute("mapGrandTotal");
         List<List<String>> reportDataList = new ArrayList<>();
         AtomicInteger indexHolder = new AtomicInteger();
-        // Process clrList to create report data
         if (mapList != null && !mapList.isEmpty()) {
             mapList.forEach(map -> {
                 if (map.getLgdCode() != 999) {
@@ -404,9 +433,7 @@ public class PhyscialProgressReportControllerExcel {
                     strings.add(map.getStateName());
                     strings.add(map.getFormattingTotalDistrict());
                     strings.add(map.getFormattingTotalTehsils());
-                    strings.add(map.getFormattingtotalCadastralMaps());
-                    strings.add(map.getFormattingdigitizedCadastralMaps());
-                    strings.add(df.format(map.getDigitizedCadastralMapsPercent()));
+                    MapDigitizationReportExportV5Util.appendCadastralMapRowV5(strings, map, df); //v5
                     strings.add(map.getFormattingtotalFmbs());
                     strings.add(map.getFormattingdigitizedFmbs());
                     strings.add(df.format(map.getDigitizedFmbsPercent()));
@@ -436,7 +463,6 @@ public class PhyscialProgressReportControllerExcel {
             });
         }
 
-        // Add Grand Total to the data
         if (grandTotal != null && !grandTotal.isEmpty()) {
             grandTotal.forEach(map -> {
                 List<String> strings = new ArrayList<>();
@@ -444,9 +470,7 @@ public class PhyscialProgressReportControllerExcel {
                 strings.add(map.getStateName());
                 strings.add(map.getFormattingTotalDistrict());
                 strings.add(map.getFormattingTotalTehsils());
-                strings.add(map.getFormattingtotalCadastralMaps());
-                strings.add(map.getFormattingdigitizedCadastralMaps());
-                strings.add(df.format(map.getDigitizedCadastralMapsPercent()));
+                MapDigitizationReportExportV5Util.appendCadastralMapRowV5(strings, map, df); //v5
                 strings.add(map.getFormattingtotalFmbs());
                 strings.add(map.getFormattingdigitizedFmbs());
                 strings.add(df.format(map.getDigitizedFmbsPercent()));
@@ -475,10 +499,8 @@ public class PhyscialProgressReportControllerExcel {
             });
         }
 
-        // Set the combined data (state data + grand total) to the exporter component
         eComponent.setReportDataList(reportDataList);
 
-        // Generate the Excel file
         try {
             ExcelExporter.generateExcelFile(response, eComponent);
         } catch (IOException e) {
@@ -582,7 +604,7 @@ public class PhyscialProgressReportControllerExcel {
     public void exportMAPDistrictExcelFile(HttpServletResponse response, HttpSession session) {
         ExcelExporterComponent eComponent = new ExcelExporterComponent();
         String stateName = (String) session.getAttribute("stateName");
-        // Header text array
+        // Header text array — v5: Cadastral Maps has 6 leaf columns
         String[] headerText = {
                 "Department of Land Resources",
                 "Ministry of Rural Development, Government of India",
@@ -601,7 +623,7 @@ public class PhyscialProgressReportControllerExcel {
                 ReportLabels.ULPIN_ASSIGNED, ReportLabels.GEO_REFERENCED, ReportLabels.ULPIN_ASSIGNED, ReportLabels.YES_NO, ReportLabels.IF_NO_YEAR_UPTO_WHICH_ARE_UPDATED,
                 ReportLabels.TOTAL,
                 ReportLabels.TOTAL, ReportLabels.TOTAL
-                , ReportLabels.TOTAL, ReportLabels.DIGITIZED, ReportLabels.PERCENTAGE,
+                , ReportLabels.TOTAL, ReportLabels.TOTAL_DAMAGED_MISSING_MAPS, ReportLabels.MAP_IN_GOOD_CONDITION, ReportLabels.DIGITIZED, ReportLabels.DIGITIZED_PERCENT_OF_TOTAL_CADASTRAL_MAPS, ReportLabels.DIGITIZED_PERCENT_OF_GOOD_CONDITION_MAPS,
                 ReportLabels.TOTAL, ReportLabels.DIGITIZED, ReportLabels.PERCENTAGE,
                 ReportLabels.TOTAL, ReportLabels.DIGITIZED, ReportLabels.PERCENTAGE,
                 ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO,
@@ -611,30 +633,28 @@ public class PhyscialProgressReportControllerExcel {
 
         };
 
-        // Header spans for merged and unmerged cells
+        // D-O = 12 cadastral group; D-I = 6 cadastral maps
         String[] headerSpanMerged = {
-                "A1:AE1", "A2:AE2", "A3:AE3", "A4:AE4", "A5:AE5", "A6:AE6",
+                "A1:AH1", "A2:AH2", "A3:AH3", "A4:AH4", "A5:AH5", "A6:AH6",
                 "A7:A9", "B7:B8", "C7:C9",
-                "D7:L7", "M7:Q7", "R7:X7", "Y7:AC7", "AD7:AE7",
-                "D8:F8", "G8:I8", "J8:L8",
-                "N8:O8", "P8:Q8"
-                , "S8:T8", "U8:V8", "W8:X8",
-                "Z8:AA8"
-                , "AB8:AC8", "AD8:AD9", "AE8:AE9"
+                "D7:O7", "P7:T7", "U7:AA7", "AB7:AF7", "AG7:AH7",
+                "D8:I8", "J8:L8", "M8:O8",
+                "Q8:R8", "S8:T8"
+                , "V8:W8", "X8:Y8", "Z8:AA8",
+                "AC8:AD8"
+                , "AE8:AF8", "AG8:AG9", "AH8:AH9"
         };
-        String[] headerSpanUnmerged = {"M8", "R8", "Y8", "D9", "E9", "F9", "G9", "H9", "I9", "J9", "K9", "L9", "M9", "N9", "O9", "P9", "Q9", "R9", "S9", "T9", "U9", "V9", "W9", "X9", "Y9", "Z9", "AA9", "AB9", "AC9"};
+        String[] headerSpanUnmerged = {"P8", "U8", "AB8", "D9", "E9", "F9", "G9", "H9", "I9", "J9", "K9", "L9", "M9", "N9", "O9", "P9", "Q9", "R9", "S9", "T9", "U9", "V9", "W9", "X9", "Y9", "Z9", "AA9", "AB9", "AC9", "AD9", "AE9", "AF9"};
         eComponent.setReportName(ReportLabels.MAP_DIGITIZATION_REPORT);
-        eComponent.setNoOfColumns(31);
+        eComponent.setNoOfColumns(34);
         eComponent.setNoOfheaderRows(9);
         eComponent.setHeaderText(headerText);
         eComponent.setHeaderSpanMerged(headerSpanMerged);
         eComponent.setHeaderSpanUnMerged(headerSpanUnmerged);
-        // Get the CLR report data from session
         List<DistrictMapDigitizationReport> districtMapList = (List<DistrictMapDigitizationReport>) session.getAttribute("reportData");
         List<MapDigitizationReport> grandTotal = (List<MapDigitizationReport>) session.getAttribute("stateMapData");
         List<List<String>> reportDataList = new ArrayList<>();
         AtomicInteger indexHolder = new AtomicInteger();
-        // Process clrList to create report data
         if (districtMapList != null && !districtMapList.isEmpty()) {
             districtMapList.forEach(map -> {
                 if (map.getStateId() != 999) {
@@ -642,9 +662,7 @@ public class PhyscialProgressReportControllerExcel {
                     strings.add(Integer.toString(indexHolder.incrementAndGet()));
                     strings.add(map.getDistrictName().toUpperCase());
                     strings.add(Integer.toString(Math.toIntExact(map.getTotalTehsils())));
-                    strings.add(Integer.toString(map.getTotalCadastralMaps()));
-                    strings.add(Integer.toString(map.getDigitizedCadastralMaps()));
-                    strings.add(df.format(map.getDigitizedCadastralMapsPercent()));
+                    MapDigitizationReportExportV5Util.appendCadastralMapRowV5(strings, map, df); //v5
                     strings.add(Integer.toString(map.getTotalFmbs()));
                     strings.add(Integer.toString(map.getDigitizedFmbs()));
                     strings.add(df.format(map.getDigitizedFmbsPercent()));
@@ -675,16 +693,13 @@ public class PhyscialProgressReportControllerExcel {
             });
         }
 
-        // Add Grand Total to the data
         if (grandTotal != null && !grandTotal.isEmpty()) {
             grandTotal.forEach(gt -> {
                 List<String> stringList = new ArrayList<>();
                 stringList.add("");
                 stringList.add("Grand Total");
                 stringList.add(Integer.toString(gt.getTotalTehsils()));
-                stringList.add(Integer.toString(gt.getTotalCadastralMaps()));
-                stringList.add(Integer.toString(gt.getDigitizedCadastralMaps()));
-                stringList.add(df.format(gt.getDigitizedCadastralMapsPercent()));
+                MapDigitizationReportExportV5Util.appendCadastralMapRowV5Raw(stringList, gt, df); //v5
                 stringList.add(Integer.toString(gt.getTotalFmbs()));
                 stringList.add(Integer.toString(gt.getDigitizedFmbs()));
                 stringList.add(df.format(gt.getDigitizedFmbsPercent()));
@@ -715,10 +730,8 @@ public class PhyscialProgressReportControllerExcel {
             });
         }
 
-        // Set the combined data (state data + grand total) to the exporter component
         eComponent.setReportDataList(reportDataList);
 
-        // Generate the Excel file
         try {
             ExcelExporter.generateExcelFile(response, eComponent);
         } catch (IOException e) {
@@ -1416,7 +1429,7 @@ public class PhyscialProgressReportControllerExcel {
     public void exportAadharExcelFile(HttpServletResponse response, HttpSession session) {
         ExcelExporterComponent eComponent = new ExcelExporterComponent();
 
-        // Header text array
+        // Header text array //v5: + RoR Address + Land owners (16->23 cols A-W)
         String[] headerText = {
                 "Department of Land Resources",
                 "Ministry of Rural Development, Government of India",
@@ -1424,34 +1437,40 @@ public class PhyscialProgressReportControllerExcel {
                 ReportLabels.AADHAR_REPORT, "",
                 ReportLabels.SERIAL_NUMBER,
                 ReportLabels.STATE_UT, ReportLabels.TOTAL_DISTRICTS,
-                ReportLabels.TOTAL_TEHSILS, ReportLabels.NUMBER_OF_VILLAGES, ReportLabels.RoR,
+                ReportLabels.TOTAL_TEHSILS, ReportLabels.NUMBER_OF_VILLAGES, ReportLabels.RoR, ReportLabels.NUMBER_OF_LAND_OWNERS,
                 ReportLabels.WHERE_AT_LEAST_ONE_RoR_LINKED_WITH_AADHAAR,
                 ReportLabels.WHERE_100_PERCENT_RoR_LINKED_WITH_AADHAAR,
-                ReportLabels.LINKED_WITH_AADHAAR, ReportLabels.LINKED_WITH_MOBILE_NUMBER, ReportLabels.TOTAL, ReportLabels.TOTAL,
+                ReportLabels.LINKED_WITH_AADHAAR, ReportLabels.LINKED_WITH_MOBILE_NUMBER, ReportLabels.LINKED_WITH_ADDRESS,
+                ReportLabels.LINKED_WITH_AADHAAR, ReportLabels.LINKED_WITH_MOBILE_NUMBER, ReportLabels.LINKED_WITH_ADDRESS,
+                ReportLabels.TOTAL, ReportLabels.TOTAL, ReportLabels.TOTAL,
                 ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE,
-                ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE};
+                ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE,
+                ReportLabels.NO, ReportLabels.PERCENTAGE,
+                ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE,
+                ReportLabels.NO, ReportLabels.PERCENTAGE};
 
-        // Header spans for merged and unmerged cells
+        // Header spans //v5: villages E-I, RoR J-P, Land owners Q-W
         String[] headerSpanMerged = {
-                "A1:J1", "A2:J2", "A3:J3", "A4:J4", "A5:J5",
+                "A1:W1", "A2:W2", "A3:W3", "A4:W4", "A5:W5",
                 "A6:A8", "B6:B8", "C6:C8", "D6:D8",
-                "E6:I6", "J6:N6",
-                "F7:G7", "H7:I7", "K7:L7", "M7:N7"
+                "E6:I6", "J6:P6", "Q6:W6",
+                "F7:G7", "H7:I7", "K7:L7", "M7:N7", "O7:P7",
+                "R7:S7", "T7:U7", "V7:W7"
         };
         eComponent.setHeaderSpanUnMerged(new String[]{});
-        String[] headerSpanUnmerged = {"E7", "J7", "E8", "F8", "G8", "H8", "I8", "J8", "K8", "L8", "M8", "N8"};
+        String[] headerSpanUnmerged = {"E7", "J7", "Q7",
+                "E8", "F8", "G8", "H8", "I8", "J8", "K8", "L8", "M8", "N8", "O8", "P8",
+                "Q8", "R8", "S8", "T8", "U8", "V8", "W8"};
         eComponent.setReportName(ReportLabels.AADHAR_REPORT);
-        eComponent.setNoOfColumns(14);
+        eComponent.setNoOfColumns(23);
         eComponent.setNoOfheaderRows(8);
         eComponent.setHeaderText(headerText);
         eComponent.setHeaderSpanMerged(headerSpanMerged);
         eComponent.setHeaderSpanUnMerged(headerSpanUnmerged);
-        // Get the CLR report data from session
         List<LinkedAadharViewReport> aadharList = (List<LinkedAadharViewReport>) session.getAttribute("linkedAadharViewReportList");
         List<LinkedAadharViewReport> grandTotal = (List<LinkedAadharViewReport>) session.getAttribute("linkedAadharGrandTotal");
         List<List<String>> reportDataList = new ArrayList<>();
         AtomicInteger indexHolder = new AtomicInteger();
-        // Process clrList to create report data
         if (aadharList != null && !aadharList.isEmpty()) {
             aadharList.forEach(map -> {
                 if (map.getStateId() != 999) {
@@ -1470,12 +1489,13 @@ public class PhyscialProgressReportControllerExcel {
                     strings.add(map.getRorLinkedWithAadhaarPercent() != null && map.getRorLinkedWithAadhaarPercent().compareTo(BigDecimal.ZERO) != 0 ? map.getRorLinkedWithAadhaarPercent().toString() : "0.0");
                     strings.add(map.getFormattingrorLinkedWithMobileNumber() != null ? map.getFormattingrorLinkedWithMobileNumber() : "0");
                     strings.add(map.getRorLinkedWithMobileNumberPercent() != null && map.getRorLinkedWithMobileNumberPercent().compareTo(BigDecimal.ZERO) != 0 ? map.getRorLinkedWithMobileNumberPercent().toString() : "0.0");
+                    AadhaarReportExportV5Util.appendAddressRowFormatted(strings, map); //v5
+                    AadhaarReportExportV5Util.appendLandOwnerRowFormatted(strings, map); //v5
                     reportDataList.add(strings);
                 }
             });
         }
 
-        // Add Grand Total to the data
         if (grandTotal != null && !grandTotal.isEmpty()) {
             grandTotal.forEach(gt -> {
                 List<String> grandTotalList = new ArrayList<>();
@@ -1493,14 +1513,14 @@ public class PhyscialProgressReportControllerExcel {
                 grandTotalList.add(gt.getRorLinkedWithAadhaarPercent() != null && gt.getRorLinkedWithAadhaarPercent().compareTo(BigDecimal.ZERO) != 0 ? String.valueOf(gt.getRorLinkedWithAadhaarPercent()) : "0.0");
                 grandTotalList.add(gt.getFormattingrorLinkedWithMobileNumber() != null ? gt.getFormattingrorLinkedWithMobileNumber() : "0");
                 grandTotalList.add(gt.getRorLinkedWithMobileNumberPercent() != null && gt.getRorLinkedWithMobileNumberPercent().compareTo(BigDecimal.ZERO) != 0 ? String.valueOf(gt.getRorLinkedWithMobileNumberPercent()) : "0.0");
+                AadhaarReportExportV5Util.appendAddressRowFormatted(grandTotalList, gt); //v5
+                AadhaarReportExportV5Util.appendLandOwnerRowFormatted(grandTotalList, gt); //v5
                 reportDataList.add(grandTotalList);
             });
         }
 
-        // Set the combined data (state data + grand total) to the exporter component
         eComponent.setReportDataList(reportDataList);
 
-        // Generate the Excel file
         try {
             ExcelExporter.generateExcelFile(response, eComponent);
         } catch (IOException e) {
@@ -1512,6 +1532,7 @@ public class PhyscialProgressReportControllerExcel {
     public void exportAadharDistrictExcelFile(HttpServletResponse response, HttpSession session) {
         ExcelExporterComponent eComponent = new ExcelExporterComponent();
         String stateName = (String) session.getAttribute("stateName");
+        //v5: + RoR Address + Land owners (15->22 cols A-V)
         String[] headerText = {
                 "Department of Land Resources",
                 "Ministry of Rural Development, Government of India",
@@ -1520,22 +1541,30 @@ public class PhyscialProgressReportControllerExcel {
                 ReportLabels.SERIAL_NUMBER,
                 ReportLabels.DISTRICT_NAME,
                 ReportLabels.TOTAL_TEHSILS,
-                ReportLabels.NUMBER_OF_VILLAGES, ReportLabels.RoR,
+                ReportLabels.NUMBER_OF_VILLAGES, ReportLabels.RoR, ReportLabels.NUMBER_OF_LAND_OWNERS,
                 ReportLabels.WHERE_AT_LEAST_ONE_RoR_LINKED_WITH_AADHAAR,
                 ReportLabels.WHERE_100_PERCENT_RoR_LINKED_WITH_AADHAAR,
-                ReportLabels.LINKED_WITH_AADHAAR, ReportLabels.LINKED_WITH_MOBILE_NUMBER, ReportLabels.TOTAL, ReportLabels.TOTAL,
+                ReportLabels.LINKED_WITH_AADHAAR, ReportLabels.LINKED_WITH_MOBILE_NUMBER, ReportLabels.LINKED_WITH_ADDRESS,
+                ReportLabels.LINKED_WITH_AADHAAR, ReportLabels.LINKED_WITH_MOBILE_NUMBER, ReportLabels.LINKED_WITH_ADDRESS,
+                ReportLabels.TOTAL, ReportLabels.TOTAL, ReportLabels.TOTAL,
                 ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE,
-                ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE
+                ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE,
+                ReportLabels.NO, ReportLabels.PERCENTAGE,
+                ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE,
+                ReportLabels.NO, ReportLabels.PERCENTAGE
         };
         String[] headerSpanMerged = {
-                "A1:M1", "A2:M2", "A3:M3", "A4:M4", "A5:M5", "A6:M6",
+                "A1:V1", "A2:V2", "A3:V3", "A4:V4", "A5:V5", "A6:V6",
                 "A7:A9", "B7:B9", "C7:C9",
-                "D7:H7", "I7:M7",
-                "E8:F8", "G8:H8", "J8:K8", "L8:M8"
+                "D7:H7", "I7:O7", "P7:V7",
+                "E8:F8", "G8:H8", "J8:K8", "L8:M8", "N8:O8",
+                "Q8:R8", "S8:T8", "U8:V8"
         };
-        String[] headerSpanUnmerged = {"D8", "I8", "D9", "E9", "F9", "G9", "H9", "I9", "J9", "K9", "L9", "M9"};
+        String[] headerSpanUnmerged = {"D8", "I8", "P8",
+                "D9", "E9", "F9", "G9", "H9", "I9", "J9", "K9", "L9", "M9", "N9", "O9",
+                "P9", "Q9", "R9", "S9", "T9", "U9", "V9"};
         eComponent.setReportName(ReportLabels.AADHAR_REPORT);
-        eComponent.setNoOfColumns(13);
+        eComponent.setNoOfColumns(22);
         eComponent.setNoOfheaderRows(9);
         eComponent.setHeaderText(headerText);
         eComponent.setHeaderSpanMerged(headerSpanMerged);
@@ -1544,7 +1573,6 @@ public class PhyscialProgressReportControllerExcel {
         List<LinkedAadharViewReport> grandTotal = (List<LinkedAadharViewReport>) session.getAttribute("stateAadhaarData");
         List<List<String>> reportDataList = new ArrayList<>();
         AtomicInteger indexHolder = new AtomicInteger();
-        // Process clrList to create report data
         if (districtAadhaarList != null && !districtAadhaarList.isEmpty()) {
             districtAadhaarList.forEach(map -> {
                 if (map.getStateId() != 999) {
@@ -1562,6 +1590,8 @@ public class PhyscialProgressReportControllerExcel {
                     strings.add(String.valueOf(map.getRorLinkedWithAadhaarPercent() != null ? map.getRorLinkedWithAadhaarPercent() : ".00"));
                     strings.add(String.valueOf(map.getRorLinkedWithMobileNumber() != null ? map.getRorLinkedWithMobileNumber() : "0"));
                     strings.add(String.valueOf(map.getRorLinkedWithMobileNumberPercent() != null ? map.getRorLinkedWithMobileNumberPercent() : "0.0"));
+                    AadhaarReportExportV5Util.appendAddressRowDistrict(strings, map); //v5
+                    AadhaarReportExportV5Util.appendLandOwnerRowDistrict(strings, map); //v5
                     reportDataList.add(strings);
                 }
             });
@@ -1582,7 +1612,8 @@ public class PhyscialProgressReportControllerExcel {
                 grandTotalList.add(gt.getRorLinkedWithAadhaarPercent() != null && gt.getRorLinkedWithAadhaarPercent().compareTo(BigDecimal.ZERO) != 0 ? String.valueOf(gt.getRorLinkedWithAadhaarPercent()) : "0.0");
                 grandTotalList.add(gt.getRorLinkedWithMobileNumber() != null ? String.valueOf(gt.getRorLinkedWithMobileNumber()) : "0");
                 grandTotalList.add(gt.getRorLinkedWithMobileNumberPercent() != null && gt.getRorLinkedWithMobileNumberPercent().compareTo(BigDecimal.ZERO) != 0 ? String.valueOf(gt.getRorLinkedWithMobileNumberPercent()) : "0.0");
-
+                AadhaarReportExportV5Util.appendAddressRowRaw(grandTotalList, gt); //v5
+                AadhaarReportExportV5Util.appendLandOwnerRowRaw(grandTotalList, gt); //v5
                 reportDataList.add(grandTotalList);
             });
         }

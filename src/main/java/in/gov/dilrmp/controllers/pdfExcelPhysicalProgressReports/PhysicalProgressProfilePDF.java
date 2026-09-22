@@ -10,6 +10,7 @@ import in.gov.dilrmp.models.reportDTO.rcms.RcmsReportDTO;
 import in.gov.dilrmp.models.reportDTO.sro.SroReportDTO;
 import in.gov.dilrmp.models.reportDTO.surveyresurvey.SurveyResurveyViewReport;
 import in.gov.dilrmp.services.physicalProgressServices.*;
+import in.gov.dilrmp.utils.AadhaarReportExportV5Util;
 import in.gov.dilrmp.utils.PdfExporter;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -53,19 +54,20 @@ public class PhysicalProgressProfilePDF {
         String[] head = {ReportLabels.NATIONAL_PROFILE, " ", " ", "1. " + ReportLabels.CLR_REPORT};
         pComponent.setReportHeading(head);
         pComponent.setReportName(ReportLabels.NATIONAL_PROFILE);
-        float[] col_width = {20f, 30f, 50f, 50f, 50f, 50f, 90f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f};
+        float[] col_width = {20f, 30f, 50f, 50f, 50f, 50f, 90f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f};
         pComponent.setCol_width(col_width);
         String[] col_head = {ReportLabels.SERIAL_NUMBER, ReportLabels.TOTAL_STATE_UT, ReportLabels.TOTAL_DISTRICTS, ReportLabels.TOTAL_TEHSILS,
                 ReportLabels.TOTAL_VILLAGES, ReportLabels.RoR, ReportLabels.NUMBER_OF_VILLAGES_WHERE_CLR_COMPLETED,
                 ReportLabels.TOTAL_NO_OF_LAND_OWNERS, ReportLabels.AVAILABILITY_OF_GENDER_BASED_LAND_OWNERSHIP,ReportLabels.NUMBER_OF_STATE_WHERE,
                 ReportLabels.ROR_AVAILABLE_ONLINE,ReportLabels.DIGITALLY_SIGNED_ROR_AVAILABLE_ONLINE,
                 ReportLabels.DIGITALLY_SIGNED_ROR_LEGALLY_VALID_IN_STATE,ReportLabels.MUTATION_APPLICATION_SUBMITTED_ONLINE,
-                ReportLabels.AUTO_TRIGGERED_MUTATION_FACILITY_AVAILABLE,ReportLabels.BANKS_AUTHORIZED_TO_CREATE_CLEAR_MORTGAGE_CHARGE_IN_ROR,
+                ReportLabels.AUTO_TRIGGERED_MUTATION_FACILITY_AVAILABLE,ReportLabels.AUTO_MUTATION_FACILITY_AVAILABLE,ReportLabels.BANKS_AUTHORIZED_TO_CREATE_CLEAR_MORTGAGE_CHARGE_IN_ROR,
                 ReportLabels.LAND_RECORDS_BE_CHECKED_ONLINE_BY_SRO,ReportLabels.LAND_RECORDS_BE_CHECKED_ONLINE_BY_REVENUE_COURTS,
                 ReportLabels.LAND_RECORDS_BE_CHECKED_ONLINE_BY_CIVIL_COURTS_THROUGH_E_COURTS_SYSTEM,
-                ReportLabels.TOTAL,ReportLabels.COMPUTERIZED,ReportLabels.PERCENTAGE,ReportLabels.NO,ReportLabels.PERCENTAGE,
+                //v5 RoR leaf: Total, Computerized, %, with Cadastral Map, %
+                ReportLabels.TOTAL,ReportLabels.COMPUTERIZED,ReportLabels.PERCENTAGE,ReportLabels.ROR_WITH_CADASTRAL_MAP,ReportLabels.PERCENTAGE,ReportLabels.NO,ReportLabels.PERCENTAGE,
                 ReportLabels.NUMBER_OF_DISTRICTS_WHERE_AVAILABLE,ReportLabels.MALE,ReportLabels.FEMALE,ReportLabels.TOTAL,ReportLabels.NO,
-                ReportLabels.NO,ReportLabels.NO,ReportLabels.NO,ReportLabels.NO,ReportLabels.NO,
+                ReportLabels.NO,ReportLabels.NO,ReportLabels.NO,ReportLabels.NO,ReportLabels.NO,ReportLabels.NO,
                 ReportLabels.NUMBER_OF_DISTRICTS_AUTHORIZED,ReportLabels.NUMBER_OF_BANK_BRANCHES_AUTHORIZED,ReportLabels.NO,ReportLabels.NO,
                 ReportLabels.NO
         };
@@ -74,34 +76,34 @@ public class PhysicalProgressProfilePDF {
         Integer[] rwspn3col = {0,1,2,3,4,7};
         Integer[] rwspn4col = {};
         Integer[] rwspn5col = {};
-        Integer[] simplecell = {19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,31,32,33,34,35,36,37};
+        Integer[] simplecell = {20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41};
         pComponent.setRowspn5(rwspn5col);
         pComponent.setRowspn4(rwspn4col);
         pComponent.setRowspn3(rwspn3col);
         pComponent.setRowspn2(rwspn2col);
         pComponent.setRowspan1(simplecell);
         List<List<Integer>> colspanvalNational = new ArrayList<List<Integer>>();
-        // Example: colspanval.add(new ArrayList<Integer>(Arrays.asList(2, 4)));
-        colspanvalNational.add(new ArrayList<Integer>(Arrays.asList(5, 3)));
+        colspanvalNational.add(new ArrayList<Integer>(Arrays.asList(5, 5))); //v5 RoR 3->5
         colspanvalNational.add(new ArrayList<Integer>(Arrays.asList(6, 2)));
         colspanvalNational.add(new ArrayList<Integer>(Arrays.asList(8, 4)));
-        colspanvalNational.add(new ArrayList<Integer>(Arrays.asList(9, 11)));
+        colspanvalNational.add(new ArrayList<Integer>(Arrays.asList(9, 12))); //v5 +1 Auto-Mutation under NUMBER_OF_STATE_WHERE
         colspanvalNational.add(new ArrayList<Integer>(Arrays.asList(10, 1)));
         colspanvalNational.add(new ArrayList<Integer>(Arrays.asList(11, 1)));
         colspanvalNational.add(new ArrayList<Integer>(Arrays.asList(12, 1)));
         colspanvalNational.add(new ArrayList<Integer>(Arrays.asList(13, 1)));
-        colspanvalNational.add(new ArrayList<Integer>(Arrays.asList(15, 3)));
-        colspanvalNational.add(new ArrayList<Integer>(Arrays.asList(16, 1)));
+        colspanvalNational.add(new ArrayList<Integer>(Arrays.asList(14, 1))); //v5 Auto-Mutation
+        colspanvalNational.add(new ArrayList<Integer>(Arrays.asList(16, 3)));
         colspanvalNational.add(new ArrayList<Integer>(Arrays.asList(17, 1)));
         colspanvalNational.add(new ArrayList<Integer>(Arrays.asList(18, 1)));
+        colspanvalNational.add(new ArrayList<Integer>(Arrays.asList(19, 1)));
         pComponent.setColumnspan(colspanvalNational);
         List<List<Integer>> colsBreakNational = new ArrayList<List<Integer>>();
-        colsBreakNational.add(new ArrayList<Integer>(Arrays.asList(5, 3)));
+        colsBreakNational.add(new ArrayList<Integer>(Arrays.asList(5, 5))); //v5 RoR leaf 3->5
         colsBreakNational.add(new ArrayList<Integer>(Arrays.asList(6, 2)));
         colsBreakNational.add(new ArrayList<Integer>(Arrays.asList(8, 4)));
-        colsBreakNational.add(new ArrayList<Integer>(Arrays.asList(14, 3)));
+        colsBreakNational.add(new ArrayList<Integer>(Arrays.asList(15, 3))); //v5 banks shifted
         pComponent.setColumnnumber(colsBreakNational);
-        pComponent.setColumnBreakCountNo(8);
+        pComponent.setColumnBreakCountNo(10); //v5: 29 data - 19 first-level = 10
         //List<Object[]> clrList = (List<Object[]>) session.getAttribute("clrdata");
         List<StateClrReportView> clrList = stateCLRService.getStateClrReportsGrandToatal();
         List<List<String>> reportDataList = new ArrayList<>(); // Initialize reportDataList
@@ -118,6 +120,9 @@ public class PhysicalProgressProfilePDF {
                 rowData.add(obj.getTotalRor() != null ? obj.getTotalRor().toString() : "0");
                 rowData.add(obj.getRorComputerized() != null ? obj.getRorComputerized().toString() : "0");
                 rowData.add(obj.getRorComputerizedPercent() != null ? obj.getRorComputerizedPercent().toString() : "0.0");
+                //v5
+                rowData.add(obj.getRorWithCadastralMap() != null ? obj.getRorWithCadastralMap().toString() : "0");
+                rowData.add(obj.getRorWithCadastralMapPercent() != null ? obj.getRorWithCadastralMapPercent().toString() : "0.0");
                 rowData.add(obj.getVillagesClrCompleted() != null ? obj.getVillagesClrCompleted().toString() : "0");
                 rowData.add(obj.getClrCompletionPercent() != null ? obj.getClrCompletionPercent().toString() : "0.0");
                 rowData.add(obj.getTotalLandOwners() != null ? obj.getTotalLandOwners().toString() : "0");
@@ -132,6 +137,8 @@ public class PhysicalProgressProfilePDF {
                 rowData.add(obj.getDigitallySignedRorLegallyValid() != null ? obj.getDigitallySignedRorLegallyValid() : "0");
                 rowData.add(obj.getOnlineMutationFacility() != null ? obj.getOnlineMutationFacility() : "0");
                 rowData.add(obj.getAutoTriggerMutation() != null ? obj.getAutoTriggerMutation() : "0");
+                //v5
+                rowData.add(obj.getAutoMutationFacility() != null ? obj.getAutoMutationFacility() : "0");
                 rowData.add(obj.getBankRedFlagMortgageInLandRecords() != null ? obj.getBankRedFlagMortgageInLandRecords() : "0");
                 rowData.add(obj.getDistrictsWithBankRedFlagMortgage() != null ? obj.getDistrictsWithBankRedFlagMortgage().toString() : "0");
                 rowData.add(obj.getBankBranchesWithRedFlagMortgage() != null ? obj.getBankBranchesWithRedFlagMortgage().toString() : "0");
@@ -471,17 +478,20 @@ public class PhysicalProgressProfilePDF {
         String[] head7 = {"", "6. " + ReportLabels.AADHAR_REPORT};
         pComponentAadhar.setReportHeading(head7);
         pComponentAadhar.setReportName(ReportLabels.AADHAR_REPORT);
-        float[] col_width7 = {20f, 65f, 50f, 50f, 90f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f};
+        //v5: + RoR Address + Land owners
+        float[] col_width7 = {20f, 65f, 50f, 50f, 90f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f};
         pComponentAadhar.setCol_width(col_width7);
-        String[] col_head7 =  {ReportLabels.SERIAL_NUMBER, ReportLabels.TOTAL_STATE_UT, ReportLabels.TOTAL_DISTRICTS, ReportLabels.TOTAL_TEHSILS, ReportLabels.NUMBER_OF_VILLAGES, ReportLabels.RoR,
-                ReportLabels.TOTAL,ReportLabels.WHERE_AT_LEAST_ONE_RoR_LINKED_WITH_AADHAAR,ReportLabels.WHERE_100_PERCENT_RoR_LINKED_WITH_AADHAAR,ReportLabels.TOTAL,ReportLabels.LINKED_WITH_AADHAAR,ReportLabels.LINKED_WITH_MOBILE_NUMBER,
-                ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE,ReportLabels.NO,ReportLabels.NO, ReportLabels.PERCENTAGE,ReportLabels.NO, ReportLabels.PERCENTAGE};
+        String[] col_head7 =  {ReportLabels.SERIAL_NUMBER, ReportLabels.TOTAL_STATE_UT, ReportLabels.TOTAL_DISTRICTS, ReportLabels.TOTAL_TEHSILS, ReportLabels.NUMBER_OF_VILLAGES, ReportLabels.RoR, ReportLabels.NUMBER_OF_LAND_OWNERS,
+                ReportLabels.TOTAL,ReportLabels.WHERE_AT_LEAST_ONE_RoR_LINKED_WITH_AADHAAR,ReportLabels.WHERE_100_PERCENT_RoR_LINKED_WITH_AADHAAR,ReportLabels.TOTAL,ReportLabels.LINKED_WITH_AADHAAR,ReportLabels.LINKED_WITH_MOBILE_NUMBER,ReportLabels.LINKED_WITH_ADDRESS,
+                ReportLabels.TOTAL,ReportLabels.LINKED_WITH_AADHAAR,ReportLabels.LINKED_WITH_MOBILE_NUMBER,ReportLabels.LINKED_WITH_ADDRESS,
+                ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE,ReportLabels.NO,ReportLabels.NO, ReportLabels.PERCENTAGE,ReportLabels.NO, ReportLabels.PERCENTAGE,ReportLabels.NO, ReportLabels.PERCENTAGE,
+                ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE};
         pComponentAadhar.setCol_head(col_head7);
-        Integer[] rwspn2col7 = {6,7,8, 9,10,11};
+        Integer[] rwspn2col7 = {7,8,9,10,11,12,13,14,15,16,17};
         Integer[] rwspn3col7 = {};
         Integer[] rwspn4col7 = {0, 1, 2, 3};
         Integer[] rwspn5col7 = {};
-        Integer[] simplecell7 = {12,13,14,15,16, 17, 18, 19, 20, 21};
+        Integer[] simplecell7 = {18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36};
         pComponentAadhar.setRowspn5(rwspn5col7);
         pComponentAadhar.setRowspn4(rwspn4col7);
         pComponentAadhar.setRowspn3(rwspn3col7);
@@ -489,21 +499,31 @@ public class PhysicalProgressProfilePDF {
         pComponentAadhar.setRowspan1(simplecell7);
         List<List<Integer>> colspanval7 = new ArrayList<List<Integer>>();
         colspanval7.add(new ArrayList<Integer>(Arrays.asList(4, 5)));
-        colspanval7.add(new ArrayList<Integer>(Arrays.asList(5, 5)));
-        colspanval7.add(new ArrayList<Integer>(Arrays.asList(6, 1)));
-        colspanval7.add(new ArrayList<Integer>(Arrays.asList(7, 2)));
+        colspanval7.add(new ArrayList<Integer>(Arrays.asList(5, 7)));
+        colspanval7.add(new ArrayList<Integer>(Arrays.asList(6, 7)));
+        colspanval7.add(new ArrayList<Integer>(Arrays.asList(7, 1)));
         colspanval7.add(new ArrayList<Integer>(Arrays.asList(8, 2)));
-        colspanval7.add(new ArrayList<Integer>(Arrays.asList(9, 1)));
-        colspanval7.add(new ArrayList<Integer>(Arrays.asList(10, 2)));
+        colspanval7.add(new ArrayList<Integer>(Arrays.asList(9, 2)));
+        colspanval7.add(new ArrayList<Integer>(Arrays.asList(10, 1)));
         colspanval7.add(new ArrayList<Integer>(Arrays.asList(11, 2)));
+        colspanval7.add(new ArrayList<Integer>(Arrays.asList(12, 2)));
+        colspanval7.add(new ArrayList<Integer>(Arrays.asList(13, 2)));
+        colspanval7.add(new ArrayList<Integer>(Arrays.asList(14, 1)));
+        colspanval7.add(new ArrayList<Integer>(Arrays.asList(15, 2)));
+        colspanval7.add(new ArrayList<Integer>(Arrays.asList(16, 2)));
+        colspanval7.add(new ArrayList<Integer>(Arrays.asList(17, 2)));
         pComponentAadhar.setColumnspan(colspanval7);
         List<List<Integer>> colsBreak7 = new ArrayList<List<Integer>>();
         colsBreak7.add(new ArrayList<Integer>(Arrays.asList(5, 2)));
         colsBreak7.add(new ArrayList<Integer>(Arrays.asList(6, 2)));
         colsBreak7.add(new ArrayList<Integer>(Arrays.asList(8, 2)));
         colsBreak7.add(new ArrayList<Integer>(Arrays.asList(9, 2)));
+        colsBreak7.add(new ArrayList<Integer>(Arrays.asList(10, 2)));
+        colsBreak7.add(new ArrayList<Integer>(Arrays.asList(12, 2)));
+        colsBreak7.add(new ArrayList<Integer>(Arrays.asList(13, 2)));
+        colsBreak7.add(new ArrayList<Integer>(Arrays.asList(14, 2)));
         pComponentAadhar.setColumnnumber(colsBreak7);
-        pComponentAadhar.setColumnBreakCountNo(4);
+        pComponentAadhar.setColumnBreakCountNo(8); //v5
         List<List<String>> reportDataListAadhar = new ArrayList<>();
         List<LinkedAadharViewReport> aadharResultList = stateAadharService.getStateLinkedAadhaarReportsGrandToatal();
         if (aadharResultList != null && !aadharResultList.isEmpty()) {
@@ -524,6 +544,8 @@ public class PhysicalProgressProfilePDF {
                     rowData.add(obj.getRorLinkedWithAadhaarPercent() != null ? obj.getRorLinkedWithAadhaarPercent().toString() : "0.0");
                     rowData.add(obj.getRorLinkedWithMobileNumber() != null ? obj.getRorLinkedWithMobileNumber().toString() : "0");
                     rowData.add(obj.getRorLinkedWithMobileNumberPercent() != null ? obj.getRorLinkedWithMobileNumberPercent().toString() : "0.0");
+                    AadhaarReportExportV5Util.appendAddressRowRaw(rowData, obj); //v5
+                    AadhaarReportExportV5Util.appendLandOwnerRowRaw(rowData, obj); //v5
                 }
                 reportDataListAadhar.add(rowData);
             }
@@ -609,19 +631,20 @@ public class PhysicalProgressProfilePDF {
         String[] head = {ReportLabels.STATE_PROFILE, stateName, " ", " ", "1. " + ReportLabels.CLR_REPORT};
         pComponent.setReportHeading(head);
         pComponent.setReportName(ReportLabels.STATE_PROFILE);
-        float[] col_width = {45f, 90f, 50f, 50f, 50f, 50f, 90f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f};
+        float[] col_width = {45f, 90f, 50f, 50f, 50f, 50f, 90f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f};
         pComponent.setCol_width(col_width);
         String[] col_head = {ReportLabels.SERIAL_NUMBER, ReportLabels.TOTAL_DISTRICTS, ReportLabels.TOTAL_TEHSILS,
                 ReportLabels.TOTAL_VILLAGES, ReportLabels.RoR, ReportLabels.NUMBER_OF_VILLAGES_WHERE_CLR_COMPLETED,
                 ReportLabels.TOTAL_NO_OF_LAND_OWNERS, ReportLabels.AVAILABILITY_OF_GENDER_BASED_LAND_OWNERSHIP,
                 ReportLabels.WHETHER_ROR_AVAILABLE_ONLINE,ReportLabels.WHETHER_DIGITALLY_SIGNED_ROR_AVAILABLE_ONLINE,
                 ReportLabels.WHETHER_DIGITALLY_SIGNED_ROR_LEGALLY_VALID_IN_STATE,ReportLabels.WHETHER_MUTATION_APPLICATION_SUBMITTED_ONLINE,
-                ReportLabels.WHETHER_AUTO_TRIGGERED_MUTATION_FACILITY_AVAILABLE,ReportLabels.WHETHER_BANKS_AUTHORIZED_TO_CREATE_CLEAR_MORTGAGE_CHARGE_IN_ROR,
+                ReportLabels.WHETHER_AUTO_TRIGGERED_MUTATION_FACILITY_AVAILABLE,ReportLabels.WHETHER_AUTO_MUTATION_FACILITY_AVAILABLE,ReportLabels.WHETHER_BANKS_AUTHORIZED_TO_CREATE_CLEAR_MORTGAGE_CHARGE_IN_ROR,
                 ReportLabels.WHETHER_LAND_RECORDS_BE_CHECKED_ONLINE_BY_SRO,ReportLabels.WHETHER_LAND_RECORDS_BE_CHECKED_ONLINE_BY_REVENUE_COURTS,
                 ReportLabels.WHETHER_LAND_RECORDS_BE_CHECKED_ONLINE_BY_CIVIL_COURTS_THROUGH_E_COURTS_SYSTEM,
-                ReportLabels.TOTAL,ReportLabels.COMPUTERIZED,ReportLabels.PERCENTAGE,ReportLabels.NO,ReportLabels.PERCENTAGE,
+                //v5 RoR leaf: Total, Computerized, %, with Cadastral Map, %
+                ReportLabels.TOTAL,ReportLabels.COMPUTERIZED,ReportLabels.PERCENTAGE,ReportLabels.ROR_WITH_CADASTRAL_MAP,ReportLabels.PERCENTAGE,ReportLabels.NO,ReportLabels.PERCENTAGE,
                 ReportLabels.NUMBER_OF_DISTRICTS_WHERE_AVAILABLE,ReportLabels.MALE,ReportLabels.FEMALE,ReportLabels.TOTAL,ReportLabels.YES_NO,
-                ReportLabels.YES_NO,ReportLabels.YES_NO,ReportLabels.YES_NO,ReportLabels.YES_NO,ReportLabels.YES_NO,
+                ReportLabels.YES_NO,ReportLabels.YES_NO,ReportLabels.YES_NO,ReportLabels.YES_NO,ReportLabels.YES_NO,ReportLabels.YES_NO,
                 ReportLabels.NUMBER_OF_DISTRICTS_AUTHORIZED,ReportLabels.NUMBER_OF_BANK_BRANCHES_AUTHORIZED,ReportLabels.YES_NO,ReportLabels.YES_NO,
                 ReportLabels.YES_NO
         };
@@ -630,7 +653,7 @@ public class PhysicalProgressProfilePDF {
         Integer[] rwspn3col = {};
         Integer[] rwspn4col = {};
         Integer[] rwspn5col = {};
-        Integer[] simplecell = {17,18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,31,32,33,34,35,36};
+        Integer[] simplecell = {18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39};
         pComponent.setRowspn5(rwspn5col);
         pComponent.setRowspn4(rwspn4col);
         pComponent.setRowspn3(rwspn3col);
@@ -638,7 +661,7 @@ public class PhysicalProgressProfilePDF {
         pComponent.setRowspan1(simplecell);
         List<List<Integer>> colspanval = new ArrayList<List<Integer>>();
         // Example: colspanval.add(new ArrayList<Integer>(Arrays.asList(2, 4)));
-        colspanval.add(new ArrayList<Integer>(Arrays.asList(4, 3)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(4, 5))); //v5 RoR 3->5
         colspanval.add(new ArrayList<Integer>(Arrays.asList(5, 2)));
         colspanval.add(new ArrayList<Integer>(Arrays.asList(7, 4)));
         colspanval.add(new ArrayList<Integer>(Arrays.asList(8, 1)));
@@ -646,19 +669,20 @@ public class PhysicalProgressProfilePDF {
         colspanval.add(new ArrayList<Integer>(Arrays.asList(10, 1)));
         colspanval.add(new ArrayList<Integer>(Arrays.asList(11, 1)));
         colspanval.add(new ArrayList<Integer>(Arrays.asList(12, 1)));
-        colspanval.add(new ArrayList<Integer>(Arrays.asList(13, 3)));
-        colspanval.add(new ArrayList<Integer>(Arrays.asList(14, 1)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(13, 1))); //v5 Auto-Mutation
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(14, 3)));
         colspanval.add(new ArrayList<Integer>(Arrays.asList(15, 1)));
         colspanval.add(new ArrayList<Integer>(Arrays.asList(16, 1)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(17, 1)));
         pComponent.setColumnspan(colspanval);
         List<List<Integer>> colsBreak = new ArrayList<List<Integer>>();
         // Example: colsBreak.add(new ArrayList<Integer>(Arrays.asList(4, 2)));
-        colsBreak.add(new ArrayList<Integer>(Arrays.asList(4, 3)));
+        colsBreak.add(new ArrayList<Integer>(Arrays.asList(4, 5))); //v5 RoR leaf 3->5
         colsBreak.add(new ArrayList<Integer>(Arrays.asList(5, 2)));
         colsBreak.add(new ArrayList<Integer>(Arrays.asList(7, 4)));
-        colsBreak.add(new ArrayList<Integer>(Arrays.asList(13, 3)));
+        colsBreak.add(new ArrayList<Integer>(Arrays.asList(14, 3))); //v5 banks shifted
         pComponent.setColumnnumber(colsBreak);
-        pComponent.setColumnBreakCountNo(8);
+        pComponent.setColumnBreakCountNo(10); //v5: 28-18=10
         List<StateClrReportView> clrList = (List<StateClrReportView>) session.getAttribute("clrData");
         List<List<String>> reportDataList = new ArrayList<>();
         if (clrList != null && !clrList.isEmpty()) {
@@ -672,6 +696,9 @@ public class PhysicalProgressProfilePDF {
                 rowData.add(obj.getTotalRor() != null ? obj.getTotalRor().toString() : "0");
                 rowData.add(obj.getRorComputerized() != null ? obj.getRorComputerized().toString() : "0");
                 rowData.add(obj.getRorComputerizedPercent() != null ? obj.getRorComputerizedPercent().toString() : "0.0");
+                //v5
+                rowData.add(obj.getRorWithCadastralMap() != null ? obj.getRorWithCadastralMap().toString() : "0");
+                rowData.add(obj.getRorWithCadastralMapPercent() != null ? obj.getRorWithCadastralMapPercent().toString() : "0.0");
                 rowData.add(obj.getVillagesClrCompleted() != null ? obj.getVillagesClrCompleted().toString() : "0");
                 rowData.add(obj.getClrCompletionPercent() != null ? obj.getClrCompletionPercent().toString() : "0.0");
                 rowData.add(obj.getTotalLandOwners() != null ? obj.getTotalLandOwners().toString() : "0");
@@ -685,6 +712,8 @@ public class PhysicalProgressProfilePDF {
                 rowData.add(obj.getDigitallySignedRorLegallyValid() != null ? obj.getDigitallySignedRorLegallyValid() : "0");
                 rowData.add(obj.getOnlineMutationFacility() != null ? obj.getOnlineMutationFacility() : "0");
                 rowData.add(obj.getAutoTriggerMutation() != null ? obj.getAutoTriggerMutation() : "0");
+                //v5
+                rowData.add(obj.getAutoMutationFacility() != null ? obj.getAutoMutationFacility() : "0");
                 rowData.add(obj.getBankRedFlagMortgageInLandRecords() != null ? obj.getBankRedFlagMortgageInLandRecords() : "0");
                 rowData.add(obj.getDistrictsWithBankRedFlagMortgage() != null ? obj.getDistrictsWithBankRedFlagMortgage().toString() : "0");
                 rowData.add(obj.getBankBranchesWithRedFlagMortgage() != null ? obj.getBankBranchesWithRedFlagMortgage().toString() : "0");
@@ -1008,17 +1037,20 @@ public class PhysicalProgressProfilePDF {
         String[] head7 = {"", "6. " + ReportLabels.AADHAR_REPORT};
         pComponentAadhar.setReportHeading(head7);
         pComponentAadhar.setReportName(ReportLabels.AADHAR_REPORT);
-        float[] col_width7 = {20f, 65f, 50f, 50f, 90f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f};
+        //v5: + RoR Address + Land owners
+        float[] col_width7 = {20f, 65f, 50f, 50f, 90f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f};
         pComponentAadhar.setCol_width(col_width7);
-        String[] col_head7 =  {ReportLabels.SERIAL_NUMBER, ReportLabels.TOTAL_DISTRICTS, ReportLabels.TOTAL_TEHSILS, ReportLabels.NUMBER_OF_VILLAGES, ReportLabels.RoR,
-                ReportLabels.TOTAL,ReportLabels.WHERE_AT_LEAST_ONE_RoR_LINKED_WITH_AADHAAR,ReportLabels.WHERE_100_PERCENT_RoR_LINKED_WITH_AADHAAR,ReportLabels.TOTAL,ReportLabels.LINKED_WITH_AADHAAR,ReportLabels.LINKED_WITH_MOBILE_NUMBER,
-                ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE,ReportLabels.NO,ReportLabels.NO, ReportLabels.PERCENTAGE,ReportLabels.NO, ReportLabels.PERCENTAGE};
+        String[] col_head7 =  {ReportLabels.SERIAL_NUMBER, ReportLabels.TOTAL_DISTRICTS, ReportLabels.TOTAL_TEHSILS, ReportLabels.NUMBER_OF_VILLAGES, ReportLabels.RoR, ReportLabels.NUMBER_OF_LAND_OWNERS,
+                ReportLabels.TOTAL,ReportLabels.WHERE_AT_LEAST_ONE_RoR_LINKED_WITH_AADHAAR,ReportLabels.WHERE_100_PERCENT_RoR_LINKED_WITH_AADHAAR,ReportLabels.TOTAL,ReportLabels.LINKED_WITH_AADHAAR,ReportLabels.LINKED_WITH_MOBILE_NUMBER,ReportLabels.LINKED_WITH_ADDRESS,
+                ReportLabels.TOTAL,ReportLabels.LINKED_WITH_AADHAAR,ReportLabels.LINKED_WITH_MOBILE_NUMBER,ReportLabels.LINKED_WITH_ADDRESS,
+                ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE,ReportLabels.NO,ReportLabels.NO, ReportLabels.PERCENTAGE,ReportLabels.NO, ReportLabels.PERCENTAGE,ReportLabels.NO, ReportLabels.PERCENTAGE,
+                ReportLabels.NO, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE, ReportLabels.NO, ReportLabels.PERCENTAGE};
         pComponentAadhar.setCol_head(col_head7);
-        Integer[] rwspn2col7 = {5,6,7,8, 9,10};
+        Integer[] rwspn2col7 = {6,7,8,9,10,11,12,13,14,15,16};
         Integer[] rwspn3col7 = {};
         Integer[] rwspn4col7 = {0, 1, 2};
         Integer[] rwspn5col7 = {};
-        Integer[] simplecell7 = {11,12,13,14,15,16, 17, 18, 19, 20};
+        Integer[] simplecell7 = {17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35};
         pComponentAadhar.setRowspn5(rwspn5col7);
         pComponentAadhar.setRowspn4(rwspn4col7);
         pComponentAadhar.setRowspn3(rwspn3col7);
@@ -1026,21 +1058,31 @@ public class PhysicalProgressProfilePDF {
         pComponentAadhar.setRowspan1(simplecell7);
         List<List<Integer>> colspanval7 = new ArrayList<List<Integer>>();
         colspanval7.add(new ArrayList<Integer>(Arrays.asList(3, 5)));
-        colspanval7.add(new ArrayList<Integer>(Arrays.asList(4, 5)));
-        colspanval7.add(new ArrayList<Integer>(Arrays.asList(5, 1)));
-        colspanval7.add(new ArrayList<Integer>(Arrays.asList(6, 2)));
+        colspanval7.add(new ArrayList<Integer>(Arrays.asList(4, 7)));
+        colspanval7.add(new ArrayList<Integer>(Arrays.asList(5, 7)));
+        colspanval7.add(new ArrayList<Integer>(Arrays.asList(6, 1)));
         colspanval7.add(new ArrayList<Integer>(Arrays.asList(7, 2)));
-        colspanval7.add(new ArrayList<Integer>(Arrays.asList(8, 1)));
-        colspanval7.add(new ArrayList<Integer>(Arrays.asList(9, 2)));
+        colspanval7.add(new ArrayList<Integer>(Arrays.asList(8, 2)));
+        colspanval7.add(new ArrayList<Integer>(Arrays.asList(9, 1)));
         colspanval7.add(new ArrayList<Integer>(Arrays.asList(10, 2)));
+        colspanval7.add(new ArrayList<Integer>(Arrays.asList(11, 2)));
+        colspanval7.add(new ArrayList<Integer>(Arrays.asList(12, 2)));
+        colspanval7.add(new ArrayList<Integer>(Arrays.asList(13, 1)));
+        colspanval7.add(new ArrayList<Integer>(Arrays.asList(14, 2)));
+        colspanval7.add(new ArrayList<Integer>(Arrays.asList(15, 2)));
+        colspanval7.add(new ArrayList<Integer>(Arrays.asList(16, 2)));
         pComponentAadhar.setColumnspan(colspanval7);
         List<List<Integer>> colsBreak7 = new ArrayList<List<Integer>>();
         colsBreak7.add(new ArrayList<Integer>(Arrays.asList(4, 2)));
         colsBreak7.add(new ArrayList<Integer>(Arrays.asList(5, 2)));
         colsBreak7.add(new ArrayList<Integer>(Arrays.asList(7, 2)));
         colsBreak7.add(new ArrayList<Integer>(Arrays.asList(8, 2)));
+        colsBreak7.add(new ArrayList<Integer>(Arrays.asList(9, 2)));
+        colsBreak7.add(new ArrayList<Integer>(Arrays.asList(11, 2)));
+        colsBreak7.add(new ArrayList<Integer>(Arrays.asList(12, 2)));
+        colsBreak7.add(new ArrayList<Integer>(Arrays.asList(13, 2)));
         pComponentAadhar.setColumnnumber(colsBreak7);
-        pComponentAadhar.setColumnBreakCountNo(4);
+        pComponentAadhar.setColumnBreakCountNo(8); //v5
         List<List<String>> reportDataListAadhar = new ArrayList<>();
         List<LinkedAadharViewReport> aadharResultList = (List<LinkedAadharViewReport>) session.getAttribute("aadhaarData");
         if (aadharResultList != null && !aadharResultList.isEmpty()) {
@@ -1060,6 +1102,8 @@ public class PhysicalProgressProfilePDF {
                     rowData.add(obj.getRorLinkedWithAadhaarPercent() != null ? obj.getRorLinkedWithAadhaarPercent().toString() : "0.0");
                     rowData.add(obj.getRorLinkedWithMobileNumber() != null ? obj.getRorLinkedWithMobileNumber().toString() : "0");
                     rowData.add(obj.getRorLinkedWithMobileNumberPercent() != null ? obj.getRorLinkedWithMobileNumberPercent().toString() : "0.0");
+                    AadhaarReportExportV5Util.appendAddressRowRaw(rowData, obj); //v5
+                    AadhaarReportExportV5Util.appendLandOwnerRowRaw(rowData, obj); //v5
                 }
                 reportDataListAadhar.add(rowData);
             }

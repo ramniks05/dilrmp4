@@ -1,8 +1,8 @@
 package in.gov.dilrmp.services.physicalProgressServices;
 import in.gov.dilrmp.constants.ReportLabels;
-import in.gov.dilrmp.models.reportDTO.MapDigitizationReport.MapDigitizationReport;
 import in.gov.dilrmp.models.reportDTO.linkedaadhaar.LinkedAadharViewReport;
 import in.gov.dilrmp.repositories.physicalProgressRepositories.LinkedAadhaarReportRepository;
+import in.gov.dilrmp.utils.AadhaarReportV5Enricher;
 import in.gov.dilrmp.utils.NumberFormatterUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +22,8 @@ public class StateAadharService {
 
     @Autowired
     LinkedAadhaarReportRepository linkedAadhaarReportRepository;
+    @Autowired
+    AadhaarReportV5Enricher aadhaarReportV5Enricher;
 
     private Logger logger = LoggerFactory.getLogger(StateAadharService.class);
 
@@ -42,6 +44,7 @@ public class StateAadharService {
         labels.put("aadhaar_linked_with_ror", ReportLabels.WHOSE_AADHAAR_LINKED_WITH_RoR);
         labels.put("linked_with_aadhaar", ReportLabels.LINKED_WITH_AADHAAR);
         labels.put("linked_with_mobile_number", ReportLabels.LINKED_WITH_MOBILE_NUMBER);
+        labels.put("linked_with_address", ReportLabels.LINKED_WITH_ADDRESS); //v5
         labels.put("number", ReportLabels.NO);
         labels.put("percentage", ReportLabels.PERCENTAGE);
         labels.put("reportName", ReportLabels.AADHAR_REPORT);
@@ -52,7 +55,9 @@ public class StateAadharService {
 
     public List<LinkedAadharViewReport> getStateLinkedAadhaarReportsGrandToatal(){
 
-        return linkedAadhaarReportRepository.findAllAadhaarByStateId(999);
+        List<LinkedAadharViewReport> list = linkedAadhaarReportRepository.findAllAadhaarByStateId(999);
+        aadhaarReportV5Enricher.enrichStateReports(list);
+        return list;
     }
 
     public List<LinkedAadharViewReport> getStateLinkedAadhaarReportsGrandFormateToatal(){
@@ -70,6 +75,7 @@ public class StateAadharService {
                     return mapL;
                 })
                 .collect(Collectors.toList());
+        aadhaarReportV5Enricher.enrichStateReports(aadharlist);
         return aadharlist;
 
     }
@@ -80,7 +86,7 @@ public class StateAadharService {
         aadhaarList = aadhaarList.stream()
                 .filter(aadhaar -> !aadhaar.getLgdCode().equals(999))
                 .collect(Collectors.toList());
-
+        aadhaarReportV5Enricher.enrichStateReports(aadhaarList);
         return aadhaarList;
     }
 
@@ -101,12 +107,14 @@ public class StateAadharService {
                     return mapL;
                 })
                 .collect(Collectors.toList());
+        aadhaarReportV5Enricher.enrichStateReports(aadhaarList);
         return aadhaarList;
     }
 
 
     public List<LinkedAadharViewReport> filterAndSortStateAadharReport(String parameter, String ascDesc) {
         List<LinkedAadharViewReport> aadhaarList = linkedAadhaarReportRepository.findAll();
+        aadhaarReportV5Enricher.enrichStateReports(aadhaarList);
         Comparator<LinkedAadharViewReport> comparator = Comparator.comparing(LinkedAadharViewReport::getStateName);
         if ("1link".equals(parameter)) {
             comparator = Comparator.comparing(LinkedAadharViewReport::getVillagesWithRorLinkedAadhaarPercent);
@@ -118,6 +126,10 @@ public class StateAadharService {
         }
         else if ("mobilelink".equals(parameter)) {
             comparator = Comparator.comparing(LinkedAadharViewReport::getRorLinkedWithMobileNumberPercent);
+        }
+        else if ("addresslink".equals(parameter)) {
+            comparator = Comparator.comparing(LinkedAadharViewReport::getRorLinkedWithAddressPercent,
+                    Comparator.nullsLast(Comparator.naturalOrder()));
         }
         if ("DESC".equals(ascDesc)) {
             comparator = comparator.reversed();
@@ -141,6 +153,8 @@ public class StateAadharService {
 
     public List<LinkedAadharViewReport> getAadhaarStateDataByStateId(Integer stateId) {
 
-        return linkedAadhaarReportRepository.findAllAadhaarByStateId(stateId);
+        List<LinkedAadharViewReport> list = linkedAadhaarReportRepository.findAllAadhaarByStateId(stateId);
+        aadhaarReportV5Enricher.enrichStateReports(list);
+        return list;
     }
 }

@@ -51,6 +51,10 @@ public final class DistrictMISIncreaseOnlyEnforcer {
         reverted += enforceInteger(existing.getVillagesWith100PercentRoRLinkedAadhaar(), incoming.getVillagesWith100PercentRoRLinkedAadhaar(), incoming::setVillagesWith100PercentRoRLinkedAadhaar);
         reverted += enforceInteger(existing.getRorLinkedWithAadhaar(), incoming.getRorLinkedWithAadhaar(), incoming::setRorLinkedWithAadhaar);
         reverted += enforceInteger(existing.getRorLinkedWithMobileNumber(), incoming.getRorLinkedWithMobileNumber(), incoming::setRorLinkedWithMobileNumber);
+        reverted += enforceInteger(existing.getRorLinkedWithAddress(), incoming.getRorLinkedWithAddress(), incoming::setRorLinkedWithAddress);
+        reverted += enforceInteger(existing.getLandOwnersAadhar(), incoming.getLandOwnersAadhar(), incoming::setLandOwnersAadhar);
+        reverted += enforceInteger(existing.getLandOwnersLinkedWithMobile(), incoming.getLandOwnersLinkedWithMobile(), incoming::setLandOwnersLinkedWithMobile);
+        reverted += enforceInteger(existing.getLandOwnersLinkedWithAddress(), incoming.getLandOwnersLinkedWithAddress(), incoming::setLandOwnersLinkedWithAddress);
         return reverted;
     }
 

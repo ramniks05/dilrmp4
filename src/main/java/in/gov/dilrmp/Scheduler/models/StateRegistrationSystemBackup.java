@@ -19,6 +19,10 @@ public class StateRegistrationSystemBackup {
     private State state;
     private Integer numberOfSROsInState;
     private Integer numberOfSROsUsingOnlineRegistration;
+    //v5 Modernization of SRO
+    private Integer srosModernisedStateFunds;
+    private Integer srosDilrmpSanctioned;
+    private Integer srosModernisedDilrmpFunds;
     private Date legacyRecordsAvailableFromYearSRO;
     private Date legacyRecordsAvailableFromYearPublic;
     private Boolean standardDeedTemplatesAvailable;

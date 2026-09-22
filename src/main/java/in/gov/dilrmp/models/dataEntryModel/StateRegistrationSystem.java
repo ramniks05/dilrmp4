@@ -34,6 +34,18 @@ public class StateRegistrationSystem {
     @Column(name = "number_of_sros_using_online_registration", columnDefinition = "int default 0")
     private Integer numberOfSROsUsingOnlineRegistration = 0;
 
+    //v5 Modernization of SRO — State/UT funds / PPP (B); IGR form
+    @Column(name = "sros_modernised_state_funds", columnDefinition = "int default 0")
+    private Integer srosModernisedStateFunds = 0;
+
+    /** DoLR-entered later — shown in report only; no IGR form question. */
+    @Column(name = "sros_dilrmp_sanctioned", columnDefinition = "int default 0")
+    private Integer srosDilrmpSanctioned = 0;
+
+    //v5 Modernization of SRO — DILRMP funds (D); IGR form
+    @Column(name = "sros_modernised_dilrmp_funds", columnDefinition = "int default 0")
+    private Integer srosModernisedDilrmpFunds = 0;
+
     @Column(name = "legacy_records_available_from_year_sro")
     private Date legacyRecordsAvailableFromYearSRO;
 

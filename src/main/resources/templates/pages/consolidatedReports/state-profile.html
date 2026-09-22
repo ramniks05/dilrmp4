@@ -744,6 +744,74 @@
                             </tbody>
                         </table>
                     </div>
+                    <!-- v5 Legacy Registered Documents Digitization -->
+                    <div class="card-body" style="overflow-x:auto;">
+                        <div class="alert alert-success" role="alert" th:text="${success}"
+                             th:if="${success}"></div>
+                        <table id="example8" class="table table-bordered table-striped">
+                            <thead>
+                            <tr class=" text-center" style="text-align: center;  padding: 10px 0px;">
+                                <td colspan="12"
+                                    style="background-color: #FE8A7D; font-size: 28px;font-family: auto;letter-spacing: 2px;font-style: inherit;">
+                                    Legacy Registered Documents Digitization
+                                </td>
+                            </tr>
+                            </thead>
+                            <thead class="card-info" style="background-color: #feb8b0; font-size: 16px; font-weight: bold;">
+                            <tr>
+                                <th rowspan="2" th:text="${legacylabels['serialNumber']}"></th>
+                                <th rowspan="2" th:text="${legacylabels['totalDistricts']}"></th>
+                                <th rowspan="2" th:text="${legacylabels['totalTehsils']}"></th>
+                                <th th:text="${legacylabels['totalLegacy']}"></th>
+                                <th colspan="2" th:text="${legacylabels['digitisedStateFunds']}"></th>
+                                <th th:text="${legacylabels['sanctionedDilrmp']}"></th>
+                                <th colspan="2" th:text="${legacylabels['completedDilrmp']}"></th>
+                                <th colspan="2" th:text="${legacylabels['totalDigitised']}"></th>
+                                <th rowspan="2" th:text="${legacylabels['uptoYear']}"></th>
+                            </tr>
+                            <tr>
+                                <th th:text="${legacylabels['noOfPages']}"></th>
+                                <th th:text="${legacylabels['noOfPages']}"></th>
+                                <th th:text="${legacylabels['percentage']}"></th>
+                                <th th:text="${legacylabels['noOfPages']}"></th>
+                                <th th:text="${legacylabels['noOfPages']}"></th>
+                                <th th:text="${legacylabels['percentage']}"></th>
+                                <th th:text="${legacylabels['noOfPages']}"></th>
+                                <th th:text="${legacylabels['percentage']}"></th>
+                            </tr>
+                            <tr style="font-weight: bold;">
+                                <td style="text-align: center;">1</td>
+                                <td style="text-align: center;">2</td>
+                                <td style="text-align: center;">3</td>
+                                <td style="text-align: center;">4 (A)</td>
+                                <td style="text-align: center;">5a (B)</td>
+                                <td style="text-align: center;">5b (B/A)</td>
+                                <td style="text-align: center;">6</td>
+                                <td style="text-align: center;">7a</td>
+                                <td style="text-align: center;">7b</td>
+                                <td style="text-align: center;">8a</td>
+                                <td style="text-align: center;">8b</td>
+                                <td style="text-align: center;">9</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="report, status : ${legacyData}" class="bold-text">
+                                <td th:text="${status.count}"></td>
+                                <td th:text="${report.totalDistrict}"></td>
+                                <td th:text="${report.totalTehsils}"></td>
+                                <td th:text="${report.legacyTotalPages}"></td>
+                                <td th:text="${report.legacyDigitisedStateFundsPages}"></td>
+                                <td th:text="${report.legacyDigitisedStateFundsPercent}"></td>
+                                <td th:text="${report.legacyDilrmpSanctionedPages}"></td>
+                                <td th:text="${report.legacyDigitisedDilrmpFundsPages}"></td>
+                                <td th:text="${report.legacyDigitisedDilrmpFundsPercent}"></td>
+                                <td th:text="${report.legacyTotalDigitisedPages}"></td>
+                                <td th:text="${report.legacyTotalDigitisedPercent}"></td>
+                                <td th:text="${report.legacyDigitisedUptoYear}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

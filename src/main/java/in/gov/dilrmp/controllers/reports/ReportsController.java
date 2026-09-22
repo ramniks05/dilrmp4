@@ -2,11 +2,14 @@ package in.gov.dilrmp.controllers.reports;
 
 
 import in.gov.dilrmp.models.administrativeBoundry.State;
+import in.gov.dilrmp.constants.ReportLabels;
 import in.gov.dilrmp.models.dashboard.DashBordDTO;
 import in.gov.dilrmp.models.reportDTO.MapDigitizationReport.DistrictMapDigitizationReport;
 import in.gov.dilrmp.models.reportDTO.MapDigitizationReport.MapDigitizationReport;
 import in.gov.dilrmp.models.reportDTO.clr.DistrictClrReportView;
 import in.gov.dilrmp.models.reportDTO.clr.StateClrReportView;
+import in.gov.dilrmp.models.reportDTO.legacy.DistrictLegacyDigitizationReport;
+import in.gov.dilrmp.models.reportDTO.legacy.LegacyDigitizationReport;
 import in.gov.dilrmp.models.reportDTO.linkedaadhaar.DistrictLinkedAadhaarViewReport;
 import in.gov.dilrmp.models.reportDTO.linkedaadhaar.LinkedAadharViewReport;
 import in.gov.dilrmp.models.reportDTO.mrr.DistrictMrrViewReport;
@@ -14,6 +17,7 @@ import in.gov.dilrmp.models.reportDTO.mrr.MrrViewReport;
 import in.gov.dilrmp.models.reportDTO.rcms.DistrictRcmsReportDTO;
 import in.gov.dilrmp.models.reportDTO.rcms.RcmsReportDTO;
 import in.gov.dilrmp.models.reportDTO.sro.SroReportDTO;
+import in.gov.dilrmp.models.reportDTO.sroModernization.SroModernizationReport;
 import in.gov.dilrmp.models.reportDTO.surveyresurvey.DistrictSurveyResurveyViewReport;
 import in.gov.dilrmp.models.reportDTO.surveyresurvey.SurveyResurveyViewReport;
 import in.gov.dilrmp.services.administrativeBoundry.StateService;
@@ -74,6 +78,10 @@ public class ReportsController {
     StateRCMSService stateRCMSService;
     @Autowired
     StateAadharService stateAadharService;
+    @Autowired
+    LegacyDigitizationReportService legacyDigitizationReportService;
+    @Autowired
+    SroModernizationReportService sroModernizationReportService;
 
 
     @RequestMapping(value = "/physical-progress-report", method = RequestMethod.GET)
@@ -147,6 +155,18 @@ public class ReportsController {
             session.setAttribute("sroStateList",sroStateList);
             session.setAttribute("sroGrandTotal",sroGrandTotal);
 
+            List<LegacyDigitizationReport> legacyList = legacyDigitizationReportService.getAllFormattedList();
+            List<LegacyDigitizationReport> legacyGrandTotal = legacyDigitizationReportService.getGrandTotalFormatted();
+            session.setAttribute("legacyList", legacyList);
+            session.setAttribute("legacyGrandTotal", legacyGrandTotal);
+
+            List<SroModernizationReport> sroModList =
+                    sroModernizationReportService.getAllFormattedList();
+            List<SroModernizationReport> sroModGrandTotal =
+                    sroModernizationReportService.getGrandTotalFormatted();
+            session.setAttribute("sroModernizationList", sroModList);
+            session.setAttribute("sroModernizationGrandTotal", sroModGrandTotal);
+
 
             reportData = getReportDataAllState();
 
@@ -166,6 +186,11 @@ public class ReportsController {
 
             List<DistrictLinkedAadhaarViewReport> districtAadhaarData = districtAadharSService.getDistrictListByStateId(stateId);
             List<LinkedAadharViewReport> stateGrandTotalAadhaarData = districtAadharSService.getStateListByStateList(stateId);
+
+            List<DistrictLegacyDigitizationReport> districtLegacyData =
+                    legacyDigitizationReportService.getDistrictListByStateId(stateId);
+            List<LegacyDigitizationReport> stateGrandTotalLegacyData =
+                    legacyDigitizationReportService.getStateListForDistrictPage(stateId);
 
             if (!stateClrData.isEmpty()) {
                 StateClrReportView stateReport = stateClrData.get(0);
@@ -188,6 +213,8 @@ public class ReportsController {
             session.setAttribute("stateRcmsData",stateGrandTotalRcmsData);
             session.setAttribute("districtAadhaarData",districtAadhaarData);
             session.setAttribute("stateAadhaarData",stateGrandTotalAadhaarData);
+            session.setAttribute("districtLegacyData", districtLegacyData);
+            session.setAttribute("stateLegacyData", stateGrandTotalLegacyData);
             // Fetch the report data for the given stateId
              reportData = getReportDataByStateId();
 
@@ -239,6 +266,14 @@ public class ReportsController {
         data.put("prf_sro_url", "/physcial/report/pdf/sro");
         data.put("excel_sro_url", "/physcial/report/excel/sro");
 
+        data.put("legacy_digitization", "Legacy Registered Documents Digitization");
+        data.put("prf_legacy_digitization_url", "/physcial/report/pdf/legacy-digitization");
+        data.put("excel_legacy_digitization_url", "/physcial/report/excel/legacy-digitization");
+
+        data.put("sro_modernization", ReportLabels.SRO_MODERNIZATION_REPORT);
+        data.put("prf_sro_modernization_url", "/physcial/report/pdf/sro-modernization");
+        data.put("excel_sro_modernization_url", "/physcial/report/excel/sro-modernization");
+
         // Add more key-value pairs as needed based on your table structure
         return data;
     }
@@ -268,6 +303,10 @@ public class ReportsController {
         data.put("aadhaar_linkage", "Consent-based linkage of Aadhaar with RoR (Linkage Aadhaar)");
         data.put("prf_aadhaar_linkage_url", "/physcial/report/district/pdf/district_aadhaar_linkage");
         data.put("excel_aadhaar_linkage_url", "/physcial/report/excel/aadhar-district");
+
+        data.put("legacy_digitization", "Legacy Registered Documents Digitization");
+        data.put("prf_legacy_digitization_url", "/physcial/report/district/pdf/district_legacy_digitization");
+        data.put("excel_legacy_digitization_url", "/physcial/report/excel/legacy-digitization-district");
 
         // Add more key-value pairs as needed based on your table structure
         return data;

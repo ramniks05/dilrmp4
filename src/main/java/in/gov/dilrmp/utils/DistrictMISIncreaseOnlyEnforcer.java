@@ -55,6 +55,11 @@ public final class DistrictMISIncreaseOnlyEnforcer {
         reverted += enforceInteger(existing.getLandOwnersAadhar(), incoming.getLandOwnersAadhar(), incoming::setLandOwnersAadhar);
         reverted += enforceInteger(existing.getLandOwnersLinkedWithMobile(), incoming.getLandOwnersLinkedWithMobile(), incoming::setLandOwnersLinkedWithMobile);
         reverted += enforceInteger(existing.getLandOwnersLinkedWithAddress(), incoming.getLandOwnersLinkedWithAddress(), incoming::setLandOwnersLinkedWithAddress);
+        reverted += enforceInteger(existing.getLegacyTotalPages(), incoming.getLegacyTotalPages(), incoming::setLegacyTotalPages);
+        reverted += enforceInteger(existing.getLegacyDigitisedStateFundsPages(), incoming.getLegacyDigitisedStateFundsPages(), incoming::setLegacyDigitisedStateFundsPages);
+        reverted += enforceInteger(existing.getLegacyDigitisedDilrmpFundsPages(), incoming.getLegacyDigitisedDilrmpFundsPages(), incoming::setLegacyDigitisedDilrmpFundsPages);
+        reverted += enforceInteger(existing.getLegacyTotalDigitisedPages(), incoming.getLegacyTotalDigitisedPages(), incoming::setLegacyTotalDigitisedPages);
+        // Year is free to change (not increase-only); DoLR sanctioned has no form field yet
         return reverted;
     }
 

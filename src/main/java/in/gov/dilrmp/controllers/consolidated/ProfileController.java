@@ -4,6 +4,7 @@ package in.gov.dilrmp.controllers.consolidated;
 import in.gov.dilrmp.models.administrativeBoundry.State;
 import in.gov.dilrmp.models.reportDTO.MapDigitizationReport.MapDigitizationReport;
 import in.gov.dilrmp.models.reportDTO.clr.StateClrReportView;
+import in.gov.dilrmp.models.reportDTO.legacy.LegacyDigitizationReport;
 import in.gov.dilrmp.models.reportDTO.linkedaadhaar.LinkedAadharViewReport;
 import in.gov.dilrmp.models.reportDTO.mrr.MrrViewReport;
 import in.gov.dilrmp.models.reportDTO.rcms.RcmsReportDTO;
@@ -44,6 +45,8 @@ public class ProfileController {
    @Autowired
    StateAadharService stateAadharService;
    @Autowired
+   LegacyDigitizationReportService legacyDigitizationReportService;
+   @Autowired
    StateService stateService;
 
 
@@ -56,6 +59,7 @@ public class ProfileController {
         Map<String, String> rcmsLabels = stateRCMSService.createLabels();
         Map<String, String> mrrLabels = stateMRRService.createLabels();
         Map<String, String> aadharLabels = stateAadharService.createLabels();
+        Map<String, String> legacyLabels = legacyDigitizationReportService.createLabels();
 
         model.addAttribute("clrlabels",clrLabels);
         model.addAttribute("maplabels",mapLabels);
@@ -64,6 +68,7 @@ public class ProfileController {
         model.addAttribute("rcmslabels",rcmsLabels);
         model.addAttribute("mrrlabels",mrrLabels);
         model.addAttribute("addharlabels",aadharLabels);
+        model.addAttribute("legacylabels", legacyLabels);
 
         model.addAttribute("clrdata", stateCLRService.getStateClrReportsGrandToatal());
         model.addAttribute("mapdata",mapDigitizationReportService.getStateMapReportsGrandToatal());
@@ -72,6 +77,7 @@ public class ProfileController {
         model.addAttribute("rcmsdata", stateRCMSService.getStateRcmsReportsGrandToatal());
         model.addAttribute("mrrdata", stateMRRService.getStateMrrReportsGrandToatal());
         model.addAttribute("aadhardata", stateAadharService.getStateLinkedAadhaarReportsGrandToatal());
+        model.addAttribute("legacydata", legacyDigitizationReportService.getGrandTotalRaw());
         return "pages/consolidatedReports/national-profile::national-profile";
 
     }
@@ -92,6 +98,7 @@ public class ProfileController {
         Map<String, String> rcmsLabels = stateRCMSService.createLabels();
         Map<String, String> mrrLabels = stateMRRService.createLabels();
         Map<String, String> aadharLabels = stateAadharService.createLabels();
+        Map<String, String> legacyLabels = legacyDigitizationReportService.createLabels();
 
         model.addAttribute("clrlabels",clrLabels);
         model.addAttribute("maplabels",mapLabels);
@@ -100,6 +107,7 @@ public class ProfileController {
         model.addAttribute("rcmslabels",rcmsLabels);
         model.addAttribute("mrrlabels",mrrLabels);
         model.addAttribute("addharlabels",aadharLabels);
+        model.addAttribute("legacylabels", legacyLabels);
 
 
         return "pages/consolidatedReports/state-profile::state-profile";
@@ -118,6 +126,7 @@ public class ProfileController {
         Map<String, String> rcmsLabels = stateRCMSService.createLabels();
         Map<String, String> mrrLabels = stateMRRService.createLabels();
         Map<String, String> aadharLabels = stateAadharService.createLabels();
+        Map<String, String> legacyLabels = legacyDigitizationReportService.createLabels();
 
         model.addAttribute("clrlabels", clrLabels);
         model.addAttribute("maplabels", mapLabels);
@@ -126,6 +135,7 @@ public class ProfileController {
         model.addAttribute("rcmslabels", rcmsLabels);
         model.addAttribute("mrrlabels", mrrLabels);
         model.addAttribute("addharlabels", aadharLabels);
+        model.addAttribute("legacylabels", legacyLabels);
 
         List<StateClrReportView> clrData = stateCLRService.getClrStateDataByStateId(stateLgdCode);
         List<MapDigitizationReport> mapData = mapDigitizationReportService.getMapStateDataByStateId(stateLgdCode);
@@ -134,6 +144,7 @@ public class ProfileController {
         List<RcmsReportDTO> rcmsData = stateRCMSService.getrcmsStateDataByStateId(stateLgdCode);
         List<LinkedAadharViewReport> aadhaarData = stateAadharService.getAadhaarStateDataByStateId(stateLgdCode);
         List<MrrViewReport> mrrData = stateMRRService.getMrrStateDataByStateId(stateLgdCode);
+        List<LegacyDigitizationReport> legacyData = legacyDigitizationReportService.getByStateId(stateLgdCode);
 
         model.addAttribute("clrData", clrData);
         session.setAttribute("clrData", clrData);
@@ -149,6 +160,8 @@ public class ProfileController {
         session.setAttribute("aadhaarData", aadhaarData);
         model.addAttribute("mrrData", mrrData);
         session.setAttribute("mrrData", mrrData);
+        model.addAttribute("legacyData", legacyData);
+        session.setAttribute("legacyData", legacyData);
         session.setAttribute("stateName", clrData.get(0).getStateName());
         return "pages/consolidatedReports/state-profile::state-profile";
     }

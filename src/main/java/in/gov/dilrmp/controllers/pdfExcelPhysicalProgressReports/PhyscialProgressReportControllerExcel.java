@@ -16,6 +16,8 @@ import in.gov.dilrmp.models.reportDTO.MapDigitizationReport.DistrictMapDigitizat
 import in.gov.dilrmp.models.reportDTO.MapDigitizationReport.MapDigitizationReport;
 import in.gov.dilrmp.models.reportDTO.clr.DistrictClrReportView;
 import in.gov.dilrmp.models.reportDTO.clr.StateClrReportView;
+import in.gov.dilrmp.models.reportDTO.legacy.DistrictLegacyDigitizationReport;
+import in.gov.dilrmp.models.reportDTO.legacy.LegacyDigitizationReport;
 import in.gov.dilrmp.models.reportDTO.linkedaadhaar.DistrictLinkedAadhaarViewReport;
 import in.gov.dilrmp.models.reportDTO.linkedaadhaar.LinkedAadharViewReport;
 import in.gov.dilrmp.models.reportDTO.mrr.DistrictMrrViewReport;
@@ -23,6 +25,7 @@ import in.gov.dilrmp.models.reportDTO.mrr.MrrViewReport;
 import in.gov.dilrmp.models.reportDTO.rcms.DistrictRcmsReportDTO;
 import in.gov.dilrmp.models.reportDTO.rcms.RcmsReportDTO;
 import in.gov.dilrmp.models.reportDTO.sro.SroReportDTO;
+import in.gov.dilrmp.models.reportDTO.sroModernization.SroModernizationReport;
 import in.gov.dilrmp.models.reportDTO.surveyresurvey.DistrictSurveyResurveyViewReport;
 import in.gov.dilrmp.models.reportDTO.surveyresurvey.SurveyResurveyViewReport;
 import in.gov.dilrmp.services.DataEntryForm.StateMISDataEntryService;
@@ -37,7 +40,9 @@ import in.gov.dilrmp.component.ExcelExporterComponent;
 import in.gov.dilrmp.constants.ReportLabels;
 import in.gov.dilrmp.utils.AadhaarReportExportV5Util;
 import in.gov.dilrmp.utils.ExcelExporter;
+import in.gov.dilrmp.utils.LegacyDigitizationExportUtil;
 import in.gov.dilrmp.utils.MapDigitizationReportExportV5Util;
+import in.gov.dilrmp.utils.SroModernizationExportUtil;
 
 @Controller
 @RequestMapping("physcial/report/excel")
@@ -2365,5 +2370,213 @@ public class PhyscialProgressReportControllerExcel {
         }
     }
 
+    //v5 Legacy Digitization — state Excel
+    @GetMapping("/legacy-digitization")
+    public void exportLegacyDigitizationExcelFile(HttpServletResponse response, HttpSession session) {
+        ExcelExporterComponent eComponent = new ExcelExporterComponent();
+        String[] headerText = {
+                "Department of Land Resources",
+                "Ministry of Rural Development, Government of India",
+                "Digital India Land Records Modernization Programme (DILRMP)",
+                ReportLabels.LEGACY_DIGITIZATION_REPORT, "",
+                ReportLabels.SERIAL_NUMBER, ReportLabels.STATE_UT, ReportLabels.TOTAL_DISTRICTS, ReportLabels.TOTAL_TEHSILS,
+                ReportLabels.TOTAL_LEGACY_REGISTERED_DOCUMENTS, ReportLabels.LEGACY_DIGITIZED_FROM_STATE_FUNDS,
+                ReportLabels.LEGACY_SANCTIONED_UNDER_DILRMP, ReportLabels.LEGACY_COMPLETED_FROM_DILRMP_FUNDS,
+                ReportLabels.TOTAL_LEGACY_DIGITIZED, ReportLabels.LEGACY_DIGITIZED_UPTO_YEAR,
+                ReportLabels.NO_OF_PAGES, ReportLabels.NO_OF_PAGES, ReportLabels.PERCENTAGE,
+                ReportLabels.NO_OF_PAGES, ReportLabels.NO_OF_PAGES, ReportLabels.PERCENTAGE,
+                ReportLabels.NO_OF_PAGES, ReportLabels.PERCENTAGE
+        };
+        String[] headerSpanMerged = {
+                "A1:M1", "A2:M2", "A3:M3", "A4:M4", "A5:M5",
+                "A6:A7", "B6:B7", "C6:C7", "D6:D7", "M6:M7",
+                "F6:G6", "I6:J6", "K6:L6"
+        };
+        String[] headerSpanUnmerged = {"E7", "F7", "G7", "H7", "I7", "J7", "K7", "L7"};
+        eComponent.setReportName(ReportLabels.LEGACY_DIGITIZATION_REPORT);
+        eComponent.setNoOfColumns(13);
+        eComponent.setNoOfheaderRows(7);
+        eComponent.setHeaderText(headerText);
+        eComponent.setHeaderSpanMerged(headerSpanMerged);
+        eComponent.setHeaderSpanUnMerged(headerSpanUnmerged);
+        List<LegacyDigitizationReport> legacyList =
+                (List<LegacyDigitizationReport>) session.getAttribute("legacyList");
+        List<LegacyDigitizationReport> grandTotal =
+                (List<LegacyDigitizationReport>) session.getAttribute("legacyGrandTotal");
+        List<List<String>> reportDataList = new ArrayList<>();
+        AtomicInteger indexHolder = new AtomicInteger();
+        if (legacyList != null && !legacyList.isEmpty()) {
+            legacyList.forEach(map -> {
+                if (map.getStateId() == null || map.getStateId() != 999) {
+                    List<String> strings = new ArrayList<>();
+                    strings.add(Integer.toString(indexHolder.incrementAndGet()));
+                    strings.add(map.getStateName() != null ? map.getStateName() : "N/A");
+                    strings.add(map.getFormattingTotalDistrict() != null ? map.getFormattingTotalDistrict() : "0");
+                    strings.add(map.getFormattingTotalTehsils() != null ? map.getFormattingTotalTehsils() : "0");
+                    LegacyDigitizationExportUtil.appendStateFormatted(strings, map);
+                    reportDataList.add(strings);
+                }
+            });
+        }
+        if (grandTotal != null && !grandTotal.isEmpty()) {
+            grandTotal.forEach(gt -> {
+                List<String> grandTotalList = new ArrayList<>();
+                grandTotalList.add("");
+                grandTotalList.add(gt.getStateName() != null ? gt.getStateName() : "Grand Total");
+                grandTotalList.add(gt.getFormattingTotalDistrict() != null ? gt.getFormattingTotalDistrict() : "0");
+                grandTotalList.add(gt.getFormattingTotalTehsils() != null ? gt.getFormattingTotalTehsils() : "0");
+                LegacyDigitizationExportUtil.appendStateFormatted(grandTotalList, gt);
+                reportDataList.add(grandTotalList);
+            });
+        }
+        eComponent.setReportDataList(reportDataList);
+        try {
+            ExcelExporter.generateExcelFile(response, eComponent);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //v5 Legacy Digitization — district Excel
+    @GetMapping("/legacy-digitization-district")
+    public void exportLegacyDigitizationDistrictExcelFile(HttpServletResponse response, HttpSession session) {
+        ExcelExporterComponent eComponent = new ExcelExporterComponent();
+        String stateName = (String) session.getAttribute("stateName");
+        String[] headerText = {
+                "Department of Land Resources",
+                "Ministry of Rural Development, Government of India",
+                "Digital India Land Records Modernization Programme (DILRMP)",
+                ReportLabels.LEGACY_DIGITIZATION_REPORT, ReportLabels.STATE_UT + " : " + stateName, "",
+                ReportLabels.SERIAL_NUMBER, ReportLabels.DISTRICT_NAME, ReportLabels.TOTAL_TEHSILS,
+                ReportLabels.TOTAL_LEGACY_REGISTERED_DOCUMENTS, ReportLabels.LEGACY_DIGITIZED_FROM_STATE_FUNDS,
+                ReportLabels.LEGACY_SANCTIONED_UNDER_DILRMP, ReportLabels.LEGACY_COMPLETED_FROM_DILRMP_FUNDS,
+                ReportLabels.TOTAL_LEGACY_DIGITIZED, ReportLabels.LEGACY_DIGITIZED_UPTO_YEAR,
+                ReportLabels.NO_OF_PAGES, ReportLabels.NO_OF_PAGES, ReportLabels.PERCENTAGE,
+                ReportLabels.NO_OF_PAGES, ReportLabels.NO_OF_PAGES, ReportLabels.PERCENTAGE,
+                ReportLabels.NO_OF_PAGES, ReportLabels.PERCENTAGE
+        };
+        String[] headerSpanMerged = {
+                "A1:L1", "A2:L2", "A3:L3", "A4:L4", "A5:L5", "A6:L6",
+                "A7:A8", "B7:B8", "C7:C8", "L7:L8",
+                "E7:F7", "H7:I7", "J7:K7"
+        };
+        String[] headerSpanUnmerged = {"D8", "E8", "F8", "G8", "H8", "I8", "J8", "K8"};
+        eComponent.setReportName(ReportLabels.LEGACY_DIGITIZATION_REPORT);
+        eComponent.setNoOfColumns(12);
+        eComponent.setNoOfheaderRows(8);
+        eComponent.setHeaderText(headerText);
+        eComponent.setHeaderSpanMerged(headerSpanMerged);
+        eComponent.setHeaderSpanUnMerged(headerSpanUnmerged);
+        List<DistrictLegacyDigitizationReport> districtList =
+                (List<DistrictLegacyDigitizationReport>) session.getAttribute("districtLegacyData");
+        List<LegacyDigitizationReport> grandTotal =
+                (List<LegacyDigitizationReport>) session.getAttribute("stateLegacyData");
+        List<List<String>> reportDataList = new ArrayList<>();
+        AtomicInteger indexHolder = new AtomicInteger();
+        if (districtList != null && !districtList.isEmpty()) {
+            districtList.forEach(map -> {
+                List<String> strings = new ArrayList<>();
+                strings.add(Integer.toString(indexHolder.incrementAndGet()));
+                strings.add(map.getDistrictName() != null ? map.getDistrictName().toUpperCase() : "N/A");
+                strings.add(map.getTotalTehsils() != null ? String.valueOf(map.getTotalTehsils()) : "0");
+                LegacyDigitizationExportUtil.appendDistrict(strings, map);
+                reportDataList.add(strings);
+            });
+        }
+        if (grandTotal != null && !grandTotal.isEmpty()) {
+            grandTotal.forEach(gt -> {
+                List<String> grandTotalList = new ArrayList<>();
+                grandTotalList.add("");
+                grandTotalList.add("Grand Total");
+                grandTotalList.add(gt.getTotalTehsils() != null ? String.valueOf(gt.getTotalTehsils()) : "0");
+                LegacyDigitizationExportUtil.appendStateRaw(grandTotalList, gt);
+                reportDataList.add(grandTotalList);
+            });
+        }
+        eComponent.setReportDataList(reportDataList);
+        try {
+            ExcelExporter.generateExcelFile(response, eComponent);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //v5 Modernization of Registration Office (SRO) — state Excel
+    @GetMapping("/sro-modernization")
+    public void exportSroModernizationExcelFile(HttpServletResponse response, HttpSession session) {
+        ExcelExporterComponent eComponent = new ExcelExporterComponent();
+        // Merged texts (order = headerSpanMerged): titles + row6 headers
+        // Unmerged texts (order = headerSpanUnmerged): row7 Nos. / %
+        String[] headerText = {
+                "Department of Land Resources",
+                "Ministry of Rural Development, Government of India",
+                "Digital India Land Records Modernization Programme (DILRMP)",
+                ReportLabels.SRO_MODERNIZATION_REPORT, "",
+                // Merged order must match headerSpanMerged: A,B,C,D,E,H then F:G, I:J, K:L
+                ReportLabels.SERIAL_NUMBER,
+                ReportLabels.STATE_UT,
+                ReportLabels.TOTAL_DISTRICTS,
+                ReportLabels.TOTAL_SROS,
+                ReportLabels.SROS_USING_ONLINE_REGISTRATION_A,
+                ReportLabels.SROS_SANCTIONED_DILRMP,
+                ReportLabels.SROS_MODERNISED_STATE_FUNDS,
+                ReportLabels.SROS_MODERNISED_DILRMP_FUNDS,
+                ReportLabels.SROS_MODERNISED_TOTAL,
+                ReportLabels.NOS,
+                ReportLabels.PERCENTAGE,
+                ReportLabels.NOS,
+                ReportLabels.PERCENTAGE,
+                ReportLabels.NOS,
+                ReportLabels.PERCENTAGE
+        };
+        String[] headerSpanMerged = {
+                "A1:L1", "A2:L2", "A3:L3", "A4:L4", "A5:L5",
+                "A6:A7", "B6:B7", "C6:C7", "D6:D7", "E6:E7", "H6:H7",
+                "F6:G6", "I6:J6", "K6:L6"
+        };
+        String[] headerSpanUnmerged = {"F7", "G7", "I7", "J7", "K7", "L7"};
+        eComponent.setReportName(ReportLabels.SRO_MODERNIZATION_REPORT);
+        eComponent.setNoOfColumns(12);
+        eComponent.setNoOfheaderRows(7);
+        eComponent.setHeaderText(headerText);
+        eComponent.setHeaderSpanMerged(headerSpanMerged);
+        eComponent.setHeaderSpanUnMerged(headerSpanUnmerged);
+        List<SroModernizationReport> list =
+                (List<SroModernizationReport>) session.getAttribute("sroModernizationList");
+        List<SroModernizationReport> grandTotal =
+                (List<SroModernizationReport>) session.getAttribute("sroModernizationGrandTotal");
+        List<List<String>> reportDataList = new ArrayList<>();
+        AtomicInteger indexHolder = new AtomicInteger();
+        if (list != null && !list.isEmpty()) {
+            list.forEach(map -> {
+                if (map.getStateId() == null || map.getStateId() != 999) {
+                    List<String> strings = new ArrayList<>();
+                    strings.add(Integer.toString(indexHolder.incrementAndGet()));
+                    strings.add(map.getStateName() != null ? map.getStateName() : "N/A");
+                    strings.add(map.getFormattingTotalDistricts() != null ? map.getFormattingTotalDistricts() : "0");
+                    strings.add(map.getFormattingTotalSros() != null ? map.getFormattingTotalSros() : "0");
+                    SroModernizationExportUtil.appendStateFormatted(strings, map);
+                    reportDataList.add(strings);
+                }
+            });
+        }
+        if (grandTotal != null && !grandTotal.isEmpty()) {
+            grandTotal.forEach(gt -> {
+                List<String> grandTotalList = new ArrayList<>();
+                grandTotalList.add("");
+                grandTotalList.add(gt.getStateName() != null ? gt.getStateName() : "Grand Total");
+                grandTotalList.add(gt.getFormattingTotalDistricts() != null ? gt.getFormattingTotalDistricts() : "0");
+                grandTotalList.add(gt.getFormattingTotalSros() != null ? gt.getFormattingTotalSros() : "0");
+                SroModernizationExportUtil.appendStateFormatted(grandTotalList, gt);
+                reportDataList.add(grandTotalList);
+            });
+        }
+        eComponent.setReportDataList(reportDataList);
+        try {
+            ExcelExporter.generateExcelFile(response, eComponent);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

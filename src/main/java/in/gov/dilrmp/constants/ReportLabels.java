@@ -238,6 +238,36 @@ public class ReportLabels {
 
     public static final String AADHAR_REPORT = "Consent-based linkage of Aadhaar with RoR";
 
+    //v5 Legacy Registered Documents Digitization
+    public static final String LEGACY_DIGITIZATION_REPORT = "Legacy Registered Documents Digitization";
+    public static final String TOTAL_LEGACY_REGISTERED_DOCUMENTS = "Total no. of Legacy Registered Documents";
+    public static final String LEGACY_DIGITIZED_FROM_STATE_FUNDS = "Total no. of Legacy Registered Documents digitized from State/UT funds";
+    public static final String LEGACY_SANCTIONED_UNDER_DILRMP = "Total no. of Legacy Registered Documents sanctioned for Digitization under DILRMP";
+    public static final String LEGACY_COMPLETED_FROM_DILRMP_FUNDS = "Total no. of Legacy Registered Documents completed from sanctioned funds under DILRMP";
+    public static final String TOTAL_LEGACY_DIGITIZED = "Total Legacy Registered Documents Digitized";
+    public static final String LEGACY_DIGITIZED_UPTO_YEAR = "Year up to which Legacy Registered Documents digitized";
+    public static final String NO_OF_PAGES = "No. of Pages";
+
+    //v5 Modernization of Registration Office (SRO) — match given report sheet
+    public static final String SRO_MODERNIZATION_REPORT = "Modernization of Registration Office (SRO)";
+    public static final String TOTAL_SROS = "Total SROs";
+    public static final String SROS_USING_ONLINE_REGISTRATION_A = "Number of SROs using online registration application";
+    public static final String SROS_MODERNISED_STATE_FUNDS =
+            "Total SROs Modernized from State/UT funds/PPP model on lines of Passport Seva Kendra";
+    public static final String SROS_SANCTIONED_DILRMP =
+            "Total SROs sanctioned for Modernization under DILRMP";
+    public static final String SROS_MODERNISED_DILRMP_FUNDS =
+            "Total SROs Modernized from DILRMP funds on lines of Passport Seva Kendra";
+    public static final String SROS_MODERNISED_TOTAL =
+            "Total SROs Modernized on lines of Passport Seva Kendra";
+    public static final String NOS = "No.";
+    public static final String BY_STATE = "By State";
+    public static final String BY_DOLR = "By DoLR";
+    public static final String CALCULATED = "Calculated";
+    public static final String NOS_BY_STATE = "No. (By State)";
+    public static final String PCT_CALCULATED = "% (Calculated)";
+    public static final String NOS_CALCULATED = "No. (Calculated)";
+
     public static final String STATE_INDICATOR = "State/UT: Key Performance Indicators (KPIs)";
 
     public static final String DISTRICT_INDICATOR = "State and District : Key Performance Indicators (KPIs)";

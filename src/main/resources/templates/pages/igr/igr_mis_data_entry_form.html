@@ -63,6 +63,36 @@
                     </div>
                   </div>
 
+                  <!-- //v5 Modernization of SRO — State/UT funds / PPP (B) -->
+                  <div class="col-md-12 mb-3">
+                    <div class="form-group row">
+                      <label for="srosModernisedStateFunds" class="col-md-8 col-form-label">
+                        <span class="red-text">[2.1]</span> Total SROs Modernized from State/UT funds/PPP model on lines of Passport Seva Kendra:
+                      </label>
+                      <div class="col-md-4">
+                        <input type="number" id="srosModernisedStateFunds"
+                          name="srosModernisedStateFunds" th:field="*{srosModernisedStateFunds}"
+                          class="form-control" min="0" value="0" oninput="validateSRONumbers()" onchange="validateAndResetField()">
+                        <small id="modernisedStateError" class="text-danger"></small>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- //v5 Modernization of SRO — DILRMP funds (D); sanctioned (C) is DoLR Generic MIS form -->
+                  <div class="col-md-12 mb-3">
+                    <div class="form-group row">
+                      <label for="srosModernisedDilrmpFunds" class="col-md-8 col-form-label">
+                        <span class="red-text">[2.2]</span> Total SROs Modernized from DILRMP funds on lines of Passport Seva Kendra:
+                      </label>
+                      <div class="col-md-4">
+                        <input type="number" id="srosModernisedDilrmpFunds"
+                          name="srosModernisedDilrmpFunds" th:field="*{srosModernisedDilrmpFunds}"
+                          class="form-control" min="0" value="0" oninput="validateSRONumbers()" onchange="validateAndResetField()">
+                        <small id="modernisedDilrmpError" class="text-danger"></small>
+                      </div>
+                    </div>
+                  </div>
+
                   <!-- Legacy Records Available From Year (SRO) -->
                   <div class="col-md-12 mb-3">
                     <div class="form-group row">
@@ -592,15 +622,28 @@
   function validateSRONumbers() {
     const numberOfSROsInState = parseInt(document.getElementById('numberOfSROsInState').value || 0);
     const numberOfSROsUsingOnlineRegistration = parseInt(document.getElementById('numberOfSROsUsingOnlineRegistration').value || 0);
+    const srosModernisedStateFunds = parseInt(document.getElementById('srosModernisedStateFunds').value || 0);
+    const srosModernisedDilrmpFunds = parseInt(document.getElementById('srosModernisedDilrmpFunds').value || 0);
 
     // Reset error messages
     document.getElementById('stateError').textContent = '';
     document.getElementById('registrationError').textContent = '';
+    document.getElementById('modernisedStateError').textContent = '';
+    document.getElementById('modernisedDilrmpError').textContent = '';
 
     // If the second field exceeds the first, reset it to 0 and display an error message
     if (numberOfSROsUsingOnlineRegistration > numberOfSROsInState) {
       document.getElementById('numberOfSROsUsingOnlineRegistration').value = 0;
       document.getElementById('registrationError').textContent = 'Number of SROs using online registration cannot exceed the total number of SROs in the state.';
+    }
+    // B and D must not exceed online SROs (A)
+    if (srosModernisedStateFunds > numberOfSROsUsingOnlineRegistration) {
+      document.getElementById('srosModernisedStateFunds').value = 0;
+      document.getElementById('modernisedStateError').textContent = 'S.No. [2.1] cannot exceed S.No. [2] (online registration SROs).';
+    }
+    if (srosModernisedDilrmpFunds > numberOfSROsUsingOnlineRegistration) {
+      document.getElementById('srosModernisedDilrmpFunds').value = 0;
+      document.getElementById('modernisedDilrmpError').textContent = 'S.No. [2.2] cannot exceed S.No. [2] (online registration SROs).';
     }
   }
 </script>
@@ -609,11 +652,15 @@
       // Store the original value when the page loads
       window.originalNumberOfSROsInState = document.getElementById('numberOfSROsInState').value;
        window.originalNumberOfSROsUsingOnlineRegistration = document.getElementById('numberOfSROsUsingOnlineRegistration').value;
+       window.originalSrosModernisedStateFunds = document.getElementById('srosModernisedStateFunds').value;
+       window.originalSrosModernisedDilrmpFunds = document.getElementById('srosModernisedDilrmpFunds').value;
     });
 
     function validateAndResetField() {
       let inputField = document.getElementById('numberOfSROsInState');
        let inputField1 = document.getElementById('numberOfSROsUsingOnlineRegistration');
+       let inputFieldB = document.getElementById('srosModernisedStateFunds');
+       let inputFieldD = document.getElementById('srosModernisedDilrmpFunds');
       if (inputField.value.trim() === '') {
         // Reset to original value if the field is empty
         inputField.value = window.originalNumberOfSROsInState;
@@ -621,6 +668,12 @@
        if (inputField1.value.trim() === '') {
         // Reset to original value if the field is empty
         inputField1.value = window.originalNumberOfSROsUsingOnlineRegistration;
+      }
+       if (inputFieldB && inputFieldB.value.trim() === '') {
+        inputFieldB.value = window.originalSrosModernisedStateFunds || 0;
+      }
+       if (inputFieldD && inputFieldD.value.trim() === '') {
+        inputFieldD.value = window.originalSrosModernisedDilrmpFunds || 0;
       }
     }
   </script>

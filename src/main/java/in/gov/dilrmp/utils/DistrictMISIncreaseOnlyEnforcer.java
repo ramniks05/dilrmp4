@@ -59,7 +59,10 @@ public final class DistrictMISIncreaseOnlyEnforcer {
         reverted += enforceInteger(existing.getLegacyDigitisedStateFundsPages(), incoming.getLegacyDigitisedStateFundsPages(), incoming::setLegacyDigitisedStateFundsPages);
         reverted += enforceInteger(existing.getLegacyDigitisedDilrmpFundsPages(), incoming.getLegacyDigitisedDilrmpFundsPages(), incoming::setLegacyDigitisedDilrmpFundsPages);
         reverted += enforceInteger(existing.getLegacyTotalDigitisedPages(), incoming.getLegacyTotalDigitisedPages(), incoming::setLegacyTotalDigitisedPages);
-        // Year is free to change (not increase-only); DoLR sanctioned has no form field yet
+        reverted += enforceInteger(existing.getRevenueLegacyTotalPages(), incoming.getRevenueLegacyTotalPages(), incoming::setRevenueLegacyTotalPages);
+        reverted += enforceInteger(existing.getRevenueLegacyDigitisedStateFundsPages(), incoming.getRevenueLegacyDigitisedStateFundsPages(), incoming::setRevenueLegacyDigitisedStateFundsPages);
+        reverted += enforceInteger(existing.getRevenueLegacyDigitisedDilrmpFundsPages(), incoming.getRevenueLegacyDigitisedDilrmpFundsPages(), incoming::setRevenueLegacyDigitisedDilrmpFundsPages);
+        // Year is free to change (not increase-only); DoLR sanctioned is on the generic DoLR form
         return reverted;
     }
 

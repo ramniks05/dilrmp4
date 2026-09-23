@@ -8,7 +8,7 @@
                              style="background: linear-gradient(to right, #32b4c8 0%, rgb(64 101 142));">
                             <h3 class="card-title"
                                 style="color: #eff3f6; font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a; letter-spacing: 2px;">
-                                DoLR Generic MIS Data Entry
+                                DoLR Sanction Entry
                             </h3>
                         </div>
                         <div class="card-body">
@@ -17,7 +17,7 @@
                                     <table class="table table-bordered mb-0">
                                         <tbody>
                                         <tr>
-                                            <td style="width: 30%;"><strong>STATE / UT :</strong></td>
+                                            <td style="width: 30%; vertical-align: middle;"><strong>STATE / UT :</strong></td>
                                             <td>
                                                 <select id="dolrStateId" name="stateId" class="form-control"
                                                         hx-trigger="change"
@@ -45,8 +45,8 @@
                                     <div th:replace="~{pages/dolr/dolr_generic_mis_data_entry_form :: dolr-generic-mis-fields}"></div>
                                 </div>
 
-                                <div class="mt-3">
-                                    <button type="submit" class="btn btn-primary">Save</button>
+                                <div class="mt-3 text-right">
+                                    <button type="submit" class="btn btn-primary px-4">Save</button>
                                 </div>
                             </form>
                         </div>
@@ -60,12 +60,21 @@
         function saveDolrGenericMis(event) {
             event.preventDefault();
             const stateId = document.getElementById('dolrStateId').value;
+            const districtEl = document.getElementById('dolrDistrictId');
             const legacyEl = document.getElementById('legacyDilrmpSanctionedPages');
             const sroEl = document.getElementById('srosDilrmpSanctioned');
+            const revenueLegacyEl = document.getElementById('revenueLegacyDilrmpSanctionedPages');
+            const districtId = districtEl ? districtEl.value : '';
+            if (districtId && (!legacyEl || !revenueLegacyEl)) {
+                alert('Select the district again so the page sanctions can be saved.');
+                return false;
+            }
             const payload = {
                 stateId: stateId,
+                districtId: districtId,
                 legacyDilrmpSanctionedPages: legacyEl ? legacyEl.value : 0,
-                srosDilrmpSanctioned: sroEl ? sroEl.value : 0
+                srosDilrmpSanctioned: sroEl ? sroEl.value : 0,
+                revenueLegacyDilrmpSanctionedPages: revenueLegacyEl ? revenueLegacyEl.value : 0
             };
             fetch('/dolr/generic-mis-data/save', {
                 method: 'POST',
@@ -97,35 +106,17 @@
 
 <div th:fragment="dolr-generic-mis-fields">
     <div class="row">
-        <div class="col-md-12 mb-2">
-            <div class="card-header" style="background-color: #d4edda;">
-                <div class="card-title" style="font-size: 18px; color: var(--danger);">
-                    DoLR-only questions (used in physical progress reports)
-                </div>
-            </div>
-        </div>
-
-        <!-- Legacy Digitization — sanctioned under DILRMP -->
+        <!-- Component: Modernization of Registration Office (SRO) — State/UT -->
         <div class="col-md-12 mb-3">
-            <div class="form-group row">
-                <label for="legacyDilrmpSanctionedPages" class="col-md-8 col-form-label">
-                    <span class="red-text">[1]</span>
-                    Total no. of Legacy Registered Documents sanctioned for Digitization under DILRMP (No. of Pages):
-                </label>
-                <div class="col-md-4">
-                    <input type="number" id="legacyDilrmpSanctionedPages" name="legacyDilrmpSanctionedPages"
-                           class="form-control" min="0"
-                           th:value="${dolrMisDataEntry.legacyDilrmpSanctionedPages != null ? dolrMisDataEntry.legacyDilrmpSanctionedPages : 0}">
-                </div>
+            <div class="card-header p-2 mb-3"
+                 style="background-color: #d4edda; font-size: 18px; font-family: auto; letter-spacing: 1px; color: var(--danger);">
+                Component: Modernization of Registration Office (SRO)
             </div>
-        </div>
-
-        <!-- SRO Modernization — sanctioned under DILRMP -->
-        <div class="col-md-12 mb-3">
-            <div class="form-group row">
+            <div class="form-group row align-items-center">
                 <label for="srosDilrmpSanctioned" class="col-md-8 col-form-label">
-                    <span class="red-text">[2]</span>
-                    Total SROs sanctioned for Modernization under DILRMP:
+                    <span class="red-text">[1]</span>
+                    Total SROs sanctioned for Modernization under DILRMP
+                    <span class="text-muted">(State/UT level)</span>:
                 </label>
                 <div class="col-md-4">
                     <input type="number" id="srosDilrmpSanctioned" name="srosDilrmpSanctioned"
@@ -133,12 +124,98 @@
                            th:value="${dolrMisDataEntry.srosDilrmpSanctioned != null ? dolrMisDataEntry.srosDilrmpSanctioned : 0}">
                 </div>
             </div>
-        </div>
-
-        <div class="col-md-12" th:if="${dolrMisDataEntry.updateOnDate != null}">
-            <small class="text-muted">Last updated:
-                <span th:text="${dolrMisDataEntry.updateOnDate}"></span>
+            <small class="text-muted d-block mb-2" th:if="${dolrMisDataEntry.updateOnDate != null}">
+                Last updated: <span th:text="${dolrMisDataEntry.updateOnDate}"></span>
             </small>
         </div>
+
+        <!-- District selection for page sanctions -->
+        <div class="col-md-12 mb-3">
+            <div class="card-header p-2 mb-3"
+                 style="background-color: #d4edda; font-size: 18px; font-family: auto; letter-spacing: 1px; color: var(--danger);">
+                District-level sanctions
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered mb-0">
+                    <tbody>
+                    <tr>
+                        <td style="width: 30%; vertical-align: middle;"><strong>DISTRICT :</strong></td>
+                        <td>
+                            <select id="dolrDistrictId" name="districtId" class="form-control"
+                                    hx-trigger="change"
+                                    hx-post="/dolr/generic-mis-data/form/district"
+                                    hx-target="#dolrDistrictSanctionFields"
+                                    hx-include="#dolrStateId, #dolrDistrictId"
+                                    hx-indicator="#dolrGenericMisLoading">
+                                <option value="">Select District</option>
+                                <option th:each="district : ${districts}"
+                                        th:value="${district.id}"
+                                        th:text="${district.name}"
+                                        th:selected="${selectedDistrictId != null and district.id == selectedDistrictId}">
+                                </option>
+                            </select>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-md-12" id="dolrDistrictSanctionFields">
+            <div th:replace="~{pages/dolr/dolr_generic_mis_data_entry_form :: dolr-district-sanction-fields}"></div>
+        </div>
+    </div>
+</div>
+
+<div th:fragment="dolr-district-sanction-fields">
+    <div th:if="${selectedDistrictId != null}">
+        <!-- Component: Legacy Registered Documents Digitization -->
+        <div class="mb-4">
+            <div class="card-header p-2 mb-3"
+                 style="background-color: #d4edda; font-size: 18px; font-family: auto; letter-spacing: 1px; color: var(--danger);">
+                Component: Legacy Registered Documents Digitization
+            </div>
+            <div class="form-group row align-items-center">
+                <label for="legacyDilrmpSanctionedPages" class="col-md-8 col-form-label">
+                    <span class="red-text">[2]</span>
+                    Total no. of Legacy Registered Documents sanctioned for Digitization under DILRMP (No. of Pages):
+                </label>
+                <div class="col-md-4">
+                    <input type="number" id="legacyDilrmpSanctionedPages" name="legacyDilrmpSanctionedPages"
+                           class="form-control" min="0"
+                           th:value="${dolrDistrictEntry.legacyDilrmpSanctionedPages != null ? dolrDistrictEntry.legacyDilrmpSanctionedPages : 0}">
+                </div>
+            </div>
+        </div>
+
+        <!-- Component: Legacy Revenue Records Digitization -->
+        <div class="mb-3">
+            <div class="card-header p-2 mb-3"
+                 style="background-color: #d4edda; font-size: 18px; font-family: auto; letter-spacing: 1px; color: var(--danger);">
+                Component: Legacy Revenue Records Digitization
+            </div>
+            <div class="form-group row align-items-center">
+                <label for="revenueLegacyDilrmpSanctionedPages" class="col-md-8 col-form-label">
+                    <span class="red-text">[3]</span>
+                    Total no. of Legacy Revenue Records sanctioned for Digitization under DILRMP (No. of Pages):
+                </label>
+                <div class="col-md-4">
+                    <input type="number" id="revenueLegacyDilrmpSanctionedPages" name="revenueLegacyDilrmpSanctionedPages"
+                           class="form-control" min="0"
+                           th:value="${dolrDistrictEntry.revenueLegacyDilrmpSanctionedPages != null ? dolrDistrictEntry.revenueLegacyDilrmpSanctionedPages : 0}">
+                </div>
+            </div>
+        </div>
+
+        <small class="text-muted" th:if="${dolrDistrictEntry.updateOnDate != null}">
+            District sanctions last updated:
+            <span th:text="${dolrDistrictEntry.updateOnDate}"></span>
+        </small>
+    </div>
+    <div class="alert alert-light border mb-0" th:if="${selectedDistrictId == null}">
+        Select a district to enter sanctions for
+        <strong>Legacy Registered Documents Digitization</strong>
+        and
+        <strong>Legacy Revenue Records Digitization</strong>.
     </div>
 </div>

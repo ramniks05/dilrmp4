@@ -15,13 +15,15 @@ public interface DolrMisDataEntryRepository extends JpaRepository<DolrMisDataEnt
 
     @Query(value = "SELECT e.state_id, "
             + "COALESCE(e.legacy_dilrmp_sanctioned_pages, 0), "
-            + "COALESCE(e.sros_dilrmp_sanctioned, 0) "
+            + "COALESCE(e.sros_dilrmp_sanctioned, 0), "
+            + "COALESCE(e.revenue_legacy_dilrmp_sanctioned_pages, 0) "
             + "FROM dolr_mis_data_entry e", nativeQuery = true)
     List<Object[]> findAllSanctionPairsByStateId();
 
     @Query(value = "SELECT "
             + "COALESCE(SUM(e.legacy_dilrmp_sanctioned_pages), 0), "
-            + "COALESCE(SUM(e.sros_dilrmp_sanctioned), 0) "
+            + "COALESCE(SUM(e.sros_dilrmp_sanctioned), 0), "
+            + "COALESCE(SUM(e.revenue_legacy_dilrmp_sanctioned_pages), 0) "
             + "FROM dolr_mis_data_entry e", nativeQuery = true)
     List<Object[]> sumSanctionsNational();
 }

@@ -250,6 +250,19 @@ public class DistrictMISDataEntry {
     @Column(name = "legacy_digitised_upto_year", columnDefinition = "int default 0")
     private Integer legacyDigitisedUptoYear = 0;
 
+    //v5 Legacy Revenue Records Digitisation (State/UT entry; DoLR sanctioned is on generic DoLR form)
+    @Column(name = "revenue_legacy_total_pages", columnDefinition = "int default 0")
+    private Integer revenueLegacyTotalPages = 0;
+
+    @Column(name = "revenue_legacy_digitised_state_funds_pages", columnDefinition = "int default 0")
+    private Integer revenueLegacyDigitisedStateFundsPages = 0;
+
+    @Column(name = "revenue_legacy_digitised_dilrmp_funds_pages", columnDefinition = "int default 0")
+    private Integer revenueLegacyDigitisedDilrmpFundsPages = 0;
+
+    @Column(name = "revenue_legacy_digitised_upto_year", columnDefinition = "int default 0")
+    private Integer revenueLegacyDigitisedUptoYear = 0;
+
       // Additional fieldsa
     @Column(name = "last_update_on_date")
     private LocalDateTime updateOnDate;

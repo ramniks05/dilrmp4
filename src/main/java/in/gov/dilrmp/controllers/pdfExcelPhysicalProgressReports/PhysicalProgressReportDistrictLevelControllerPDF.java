@@ -9,6 +9,8 @@ import in.gov.dilrmp.models.reportDTO.clr.DistrictClrReportView;
 import in.gov.dilrmp.models.reportDTO.clr.StateClrReportView;
 import in.gov.dilrmp.models.reportDTO.legacy.DistrictLegacyDigitizationReport;
 import in.gov.dilrmp.models.reportDTO.legacy.LegacyDigitizationReport;
+import in.gov.dilrmp.models.reportDTO.legacyRevenue.DistrictLegacyRevenueReport;
+import in.gov.dilrmp.models.reportDTO.legacyRevenue.LegacyRevenueReport;
 import in.gov.dilrmp.models.reportDTO.linkedaadhaar.DistrictLinkedAadhaarViewReport;
 import in.gov.dilrmp.models.reportDTO.linkedaadhaar.LinkedAadharViewReport;
 import in.gov.dilrmp.models.reportDTO.mrr.DistrictMrrViewReport;
@@ -19,10 +21,13 @@ import in.gov.dilrmp.models.reportDTO.surveyresurvey.DistrictSurveyResurveyViewR
 import in.gov.dilrmp.models.reportDTO.surveyresurvey.SurveyResurveyViewReport;
 import in.gov.dilrmp.utils.AadhaarReportExportV5Util;
 import in.gov.dilrmp.utils.LegacyDigitizationExportUtil;
+import in.gov.dilrmp.utils.LegacyRevenueExportUtil;
 import in.gov.dilrmp.utils.MapDigitizationReportExportV5Util;
+import in.gov.dilrmp.services.physicalProgressServices.LegacyRevenueReportService;
 import in.gov.dilrmp.utils.PdfExporter;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +42,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Controller
 @RequestMapping("physcial/report/district/pdf")
 public class PhysicalProgressReportDistrictLevelControllerPDF {
+
+    @Autowired
+    LegacyRevenueReportService legacyRevenueReportService;
 
     DecimalFormat df = new DecimalFormat("0.00");
 
@@ -879,6 +887,96 @@ public class PhysicalProgressReportDistrictLevelControllerPDF {
                 grandTotalList.add("Grand Total");
                 grandTotalList.add(gt.getTotalTehsils() != null ? String.valueOf(gt.getTotalTehsils()) : "0");
                 LegacyDigitizationExportUtil.appendStateRaw(grandTotalList, gt);
+                grandTotalData.add(grandTotalList);
+            });
+        }
+        pComponent.setReportDataList(reportDataList);
+        pComponent.setGrandTotal(grandTotalData);
+        PdfExporter.createPdf(pComponent, response);
+    }
+
+    //v5 Legacy Revenue Records Digitisation — district PDF
+    @GetMapping("/district_legacy_revenue")
+    public void getDistrictLegacyRevenuePdf(HttpServletResponse response, HttpSession session) {
+        PdfExporterComponent pComponent = new PdfExporterComponent();
+        Long stateId = (Long) session.getAttribute("legacyRevenueStateId");
+        List<DistrictLegacyRevenueReport> districtList;
+        List<LegacyRevenueReport> grandTotal;
+        if (stateId != null) {
+            districtList = legacyRevenueReportService.getDistrictListByStateId(stateId);
+            grandTotal = legacyRevenueReportService.getStateListForDistrictPage(stateId);
+        } else {
+            districtList = (List<DistrictLegacyRevenueReport>) session.getAttribute("districtLegacyRevenueData");
+            grandTotal = (List<LegacyRevenueReport>) session.getAttribute("stateLegacyRevenueData");
+        }
+        String stateName = (String) session.getAttribute("legacyRevenueStateName");
+        if ((stateName == null || stateName.isBlank()) && districtList != null && !districtList.isEmpty()
+                && districtList.get(0).getStateName() != null) {
+            stateName = districtList.get(0).getStateName();
+        }
+        if ((stateName == null || stateName.isBlank()) && grandTotal != null && !grandTotal.isEmpty()
+                && grandTotal.get(0).getStateName() != null) {
+            stateName = grandTotal.get(0).getStateName();
+        }
+        if (stateName == null) {
+            stateName = "";
+        }
+        String head[] = {ReportLabels.LEGACY_REVENUE_REPORT, ReportLabels.STATE_UT + " - " + stateName};
+        pComponent.setReportHeading(head);
+        pComponent.setReportName(ReportLabels.LEGACY_REVENUE_REPORT);
+        float col_width[] = {20f, 80f, 40f, 50f, 50f, 40f, 50f, 40f, 50f, 40f, 50f, 40f};
+        pComponent.setCol_width(col_width);
+        String col_head[] = {
+                ReportLabels.SERIAL_NUMBER, ReportLabels.DISTRICT_NAME, ReportLabels.TOTAL_TEHSILS,
+                ReportLabels.TOTAL_LEGACY_REVENUE_RECORDS, ReportLabels.LEGACY_REVENUE_DIGITISED_STATE_FUNDS,
+                ReportLabels.LEGACY_REVENUE_SANCTIONED_DILRMP, ReportLabels.LEGACY_REVENUE_COMPLETED_DILRMP,
+                ReportLabels.TOTAL_LEGACY_REVENUE_DIGITISED, ReportLabels.LEGACY_REVENUE_UPTO_YEAR,
+                ReportLabels.NO_OF_PAGES, ReportLabels.NO_OF_PAGES, ReportLabels.PERCENTAGE,
+                ReportLabels.NO_OF_PAGES, ReportLabels.NO_OF_PAGES, ReportLabels.PERCENTAGE,
+                ReportLabels.NO_OF_PAGES, ReportLabels.PERCENTAGE, ReportLabels.YEAR
+        };
+        pComponent.setCol_head(col_head);
+        Integer[] rwspn2col = {0, 1, 2};
+        Integer[] rwspn3col = {};
+        Integer[] rwspn4col = {};
+        Integer[] rwspn5col = {};
+        Integer[] simplecell = {3, 5, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17};
+        pComponent.setRowspn5(rwspn5col);
+        pComponent.setRowspn4(rwspn4col);
+        pComponent.setRowspn3(rwspn3col);
+        pComponent.setRowspn2(rwspn2col);
+        pComponent.setRowspan1(simplecell);
+        List<List<Integer>> colspanval = new ArrayList<List<Integer>>();
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(4, 2)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(6, 2)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(7, 2)));
+        pComponent.setColumnspan(colspanval);
+        List<List<Integer>> colsBreak = new ArrayList<List<Integer>>();
+        colsBreak.add(new ArrayList<Integer>(Arrays.asList(4, 2)));
+        colsBreak.add(new ArrayList<Integer>(Arrays.asList(6, 2)));
+        colsBreak.add(new ArrayList<Integer>(Arrays.asList(7, 2)));
+        pComponent.setColumnnumber(colsBreak);
+        pComponent.setColumnBreakCountNo(3);
+        List<List<String>> reportDataList = new ArrayList<List<String>>();
+        AtomicInteger indexHolder = new AtomicInteger();
+        if (districtList != null && !districtList.isEmpty()) {
+            districtList.forEach(map -> {
+                List<String> strings = new ArrayList<>();
+                strings.add(Integer.toString(indexHolder.incrementAndGet()));
+                strings.add(map.getDistrictName() != null ? map.getDistrictName().toUpperCase() : "N/A");
+                strings.add(map.getTotalTehsils() != null ? String.valueOf(map.getTotalTehsils()) : "0");
+                LegacyRevenueExportUtil.appendDistrict(strings, map);
+                reportDataList.add(strings);
+            });
+        }
+        List<List<String>> grandTotalData = new ArrayList<>();
+        if (grandTotal != null && !grandTotal.isEmpty()) {
+            grandTotal.forEach(gt -> {
+                List<String> grandTotalList = new ArrayList<>();
+                grandTotalList.add("");
+                grandTotalList.add("Grand Total");
+                grandTotalList.add(gt.getTotalTehsils() != null ? String.valueOf(gt.getTotalTehsils()) : "0");
+                LegacyRevenueExportUtil.appendStateRaw(grandTotalList, gt);
                 grandTotalData.add(grandTotalList);
             });
         }

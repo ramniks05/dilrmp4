@@ -92,6 +92,12 @@
                     <i class="fas fa-file-alt"></i> Legacy Digitization
                   </a>
                 </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="legacy-revenue-tab" data-toggle="tab" href="#legacy-revenue" role="tab"
+                    aria-controls="legacy-revenue" aria-selected="false" data-tab-state="disabled">
+                    <i class="fas fa-scroll"></i> Legacy Revenue Records
+                  </a>
+                </li>
               </ul>
 
 
@@ -205,7 +211,7 @@
                   <!-- //v5 CLR: S.No. [6.1] — validated against [5] Total RoR only -->
                   <div class="form-group row">
                     <label for="rorWithCadastralMap" class="col-sm-6 col-form-label">
-                      <span class="red-text">[6.1]</span> Number of RoR with Cadastral Map
+                      <span class="red-text">[6.1]</span> Number of RoR Linked with Cadastral Map
                     </label>
                     <div class="col-sm-6">
                       <input type="text" id="rorWithCadastralMap" name="rorWithCadastralMap"
@@ -855,6 +861,65 @@
                   </div>
                 </div>
 
+                <!--================================== Component 9: Legacy Revenue Records Digitization ===========================================-->
+                <div class="tab-pane fade" id="legacy-revenue" role="tabpanel" aria-labelledby="legacy-revenue-tab">
+                  <div class="form-group row">
+                    <div class="card-header p-2"
+                      style="font-size: 24px;font-family: auto; letter-spacing: 2px; color: var(--danger);">
+                      <ul class="nav nav-pills">
+                        <li class="nav-item">Component 9: Legacy Revenue Records Digitization
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="revenueLegacyTotalPages" class="col-sm-8 col-form-label"><span
+                        class="red-text">[52]</span>
+                      Total no. of Legacy Revenue Records (No. of Pages):</label>
+                    <div class="col-sm-4">
+                      <input type="text" id="revenueLegacyTotalPages" name="revenueLegacyTotalPages"
+                        th:field="*{revenueLegacyTotalPages}" onchange="validateLegacyRevenueRecords()"
+                             oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="0" maxlength="12" class="form-control">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="revenueLegacyDigitisedStateFundsPages" class="col-sm-8 col-form-label"><span
+                        class="red-text">[53]</span>
+                      Total no. of Legacy Revenue Records digitized from State/UT funds (No. of Pages):</label>
+                    <div class="col-sm-4">
+                      <input type="text" id="revenueLegacyDigitisedStateFundsPages" name="revenueLegacyDigitisedStateFundsPages"
+                        th:field="*{revenueLegacyDigitisedStateFundsPages}" onchange="validateLegacyRevenueRecords()"
+                             oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="0" maxlength="12" class="form-control">
+                    </div>
+                  </div>
+
+                  <!-- DoLR sanctioned pages — entered on DoLR Generic MIS form -->
+
+                  <div class="form-group row">
+                    <label for="revenueLegacyDigitisedDilrmpFundsPages" class="col-sm-8 col-form-label"><span
+                        class="red-text">[54]</span>
+                      Total no. of Legacy Revenue Records completed from sanctioned funds under DILRMP (No. of Pages):</label>
+                    <div class="col-sm-4">
+                      <input type="text" id="revenueLegacyDigitisedDilrmpFundsPages" name="revenueLegacyDigitisedDilrmpFundsPages"
+                        th:field="*{revenueLegacyDigitisedDilrmpFundsPages}" onchange="validateLegacyRevenueRecords()"
+                             oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="0" maxlength="12" class="form-control">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="revenueLegacyDigitisedUptoYear" class="col-sm-8 col-form-label"><span
+                        class="red-text">[55]</span>
+                      Year up to which Legacy Revenue Records in the State/UT (YYYY):</label>
+                    <div class="col-sm-4">
+                      <input type="text" id="revenueLegacyDigitisedUptoYear" name="revenueLegacyDigitisedUptoYear"
+                        th:field="*{revenueLegacyDigitisedUptoYear}" onchange="validateLegacyRevenueRecords()"
+                             oninput="this.value = this.value.replace(/[^0-9]/g, '');" min="0" maxlength="4" class="form-control">
+                    </div>
+                  </div>
+                </div>
+
                 <div class="form-group mt-4">
                   <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save</button>
                 </div>
@@ -910,7 +975,10 @@
                   legacyTotalPages: 47,
                   legacyDigitisedStateFundsPages: 48,
                   legacyDigitisedDilrmpFundsPages: 49,
-                  legacyTotalDigitisedPages: 50
+                  legacyTotalDigitisedPages: 50,
+                  revenueLegacyTotalPages: 52,
+                  revenueLegacyDigitisedStateFundsPages: 53,
+                  revenueLegacyDigitisedDilrmpFundsPages: 54
                 };
 
                 function isDistrictMisIncreaseOnly() {
@@ -1159,6 +1227,7 @@ $(document).ready(function() {
             $('#e-rcms-tab').removeAttr('data-tab-state');
             $('#aadhaar-tab').removeAttr('data-tab-state');
             $('#legacy-digitization-tab').removeAttr('data-tab-state');
+            $('#legacy-revenue-tab').removeAttr('data-tab-state');
         } else {
             $('#clr-tab').attr('data-tab-state', 'disabled');
             $('#map-digitization-tab').attr('data-tab-state', 'disabled');
@@ -1168,6 +1237,7 @@ $(document).ready(function() {
             $('#e-rcms-tab').attr('data-tab-state', 'disabled');
             $('#aadhaar-tab').attr('data-tab-state', 'disabled');
             $('#legacy-digitization-tab').attr('data-tab-state', 'disabled');
+            $('#legacy-revenue-tab').attr('data-tab-state', 'disabled');
         }
     }
     $('#formTabs').on('click', 'a.nav-link', function(e) {
@@ -1478,6 +1548,33 @@ $(document).ready(function() {
       }
       if (yearEl && year !== 0 && (year < 1900 || year > 2100)) {
         alert("S.No. [51] must be a valid year (YYYY).");
+        yearEl.value = 0;
+      }
+   }
+
+    //v5 Legacy Revenue Records Digitisation [52]-[55]
+    function validateLegacyRevenueRecords() {
+      const totalEl = document.getElementById("revenueLegacyTotalPages");
+      const stateFundsEl = document.getElementById("revenueLegacyDigitisedStateFundsPages");
+      const dilrmpDoneEl = document.getElementById("revenueLegacyDigitisedDilrmpFundsPages");
+      const yearEl = document.getElementById("revenueLegacyDigitisedUptoYear");
+
+      [totalEl, stateFundsEl, dilrmpDoneEl, yearEl].forEach(function (el) {
+        if (el && (el.value === '' || el.value === null)) {
+          el.value = 0;
+        }
+      });
+
+      const total = parseInt(totalEl ? totalEl.value || 0 : 0, 10);
+      const stateFunds = parseInt(stateFundsEl ? stateFundsEl.value || 0 : 0, 10);
+      const year = parseInt(yearEl ? yearEl.value || 0 : 0, 10);
+
+      if (stateFunds > total) {
+        alert("S.No. [53] must be equal to or lesser than S.No. [52].");
+        if (stateFundsEl) stateFundsEl.value = 0;
+      }
+      if (yearEl && year !== 0 && (year < 1900 || year > 2100)) {
+        alert("S.No. [55] must be a valid year (YYYY).");
         yearEl.value = 0;
       }
    }

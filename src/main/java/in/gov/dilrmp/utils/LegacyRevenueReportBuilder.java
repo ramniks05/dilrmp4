@@ -1,7 +1,7 @@
 package in.gov.dilrmp.utils;
 
-import in.gov.dilrmp.models.reportDTO.legacy.DistrictLegacyDigitizationReport;
-import in.gov.dilrmp.models.reportDTO.legacy.LegacyDigitizationReport;
+import in.gov.dilrmp.models.reportDTO.legacyRevenue.DistrictLegacyRevenueReport;
+import in.gov.dilrmp.models.reportDTO.legacyRevenue.LegacyRevenueReport;
 import in.gov.dilrmp.models.reportDTO.mrr.DistrictMrrViewReport;
 import in.gov.dilrmp.models.reportDTO.mrr.MrrViewReport;
 import in.gov.dilrmp.repositories.DistrictMISDataEntryForm.DistrictMISDataEntryRepository;
@@ -15,25 +15,24 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * //v5 Build Legacy Digitization report rows from existing MRR geo (state/district/tehsil)
- * plus live MIS form aggregates. Form updates reflect on next report load.
- * DoLR sanctioned pages are entered per district and summed for the state total.
+ * Build Legacy Revenue Records Digitisation rows from MRR geography
+ * plus district MIS aggregates. DoLR sanctioned pages are entered per district and summed for the state total.
+ * Total digitised pages = State/UT funds + DILRMP completed.
  */
 @Component
-public class LegacyDigitizationReportBuilder {
+public class LegacyRevenueReportBuilder {
 
     private final DistrictMISDataEntryRepository districtMISDataEntryRepository;
     private final DolrDistrictMisDataEntryRepository dolrDistrictMisDataEntryRepository;
 
-    public LegacyDigitizationReportBuilder(DistrictMISDataEntryRepository districtMISDataEntryRepository,
-                                           DolrDistrictMisDataEntryRepository dolrDistrictMisDataEntryRepository) {
+    public LegacyRevenueReportBuilder(DistrictMISDataEntryRepository districtMISDataEntryRepository,
+                                      DolrDistrictMisDataEntryRepository dolrDistrictMisDataEntryRepository) {
         this.districtMISDataEntryRepository = districtMISDataEntryRepository;
         this.dolrDistrictMisDataEntryRepository = dolrDistrictMisDataEntryRepository;
     }
 
-    /** Geo skeleton from existing MRR master/view data (state, districts, tehsils). */
-    public LegacyDigitizationReport fromMrrState(MrrViewReport mrr) {
-        LegacyDigitizationReport report = new LegacyDigitizationReport();
+    public LegacyRevenueReport fromMrrState(MrrViewReport mrr) {
+        LegacyRevenueReport report = new LegacyRevenueReport();
         report.setStateId(mrr.getStateId());
         report.setStateName(mrr.getStateName());
         report.setLgdCode(mrr.getLgdCode());
@@ -42,9 +41,8 @@ public class LegacyDigitizationReportBuilder {
         return report;
     }
 
-    /** Geo skeleton from existing district MRR view (district name + tehsils). */
-    public DistrictLegacyDigitizationReport fromMrrDistrict(DistrictMrrViewReport mrr) {
-        DistrictLegacyDigitizationReport report = new DistrictLegacyDigitizationReport();
+    public DistrictLegacyRevenueReport fromMrrDistrict(DistrictMrrViewReport mrr) {
+        DistrictLegacyRevenueReport report = new DistrictLegacyRevenueReport();
         report.setDistrictId(mrr.getDistrictId());
         report.setDistrictName(mrr.getDistrictName());
         report.setStateId(mrr.getStateId());
@@ -53,11 +51,11 @@ public class LegacyDigitizationReportBuilder {
         return report;
     }
 
-    public void enrichStateReports(List<LegacyDigitizationReport> reports) {
-        Map<Long, int[]> byState = toMetricMap(districtMISDataEntryRepository.sumLegacyDigitizationByStateId());
-        Map<Long, Integer> dolrSanctionByState = dolrLegacySanctionMap();
-        int[] national = firstNational(districtMISDataEntryRepository.sumLegacyDigitizationNational());
-        int nationalDolrSanction = dolrLegacySanctionNational();
+    public void enrichStateReports(List<LegacyRevenueReport> reports) {
+        Map<Long, int[]> byState = toMetricMap(districtMISDataEntryRepository.sumLegacyRevenueByStateId());
+        Map<Long, Integer> dolrSanctionByState = dolrSanctionMap();
+        int[] national = firstNational(districtMISDataEntryRepository.sumLegacyRevenueNational());
+        int nationalDolrSanction = dolrSanctionNational();
         reports.forEach(report -> {
             int[] metrics;
             if (isNational(report)) {
@@ -72,10 +70,10 @@ public class LegacyDigitizationReportBuilder {
         });
     }
 
-    public void enrichDistrictReports(List<DistrictLegacyDigitizationReport> reports, Long stateId) {
+    public void enrichDistrictReports(List<DistrictLegacyRevenueReport> reports, Long stateId) {
         Map<Long, int[]> byDistrict = toMetricMap(
-                districtMISDataEntryRepository.sumLegacyDigitizationByDistrictForStateId(stateId));
-        Map<Long, Integer> sanctions = districtSanctionMap(stateId, 1);
+                districtMISDataEntryRepository.sumLegacyRevenueByDistrictForStateId(stateId));
+        Map<Long, Integer> sanctions = districtSanctionMap(stateId);
         reports.forEach(report -> {
             int[] metrics = byDistrict.getOrDefault(report.getDistrictId(), zeros()).clone();
             metrics[2] = sanctions.getOrDefault(report.getDistrictId(), 0);
@@ -83,9 +81,9 @@ public class LegacyDigitizationReportBuilder {
         });
     }
 
-    public void enrichStateTotalsForDistrictPage(List<LegacyDigitizationReport> reports, Long stateId) {
-        Map<Long, int[]> byState = toMetricMap(districtMISDataEntryRepository.sumLegacyDigitizationByStateId());
-        Map<Long, Integer> dolrSanctionByState = dolrLegacySanctionMap();
+    public void enrichStateTotalsForDistrictPage(List<LegacyRevenueReport> reports, Long stateId) {
+        Map<Long, int[]> byState = toMetricMap(districtMISDataEntryRepository.sumLegacyRevenueByStateId());
+        Map<Long, Integer> dolrSanctionByState = dolrSanctionMap();
         reports.forEach(report -> {
             int[] metrics = byState.getOrDefault(stateId, zeros()).clone();
             if (isAllZero(metrics) && report.getLgdCode() != null) {
@@ -101,20 +99,20 @@ public class LegacyDigitizationReportBuilder {
         });
     }
 
-    private Map<Long, Integer> dolrLegacySanctionMap() {
-        return sanctionMap(dolrDistrictMisDataEntryRepository.sumSanctionsByStateId(), 1);
+    private Map<Long, Integer> dolrSanctionMap() {
+        return sanctionMap(dolrDistrictMisDataEntryRepository.sumSanctionsByStateId(), 2);
     }
 
-    private Map<Long, Integer> districtSanctionMap(Long stateId, int valueIndex) {
-        return sanctionMap(dolrDistrictMisDataEntryRepository.findSanctionsByStateId(stateId), valueIndex);
+    private Map<Long, Integer> districtSanctionMap(Long stateId) {
+        return sanctionMap(dolrDistrictMisDataEntryRepository.findSanctionsByStateId(stateId), 2);
     }
 
-    private int dolrLegacySanctionNational() {
+    private int dolrSanctionNational() {
         List<Object[]> rows = dolrDistrictMisDataEntryRepository.sumSanctionsNational();
-        if (rows == null || rows.isEmpty() || rows.get(0) == null || rows.get(0).length < 1 || rows.get(0)[0] == null) {
+        if (rows == null || rows.isEmpty() || rows.get(0) == null || rows.get(0).length < 2 || rows.get(0)[1] == null) {
             return 0;
         }
-        return ((Number) rows.get(0)[0]).intValue();
+        return ((Number) rows.get(0)[1]).intValue();
     }
 
     private static Map<Long, Integer> sanctionMap(List<Object[]> rows, int valueIndex) {
@@ -135,7 +133,7 @@ public class LegacyDigitizationReportBuilder {
         return value == null ? 0 : value;
     }
 
-    private static Integer resolveDolrSanction(LegacyDigitizationReport report, Map<Long, Integer> dolrSanctionByState) {
+    private static Integer resolveDolrSanction(LegacyRevenueReport report, Map<Long, Integer> dolrSanctionByState) {
         if (report.getStateId() != null && dolrSanctionByState.containsKey(report.getStateId())) {
             return dolrSanctionByState.get(report.getStateId());
         }
@@ -145,15 +143,13 @@ public class LegacyDigitizationReportBuilder {
         return null;
     }
 
-    /** Prefer state_id match; fall back to LGD code if MIS keys differ. */
-    private static int[] resolveStateMetrics(LegacyDigitizationReport report, Map<Long, int[]> byState) {
+    private static int[] resolveStateMetrics(LegacyRevenueReport report, Map<Long, int[]> byState) {
         if (report.getStateId() != null) {
             int[] byId = byState.get(report.getStateId());
             if (byId != null && !isAllZero(byId)) {
                 return byId;
             }
             if (byId != null) {
-                // keep zero row if key exists but empty — still try lgd fallback for data
                 if (report.getLgdCode() != null) {
                     int[] byLgd = byState.get(report.getLgdCode().longValue());
                     if (byLgd != null) {
@@ -169,57 +165,57 @@ public class LegacyDigitizationReportBuilder {
         return zeros();
     }
 
-    private void applyMetrics(LegacyDigitizationReport report, int[] m) {
+    private void applyMetrics(LegacyRevenueReport report, int[] m) {
         int total = m[0];
         int stateFunds = m[1];
         int sanctioned = m[2];
         int dilrmpDone = m[3];
-        int totalDigitised = m[4];
-        int year = m[5];
-        report.setLegacyTotalPages(total);
-        report.setLegacyDigitisedStateFundsPages(stateFunds);
-        report.setLegacyDigitisedStateFundsPercent(percent(stateFunds, total));
-        report.setLegacyDilrmpSanctionedPages(sanctioned);
-        report.setLegacyDigitisedDilrmpFundsPages(dilrmpDone);
-        report.setLegacyDigitisedDilrmpFundsPercent(percent(dilrmpDone, sanctioned));
-        report.setLegacyTotalDigitisedPages(totalDigitised);
-        report.setLegacyTotalDigitisedPercent(percent(totalDigitised, total));
-        report.setLegacyDigitisedUptoYear(year);
+        int totalDigitised = stateFunds + dilrmpDone;
+        int year = m[4];
+        report.setTotalPages(total);
+        report.setDigitisedStateFundsPages(stateFunds);
+        report.setDigitisedStateFundsPercent(percent(stateFunds, total));
+        report.setDilrmpSanctionedPages(sanctioned);
+        report.setDigitisedDilrmpFundsPages(dilrmpDone);
+        report.setDigitisedDilrmpFundsPercent(percent(dilrmpDone, sanctioned));
+        report.setTotalDigitisedPages(totalDigitised);
+        report.setTotalDigitisedPercent(percent(totalDigitised, total));
+        report.setDigitisedUptoYear(year);
     }
 
-    private void applyMetrics(DistrictLegacyDigitizationReport report, int[] m) {
+    private void applyMetrics(DistrictLegacyRevenueReport report, int[] m) {
         int total = m[0];
         int stateFunds = m[1];
         int sanctioned = m[2];
         int dilrmpDone = m[3];
-        int totalDigitised = m[4];
-        int year = m[5];
-        report.setLegacyTotalPages(total);
-        report.setLegacyDigitisedStateFundsPages(stateFunds);
-        report.setLegacyDigitisedStateFundsPercent(percent(stateFunds, total));
-        report.setLegacyDilrmpSanctionedPages(sanctioned);
-        report.setLegacyDigitisedDilrmpFundsPages(dilrmpDone);
-        report.setLegacyDigitisedDilrmpFundsPercent(percent(dilrmpDone, sanctioned));
-        report.setLegacyTotalDigitisedPages(totalDigitised);
-        report.setLegacyTotalDigitisedPercent(percent(totalDigitised, total));
-        report.setLegacyDigitisedUptoYear(year);
+        int totalDigitised = stateFunds + dilrmpDone;
+        int year = m[4];
+        report.setTotalPages(total);
+        report.setDigitisedStateFundsPages(stateFunds);
+        report.setDigitisedStateFundsPercent(percent(stateFunds, total));
+        report.setDilrmpSanctionedPages(sanctioned);
+        report.setDigitisedDilrmpFundsPages(dilrmpDone);
+        report.setDigitisedDilrmpFundsPercent(percent(dilrmpDone, sanctioned));
+        report.setTotalDigitisedPages(totalDigitised);
+        report.setTotalDigitisedPercent(percent(totalDigitised, total));
+        report.setDigitisedUptoYear(year);
     }
 
-    private void formatState(LegacyDigitizationReport report) {
+    private void formatState(LegacyRevenueReport report) {
         report.setFormattingTotalDistrict(NumberFormatterUtil.formatWithCommas(report.getTotalDistrict()));
         report.setFormattingTotalTehsils(NumberFormatterUtil.formatWithCommas(report.getTotalTehsils()));
-        report.setFormattingLegacyTotalPages(NumberFormatterUtil.formatWithCommas(report.getLegacyTotalPages()));
-        report.setFormattingLegacyDigitisedStateFundsPages(
-                NumberFormatterUtil.formatWithCommas(report.getLegacyDigitisedStateFundsPages()));
-        report.setFormattingLegacyDilrmpSanctionedPages(
-                NumberFormatterUtil.formatWithCommas(report.getLegacyDilrmpSanctionedPages()));
-        report.setFormattingLegacyDigitisedDilrmpFundsPages(
-                NumberFormatterUtil.formatWithCommas(report.getLegacyDigitisedDilrmpFundsPages()));
-        report.setFormattingLegacyTotalDigitisedPages(
-                NumberFormatterUtil.formatWithCommas(report.getLegacyTotalDigitisedPages()));
+        report.setFormattingTotalPages(NumberFormatterUtil.formatWithCommas(report.getTotalPages()));
+        report.setFormattingDigitisedStateFundsPages(
+                NumberFormatterUtil.formatWithCommas(report.getDigitisedStateFundsPages()));
+        report.setFormattingDilrmpSanctionedPages(
+                NumberFormatterUtil.formatWithCommas(report.getDilrmpSanctionedPages()));
+        report.setFormattingDigitisedDilrmpFundsPages(
+                NumberFormatterUtil.formatWithCommas(report.getDigitisedDilrmpFundsPages()));
+        report.setFormattingTotalDigitisedPages(
+                NumberFormatterUtil.formatWithCommas(report.getTotalDigitisedPages()));
     }
 
-    private static boolean isNational(LegacyDigitizationReport report) {
+    private static boolean isNational(LegacyRevenueReport report) {
         return (report.getStateId() != null && report.getStateId().equals(999L))
                 || (report.getLgdCode() != null && report.getLgdCode().equals(999));
     }
@@ -244,7 +240,7 @@ public class LegacyDigitizationReportBuilder {
     }
 
     private static int[] zeros() {
-        return new int[]{0, 0, 0, 0, 0, 0};
+        return new int[]{0, 0, 0, 0, 0};
     }
 
     private static int[] firstNational(List<Object[]> rows) {
@@ -252,7 +248,7 @@ public class LegacyDigitizationReportBuilder {
             return zeros();
         }
         Object[] row = rows.get(0);
-        return new int[]{toInt(row, 0), toInt(row, 1), toInt(row, 2), toInt(row, 3), toInt(row, 4), toInt(row, 5)};
+        return new int[]{toInt(row, 0), toInt(row, 1), toInt(row, 2), toInt(row, 3), toInt(row, 4)};
     }
 
     private static Map<Long, int[]> toMetricMap(List<Object[]> rows) {
@@ -261,11 +257,11 @@ public class LegacyDigitizationReportBuilder {
             return map;
         }
         for (Object[] row : rows) {
-            if (row == null || row.length < 7 || row[0] == null) {
+            if (row == null || row.length < 6 || row[0] == null) {
                 continue;
             }
             map.put(((Number) row[0]).longValue(), new int[]{
-                    toInt(row, 1), toInt(row, 2), toInt(row, 3), toInt(row, 4), toInt(row, 5), toInt(row, 6)
+                    toInt(row, 1), toInt(row, 2), toInt(row, 3), toInt(row, 4), toInt(row, 5)
             });
         }
         return map;

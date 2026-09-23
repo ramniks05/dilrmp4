@@ -1,5 +1,6 @@
 package in.gov.dilrmp.models.dataEntryModel;
 
+import in.gov.dilrmp.models.administrativeBoundry.District;
 import in.gov.dilrmp.models.administrativeBoundry.State;
 import in.gov.dilrmp.models.user.User;
 import jakarta.persistence.*;
@@ -11,17 +12,18 @@ import lombok.Setter;
 import java.time.LocalDate;
 
 /**
- * //v5 Generic DoLR MIS — fields filled only by DoLR (not State/IGR/District forms).
- * One row per State/UT.
+ * DoLR sanctions entered per district.
+ * Legacy Registered Documents and Legacy Revenue Records page sanctions.
+ * One row per district.
  */
 @Entity
-@Table(name = "dolr_mis_data_entry",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"state_id"})})
+@Table(name = "dolr_district_mis_data_entry",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"district_id"})})
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DolrMisDataEntry {
+public class DolrDistrictMisDataEntry {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,15 +33,13 @@ public class DolrMisDataEntry {
     @JoinColumn(name = "state_id", nullable = false)
     private State state;
 
-    /** Legacy Digitization — sanctioned pages under DILRMP (report column C). */
+    @ManyToOne
+    @JoinColumn(name = "district_id", nullable = false)
+    private District district;
+
     @Column(name = "legacy_dilrmp_sanctioned_pages", columnDefinition = "int default 0")
     private Integer legacyDilrmpSanctionedPages = 0;
 
-    /** SRO Modernization — SROs sanctioned under DILRMP (report column C). */
-    @Column(name = "sros_dilrmp_sanctioned", columnDefinition = "int default 0")
-    private Integer srosDilrmpSanctioned = 0;
-
-    /** Legacy Revenue Records Digitisation — pages sanctioned under DILRMP (DoLR). */
     @Column(name = "revenue_legacy_dilrmp_sanctioned_pages", columnDefinition = "int default 0")
     private Integer revenueLegacyDilrmpSanctionedPages = 0;
 

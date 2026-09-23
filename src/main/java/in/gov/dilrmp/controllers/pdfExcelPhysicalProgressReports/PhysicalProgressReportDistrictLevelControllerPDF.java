@@ -56,7 +56,8 @@ public class PhysicalProgressReportDistrictLevelControllerPDF {
         String head[] = {ReportLabels.CLR_REPORT,ReportLabels.STATE_UT +" - "+stateName,ReportLabels.GENDER_OWNERSHIP_HEADING + " " + woner};
         pComponent.setReportHeading(head);
         pComponent.setReportName(ReportLabels.CLR_REPORT);
-        float col_width[] = {45f, 90f, 50f, 50f, 50f, 50f, 90f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f};
+        //v5 district CLR: 25 leaf columns (was 23 before +2 RoR cadastral leaf cols)
+        float col_width[] = {45f, 90f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f};
         pComponent.setCol_width(col_width);
         String col_head[] = {ReportLabels.SERIAL_NUMBER, ReportLabels.DISTRICT_NAME, ReportLabels.TOTAL_TEHSILS,
                 ReportLabels.TOTAL_VILLAGES, ReportLabels.RoR, ReportLabels.NUMBER_OF_VILLAGES_WHERE_CLR_COMPLETED,
@@ -77,7 +78,8 @@ public class PhysicalProgressReportDistrictLevelControllerPDF {
         Integer[] rwspn3col = {};
         Integer[] rwspn4col = {};
         Integer[] rwspn5col = {};
-        Integer[] simplecell = {17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35};
+        // leaf header cells (indices after 17 first-level headers): 20 leaf labels → 17..36
+        Integer[] simplecell = {17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36};
         pComponent.setRowspn5(rwspn5col);
         pComponent.setRowspn4(rwspn4col);
         pComponent.setRowspn3(rwspn3col);
@@ -102,7 +104,7 @@ public class PhysicalProgressReportDistrictLevelControllerPDF {
         colsBreak.add(new ArrayList<Integer>(Arrays.asList(5, 2)));
         colsBreak.add(new ArrayList<Integer>(Arrays.asList(7, 4)));
         pComponent.setColumnnumber(colsBreak);
-        pComponent.setColumnBreakCountNo(8); //v5: 25-17=8 (was 6; +2 RoR leaf)
+        pComponent.setColumnBreakCountNo(8); //v5: 25 data cols - 17 first-level = 8
         List<DistrictClrReportView> districtClrList = (List<DistrictClrReportView>) session.getAttribute("districtClrData");
         List<StateClrReportView> grandTotal = (List<StateClrReportView>) session.getAttribute("stateClrData");
         List<List<String>> reportDataList = new ArrayList<>();

@@ -55,7 +55,7 @@
 
                                 <!-- Second heading with static text, now placed on a new line -->
                                 <h3 class="card-title" style="font-size: 15px; font-weight: bold;">
-                                    <span>Note: From Column No. (9) to (16) State Level Data</span>
+                                    <span>Note: From Column No. (9) to (17) State Level Data</span>
                                 </h3>
                             </div>
 
@@ -205,15 +205,15 @@
                                         <td th:text="${report.totalMaleLandOwners}"></td>
                                         <td th:text="${report.totalFemaleLandOwners}"></td>
                                         <td th:text="${report.totalOwners}"></td>
-                                        <td th:text="${report.rorAvailableOnline != null && report.rorAvailableOnline ? 'Yes' : 'No'}"></td>
-                                        <td th:text="${report.digitallySignedRorAvailable != null && report.digitallySignedRorAvailable ? 'Yes' : 'No'}"></td>
-                                        <td th:text="${report.digitallySignedRorLegallyValid != null && report.digitallySignedRorLegallyValid ? 'Yes' : 'No'}"></td>
-                                        <td th:text="${report.onlineMutationFacility != null && report.onlineMutationFacility ? 'Yes' : 'No'}"></td>
-                                        <td th:text="${report.autoTriggerMutation != null && report.autoTriggerMutation ? 'Yes' : 'No'}"></td>
+                                        <td th:text="${report.rorAvailableOnline != null ? report.rorAvailableOnline : 'No'}"></td>
+                                        <td th:text="${report.digitallySignedRorAvailable != null ? report.digitallySignedRorAvailable : 'No'}"></td>
+                                        <td th:text="${report.digitallySignedRorLegallyValid != null ? report.digitallySignedRorLegallyValid : 'No'}"></td>
+                                        <td th:text="${report.onlineMutationFacility != null ? report.onlineMutationFacility : 'No'}"></td>
+                                        <td th:text="${report.autoTriggerMutation != null ? report.autoTriggerMutation : 'No'}"></td>
                                         <td th:text="${report.autoMutationFacility != null ? report.autoMutationFacility : 'No'}"></td>
-                                        <td th:text="${report.landRecordsOnlineFromRegistrationSystem != null && report.landRecordsOnlineFromRegistrationSystem ? 'Yes' : 'No'}"></td>
-                                        <td th:text="${report.revenueCourtProceedingsPaperless != null && report.revenueCourtProceedingsPaperless ? 'Yes' : 'No'}"></td>
-                                        <td th:text="${report.caseFilingRedFlaggedInLandRecordsFromCivilCourts != null && report.caseFilingRedFlaggedInLandRecordsFromCivilCourts ? 'Yes' : 'No'}"></td>
+                                        <td th:text="${report.landRecordsOnlineFromRegistrationSystem != null ? report.landRecordsOnlineFromRegistrationSystem : 'No'}"></td>
+                                        <td th:text="${report.revenueCourtProceedingsPaperless != null ? report.revenueCourtProceedingsPaperless : 'No'}"></td>
+                                        <td th:text="${report.caseFilingRedFlaggedInLandRecordsFromCivilCourts != null ? report.caseFilingRedFlaggedInLandRecordsFromCivilCourts : 'No'}"></td>
                                     </tr>
                                     </tbody>
                                     <tfoot>

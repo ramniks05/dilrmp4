@@ -25,7 +25,7 @@ public class ReportLabels {
     public static final String RoR = "No. of RoR";
     public static final String ROR_COMPUTERIZED = "RoR Computerized";
     //v5 CLR — No. of RoR with Cadastral Map
-    public static final String ROR_WITH_CADASTRAL_MAP = "with Cadastral Map";
+    public static final String ROR_WITH_CADASTRAL_MAP = "Linked with Cadastral Map";
     public static final String CLR_COMPLETED = "CLR Completed";
     public static final String NUMBER_OF_VILLAGES = "No. of Villages";
     public static final String DIGITALLY_SIGNED_ROR_AVAILABLE = "Digitally signed RoR available";
@@ -247,6 +247,20 @@ public class ReportLabels {
     public static final String TOTAL_LEGACY_DIGITIZED = "Total Legacy Registered Documents Digitized";
     public static final String LEGACY_DIGITIZED_UPTO_YEAR = "Year up to which Legacy Registered Documents digitized";
     public static final String NO_OF_PAGES = "No. of Pages";
+    public static final String YEAR = "Year";
+
+    //v5 Legacy Revenue Records Digitization
+    public static final String LEGACY_REVENUE_REPORT = "Legacy Revenue Records Digitization";
+    public static final String TOTAL_LEGACY_REVENUE_RECORDS = "Total no. of Legacy Revenue Records";
+    public static final String LEGACY_REVENUE_DIGITISED_STATE_FUNDS =
+            "Total no. of Legacy Revenue Records digitized from State/UT funds";
+    public static final String LEGACY_REVENUE_SANCTIONED_DILRMP =
+            "Total no. of Legacy Revenue Records sanctioned for Digitization under DILRMP";
+    public static final String LEGACY_REVENUE_COMPLETED_DILRMP =
+            "Total no. of Legacy Revenue Records completed from sanctioned funds under DILRMP";
+    public static final String TOTAL_LEGACY_REVENUE_DIGITISED = "Total Legacy Revenue Record Digitized";
+    public static final String LEGACY_REVENUE_UPTO_YEAR =
+            "Year up to which Legacy Revenue Records in the State/UT";
 
     //v5 Modernization of Registration Office (SRO) — match given report sheet
     public static final String SRO_MODERNIZATION_REPORT = "Modernization of Registration Office (SRO)";

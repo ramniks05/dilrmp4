@@ -108,6 +108,11 @@ public class DistrictMISDataEntryBackup {
     private Integer legacyDigitisedDilrmpFundsPages;
     private Integer legacyTotalDigitisedPages;
     private Integer legacyDigitisedUptoYear;
+    //v5 Legacy Revenue Records Digitisation
+    private Integer revenueLegacyTotalPages;
+    private Integer revenueLegacyDigitisedStateFundsPages;
+    private Integer revenueLegacyDigitisedDilrmpFundsPages;
+    private Integer revenueLegacyDigitisedUptoYear;
     // Additional fieldsa
     private LocalDateTime updateOnDate;
     @ManyToOne

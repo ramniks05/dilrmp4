@@ -19,7 +19,8 @@ function toggleExcelLinks() {
         document.getElementById('aadhaarExcelUrl'),
         document.getElementById('rcmExcelUrl'),
         document.getElementById('legacyExcelUrl'),
-        document.getElementById('sroModernizationExcelUrl')
+        document.getElementById('sroModernizationExcelUrl'),
+        document.getElementById('legacyRevenueExcelUrl')
     ];
 
     // Show or hide links based on the selected value
@@ -143,6 +144,14 @@ document.addEventListener("DOMContentLoaded", function () {
               document.getElementById("sroModernizationRow").style.display = "";
             } else {
               document.getElementById("sroModernizationRow").style.display = "none";
+            }
+            if (data.legacy_revenue) {
+              document.getElementById("legacyRevenueLabel").innerText = data.legacy_revenue;
+              document.getElementById("legacyRevenueUrl").href = data.prf_legacy_revenue_url;
+              document.getElementById("legacyRevenueExcelUrl").href = data.excel_legacy_revenue_url;
+              document.getElementById("legacyRevenueRow").style.display = "";
+            } else {
+              document.getElementById("legacyRevenueRow").style.display = "none";
             }
 
             // Show the table if there is data

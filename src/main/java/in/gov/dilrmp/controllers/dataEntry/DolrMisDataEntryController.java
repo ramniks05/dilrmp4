@@ -1,6 +1,7 @@
 package in.gov.dilrmp.controllers.dataEntry;
 
 import in.gov.dilrmp.models.administrativeBoundry.State;
+import in.gov.dilrmp.models.dataEntryModel.DolrDistrictMisDataEntry;
 import in.gov.dilrmp.models.dataEntryModel.DolrMisDataEntry;
 import in.gov.dilrmp.services.DataEntryForm.DolrMisDataEntryService;
 import org.slf4j.Logger;
@@ -29,14 +30,22 @@ public class DolrMisDataEntryController {
     public String showForm(Model model) {
         List<State> states = dolrMisDataEntryService.getStates();
         Long stateId = states.isEmpty() ? null : states.get(0).getId();
-        populate(model, stateId);
+        populate(model, stateId, null);
         return "pages/dolr/dolr_generic_mis_data_entry_form :: dolr-generic-mis-data";
     }
 
     @PostMapping("/generic-mis-data/form/load")
     public String loadForm(@RequestParam("stateId") Long stateId, Model model) {
-        populate(model, stateId);
+        populate(model, stateId, null);
         return "pages/dolr/dolr_generic_mis_data_entry_form :: dolr-generic-mis-fields";
+    }
+
+    @PostMapping("/generic-mis-data/form/district")
+    public String loadDistrict(@RequestParam("stateId") Long stateId,
+                               @RequestParam(value = "districtId", required = false) String districtId,
+                               Model model) {
+        populate(model, stateId, toLong(districtId));
+        return "pages/dolr/dolr_generic_mis_data_entry_form :: dolr-district-sanction-fields";
     }
 
     @PostMapping("/generic-mis-data/save")
@@ -45,11 +54,20 @@ public class DolrMisDataEntryController {
         Map<String, String> response = new LinkedHashMap<>();
         try {
             Long stateId = Long.valueOf(payload.get("stateId").toString());
-            Integer legacySanctioned = toInt(payload.get("legacyDilrmpSanctionedPages"));
             Integer sroSanctioned = toInt(payload.get("srosDilrmpSanctioned"));
-            dolrMisDataEntryService.save(stateId, legacySanctioned, sroSanctioned);
+            dolrMisDataEntryService.saveSroSanction(stateId, sroSanctioned);
+            Long districtId = toLong(payload.get("districtId"));
+            if (districtId != null) {
+                dolrMisDataEntryService.saveDistrictSanctions(
+                        stateId,
+                        districtId,
+                        toInt(payload.get("legacyDilrmpSanctionedPages")),
+                        toInt(payload.get("revenueLegacyDilrmpSanctionedPages")));
+            }
             response.put("status", "success");
-            response.put("message", "DoLR MIS data saved successfully.");
+            response.put("message", districtId == null
+                    ? "SRO sanction saved for the State/UT."
+                    : "DoLR sanctions saved.");
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             response.put("status", "error");
@@ -63,13 +81,22 @@ public class DolrMisDataEntryController {
         }
     }
 
-    private void populate(Model model, Long stateId) {
+    private void populate(Model model, Long stateId, Long districtId) {
+        if (districtId != null && !dolrMisDataEntryService.districtBelongsToState(stateId, districtId)) {
+            districtId = null;
+        }
         model.addAttribute("states", dolrMisDataEntryService.getStates());
+        model.addAttribute("districts", dolrMisDataEntryService.getDistricts(stateId));
         model.addAttribute("selectedStateId", stateId);
+        model.addAttribute("selectedDistrictId", districtId);
         DolrMisDataEntry entry = stateId == null
                 ? new DolrMisDataEntry()
                 : dolrMisDataEntryService.getByStateId(stateId);
         model.addAttribute("dolrMisDataEntry", entry);
+        DolrDistrictMisDataEntry districtEntry = districtId == null
+                ? new DolrDistrictMisDataEntry()
+                : dolrMisDataEntryService.getByDistrictId(districtId);
+        model.addAttribute("dolrDistrictEntry", districtEntry);
     }
 
     private Integer toInt(Object value) {
@@ -77,5 +104,12 @@ public class DolrMisDataEntryController {
             return 0;
         }
         return Integer.valueOf(value.toString());
+    }
+
+    private Long toLong(Object value) {
+        if (value == null || value.toString().isBlank()) {
+            return null;
+        }
+        return Long.valueOf(value.toString());
     }
 }

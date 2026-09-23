@@ -124,4 +124,37 @@ public interface DistrictMISDataEntryRepository extends JpaRepository<DistrictMI
             + "COALESCE(MAX(e.legacy_digitised_upto_year), 0) "
             + "FROM district_mis_data_entry e", nativeQuery = true)
     List<Object[]> sumLegacyDigitizationNational();
+
+    //v5 Legacy Revenue Records Digitisation
+    // row: [0]=id, [1]=totalPages, [2]=stateFunds, [3]=sanctioned placeholder,
+    // [4]=dilrmpCompleted, [5]=maxYear
+    @Query(value = "SELECT e.state_id, "
+            + "COALESCE(SUM(e.revenue_legacy_total_pages), 0), "
+            + "COALESCE(SUM(e.revenue_legacy_digitised_state_funds_pages), 0), "
+            + "0, "
+            + "COALESCE(SUM(e.revenue_legacy_digitised_dilrmp_funds_pages), 0), "
+            + "COALESCE(MAX(e.revenue_legacy_digitised_upto_year), 0) "
+            + "FROM district_mis_data_entry e "
+            + "GROUP BY e.state_id", nativeQuery = true)
+    List<Object[]> sumLegacyRevenueByStateId();
+
+    @Query(value = "SELECT e.district_id, "
+            + "COALESCE(SUM(e.revenue_legacy_total_pages), 0), "
+            + "COALESCE(SUM(e.revenue_legacy_digitised_state_funds_pages), 0), "
+            + "0, "
+            + "COALESCE(SUM(e.revenue_legacy_digitised_dilrmp_funds_pages), 0), "
+            + "COALESCE(MAX(e.revenue_legacy_digitised_upto_year), 0) "
+            + "FROM district_mis_data_entry e "
+            + "WHERE e.state_id = :stateId "
+            + "GROUP BY e.district_id", nativeQuery = true)
+    List<Object[]> sumLegacyRevenueByDistrictForStateId(@Param("stateId") Long stateId);
+
+    @Query(value = "SELECT "
+            + "COALESCE(SUM(e.revenue_legacy_total_pages), 0), "
+            + "COALESCE(SUM(e.revenue_legacy_digitised_state_funds_pages), 0), "
+            + "0, "
+            + "COALESCE(SUM(e.revenue_legacy_digitised_dilrmp_funds_pages), 0), "
+            + "COALESCE(MAX(e.revenue_legacy_digitised_upto_year), 0) "
+            + "FROM district_mis_data_entry e", nativeQuery = true)
+    List<Object[]> sumLegacyRevenueNational();
 }

@@ -12,6 +12,7 @@ import in.gov.dilrmp.models.dashboard.DashBordDTO;
 import in.gov.dilrmp.models.reportDTO.MapDigitizationReport.MapDigitizationReport;
 import in.gov.dilrmp.models.reportDTO.clr.StateClrReportView;
 import in.gov.dilrmp.models.reportDTO.legacy.LegacyDigitizationReport;
+import in.gov.dilrmp.models.reportDTO.legacyRevenue.LegacyRevenueReport;
 import in.gov.dilrmp.models.reportDTO.linkedaadhaar.LinkedAadharViewReport;
 import in.gov.dilrmp.models.reportDTO.mrr.MrrViewReport;
 import in.gov.dilrmp.models.reportDTO.rcms.RcmsReportDTO;
@@ -30,6 +31,7 @@ import in.gov.dilrmp.component.PdfExporterComponent;
 import in.gov.dilrmp.constants.ReportLabels;
 import in.gov.dilrmp.utils.AadhaarReportExportV5Util;
 import in.gov.dilrmp.utils.LegacyDigitizationExportUtil;
+import in.gov.dilrmp.utils.LegacyRevenueExportUtil;
 import in.gov.dilrmp.utils.MapDigitizationReportExportV5Util;
 import in.gov.dilrmp.utils.PdfExporter;
 import in.gov.dilrmp.utils.SroModernizationExportUtil;
@@ -54,6 +56,8 @@ public class PhyscialProgressReportControllerPdf {
     StateAadharService stateAadharService;
     @Autowired
     StateMISDataEntryService stateMISDataEntryService;
+    @Autowired
+    LegacyRevenueReportService legacyRevenueReportService;
 
     DecimalFormat df = new DecimalFormat("0.00");
     DecimalFormat df1 = new DecimalFormat("#.####");
@@ -1180,6 +1184,80 @@ public void getCLRNEWPdf(HttpServletResponse response, HttpSession session) {
                 grandTotalList.add(gt.getFormattingTotalDistrict() != null ? gt.getFormattingTotalDistrict() : "0");
                 grandTotalList.add(gt.getFormattingTotalTehsils() != null ? gt.getFormattingTotalTehsils() : "0");
                 LegacyDigitizationExportUtil.appendStateFormatted(grandTotalList, gt);
+                grandTotalData.add(grandTotalList);
+            });
+        }
+        pComponent.setReportDataList(reportDataList);
+        pComponent.setGrandTotal(grandTotalData);
+        PdfExporter.createPdf(pComponent, response);
+    }
+
+    //v5 Legacy Revenue Records Digitisation — state PDF
+    @GetMapping("/legacy-revenue")
+    public void getLegacyRevenuePdf(HttpServletResponse response, HttpSession session) {
+        PdfExporterComponent pComponent = new PdfExporterComponent();
+        String head[] = {ReportLabels.LEGACY_REVENUE_REPORT};
+        pComponent.setReportHeading(head);
+        pComponent.setReportName(ReportLabels.LEGACY_REVENUE_REPORT);
+        float col_width[] = {20f, 65f, 40f, 40f, 50f, 50f, 40f, 50f, 40f, 50f, 40f, 50f, 40f};
+        pComponent.setCol_width(col_width);
+        String col_head[] = {
+                ReportLabels.SERIAL_NUMBER, ReportLabels.STATE_UT, ReportLabels.TOTAL_DISTRICTS, ReportLabels.TOTAL_TEHSILS,
+                ReportLabels.TOTAL_LEGACY_REVENUE_RECORDS, ReportLabels.LEGACY_REVENUE_DIGITISED_STATE_FUNDS,
+                ReportLabels.LEGACY_REVENUE_SANCTIONED_DILRMP, ReportLabels.LEGACY_REVENUE_COMPLETED_DILRMP,
+                ReportLabels.TOTAL_LEGACY_REVENUE_DIGITISED, ReportLabels.LEGACY_REVENUE_UPTO_YEAR,
+                ReportLabels.NO_OF_PAGES, ReportLabels.NO_OF_PAGES, ReportLabels.PERCENTAGE,
+                ReportLabels.NO_OF_PAGES, ReportLabels.NO_OF_PAGES, ReportLabels.PERCENTAGE,
+                ReportLabels.NO_OF_PAGES, ReportLabels.PERCENTAGE, ReportLabels.YEAR
+        };
+        pComponent.setCol_head(col_head);
+        Integer[] rwspn2col = {0, 1, 2, 3};
+        Integer[] rwspn3col = {};
+        Integer[] rwspn4col = {};
+        Integer[] rwspn5col = {};
+        Integer[] simplecell = {4, 6, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18};
+        pComponent.setRowspn5(rwspn5col);
+        pComponent.setRowspn4(rwspn4col);
+        pComponent.setRowspn3(rwspn3col);
+        pComponent.setRowspn2(rwspn2col);
+        pComponent.setRowspan1(simplecell);
+        List<List<Integer>> colspanval = new ArrayList<List<Integer>>();
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(5, 2)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(7, 2)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(8, 2)));
+        pComponent.setColumnspan(colspanval);
+        List<List<Integer>> colsBreak = new ArrayList<List<Integer>>();
+        colsBreak.add(new ArrayList<Integer>(Arrays.asList(5, 2)));
+        colsBreak.add(new ArrayList<Integer>(Arrays.asList(7, 2)));
+        colsBreak.add(new ArrayList<Integer>(Arrays.asList(8, 2)));
+        pComponent.setColumnnumber(colsBreak);
+        pComponent.setColumnBreakCountNo(3);
+        List<LegacyRevenueReport> legacyList = legacyRevenueReportService.getAllFormattedList();
+        List<LegacyRevenueReport> grandTotal = legacyRevenueReportService.getGrandTotalFormatted();
+        List<List<String>> reportDataList = new ArrayList<List<String>>();
+        AtomicInteger indexHolder = new AtomicInteger();
+        if (legacyList != null && !legacyList.isEmpty()) {
+            legacyList.forEach(map -> {
+                if (map.getStateId() == null || map.getStateId() != 999) {
+                    List<String> strings = new ArrayList<>();
+                    strings.add(Integer.toString(indexHolder.incrementAndGet()));
+                    strings.add(map.getStateName() != null ? map.getStateName() : "N/A");
+                    strings.add(map.getFormattingTotalDistrict() != null ? map.getFormattingTotalDistrict() : "0");
+                    strings.add(map.getFormattingTotalTehsils() != null ? map.getFormattingTotalTehsils() : "0");
+                    LegacyRevenueExportUtil.appendStateFormatted(strings, map);
+                    reportDataList.add(strings);
+                }
+            });
+        }
+        List<List<String>> grandTotalData = new ArrayList<>();
+        if (grandTotal != null && !grandTotal.isEmpty()) {
+            grandTotal.forEach(gt -> {
+                List<String> grandTotalList = new ArrayList<>();
+                grandTotalList.add("");
+                grandTotalList.add(gt.getStateName() != null ? gt.getStateName() : "Grand Total");
+                grandTotalList.add(gt.getFormattingTotalDistrict() != null ? gt.getFormattingTotalDistrict() : "0");
+                grandTotalList.add(gt.getFormattingTotalTehsils() != null ? gt.getFormattingTotalTehsils() : "0");
+                LegacyRevenueExportUtil.appendStateFormatted(grandTotalList, gt);
                 grandTotalData.add(grandTotalList);
             });
         }

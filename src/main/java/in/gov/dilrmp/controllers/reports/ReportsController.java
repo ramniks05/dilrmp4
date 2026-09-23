@@ -10,6 +10,8 @@ import in.gov.dilrmp.models.reportDTO.clr.DistrictClrReportView;
 import in.gov.dilrmp.models.reportDTO.clr.StateClrReportView;
 import in.gov.dilrmp.models.reportDTO.legacy.DistrictLegacyDigitizationReport;
 import in.gov.dilrmp.models.reportDTO.legacy.LegacyDigitizationReport;
+import in.gov.dilrmp.models.reportDTO.legacyRevenue.DistrictLegacyRevenueReport;
+import in.gov.dilrmp.models.reportDTO.legacyRevenue.LegacyRevenueReport;
 import in.gov.dilrmp.models.reportDTO.linkedaadhaar.DistrictLinkedAadhaarViewReport;
 import in.gov.dilrmp.models.reportDTO.linkedaadhaar.LinkedAadharViewReport;
 import in.gov.dilrmp.models.reportDTO.mrr.DistrictMrrViewReport;
@@ -82,6 +84,8 @@ public class ReportsController {
     LegacyDigitizationReportService legacyDigitizationReportService;
     @Autowired
     SroModernizationReportService sroModernizationReportService;
+    @Autowired
+    LegacyRevenueReportService legacyRevenueReportService;
 
 
     @RequestMapping(value = "/physical-progress-report", method = RequestMethod.GET)
@@ -167,6 +171,15 @@ public class ReportsController {
             session.setAttribute("sroModernizationList", sroModList);
             session.setAttribute("sroModernizationGrandTotal", sroModGrandTotal);
 
+            try {
+                List<LegacyRevenueReport> legacyRevenueList = legacyRevenueReportService.getAllFormattedList();
+                List<LegacyRevenueReport> legacyRevenueGrandTotal = legacyRevenueReportService.getGrandTotalFormatted();
+                session.setAttribute("legacyRevenueList", legacyRevenueList);
+                session.setAttribute("legacyRevenueGrandTotal", legacyRevenueGrandTotal);
+            } catch (Exception revenueEx) {
+                logger.error("Legacy revenue state report could not be loaded for download", revenueEx);
+            }
+
 
             reportData = getReportDataAllState();
 
@@ -215,6 +228,26 @@ public class ReportsController {
             session.setAttribute("stateAadhaarData",stateGrandTotalAadhaarData);
             session.setAttribute("districtLegacyData", districtLegacyData);
             session.setAttribute("stateLegacyData", stateGrandTotalLegacyData);
+
+            try {
+                List<DistrictLegacyRevenueReport> districtLegacyRevenueData =
+                        legacyRevenueReportService.getDistrictListByStateId(stateId);
+                List<LegacyRevenueReport> stateGrandTotalLegacyRevenueData =
+                        legacyRevenueReportService.getStateListForDistrictPage(stateId);
+                session.setAttribute("districtLegacyRevenueData", districtLegacyRevenueData);
+                session.setAttribute("stateLegacyRevenueData", stateGrandTotalLegacyRevenueData);
+                session.setAttribute("legacyRevenueStateId", stateId);
+                String legacyRevenueStateName = "";
+                if (!districtLegacyRevenueData.isEmpty() && districtLegacyRevenueData.get(0).getStateName() != null) {
+                    legacyRevenueStateName = districtLegacyRevenueData.get(0).getStateName();
+                } else if (!stateGrandTotalLegacyRevenueData.isEmpty()
+                        && stateGrandTotalLegacyRevenueData.get(0).getStateName() != null) {
+                    legacyRevenueStateName = stateGrandTotalLegacyRevenueData.get(0).getStateName();
+                }
+                session.setAttribute("legacyRevenueStateName", legacyRevenueStateName);
+            } catch (Exception revenueEx) {
+                logger.error("Legacy revenue district report could not be loaded for download", revenueEx);
+            }
             // Fetch the report data for the given stateId
              reportData = getReportDataByStateId();
 
@@ -274,6 +307,10 @@ public class ReportsController {
         data.put("prf_sro_modernization_url", "/physcial/report/pdf/sro-modernization");
         data.put("excel_sro_modernization_url", "/physcial/report/excel/sro-modernization");
 
+        data.put("legacy_revenue", ReportLabels.LEGACY_REVENUE_REPORT);
+        data.put("prf_legacy_revenue_url", "/physcial/report/pdf/legacy-revenue");
+        data.put("excel_legacy_revenue_url", "/physcial/report/excel/legacy-revenue");
+
         // Add more key-value pairs as needed based on your table structure
         return data;
     }
@@ -307,6 +344,10 @@ public class ReportsController {
         data.put("legacy_digitization", "Legacy Registered Documents Digitization");
         data.put("prf_legacy_digitization_url", "/physcial/report/district/pdf/district_legacy_digitization");
         data.put("excel_legacy_digitization_url", "/physcial/report/excel/legacy-digitization-district");
+
+        data.put("legacy_revenue", ReportLabels.LEGACY_REVENUE_REPORT);
+        data.put("prf_legacy_revenue_url", "/physcial/report/district/pdf/district_legacy_revenue");
+        data.put("excel_legacy_revenue_url", "/physcial/report/excel/legacy-revenue-district");
 
         // Add more key-value pairs as needed based on your table structure
         return data;

@@ -61,20 +61,17 @@
             event.preventDefault();
             const stateId = document.getElementById('dolrStateId').value;
             const districtEl = document.getElementById('dolrDistrictId');
-            const legacyEl = document.getElementById('legacyDilrmpSanctionedPages');
-            const sroEl = document.getElementById('srosDilrmpSanctioned');
-            const revenueLegacyEl = document.getElementById('revenueLegacyDilrmpSanctionedPages');
             const districtId = districtEl ? districtEl.value : '';
-            if (districtId && (!legacyEl || !revenueLegacyEl)) {
-                alert('Select the district again so the page sanctions can be saved.');
+            if (!districtId) {
+                alert('Select a district to save DoLR sanctions.');
                 return false;
             }
             const payload = {
                 stateId: stateId,
                 districtId: districtId,
-                legacyDilrmpSanctionedPages: legacyEl ? legacyEl.value : 0,
-                srosDilrmpSanctioned: sroEl ? sroEl.value : 0,
-                revenueLegacyDilrmpSanctionedPages: revenueLegacyEl ? revenueLegacyEl.value : 0
+                srosDilrmpSanctioned: val('srosDilrmpSanctioned'),
+                legacyDilrmpSanctionedPages: val('legacyDilrmpSanctionedPages'),
+                revenueLegacyDilrmpSanctionedPages: val('revenueLegacyDilrmpSanctionedPages')
             };
             fetch('/dolr/generic-mis-data/save', {
                 method: 'POST',
@@ -101,40 +98,25 @@
             });
             return false;
         }
+        function val(id) {
+            const el = document.getElementById(id);
+            return el ? el.value : 0;
+        }
     </script>
 </div>
 
 <div th:fragment="dolr-generic-mis-fields">
     <div class="row">
-        <!-- Component: Modernization of Registration Office (SRO) — State/UT -->
-        <div class="col-md-12 mb-3">
-            <div class="card-header p-2 mb-3"
-                 style="background-color: #d4edda; font-size: 18px; font-family: auto; letter-spacing: 1px; color: var(--danger);">
-                Component: Modernization of Registration Office (SRO)
-            </div>
-            <div class="form-group row align-items-center">
-                <label for="srosDilrmpSanctioned" class="col-md-8 col-form-label">
-                    <span class="red-text">[1]</span>
-                    Total SROs sanctioned for Modernization under DILRMP
-                    <span class="text-muted">(State/UT level)</span>:
-                </label>
-                <div class="col-md-4">
-                    <input type="number" id="srosDilrmpSanctioned" name="srosDilrmpSanctioned"
-                           class="form-control" min="0"
-                           th:value="${dolrMisDataEntry.srosDilrmpSanctioned != null ? dolrMisDataEntry.srosDilrmpSanctioned : 0}">
-                </div>
-            </div>
-            <small class="text-muted d-block mb-2" th:if="${dolrMisDataEntry.updateOnDate != null}">
-                Last updated: <span th:text="${dolrMisDataEntry.updateOnDate}"></span>
-            </small>
-        </div>
-
-        <!-- District selection for page sanctions -->
         <div class="col-md-12 mb-3">
             <div class="card-header p-2 mb-3"
                  style="background-color: #d4edda; font-size: 18px; font-family: auto; letter-spacing: 1px; color: var(--danger);">
                 District-level sanctions
             </div>
+            <p class="small text-muted mb-3">
+                DoLR enters only DILRMP <strong>sanction</strong> questions per district.
+                Total SROs, computerized SROs and modernization progress are entered in
+                <strong>District MIS Data Entry</strong>.
+            </p>
             <div class="table-responsive">
                 <table class="table table-bordered mb-0">
                     <tbody>
@@ -169,6 +151,25 @@
 
 <div th:fragment="dolr-district-sanction-fields">
     <div th:if="${selectedDistrictId != null}">
+        <!-- Component: Modernization of Registration Office (SRO) — DoLR sanction only -->
+        <div class="mb-4">
+            <div class="card-header p-2 mb-3"
+                 style="background-color: #d4edda; font-size: 18px; font-family: auto; letter-spacing: 1px; color: var(--danger);">
+                Component: Modernization of Registration Office (SRO)
+            </div>
+            <div class="form-group row align-items-center">
+                <label for="srosDilrmpSanctioned" class="col-md-8 col-form-label">
+                    <span class="red-text">[2.2]</span>
+                    Total SROs sanctioned for Modernization under DILRMP:
+                </label>
+                <div class="col-md-4">
+                    <input type="number" id="srosDilrmpSanctioned" name="srosDilrmpSanctioned"
+                           class="form-control" min="0"
+                           th:value="${dolrDistrictEntry.srosDilrmpSanctioned != null ? dolrDistrictEntry.srosDilrmpSanctioned : 0}">
+                </div>
+            </div>
+        </div>
+
         <!-- Component: Legacy Registered Documents Digitization -->
         <div class="mb-4">
             <div class="card-header p-2 mb-3"
@@ -213,7 +214,8 @@
         </small>
     </div>
     <div class="alert alert-light border mb-0" th:if="${selectedDistrictId == null}">
-        Select a district to enter sanctions for
+        Select a district to enter DoLR sanctions for
+        <strong>SRO Modernization (sanctioned)</strong>,
         <strong>Legacy Registered Documents Digitization</strong>
         and
         <strong>Legacy Revenue Records Digitization</strong>.

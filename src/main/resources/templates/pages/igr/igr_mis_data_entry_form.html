@@ -33,63 +33,17 @@
                     </div>
                   </div>
 
-                  <!-- Number of SROs in the State -->
+                  <!-- SRO total / computerized / B / D → District MIS; C (sanction) → DoLR district -->
+                  <input type="hidden" th:field="*{numberOfSROsInState}" />
+                  <input type="hidden" th:field="*{numberOfSROsUsingOnlineRegistration}" />
+                  <input type="hidden" th:field="*{srosModernisedStateFunds}" />
+                  <input type="hidden" th:field="*{srosModernisedDilrmpFunds}" />
+                  <input type="hidden" th:field="*{srosDilrmpSanctioned}" />
                   <div class="col-md-12 mb-3">
-                    <div class="form-group row">
-                      <label for="numberOfSROsInState" class="col-md-8 col-form-label">
-                        <span class="red-text">[1]</span> Number of SROs in the State:
-                      </label>
-                      <div class="col-md-4">
-                        <input type="number" id="numberOfSROsInState" name="numberOfSROsInState"
-                          th:field="*{numberOfSROsInState}" class="form-control"  min="0"
-                          oninput="validateSRONumbers()" onchange="validateAndResetField()">
-                        <small id="stateError" class="text-danger"></small>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Number of SROs using Online Registration -->
-                  <div class="col-md-12 mb-3">
-                    <div class="form-group row">
-                      <label for="numberOfSROsUsingOnlineRegistration" class="col-md-8 col-form-label">
-                        <span class="red-text">[2]</span> Number of SROs using online registration application:
-                      </label>
-                      <div class="col-md-4">
-                        <input type="number" id="numberOfSROsUsingOnlineRegistration"
-                          name="numberOfSROsUsingOnlineRegistration" th:field="*{numberOfSROsUsingOnlineRegistration}"
-                          class="form-control"  min="0" value="0" oninput="validateSRONumbers()" onchange="validateAndResetField()">
-                        <small id="registrationError" class="text-danger"></small>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- //v5 Modernization of SRO — State/UT funds / PPP (B) -->
-                  <div class="col-md-12 mb-3">
-                    <div class="form-group row">
-                      <label for="srosModernisedStateFunds" class="col-md-8 col-form-label">
-                        <span class="red-text">[2.1]</span> Total SROs Modernized from State/UT funds/PPP model on lines of Passport Seva Kendra:
-                      </label>
-                      <div class="col-md-4">
-                        <input type="number" id="srosModernisedStateFunds"
-                          name="srosModernisedStateFunds" th:field="*{srosModernisedStateFunds}"
-                          class="form-control" min="0" value="0" oninput="validateSRONumbers()" onchange="validateAndResetField()">
-                        <small id="modernisedStateError" class="text-danger"></small>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- //v5 Modernization of SRO — DILRMP funds (D); sanctioned (C) is DoLR Generic MIS form -->
-                  <div class="col-md-12 mb-3">
-                    <div class="form-group row">
-                      <label for="srosModernisedDilrmpFunds" class="col-md-8 col-form-label">
-                        <span class="red-text">[2.2]</span> Total SROs Modernized from DILRMP funds on lines of Passport Seva Kendra:
-                      </label>
-                      <div class="col-md-4">
-                        <input type="number" id="srosModernisedDilrmpFunds"
-                          name="srosModernisedDilrmpFunds" th:field="*{srosModernisedDilrmpFunds}"
-                          class="form-control" min="0" value="0" oninput="validateSRONumbers()" onchange="validateAndResetField()">
-                        <small id="modernisedDilrmpError" class="text-danger"></small>
-                      </div>
+                    <div class="alert alert-info mb-0">
+                      SRO counts and modernization progress ([1], [2], [2.1], [2.3]) are entered in
+                      <strong>District MIS Data Entry</strong> (SRO Modernization component).
+                      Only DILRMP sanctioned count ([2.2]) is entered by <strong>DoLR</strong> at district level.
                     </div>
                   </div>
 
@@ -97,7 +51,7 @@
                   <div class="col-md-12 mb-3">
                     <div class="form-group row">
                       <label for="legacyRecordsAvailableFromYearSRO" class="col-md-8 col-form-label">
-                        <span class="red-text">[3]</span> Year from which Legacy Records digitized and available for
+                        <span class="red-text">[1]</span> Year from which Legacy Records digitized and available for
                         search by SRO official:
                       </label>
                       <div class="col-md-4">
@@ -112,7 +66,7 @@
                   <div class="col-md-12 mb-3">
                     <div class="form-group row">
                       <label for="legacyRecordsAvailableFromYearPublic" class="col-md-8 col-form-label">
-                        <span class="red-text">[4]</span> Year from which Legacy Records digitized and available for
+                        <span class="red-text">[2]</span> Year from which Legacy Records digitized and available for
                         search by public:
                       </label>
                       <div class="col-md-4">

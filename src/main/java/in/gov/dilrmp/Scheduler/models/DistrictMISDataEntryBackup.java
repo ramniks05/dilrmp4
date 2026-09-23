@@ -63,9 +63,11 @@ public class DistrictMISDataEntryBackup {
     //v5 Map Digitization: S.No. [11.1] Total Damaged/Missing Maps (Cadastral; validated vs [11] only)
     private Integer totalDamagedMissingMaps;
 
-    //Component 3: Computerization of Registration (SRO)
+    //Component 3: Modernization of Registration Office (SRO)
     private Integer totalSRO;
     private Integer sroComputerized;
+    private Integer srosModernisedStateFunds;
+    private Integer srosModernisedDilrmpFunds;
     private Integer sroLR;
     private Integer sroTehsilLinkage;
     private Integer legacyRecords;

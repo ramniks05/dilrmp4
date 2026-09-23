@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/dashboard">
+<head>
+    <meta charset="UTF-8">
+    <title>Modernization of Registration Office (SRO) - District</title>
+    <link th:href="@{/css/report/report.css}" rel="stylesheet"/>
+</head>
+<body>
+<div layout:fragment="content"
+     style="box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;">
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-info">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-sm-10">
+                                    <h3 class="card-title"
+                                        style="font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a; letter-spacing: 2px;">
+                                        <span th:text="${labels['reportName']}">Modernization of Registration Office (SRO)</span>&nbsp;:
+                                        <span th:text="${labels['stateUT']}">State/ UT</span> -
+                                        <span th:text="${stateName}">State</span>
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <a th:href="@{/physicalProgressReports/sro-modernization/state-level}" class="btn btn-primary" style="font-size: 13px;">&larr; Back</a>
+                            <p class="small text-muted mt-2 mb-0">
+                                [1], [2], [2.1], [2.3] from District MIS; [2.2] sanctioned from DoLR. State total = sum of districts.
+                            </p>
+                            <div class="table-responsive text-nowrap mt-3">
+                                <table id="example2" class="table table-bordered table-striped-columns table-success table-striped">
+                                    <thead class="card-info wrap-text" style="background-color: #4a6c52; color:#ffff">
+                                    <tr>
+                                        <th rowspan="2" th:text="${labels['serialNumber']}">S.No.</th>
+                                        <th rowspan="2" th:text="${labels['districtName']}">District</th>
+                                        <th rowspan="2" th:text="${labels['totalTehsils']}">Total Tehsils</th>
+                                        <th rowspan="2" th:text="${labels['totalSros']}">Total SROs</th>
+                                        <th rowspan="2" th:text="${labels['onlineRegistration']}">Number of SROs using online registration application</th>
+                                        <th colspan="2" th:text="${labels['modernisedStateFunds']}">Total SROs Modernized from State/UT funds/PPP</th>
+                                        <th rowspan="2" th:text="${labels['sanctionedDilrmp']}">Total SROs sanctioned for Modernization under DILRMP</th>
+                                        <th colspan="2" th:text="${labels['modernisedDilrmpFunds']}">Total SROs Modernized from DILRMP funds</th>
+                                        <th colspan="2" th:text="${labels['modernisedTotal']}">Total SROs Modernized</th>
+                                    </tr>
+                                    <tr>
+                                        <th th:text="${labels['nos']}">No.</th>
+                                        <th th:text="${labels['percentage']}">%</th>
+                                        <th th:text="${labels['nos']}">No.</th>
+                                        <th th:text="${labels['percentage']}">%</th>
+                                        <th th:text="${labels['nos']}">No.</th>
+                                        <th th:text="${labels['percentage']}">%</th>
+                                    </tr>
+                                    <tr style="font-weight: bold;">
+                                        <td style="text-align: center;">1</td>
+                                        <td style="text-align: center;">2</td>
+                                        <td style="text-align: center;">3</td>
+                                        <td style="text-align: center;">4</td>
+                                        <td style="text-align: center;">5</td>
+                                        <td style="text-align: center;">6a</td>
+                                        <td style="text-align: center;">6b</td>
+                                        <td style="text-align: center;">7</td>
+                                        <td style="text-align: center;">8a</td>
+                                        <td style="text-align: center;">8b</td>
+                                        <td style="text-align: center;">9a</td>
+                                        <td style="text-align: center;">9b</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="data, iterator : ${districtSroModernizationData}">
+                                        <td th:text="${iterator.count}">1</td>
+                                        <td th:text="${data.districtName != null ? data.districtName.toUpperCase() : ''}">DISTRICT</td>
+                                        <td th:text="${data.totalTehsils != null ? data.totalTehsils : 0}">0</td>
+                                        <td th:text="${data.totalSros != null ? data.totalSros : 0}">0</td>
+                                        <td th:text="${data.srosUsingOnlineRegistration != null ? data.srosUsingOnlineRegistration : 0}">0</td>
+                                        <td th:text="${data.srosModernisedStateFunds != null ? data.srosModernisedStateFunds : 0}">0</td>
+                                        <td th:text="${data.srosModernisedStateFundsPercent != null ? data.srosModernisedStateFundsPercent : 0}">0</td>
+                                        <td th:text="${data.srosDilrmpSanctioned != null ? data.srosDilrmpSanctioned : 0}">0</td>
+                                        <td th:text="${data.srosModernisedDilrmpFunds != null ? data.srosModernisedDilrmpFunds : 0}">0</td>
+                                        <td th:text="${data.srosModernisedDilrmpFundsPercent != null ? data.srosModernisedDilrmpFundsPercent : 0}">0</td>
+                                        <td th:text="${data.srosModernisedTotal != null ? data.srosModernisedTotal : 0}">0</td>
+                                        <td th:text="${data.srosModernisedTotalPercent != null ? data.srosModernisedTotalPercent : 0}">0</td>
+                                    </tr>
+                                    <tr th:each="data : ${stateSroModernizationData}">
+                                        <td></td>
+                                        <td style="font-weight: bold;">Grand Total</td>
+                                        <td style="font-weight: bold;">—</td>
+                                        <td style="font-weight: bold;" th:text="${data.formattingTotalSros}">0</td>
+                                        <td style="font-weight: bold;" th:text="${data.formattingSrosUsingOnlineRegistration}">0</td>
+                                        <td style="font-weight: bold;" th:text="${data.formattingSrosModernisedStateFunds}">0</td>
+                                        <td style="font-weight: bold;" th:text="${data.srosModernisedStateFundsPercent}">0</td>
+                                        <td style="font-weight: bold;" th:text="${data.formattingSrosDilrmpSanctioned}">0</td>
+                                        <td style="font-weight: bold;" th:text="${data.formattingSrosModernisedDilrmpFunds}">0</td>
+                                        <td style="font-weight: bold;" th:text="${data.srosModernisedDilrmpFundsPercent}">0</td>
+                                        <td style="font-weight: bold;" th:text="${data.formattingSrosModernisedTotal}">0</td>
+                                        <td style="font-weight: bold;" th:text="${data.srosModernisedTotalPercent}">0</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>

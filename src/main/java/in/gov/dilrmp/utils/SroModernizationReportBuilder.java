@@ -1,8 +1,11 @@
 package in.gov.dilrmp.utils;
 
+import in.gov.dilrmp.models.reportDTO.mrr.DistrictMrrViewReport;
 import in.gov.dilrmp.models.reportDTO.sro.SroReportDTO;
+import in.gov.dilrmp.models.reportDTO.sroModernization.DistrictSroModernizationReport;
 import in.gov.dilrmp.models.reportDTO.sroModernization.SroModernizationReport;
-import in.gov.dilrmp.repositories.DistrictMISDataEntryForm.IgrMISDataEntryRepository;
+import in.gov.dilrmp.repositories.DistrictMISDataEntryForm.DistrictMISDataEntryRepository;
+import in.gov.dilrmp.repositories.DistrictMISDataEntryForm.DolrDistrictMisDataEntryRepository;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -12,17 +15,20 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * //v5 Build Modernization of SRO report rows from existing SRO view geo/metrics (A)
- * plus live IGR form aggregates for B/C/D. Form updates reflect on next report load.
- * DoLR sanctioned (C) is stored/shown but has no IGR form entry yet.
+ * SRO modernization report:
+ * District MIS = total SROs, computerized (A), modernized State/PPP (B), modernized DILRMP (D).
+ * DoLR district entry = DILRMP sanctioned (C) only.
  */
 @Component
 public class SroModernizationReportBuilder {
 
-    private final IgrMISDataEntryRepository igrMISDataEntryRepository;
+    private final DistrictMISDataEntryRepository districtMISDataEntryRepository;
+    private final DolrDistrictMisDataEntryRepository dolrDistrictMisDataEntryRepository;
 
-    public SroModernizationReportBuilder(IgrMISDataEntryRepository igrMISDataEntryRepository) {
-        this.igrMISDataEntryRepository = igrMISDataEntryRepository;
+    public SroModernizationReportBuilder(DistrictMISDataEntryRepository districtMISDataEntryRepository,
+                                         DolrDistrictMisDataEntryRepository dolrDistrictMisDataEntryRepository) {
+        this.districtMISDataEntryRepository = districtMISDataEntryRepository;
+        this.dolrDistrictMisDataEntryRepository = dolrDistrictMisDataEntryRepository;
     }
 
     public SroModernizationReport fromSroView(SroReportDTO sro) {
@@ -31,38 +37,94 @@ public class SroModernizationReportBuilder {
         report.setStateName(sro.getStateName());
         report.setLgdCode(sro.getLgdCode());
         report.setTotalDistricts(sro.getTotalDistricts());
-        report.setTotalSros(sro.getNumberOfSROsInState());
-        report.setSrosUsingOnlineRegistration(sro.getNumberOfSROsUsingOnlineRegistration());
+        report.setTotalSros(0);
+        report.setSrosUsingOnlineRegistration(0);
+        return report;
+    }
+
+    public DistrictSroModernizationReport fromMrrDistrict(DistrictMrrViewReport mrr) {
+        DistrictSroModernizationReport report = new DistrictSroModernizationReport();
+        report.setDistrictId(mrr.getDistrictId());
+        report.setDistrictName(mrr.getDistrictName());
+        report.setStateId(mrr.getStateId());
+        report.setStateName(mrr.getStateName());
+        report.setTotalTehsils(mrr.getTotalTehsils());
         return report;
     }
 
     public void enrichStateReports(List<SroModernizationReport> reports) {
-        Map<Long, int[]> byState = toMetricMap(igrMISDataEntryRepository.sumSroModernizationByStateId());
-        int[] national = firstNational(igrMISDataEntryRepository.sumSroModernizationNational());
+        Map<Long, int[]> misByState = toMisStateMap(districtMISDataEntryRepository.sumSroModernizationByStateId());
+        Map<Long, Integer> dolrCByState = dolrSanctionMap(dolrDistrictMisDataEntryRepository.sumSroSanctionedByStateId());
+        int[] nationalMis = firstMisNational(districtMISDataEntryRepository.sumSroModernizationNational());
+        int nationalC = dolrSanctionNational();
         reports.forEach(report -> {
+            int[] metrics;
             if (isNational(report)) {
-                applyIgrMetrics(report, national);
+                metrics = merge(nationalMis, nationalC);
             } else {
-                int[] metrics = resolveStateMetrics(report, byState);
-                if (metrics != null) {
-                    applyIgrMetrics(report, metrics);
-                } else {
-                    applyModernizationOnly(report, 0, 0, 0);
-                }
+                int[] mis = resolveStateMetrics(report, misByState);
+                Integer c = resolveDolrSanction(report, dolrCByState);
+                metrics = merge(mis != null ? mis : misZeros(), c != null ? c : 0);
             }
+            applyMetrics(report, metrics);
             formatState(report);
         });
     }
 
-    /** When IGR row exists: refresh A + total SROs + B/C/D from IGR. */
-    private void applyIgrMetrics(SroModernizationReport report, int[] m) {
-        report.setSrosUsingOnlineRegistration(m[0]);
-        report.setTotalSros(m[4]);
-        applyModernizationOnly(report, m[1], m[2], m[3]);
+    public void enrichDistrictReports(List<DistrictSroModernizationReport> reports, Long stateId) {
+        Map<Long, int[]> misByDistrict = toMisDistrictMap(
+                districtMISDataEntryRepository.findSroModernizationByStateId(stateId));
+        Map<Long, Integer> dolrCByDistrict = dolrSanctionMap(
+                dolrDistrictMisDataEntryRepository.findSroSanctionedByStateId(stateId));
+        reports.forEach(report -> {
+            int[] mis = misByDistrict.getOrDefault(report.getDistrictId(), misZeros());
+            int c = dolrCByDistrict.getOrDefault(report.getDistrictId(), 0);
+            applyDistrictMetrics(report, merge(mis, c));
+        });
     }
 
-    private void applyModernizationOnly(SroModernizationReport report, int b, int c, int d) {
-        int a = nvl(report.getSrosUsingOnlineRegistration());
+    public void enrichStateTotalsForDistrictPage(List<SroModernizationReport> reports, Long stateId) {
+        Map<Long, int[]> misByState = toMisStateMap(districtMISDataEntryRepository.sumSroModernizationByStateId());
+        Map<Long, Integer> dolrCByState = dolrSanctionMap(dolrDistrictMisDataEntryRepository.sumSroSanctionedByStateId());
+        reports.forEach(report -> {
+            int[] mis = misByState.getOrDefault(stateId, misZeros());
+            if (isAllZero(mis) && report.getLgdCode() != null) {
+                mis = misByState.getOrDefault(report.getLgdCode().longValue(), mis);
+            }
+            Integer c = resolveDolrSanction(report, dolrCByState);
+            if (c == null && stateId != null) {
+                c = dolrCByState.get(stateId);
+            }
+            applyMetrics(report, merge(mis, c != null ? c : 0));
+            formatState(report);
+        });
+    }
+
+    /** m: [totalSros, onlineA, B, C, D] */
+    private void applyMetrics(SroModernizationReport report, int[] m) {
+        report.setTotalSros(m[0]);
+        report.setSrosUsingOnlineRegistration(m[1]);
+        int a = m[1];
+        int b = m[2];
+        int c = m[3];
+        int d = m[4];
+        report.setSrosModernisedStateFunds(b);
+        report.setSrosModernisedStateFundsPercent(percent(b, a));
+        report.setSrosDilrmpSanctioned(c);
+        report.setSrosModernisedDilrmpFunds(d);
+        report.setSrosModernisedDilrmpFundsPercent(percent(d, c));
+        int total = b + d;
+        report.setSrosModernisedTotal(total);
+        report.setSrosModernisedTotalPercent(percent(total, a));
+    }
+
+    private void applyDistrictMetrics(DistrictSroModernizationReport report, int[] m) {
+        report.setTotalSros(m[0]);
+        report.setSrosUsingOnlineRegistration(m[1]);
+        int a = m[1];
+        int b = m[2];
+        int c = m[3];
+        int d = m[4];
         report.setSrosModernisedStateFunds(b);
         report.setSrosModernisedStateFundsPercent(percent(b, a));
         report.setSrosDilrmpSanctioned(c);
@@ -88,6 +150,40 @@ public class SroModernizationReportBuilder {
                 NumberFormatterUtil.formatWithCommas(report.getSrosModernisedTotal()));
     }
 
+    /** MIS row → [total, A, B, D]; merge with DoLR C → [total, A, B, C, D] */
+    private static int[] merge(int[] mis, int c) {
+        return new int[]{mis[0], mis[1], mis[2], c, mis[3]};
+    }
+
+    private int dolrSanctionNational() {
+        Integer n = dolrDistrictMisDataEntryRepository.sumSroSanctionedNational();
+        return n != null ? n : 0;
+    }
+
+    private static Map<Long, Integer> dolrSanctionMap(List<Object[]> rows) {
+        Map<Long, Integer> map = new HashMap<>();
+        if (rows == null) {
+            return map;
+        }
+        for (Object[] row : rows) {
+            if (row == null || row.length < 2 || row[0] == null) {
+                continue;
+            }
+            map.put(((Number) row[0]).longValue(), toInt(row, 1));
+        }
+        return map;
+    }
+
+    private static Integer resolveDolrSanction(SroModernizationReport report, Map<Long, Integer> byState) {
+        if (report.getStateId() != null && byState.containsKey(report.getStateId())) {
+            return byState.get(report.getStateId());
+        }
+        if (report.getLgdCode() != null && byState.containsKey(report.getLgdCode().longValue())) {
+            return byState.get(report.getLgdCode().longValue());
+        }
+        return null;
+    }
+
     private static int[] resolveStateMetrics(SroModernizationReport report, Map<Long, int[]> byState) {
         if (report.getStateId() != null && byState.containsKey(report.getStateId())) {
             return byState.get(report.getStateId());
@@ -103,6 +199,15 @@ public class SroModernizationReportBuilder {
                 || (report.getLgdCode() != null && report.getLgdCode().equals(999));
     }
 
+    private static boolean isAllZero(int[] m) {
+        for (int v : m) {
+            if (v != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private static BigDecimal percent(int numerator, int denominator) {
         if (denominator <= 0) {
             return BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
@@ -110,34 +215,47 @@ public class SroModernizationReportBuilder {
         return BigDecimal.valueOf(numerator * 100.0 / denominator).setScale(2, RoundingMode.HALF_UP);
     }
 
-    private static int nvl(Integer v) {
-        return v == null ? 0 : v;
+    private static int[] misZeros() {
+        return new int[]{0, 0, 0, 0};
     }
 
-    private static int[] zeros() {
-        return new int[]{0, 0, 0, 0, 0};
-    }
-
-    private static int[] firstNational(List<Object[]> rows) {
+    private static int[] firstMisNational(List<Object[]> rows) {
         if (rows == null || rows.isEmpty() || rows.get(0) == null) {
-            return zeros();
+            return misZeros();
         }
         Object[] row = rows.get(0);
-        return new int[]{toInt(row, 0), toInt(row, 1), toInt(row, 2), toInt(row, 3), toInt(row, 4)};
+        return new int[]{toInt(row, 0), toInt(row, 1), toInt(row, 2), toInt(row, 3)};
     }
 
-    private static Map<Long, int[]> toMetricMap(List<Object[]> rows) {
+    /** [0]=stateId, [1]=total, [2]=A, [3]=B, [4]=D */
+    private static Map<Long, int[]> toMisStateMap(List<Object[]> rows) {
         Map<Long, int[]> map = new HashMap<>();
         if (rows == null) {
             return map;
         }
         for (Object[] row : rows) {
-            if (row == null || row.length < 6 || row[0] == null) {
+            if (row == null || row.length < 5 || row[0] == null) {
                 continue;
             }
-            // [0]=state_id, [1]=onlineA, [2]=B, [3]=C, [4]=D, [5]=totalSros
             map.put(((Number) row[0]).longValue(), new int[]{
-                    toInt(row, 1), toInt(row, 2), toInt(row, 3), toInt(row, 4), toInt(row, 5)
+                    toInt(row, 1), toInt(row, 2), toInt(row, 3), toInt(row, 4)
+            });
+        }
+        return map;
+    }
+
+    /** [0]=districtId, [1]=total, [2]=A, [3]=B, [4]=D */
+    private static Map<Long, int[]> toMisDistrictMap(List<Object[]> rows) {
+        Map<Long, int[]> map = new HashMap<>();
+        if (rows == null) {
+            return map;
+        }
+        for (Object[] row : rows) {
+            if (row == null || row.length < 5 || row[0] == null) {
+                continue;
+            }
+            map.put(((Number) row[0]).longValue(), new int[]{
+                    toInt(row, 1), toInt(row, 2), toInt(row, 3), toInt(row, 4)
             });
         }
         return map;

@@ -54,20 +54,19 @@ public class DolrMisDataEntryController {
         Map<String, String> response = new LinkedHashMap<>();
         try {
             Long stateId = Long.valueOf(payload.get("stateId").toString());
-            Integer sroSanctioned = toInt(payload.get("srosDilrmpSanctioned"));
-            dolrMisDataEntryService.saveSroSanction(stateId, sroSanctioned);
             Long districtId = toLong(payload.get("districtId"));
-            if (districtId != null) {
-                dolrMisDataEntryService.saveDistrictSanctions(
-                        stateId,
-                        districtId,
-                        toInt(payload.get("legacyDilrmpSanctionedPages")),
-                        toInt(payload.get("revenueLegacyDilrmpSanctionedPages")));
+            if (districtId == null) {
+                response.put("status", "error");
+                response.put("message", "Select a district to save DoLR sanctions.");
+                return ResponseEntity.badRequest().body(response);
             }
+            Map<String, Integer> values = new LinkedHashMap<>();
+            values.put("legacyDilrmpSanctionedPages", toInt(payload.get("legacyDilrmpSanctionedPages")));
+            values.put("revenueLegacyDilrmpSanctionedPages", toInt(payload.get("revenueLegacyDilrmpSanctionedPages")));
+            values.put("srosDilrmpSanctioned", toInt(payload.get("srosDilrmpSanctioned")));
+            dolrMisDataEntryService.saveDistrictSanctions(stateId, districtId, values);
             response.put("status", "success");
-            response.put("message", districtId == null
-                    ? "SRO sanction saved for the State/UT."
-                    : "DoLR sanctions saved.");
+            response.put("message", "DoLR district sanctions saved.");
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             response.put("status", "error");

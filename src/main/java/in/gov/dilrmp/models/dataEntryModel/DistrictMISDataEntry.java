@@ -131,13 +131,21 @@ public class DistrictMISDataEntry {
     @Column(name = "total_damaged_missing_maps", columnDefinition = "int default 0")
     private Integer totalDamagedMissingMaps = 0;
 
-    //Component 3: Computerization of Registration (SRO)
+    //Component 3: Modernization of Registration Office (SRO) — district MIS
 
     @Column(name = "total_sro",columnDefinition = "int default 0")
     private Integer totalSRO = 0;
 
     @Column(name = "sro_computerized",columnDefinition = "int default 0")
     private Integer sroComputerized = 0;
+
+    /** B — Modernized from State/UT funds / PPP */
+    @Column(name = "sros_modernised_state_funds", columnDefinition = "int default 0")
+    private Integer srosModernisedStateFunds = 0;
+
+    /** D — Modernized from DILRMP funds */
+    @Column(name = "sros_modernised_dilrmp_funds", columnDefinition = "int default 0")
+    private Integer srosModernisedDilrmpFunds = 0;
 
     @Column(name = "sro_lr",columnDefinition = "int default 0")
     private Integer sroLR = 0;

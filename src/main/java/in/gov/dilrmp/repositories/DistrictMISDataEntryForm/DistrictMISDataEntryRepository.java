@@ -157,4 +157,40 @@ public interface DistrictMISDataEntryRepository extends JpaRepository<DistrictMI
             + "COALESCE(MAX(e.revenue_legacy_digitised_upto_year), 0) "
             + "FROM district_mis_data_entry e", nativeQuery = true)
     List<Object[]> sumLegacyRevenueNational();
+
+    /**
+     * SRO modernization from district MIS (DoLR C is separate).
+     * [0]=stateId, [1]=totalSRO, [2]=computerizedA, [3]=B, [4]=D
+     */
+    @Query(value = "SELECT e.state_id, "
+            + "COALESCE(SUM(e.total_sro), 0), "
+            + "COALESCE(SUM(e.sro_computerized), 0), "
+            + "COALESCE(SUM(e.sros_modernised_state_funds), 0), "
+            + "COALESCE(SUM(e.sros_modernised_dilrmp_funds), 0) "
+            + "FROM district_mis_data_entry e "
+            + "GROUP BY e.state_id", nativeQuery = true)
+    List<Object[]> sumSroModernizationByStateId();
+
+    /**
+     * [0]=districtId, [1]=totalSRO, [2]=computerizedA, [3]=B, [4]=D
+     */
+    @Query(value = "SELECT e.district_id, "
+            + "COALESCE(e.total_sro, 0), "
+            + "COALESCE(e.sro_computerized, 0), "
+            + "COALESCE(e.sros_modernised_state_funds, 0), "
+            + "COALESCE(e.sros_modernised_dilrmp_funds, 0) "
+            + "FROM district_mis_data_entry e "
+            + "WHERE e.state_id = :stateId", nativeQuery = true)
+    List<Object[]> findSroModernizationByStateId(@Param("stateId") Long stateId);
+
+    /**
+     * [0]=totalSRO, [1]=computerizedA, [2]=B, [3]=D
+     */
+    @Query(value = "SELECT "
+            + "COALESCE(SUM(e.total_sro), 0), "
+            + "COALESCE(SUM(e.sro_computerized), 0), "
+            + "COALESCE(SUM(e.sros_modernised_state_funds), 0), "
+            + "COALESCE(SUM(e.sros_modernised_dilrmp_funds), 0) "
+            + "FROM district_mis_data_entry e", nativeQuery = true)
+    List<Object[]> sumSroModernizationNational();
 }

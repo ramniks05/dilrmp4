@@ -87,6 +87,12 @@
                   </a>
                 </li>
                 <li class="nav-item">
+                  <a class="nav-link" id="sro-tab" data-toggle="tab" href="#sro-modernization" role="tab"
+                    aria-controls="sro-modernization" aria-selected="false" data-tab-state="disabled">
+                    <i class="fas fa-building"></i> SRO Modernization
+                  </a>
+                </li>
+                <li class="nav-item">
                   <a class="nav-link" id="legacy-digitization-tab" data-toggle="tab" href="#legacy-digitization" role="tab"
                     aria-controls="legacy-digitization" aria-selected="false" data-tab-state="disabled">
                     <i class="fas fa-file-alt"></i> Legacy Digitization
@@ -791,6 +797,64 @@
 
                 </div>
 
+                <!--================================== Component: Modernization of Registration Office (SRO) ===========================================-->
+                <div class="tab-pane fade" id="sro-modernization" role="tabpanel" aria-labelledby="sro-tab">
+                  <div class="form-group row">
+                    <div class="card-header p-2"
+                      style="font-size: 24px;font-family: auto; letter-spacing: 2px; color: var(--danger);">
+                      <ul class="nav nav-pills">
+                        <li class="nav-item">Component: Modernization of Registration Office (SRO)
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <p class="small text-muted mb-3">
+                    DILRMP sanctioned count is entered by DoLR (Sanction Entry). Enter progress figures here.
+                  </p>
+
+                  <div class="form-group row">
+                    <label for="totalSRO" class="col-sm-8 col-form-label"><span class="red-text">[1]</span>
+                      Total number of SROs in the District:</label>
+                    <div class="col-sm-4">
+                      <input type="number" id="totalSRO" name="totalSRO" th:field="*{totalSRO}"
+                             class="form-control" min="0" oninput="validateSroModernization()">
+                      <small id="totalSroError" class="text-danger"></small>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="sroComputerized" class="col-sm-8 col-form-label"><span class="red-text">[2]</span>
+                      Number of SROs using online registration application (Computerized):</label>
+                    <div class="col-sm-4">
+                      <input type="number" id="sroComputerized" name="sroComputerized" th:field="*{sroComputerized}"
+                             class="form-control" min="0" oninput="validateSroModernization()">
+                      <small id="sroComputerizedError" class="text-danger"></small>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="srosModernisedStateFunds" class="col-sm-8 col-form-label"><span class="red-text">[2.1]</span>
+                      Total SROs Modernized from State/UT funds/PPP model on lines of Passport Seva Kendra:</label>
+                    <div class="col-sm-4">
+                      <input type="number" id="srosModernisedStateFunds" name="srosModernisedStateFunds"
+                             th:field="*{srosModernisedStateFunds}" class="form-control" min="0"
+                             oninput="validateSroModernization()">
+                      <small id="srosModernisedStateFundsError" class="text-danger"></small>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="srosModernisedDilrmpFunds" class="col-sm-8 col-form-label"><span class="red-text">[2.3]</span>
+                      Total SROs Modernized from DILRMP funds on lines of Passport Seva Kendra:</label>
+                    <div class="col-sm-4">
+                      <input type="number" id="srosModernisedDilrmpFunds" name="srosModernisedDilrmpFunds"
+                             th:field="*{srosModernisedDilrmpFunds}" class="form-control" min="0"
+                             oninput="validateSroModernization()">
+                      <small id="srosModernisedDilrmpFundsError" class="text-danger"></small>
+                    </div>
+                  </div>
+                </div>
+
                 <!--================================== Component 8: Legacy Registered Documents Digitization ===========================================-->
                 <div class="tab-pane fade" id="legacy-digitization" role="tabpanel" aria-labelledby="legacy-digitization-tab">
                   <div class="form-group row">
@@ -1481,6 +1545,34 @@ $(document).ready(function() {
     }
 
    }
+
+    // SRO Modernization: [2],[2.1],[2.3] <= [1] Total SROs
+    function validateSroModernization() {
+      const totalEl = document.getElementById("totalSRO");
+      const computerizedEl = document.getElementById("sroComputerized");
+      const stateFundsEl = document.getElementById("srosModernisedStateFunds");
+      const dilrmpFundsEl = document.getElementById("srosModernisedDilrmpFunds");
+
+      [totalEl, computerizedEl, stateFundsEl, dilrmpFundsEl].forEach(function (el) {
+        if (el && (el.value === '' || el.value === null)) {
+          el.value = 0;
+        }
+      });
+
+      const total = parseInt(totalEl ? totalEl.value || 0 : 0, 10);
+      if (computerizedEl && parseInt(computerizedEl.value || 0, 10) > total) {
+        alert("S.No. [2] must be equal to or lesser than S.No. [1].");
+        computerizedEl.value = 0;
+      }
+      if (stateFundsEl && parseInt(stateFundsEl.value || 0, 10) > total) {
+        alert("S.No. [2.1] must be equal to or lesser than S.No. [1].");
+        stateFundsEl.value = 0;
+      }
+      if (dilrmpFundsEl && parseInt(dilrmpFundsEl.value || 0, 10) > total) {
+        alert("S.No. [2.3] must be equal to or lesser than S.No. [1].");
+        dilrmpFundsEl.value = 0;
+      }
+    }
 
     //v5 Aadhaar: Land owners [44]-[46] <= Total land owners [7]
     function validateLandOwnersLinkage() {

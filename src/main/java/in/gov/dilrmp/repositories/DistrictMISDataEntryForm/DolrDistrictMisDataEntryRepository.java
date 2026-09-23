@@ -36,4 +36,20 @@ public interface DolrDistrictMisDataEntryRepository extends JpaRepository<DolrDi
             + "COALESCE(SUM(e.revenue_legacy_dilrmp_sanctioned_pages), 0) "
             + "FROM dolr_district_mis_data_entry e", nativeQuery = true)
     List<Object[]> sumSanctionsNational();
+
+    /** [0]=stateId, [1]=SRO DILRMP sanctioned (C) */
+    @Query(value = "SELECT e.state_id, COALESCE(SUM(e.sros_dilrmp_sanctioned), 0) "
+            + "FROM dolr_district_mis_data_entry e "
+            + "GROUP BY e.state_id", nativeQuery = true)
+    List<Object[]> sumSroSanctionedByStateId();
+
+    /** [0]=districtId, [1]=SRO DILRMP sanctioned (C) */
+    @Query(value = "SELECT e.district_id, COALESCE(e.sros_dilrmp_sanctioned, 0) "
+            + "FROM dolr_district_mis_data_entry e "
+            + "WHERE e.state_id = :stateId", nativeQuery = true)
+    List<Object[]> findSroSanctionedByStateId(@Param("stateId") Long stateId);
+
+    @Query(value = "SELECT COALESCE(SUM(e.sros_dilrmp_sanctioned), 0) "
+            + "FROM dolr_district_mis_data_entry e", nativeQuery = true)
+    Integer sumSroSanctionedNational();
 }

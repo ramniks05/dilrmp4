@@ -93,7 +93,11 @@
                                     <tbody>
                                     <tr th:each="data, iterator : ${sroModernizationList}">
                                         <td th:text="${iterator.count}">1</td>
-                                        <td th:text="${data.stateName}">State</td>
+                                        <td>
+                                            <a th:href="@{/physicalProgressReports/sro-modernization/district-level/{stateId}(stateId=${data.stateId})}"
+                                               th:text="${data.stateName}"
+                                               style="color: #0d6efd; text-decoration: underline;">State</a>
+                                        </td>
                                         <td th:text="${data.formattingTotalDistricts}">0</td>
                                         <td th:text="${data.formattingTotalSros}">0</td>
                                         <td th:text="${data.formattingSrosUsingOnlineRegistration}">0</td>

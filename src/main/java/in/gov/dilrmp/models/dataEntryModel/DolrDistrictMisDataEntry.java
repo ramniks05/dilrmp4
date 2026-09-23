@@ -43,6 +43,10 @@ public class DolrDistrictMisDataEntry {
     @Column(name = "revenue_legacy_dilrmp_sanctioned_pages", columnDefinition = "int default 0")
     private Integer revenueLegacyDilrmpSanctionedPages = 0;
 
+    /** C — Only DoLR question for SRO: sanctioned for modernization under DILRMP */
+    @Column(name = "sros_dilrmp_sanctioned", columnDefinition = "int default 0")
+    private Integer srosDilrmpSanctioned = 0;
+
     @Column(name = "last_update_on_date")
     private LocalDate updateOnDate;
 

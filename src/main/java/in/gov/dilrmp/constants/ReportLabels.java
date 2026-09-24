@@ -260,7 +260,7 @@ public class ReportLabels {
             "Total no. of Legacy Revenue Records completed from sanctioned funds under DILRMP";
     public static final String TOTAL_LEGACY_REVENUE_DIGITISED = "Total Legacy Revenue Record Digitized";
     public static final String LEGACY_REVENUE_UPTO_YEAR =
-            "Year up to which Legacy Revenue Records in the State/UT";
+            "Year upto which legacy revenue record digitized";
 
     //v5 Modernization of Registration Office (SRO) — match given report sheet
     public static final String SRO_MODERNIZATION_REPORT = "Modernization of Registration Office (SRO)";

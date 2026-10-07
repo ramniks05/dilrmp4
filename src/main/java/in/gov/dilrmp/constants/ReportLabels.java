@@ -291,5 +291,10 @@ public class ReportLabels {
 
     public static final String STATE_PROFILE= "State/UT - Profile Report DILRMP";
 
+    public static final String DISTRICT_PROFILE = "District - Profile Report DILRMP";
+    public static final String INDICATOR = "Indicator";
+    public static final String VALUE = "Value";
+    public static final String NO_DATA_AVAILABLE = "No data available";
+
 
 }

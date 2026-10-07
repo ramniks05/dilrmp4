@@ -12,7 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 
 @Controller
 @RequestMapping("/dolr")
@@ -33,16 +32,13 @@ public class DolrUnspentBalanceReportController {
     public String loadReport(@RequestParam(value = "stateId", required = false) Long stateId, Model model) {
         try {
             State state = unspentBalanceService.resolveState(stateId);
-            LocalDateTime lastUpdatedOn = unspentBalanceService.getLastUpdatedOn(state.getId());
 
             model.addAttribute("stateId", state.getId());
             model.addAttribute("stateName", state.getName());
             model.addAttribute("reportTitle", UnspentBalanceService.REPORT_TITLE);
-            model.addAttribute("letterReference", UnspentBalanceService.LETTER_REFERENCE);
             model.addAttribute("componentNote", UnspentBalanceService.COMPONENT_NOTE);
             model.addAttribute("amountHeader", unspentBalanceService.getAmountHeader());
-            model.addAttribute("submitted", lastUpdatedOn != null);
-            model.addAttribute("lastUpdatedOn", UnspentBalanceReportExporter.lastUpdatedText(lastUpdatedOn));
+            model.addAttribute("submitted", unspentBalanceService.getLastUpdatedOn(state.getId()) != null);
             model.addAttribute("rows", unspentBalanceService.getRows(state.getId()));
         } catch (IllegalArgumentException e) {
             model.addAttribute("reportError", e.getMessage());
@@ -55,8 +51,7 @@ public class DolrUnspentBalanceReportController {
         try {
             State state = unspentBalanceService.resolveState(stateId);
             UnspentBalanceReportExporter.writePdf(response, state.getName(),
-                    unspentBalanceService.getAmountHeader(), unspentBalanceService.getLastUpdatedOn(state.getId()),
-                    unspentBalanceService.getRows(state.getId()));
+                    unspentBalanceService.getAmountHeader(), unspentBalanceService.getRows(state.getId()));
         } catch (IllegalArgumentException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
@@ -67,13 +62,25 @@ public class DolrUnspentBalanceReportController {
         }
     }
 
+    @GetMapping("/unspent-balance/report/all-states/excel")
+    public void downloadAllStatesExcel(HttpServletResponse response) throws IOException {
+        try {
+            UnspentBalanceReportExporter.writeAllStatesExcel(response, unspentBalanceService.getAmountHeader(),
+                    unspentBalanceService.getRowsForAllStates());
+        } catch (Exception e) {
+            logger.error("Error generating all-states unspent balance Excel", e);
+            if (!response.isCommitted()) {
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Unable to generate Excel.");
+            }
+        }
+    }
+
     @GetMapping("/unspent-balance/report/excel")
     public void downloadExcel(@RequestParam("stateId") Long stateId, HttpServletResponse response) throws IOException {
         try {
             State state = unspentBalanceService.resolveState(stateId);
             UnspentBalanceReportExporter.writeExcel(response, state.getName(),
-                    unspentBalanceService.getAmountHeader(), unspentBalanceService.getLastUpdatedOn(state.getId()),
-                    unspentBalanceService.getRows(state.getId()));
+                    unspentBalanceService.getAmountHeader(), unspentBalanceService.getRows(state.getId()));
         } catch (IllegalArgumentException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         } catch (Exception e) {

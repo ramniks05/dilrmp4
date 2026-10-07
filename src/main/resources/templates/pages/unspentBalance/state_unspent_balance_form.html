@@ -36,22 +36,10 @@
 
                                 <div class="alert alert-info py-2">
                                     <strong th:text="${reportTitle}"></strong><br/>
-                                    Enter the component-wise unspent balance in <strong>Rs. in crore</strong>, as per
-                                    <span th:text="${letterReference}"></span>.
+                                    Enter the component-wise unspent balance in <strong>Rs. in crore</strong>.
                                     Leave a component blank if it is not applicable.
-                                    <span th:text="${componentNote}"></span> Sub-totals and the Grand Total are calculated automatically.
-                                    <th:block th:if="${entryOpen and !#strings.isEmpty(lastDate)}">
-                                        <br/>Please submit by <strong th:text="${lastDate}"></strong> (CoB).
-                                    </th:block>
+                                    <span th:text="${componentNote}"></span> The Total is calculated automatically.
                                 </div>
-
-                                <div th:if="${!entryOpen}" class="alert alert-warning py-2">
-                                    Data entry closed on <strong th:text="${lastDate}"></strong>. The figures below are read-only.
-                                </div>
-
-                                <p class="text-muted mb-2">
-                                    <small>Last updated: <span id="ubLastUpdated" th:text="${lastUpdatedOn}"></span></small>
-                                </p>
 
                                 <div class="table-responsive">
                                     <table class="table table-bordered" id="ubTable">
@@ -74,19 +62,8 @@
                                                 <td class="ub-col-amount">
                                                     <input type="number" step="0.01" min="0" class="form-control text-right ub-amount"
                                                            th:value="${row.amountText}"
-                                                           th:attr="data-code=${row.code},data-group=${row.groupCode},data-parent=${row.parentCode}"
-                                                           th:disabled="${!entryOpen}"
+                                                           th:attr="data-code=${row.code},data-group=${row.groupCode}"
                                                            oninput="ubRecalculate()" placeholder="0.00"/>
-                                                </td>
-                                            </tr>
-                                            <tr th:if="${row.rowType == 'PARENT'}" class="ub-row-parent">
-                                                <td class="ub-col-sn" th:text="${row.serialNo}"></td>
-                                                <td class="ub-col-component">
-                                                    <span th:text="${row.label}"></span>
-                                                    <small class="text-muted font-weight-normal">(auto: sum of 4.1 to 4.3)</small>
-                                                </td>
-                                                <td class="ub-calc">
-                                                    <span class="ub-parent-sum" th:attr="data-code=${row.code}" th:text="${row.amountText}"></span>
                                                 </td>
                                             </tr>
                                             <tr th:if="${row.rowType == 'SUBTOTAL'}" class="ub-row-subtotal">
@@ -108,7 +85,7 @@
                                     </table>
                                 </div>
 
-                                <div class="mt-3" th:if="${entryOpen}">
+                                <div class="mt-3">
                                     <button type="submit" class="btn btn-primary">
                                         <i class="fas fa-save"></i> Save Unspent Balance
                                     </button>
@@ -136,7 +113,6 @@
         #ubTable .ub-col-amount { width: 28%; }
         #ubTable .ub-row-group td { background-color: #d9ead3; font-weight: 700; }
         #ubTable .ub-row-subtotal td { background-color: #f2f2f2; font-weight: 700; }
-        #ubTable .ub-row-parent td { font-weight: 700; }
         #ubTable .ub-row-sub .ub-col-component { padding-left: 32px; }
         #ubTable .ub-row-total td { background-color: #fff2cc; font-weight: 700; }
         #ubTable .ub-calc { text-align: right; font-weight: 700; }
@@ -149,7 +125,6 @@
             if (!table) {
                 return;
             }
-            var parentSums = {};
             var groupSums = {};
             var total = 0;
             table.querySelectorAll('input.ub-amount').forEach(function (input) {
@@ -159,13 +134,6 @@
                 }
                 total += value;
                 groupSums[input.dataset.group] = (groupSums[input.dataset.group] || 0) + value;
-                if (input.dataset.parent) {
-                    parentSums[input.dataset.parent] = (parentSums[input.dataset.parent] || 0) + value;
-                }
-            });
-            table.querySelectorAll('.ub-parent-sum').forEach(function (el) {
-                var sum = parentSums[el.dataset.code];
-                el.textContent = sum === undefined ? '' : sum.toFixed(2);
             });
             table.querySelectorAll('.ub-group-total').forEach(function (el) {
                 el.textContent = (groupSums[el.dataset.group] || 0).toFixed(2);
@@ -213,9 +181,6 @@
                 .then(function (data) {
                     if (data.status === 'success') {
                         ubShowMessage('success', data.message);
-                        if (data.lastUpdatedOn) {
-                            document.getElementById('ubLastUpdated').textContent = data.lastUpdatedOn;
-                        }
                     } else {
                         ubShowMessage('danger', data.message || 'Save failed.');
                     }

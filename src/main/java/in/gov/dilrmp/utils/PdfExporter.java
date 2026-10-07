@@ -356,11 +356,13 @@ public class PdfExporter {
 
                 // fetch and data to table
                 List<List<String>> reportDataList = pComponent.getReportDataList();
-                reportDataList.stream().forEachOrdered(e -> e.stream().forEachOrdered(lt -> {
-                        PdfPCell cell = new PdfPCell(new Phrase(lt, theFont));
-                        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                        table.addCell(cell);
-                }));
+                for (List<String> row : reportDataList) {
+                        for (int col = 0; col < row.size(); col++) {
+                                PdfPCell cell = new PdfPCell(new Phrase(row.get(col), theFont));
+                                cell.setHorizontalAlignment(dataAlignment(pComponent, col));
+                                table.addCell(cell);
+                        }
+                }
                 // Add grand total rows if any
                 List<List<String>> grandTotal = pComponent.getGrandTotal();
                 if (grandTotal != null && !grandTotal.isEmpty()) {
@@ -577,18 +579,28 @@ public class PdfExporter {
 
                         // fetch and data to table
                         List<List<String>> reportDataList = pComponent.getReportDataList();
-                        reportDataList.stream().forEachOrdered(e -> e.stream().forEachOrdered(lt -> {
-                                if (lt.equals("")) {
-                                        System.err.println(lt);
+                        for (List<String> row : reportDataList) {
+                                for (int col = 0; col < row.size(); col++) {
+                                        PdfPCell cell = new PdfPCell(new Phrase(row.get(col), theFont));
+                                        cell.setHorizontalAlignment(dataAlignment(pComponent, col));
+                                        table.addCell(cell);
                                 }
-                                System.err.println(lt);
-                                PdfPCell cell = new PdfPCell(new Phrase(lt, theFont));
-                                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                                table.addCell(cell);
-                        }));
+                        }
 
                         document.add(table);
                 }
+        }
+
+        private static int dataAlignment(PdfExporterComponent pComponent, int col) {
+                Integer[] leftAligned = pComponent.getLeftAlignColumns();
+                if (leftAligned != null) {
+                        for (Integer c : leftAligned) {
+                                if (c != null && c == col) {
+                                        return Element.ALIGN_LEFT;
+                                }
+                        }
+                }
+                return Element.ALIGN_CENTER;
         }
 
         public static void addHeaderToPdf(Document document)

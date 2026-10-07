@@ -35,6 +35,8 @@ public class PdfExporterComponent {
     List<List<Integer>> columnnumber;
     List<List<String>> reportDataList = new ArrayList<List<String>>();
     List<List<String>> grandTotal = new ArrayList<List<String>>();
-   
+    // data column indexes rendered left-aligned (all others stay centered)
+    Integer[] leftAlignColumns = new Integer[]{};
+
 
 }

@@ -7,6 +7,8 @@ import in.gov.dilrmp.models.reportDTO.clr.StateClrReportView;
 import in.gov.dilrmp.models.reportDTO.legacy.LegacyDigitizationReport;
 import in.gov.dilrmp.models.reportDTO.linkedaadhaar.LinkedAadharViewReport;
 import in.gov.dilrmp.models.reportDTO.mrr.MrrViewReport;
+import in.gov.dilrmp.models.reportDTO.profile.DistrictProfileItem;
+import in.gov.dilrmp.models.reportDTO.profile.DistrictProfileSection;
 import in.gov.dilrmp.models.reportDTO.rcms.RcmsReportDTO;
 import in.gov.dilrmp.models.reportDTO.sro.SroReportDTO;
 import in.gov.dilrmp.models.reportDTO.surveyresurvey.SurveyResurveyViewReport;
@@ -1281,6 +1283,65 @@ public class PhysicalProgressProfilePDF {
         PdfExporter.createPdf(pdfexporterList, response);
     }
 
+
+    @GetMapping("/districtProfile")
+    public void getDistrictProfilePdf(HttpServletResponse response, HttpSession session) {
+        List<DistrictProfileSection> sections =
+                (List<DistrictProfileSection>) session.getAttribute("districtProfileSections");
+        String stateName = (String) session.getAttribute("districtProfileStateName");
+        String districtName = (String) session.getAttribute("districtProfileDistrictName");
+        if (sections == null) {
+            sections = new ArrayList<>();
+        }
+        List<PdfExporterComponent> pdfexporterList = new ArrayList<>();
+        int sectionNo = 1;
+        for (DistrictProfileSection section : sections) {
+            String sectionHeading = sectionNo + ". " + section.getTitle();
+            String[] heading = sectionNo == 1
+                    ? new String[]{ReportLabels.DISTRICT_PROFILE,
+                    "District: " + (districtName != null ? districtName : "")
+                            + "   |   " + ReportLabels.STATE_UT + ": " + (stateName != null ? stateName : ""),
+                    " ", sectionHeading}
+                    : new String[]{" ", sectionHeading};
+            List<List<String>> rows = new ArrayList<>();
+            if (section.isHasData()) {
+                int itemNo = 1;
+                for (DistrictProfileItem item : section.getItems()) {
+                    rows.add(Arrays.asList(String.valueOf(itemNo++), item.getLabel(), item.getValue()));
+                }
+            } else {
+                rows.add(Arrays.asList("", ReportLabels.NO_DATA_AVAILABLE, ""));
+            }
+            pdfexporterList.add(districtProfileComponent(heading, rows));
+            sectionNo++;
+        }
+        if (pdfexporterList.isEmpty()) {
+            pdfexporterList.add(districtProfileComponent(
+                    new String[]{ReportLabels.DISTRICT_PROFILE, "Please select a State/UT and District first."},
+                    new ArrayList<>()));
+        }
+        PdfExporter.createPdf(pdfexporterList, response);
+    }
+
+    private PdfExporterComponent districtProfileComponent(String[] heading, List<List<String>> rows) {
+        PdfExporterComponent component = new PdfExporterComponent();
+        component.setReportHeading(heading);
+        component.setReportName(ReportLabels.DISTRICT_PROFILE);
+        component.setCol_width(new float[]{25f, 200f, 70f});
+        component.setCol_head(new String[]{ReportLabels.SERIAL_NUMBER, ReportLabels.INDICATOR, ReportLabels.VALUE});
+        component.setRowspn5(new Integer[]{});
+        component.setRowspn4(new Integer[]{});
+        component.setRowspn3(new Integer[]{});
+        component.setRowspn2(new Integer[]{});
+        component.setRowspan1(new Integer[]{0, 1, 2});
+        component.setColumnspan(new ArrayList<>());
+        component.setColumnnumber(new ArrayList<>());
+        component.setColumnBreakCountNo(0);
+        component.setLeftAlignColumns(new Integer[]{1});
+        component.setReportDataList(rows);
+        component.setGrandTotal(new ArrayList<>());
+        return component;
+    }
 
     @GetMapping("oomfreport")
     public void getOmmfReportPdf(HttpSession session, HttpServletResponse response) {

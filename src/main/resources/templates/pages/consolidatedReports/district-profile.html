@@ -1,0 +1,128 @@
+<div th:fragment="district-profile">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-info">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-sm-10">
+                                <h3 class="card-title"
+                                    style="font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a;  letter-spacing: 2px;">
+                                    District - Profile Report DILRMP</h3>
+                            </div>
+                            <div class="col-sm-2" th:if="${profileSections != null}">
+                                <a th:href="@{/physcial/report/pdf/districtProfile}" title="Download District Profile PDF">
+                                    <img th:src="@{/images/pdf.png}" alt="PDF Icon" class="btn-img" width="40"
+                                         height="40"
+                                         style="box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;"/>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <style>
+        .district-profile .table-bordered th,
+        .district-profile .table-bordered td {
+            border: 2px solid #16aec6;
+        }
+
+        .district-profile .table-bordered {
+            border: 2px solid #16aec6;
+        }
+
+        .district-profile .bold-text {
+            font-weight: bold;
+        }
+
+        .district-profile table thead td,
+        .district-profile table thead th {
+            text-align: center !important;
+            vertical-align: middle;
+        }
+
+        .district-profile table tbody td {
+            text-align: center !important;
+            vertical-align: middle;
+        }
+
+        .district-profile table tbody td.indicator-cell {
+            text-align: left !important;
+        }
+                    </style>
+
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>Select State/UT Name: </label>
+                                    <select class="form-control" id="profileStateId" name="stateId"
+                                            hx-get="/current-status/district_profile"
+                                            hx-trigger="change"
+                                            hx-target="#content" hx-swap="innerHTML">
+                                        <option value="0">Select State</option>
+                                        <option th:each="state : ${stateList}" th:text="${state.name}"
+                                                th:value="${state.id}"
+                                                th:selected="${selectedStateId != null and state.id == selectedStateId}">
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>Select District Name: </label>
+                                    <select class="form-control" id="profileDistrictId" name="districtId"
+                                            hx-post="/current-status/get-district-profile"
+                                            hx-trigger="change"
+                                            hx-include="#profileStateId"
+                                            hx-target="#content" hx-swap="innerHTML">
+                                        <option value="0">Select District</option>
+                                        <option th:each="district : ${districtList}" th:text="${district.name}"
+                                                th:value="${district.id}"
+                                                th:selected="${selectedDistrictId != null and district.id == selectedDistrictId}">
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="district-profile" th:if="${profileSections != null}">
+                        <div class="card-body pb-0">
+                            <h4 style="font-family: auto; letter-spacing: 1px; text-align: center;">
+                                District: <span th:text="${profileDistrictName}"></span>
+                                &nbsp;|&nbsp;
+                                State/UT: <span th:text="${profileStateName}"></span>
+                            </h4>
+                        </div>
+                        <div class="card-body" style="overflow-x:auto;" th:each="section, sectionStat : ${profileSections}">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                <tr>
+                                    <td colspan="3"
+                                        style="background-color: #FE8A7D; font-size: 22px;font-family: auto;letter-spacing: 2px;"
+                                        th:text="${sectionStat.count + '. ' + section.title}"></td>
+                                </tr>
+                                <tr style="background-color: #feb8b0; font-size: 16px; font-weight: bold;">
+                                    <th style="width: 80px;">S.No.</th>
+                                    <th>Indicator</th>
+                                    <th style="width: 220px;">Value</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="item, itemStat : ${section.items}">
+                                    <td th:text="${itemStat.count}"></td>
+                                    <td class="indicator-cell" th:text="${item.label}"></td>
+                                    <td class="bold-text" th:text="${item.value}"></td>
+                                </tr>
+                                <tr th:unless="${section.hasData}">
+                                    <td colspan="3" class="indicator-cell">No data available</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

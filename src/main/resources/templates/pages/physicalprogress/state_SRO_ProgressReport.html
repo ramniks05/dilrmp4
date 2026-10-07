@@ -397,6 +397,7 @@
                                         <th rowspan="1" th:text="${labels['registeredSentAutomaticallyDigital']} + ' (' + ${labels['yesNo']} + ')' "></th>
                                         <th rowspan="1" th:text="${labels['provisionOnlineGrievanceRedressal']} + ' (' + ${labels['yesNo']} + ')' "></th>
                                         <th rowspan="1" th:text="${labels['optionAvailableRegistrationFetch']} + ' (' + ${labels['yesNo']} + ')' "></th>
+                                        <th rowspan="1" th:text="${labels['srosIntegratedWithLandRecords']} + ' (' + ${labels['number']} + ')' "></th>
                                         <th rowspan="1" th:text="${labels['registrationSystemAutoTrigger']} + ' (' + ${labels['yesNo']} + ')' "></th>
                                         <th rowspan="1" th:text="${labels['isPendencnyOfRevenueCourt']} + ' (' + ${labels['yesNo']} + ')' "></th>
                                         <th rowspan="1" th:text="${labels['aadhaarPanFingerprintMasked']} + ' (' + ${labels['yesNo']} + ')' "></th>
@@ -430,6 +431,7 @@
                                         <td style="text-align: center;">25</td>
                                         <td style="text-align: center;">26</td>
                                         <td style="text-align: center;">27</td>
+                                        <td style="text-align: center;">28</td>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -458,6 +460,7 @@
                                         <td th:text="${report.digitalFormatRegisteredDocuments}"></td>
                                         <td th:text="${report.onlineGrievanceRedressalSystem}"></td>
                                         <td th:text="${report.fetchPropertyDetailsFromLandRecords}"></td>
+                                        <td th:text="${report.numberOfSROsIntegratedWithLandRecords != null ? report.numberOfSROsIntegratedWithLandRecords : '0'}"></td>
                                         <td th:text="${report.autoTriggerMutationAvailable}"></td>
                                         <td th:text="${report.revenueCourtCaseRedFlagged}"></td>
                                         <td th:text="${report.maskingSensitiveDetailsInRegisteredDeeds}"></td>
@@ -506,6 +509,8 @@
                                         <td th:text="${grandTotal.onlineGrievanceRedressalSystem}"
                                             style="font-weight: bold;"></td>
                                         <td th:text="${grandTotal.fetchPropertyDetailsFromLandRecords}"
+                                            style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.numberOfSROsIntegratedWithLandRecords != null ? grandTotal.numberOfSROsIntegratedWithLandRecords : '0'}"
                                             style="font-weight: bold;"></td>
                                         <td th:text="${grandTotal.autoTriggerMutationAvailable}"
                                             style="font-weight: bold;"></td>
@@ -559,6 +564,8 @@
                                         <td th:text="${grandTotal.onlineGrievanceRedressalSystem}"
                                             style="font-weight: bold;"></td>
                                         <td th:text="${grandTotal.fetchPropertyDetailsFromLandRecords}"
+                                            style="font-weight: bold;"></td>
+                                        <td th:text="${grandTotal.numberOfSROsIntegratedWithLandRecords != null ? grandTotal.numberOfSROsIntegratedWithLandRecords : '0'}"
                                             style="font-weight: bold;"></td>
                                         <td th:text="${grandTotal.autoTriggerMutationAvailable}"
                                             style="font-weight: bold;"></td>

@@ -89,6 +89,11 @@ public class IgrMISDataEntryService {
                         DateUtils.parseDate(stateRegistrationSystem.getLegacyRecordsAvailableFromYearPublicDate()));
             }
 
+            Integer srosIntegrated = stateRegistrationSystem.getNumberOfSROsIntegratedWithLandRecords();
+            if (srosIntegrated == null || srosIntegrated < 0) {
+                stateRegistrationSystem.setNumberOfSROsIntegratedWithLandRecords(0);
+            }
+
             // Save the entity
             igrMISDataEntryRepository.save(stateRegistrationSystem);
             logger.info("StateRegistrationSystem with ID {} saved successfully.", stateRegistrationSystem.getId());

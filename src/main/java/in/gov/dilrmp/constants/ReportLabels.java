@@ -129,6 +129,7 @@ public class ReportLabels {
     public static final String THERE_PROVISION_ONLINE_GRIEVANCE_REDRESSAL = "Is there provision for online Grievance redressal system in Registration System";
     public static final String PROVISION_ONLINE_GRIEVANCE_REDRESSAL = "Provision for online Grievance redressal system in Registration System";
     public static final String OPTION_AVAILABLE_REGISTRATION_SYSTEM_FETCH = "Option available in Registration System to fetch property details from Land Records System";
+    public static final String NUMBER_OF_SROS_INTEGRATED_WITH_LAND_RECORDS = "Number of SROs Integrated with Land Records";
     public static final String REGISTRATION_SYSTEM_FACILITY_AUTO_TRIGGER = "Does the Registration System has facility of auto-trigger mutation";
     public static final String REGIS_SYSTEM_FACILITY_AUTO_TRIGGER = "Registration System has facility of auto-trigger mutation";
     public static final String IS_PENDENCY_OF_REVENUE_COURT_CASE = "Is Pendency of revenue court case mentioned/ red-flagged in the Registration System";

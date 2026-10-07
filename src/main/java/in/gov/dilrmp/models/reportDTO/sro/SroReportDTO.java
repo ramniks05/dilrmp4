@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -90,6 +91,10 @@ public class SroReportDTO {
 
     @Column(name = "fetch_property_details_from_land_records")
     private String fetchPropertyDetailsFromLandRecords;
+
+    /** Not in state_registration_report_view; filled from state_registration_system by StateSROService. */
+    @Transient
+    private Integer numberOfSROsIntegratedWithLandRecords;
 
     @Column(name = "auto_trigger_mutation_available")
     private String autoTriggerMutationAvailable;

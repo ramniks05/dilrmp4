@@ -1,6 +1,8 @@
 package in.gov.dilrmp.services.physicalProgressServices;
 import in.gov.dilrmp.constants.ReportLabels;
+import in.gov.dilrmp.models.dataEntryModel.StateRegistrationSystem;
 import in.gov.dilrmp.models.reportDTO.sro.SroReportDTO;
+import in.gov.dilrmp.repositories.DistrictMISDataEntryForm.IgrMISDataEntryRepository;
 import in.gov.dilrmp.repositories.physicalProgressRepositories.StateSroViewRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +18,9 @@ import java.util.stream.Collectors;
 public class StateSROService {
     @Autowired
     StateSroViewRepository sroviewRepository;
+
+    @Autowired
+    IgrMISDataEntryRepository igrMISDataEntryRepository;
 
     private Logger logger = LoggerFactory.getLogger(StateSROService.class);
 
@@ -54,6 +59,7 @@ public class StateSROService {
         labels.put("provisionOnlineGrievanceRedressal", ReportLabels.THERE_PROVISION_ONLINE_GRIEVANCE_REDRESSAL);
         labels.put("OnlineGrievanceRedressal", ReportLabels.PROVISION_ONLINE_GRIEVANCE_REDRESSAL);
         labels.put("optionAvailableRegistrationFetch", ReportLabels.OPTION_AVAILABLE_REGISTRATION_SYSTEM_FETCH);
+        labels.put("srosIntegratedWithLandRecords", ReportLabels.NUMBER_OF_SROS_INTEGRATED_WITH_LAND_RECORDS);
         labels.put("registrationSystemAutoTrigger", ReportLabels.REGISTRATION_SYSTEM_FACILITY_AUTO_TRIGGER);
         labels.put("regisSystemAutoTrigger", ReportLabels.REGIS_SYSTEM_FACILITY_AUTO_TRIGGER);
         labels.put("isPendencnyOfRevenueCourt", ReportLabels.IS_PENDENCY_OF_REVENUE_COURT_CASE);
@@ -85,16 +91,41 @@ public class StateSROService {
         sroList = sroList.stream()
                 .filter(sro -> !sro.getLgdCode().equals(999))
                 .collect(Collectors.toList());
+        fillSrosIntegratedWithLandRecords(sroList);
         return sroList;
     }
 
    public List<SroReportDTO> getStateSroReportsGrandToatal(){
 
-        return sroviewRepository.findAllSroByStateId(999);
+        List<SroReportDTO> grandTotal = sroviewRepository.findAllSroByStateId(999);
+        fillSrosIntegratedWithLandRecords(grandTotal);
+        return grandTotal;
     }
 
     public List<SroReportDTO> getSroStateDataByStateId(Integer stateId) {
 
-        return sroviewRepository.findAllSroByStateId(stateId);
+        List<SroReportDTO> sroList = sroviewRepository.findAllSroByStateId(stateId);
+        fillSrosIntegratedWithLandRecords(sroList);
+        return sroList;
+    }
+
+    private void fillSrosIntegratedWithLandRecords(List<SroReportDTO> rows) {
+        if (rows == null || rows.isEmpty()) {
+            return;
+        }
+        Map<Long, Integer> integratedByState = new HashMap<>();
+        int grandTotal = 0;
+        for (StateRegistrationSystem entry : igrMISDataEntryRepository.findAll()) {
+            int integrated = entry.getNumberOfSROsIntegratedWithLandRecords() != null
+                    ? entry.getNumberOfSROsIntegratedWithLandRecords() : 0;
+            if (entry.getState() != null) {
+                integratedByState.merge(entry.getState().getId(), integrated, Integer::sum);
+            }
+            grandTotal += integrated;
+        }
+        for (SroReportDTO row : rows) {
+            row.setNumberOfSROsIntegratedWithLandRecords(row.getStateId() != null && row.getStateId() == 999L
+                    ? grandTotal : integratedByState.getOrDefault(row.getStateId(), 0));
+        }
     }
 }

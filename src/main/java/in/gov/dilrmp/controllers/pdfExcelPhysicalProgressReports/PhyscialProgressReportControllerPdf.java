@@ -630,7 +630,7 @@ public void getCLRNEWPdf(HttpServletResponse response, HttpSession session) {
         String head[] = {ReportLabels.SRO_REPORT};
         pComponent.setReportHeading(head);
         pComponent.setReportName(ReportLabels.SRO_REPORT);
-        float col_width[] = {30f, 75f, 55f, 55f, 55f, 60f, 60f, 75f, 60f, 60f, 60f, 60f, 60f, 60f,60f,60f,60f,60f,60f,60f,60f,60f,60f,60f,60f,60f,60f};
+        float col_width[] = {30f, 75f, 55f, 55f, 55f, 60f, 60f, 75f, 60f, 60f, 60f, 60f, 60f, 60f,60f,60f,60f,60f,60f,60f,60f,60f,60f,60f,60f,60f,60f,60f};
         pComponent.setCol_width(col_width);
         String col_head[] = {
                 ReportLabels.SERIAL_NUMBER,
@@ -656,6 +656,7 @@ public void getCLRNEWPdf(HttpServletResponse response, HttpSession session) {
                 ReportLabels.REGISTERED_SENT_AUTOMATICALLY_DIGITAL + " (" + ReportLabels.YES_NO + " )",
                 ReportLabels.THERE_PROVISION_ONLINE_GRIEVANCE_REDRESSAL + " (" + ReportLabels.YES_NO + " )",
                 ReportLabels.OPTION_AVAILABLE_REGISTRATION_SYSTEM_FETCH + " (" + ReportLabels.YES_NO + " )",
+                ReportLabels.NUMBER_OF_SROS_INTEGRATED_WITH_LAND_RECORDS + " (" + ReportLabels.NO + " )",
                 ReportLabels.REGISTRATION_SYSTEM_FACILITY_AUTO_TRIGGER + " (" + ReportLabels.YES_NO + " )",
                 ReportLabels.IS_PENDENCY_OF_REVENUE_COURT_CASE + " (" + ReportLabels.YES_NO + " )",
                 ReportLabels.AADHAAR_PAN_FINGERPRINT_DETAILS_MASKED + " (" + ReportLabels.YES_NO + " )",
@@ -711,6 +712,7 @@ public void getCLRNEWPdf(HttpServletResponse response, HttpSession session) {
                        strings.add(String.valueOf(map.getDigitalFormatRegisteredDocuments() != null ? map.getDigitalFormatRegisteredDocuments() : "NO"));
                        strings.add(String.valueOf(map.getOnlineGrievanceRedressalSystem() != null ? map.getOnlineGrievanceRedressalSystem() : "NO"));
                        strings.add(String.valueOf(map.getFetchPropertyDetailsFromLandRecords() != null ? map.getFetchPropertyDetailsFromLandRecords() : "NO"));
+                       strings.add(String.valueOf(map.getNumberOfSROsIntegratedWithLandRecords() != null ? map.getNumberOfSROsIntegratedWithLandRecords() : 0));
                        strings.add(String.valueOf(map.getAutoTriggerMutationAvailable() != null ? map.getAutoTriggerMutationAvailable() : "NO"));
                        strings.add(String.valueOf(map.getRevenueCourtCaseRedFlagged() != null ? map.getRevenueCourtCaseRedFlagged() : "NO"));
                        strings.add(String.valueOf(map.getMaskingSensitiveDetailsInRegisteredDeeds() != null ? map.getMaskingSensitiveDetailsInRegisteredDeeds() : "NO"));
@@ -748,6 +750,7 @@ public void getCLRNEWPdf(HttpServletResponse response, HttpSession session) {
                 grandTotalList.add(gt.getDigitalFormatRegisteredDocuments() != null ? gt.getDigitalFormatRegisteredDocuments() : "NO");
                 grandTotalList.add(gt.getOnlineGrievanceRedressalSystem() != null ? gt.getOnlineGrievanceRedressalSystem() : "NO");
                 grandTotalList.add(gt.getFetchPropertyDetailsFromLandRecords() != null ? gt.getFetchPropertyDetailsFromLandRecords() : "NO");
+                grandTotalList.add(String.valueOf(gt.getNumberOfSROsIntegratedWithLandRecords() != null ? gt.getNumberOfSROsIntegratedWithLandRecords() : 0));
                 grandTotalList.add(gt.getAutoTriggerMutationAvailable() != null ? gt.getAutoTriggerMutationAvailable() : "NO");
                 grandTotalList.add(gt.getRevenueCourtCaseRedFlagged() != null ? gt.getRevenueCourtCaseRedFlagged() : "NO");
                 grandTotalList.add(gt.getMaskingSensitiveDetailsInRegisteredDeeds() != null ? gt.getMaskingSensitiveDetailsInRegisteredDeeds() : "NO");

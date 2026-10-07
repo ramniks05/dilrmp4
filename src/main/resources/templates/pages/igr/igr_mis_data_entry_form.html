@@ -451,6 +451,22 @@
                       </div>
                     </div>
                   </div>
+
+                  <!-- Number of SROs Integrated with Land Records -->
+                  <div class="col-md-12 mb-3">
+                    <div class="form-group row">
+                      <label for="numberOfSROsIntegratedWithLandRecords" class="col-md-8 col-form-label">
+                        <span class="red-text">[20.1]</span> Number of SROs integrated with Land Records:
+                      </label>
+                      <div class="col-md-4">
+                        <input type="number" id="numberOfSROsIntegratedWithLandRecords"
+                          name="numberOfSROsIntegratedWithLandRecords" th:field="*{numberOfSROsIntegratedWithLandRecords}"
+                          class="form-control" min="0" step="1" oninput="validateSrosIntegratedWithLandRecords()">
+                        <small id="srosIntegratedWithLandRecordsError" class="text-danger"></small>
+                      </div>
+                    </div>
+                  </div>
+
                   <!-- Auto-Trigger Mutation Available -->
                   <div class="col-md-12 mb-3">
                     <div class="form-group row">
@@ -573,6 +589,21 @@
         </script>
 
             <script>
+  function validateSrosIntegratedWithLandRecords() {
+    const input = document.getElementById('numberOfSROsIntegratedWithLandRecords');
+    const error = document.getElementById('srosIntegratedWithLandRecordsError');
+    const totalSros = parseInt(document.getElementById('numberOfSROsInState').value || 0);
+    const integrated = parseInt(input.value || 0);
+    error.textContent = '';
+    if (integrated < 0) {
+      input.value = 0;
+      error.textContent = 'Number of SROs cannot be negative.';
+    } else if (totalSros > 0 && integrated > totalSros) {
+      input.value = 0;
+      error.textContent = 'Cannot exceed the total number of SROs in the State (' + totalSros + ').';
+    }
+  }
+
   function validateSRONumbers() {
     const numberOfSROsInState = parseInt(document.getElementById('numberOfSROsInState').value || 0);
     const numberOfSROsUsingOnlineRegistration = parseInt(document.getElementById('numberOfSROsUsingOnlineRegistration').value || 0);

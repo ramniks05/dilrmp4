@@ -41,6 +41,7 @@ public class StateRegistrationSystemBackup {
     private Boolean digitalFormatRegisteredDocuments;
     private Boolean onlineGrievanceRedressalSystem;
     private Boolean fetchPropertyDetailsFromLandRecords;
+    private Integer numberOfSROsIntegratedWithLandRecords;
     private Boolean autoTriggerMutationAvailable;
     private Boolean revenueCourtCaseRedFlagged;
     private Boolean maskingSensitiveDetailsInRegisteredDeeds;

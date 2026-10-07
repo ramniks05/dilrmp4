@@ -100,6 +100,9 @@ public class StateRegistrationSystem {
     @Column(name = "fetch_property_details_from_land_records", columnDefinition = "boolean default false" )
     private Boolean fetchPropertyDetailsFromLandRecords = false;
 
+    @Column(name = "number_of_sros_integrated_with_land_records", columnDefinition = "int default 0")
+    private Integer numberOfSROsIntegratedWithLandRecords = 0;
+
     @Column(name = "auto_trigger_mutation_available",  columnDefinition = "boolean default false")
     private Boolean autoTriggerMutationAvailable = false;
 

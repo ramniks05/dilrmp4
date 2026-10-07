@@ -1114,6 +1114,7 @@ public class PhyscialProgressReportControllerExcel {
                 ReportLabels.REGISTERED_SENT_AUTOMATICALLY_DIGITAL + " (" + ReportLabels.YES_NO + " )",
                 ReportLabels.THERE_PROVISION_ONLINE_GRIEVANCE_REDRESSAL + " (" + ReportLabels.YES_NO + " )",
                 ReportLabels.OPTION_AVAILABLE_REGISTRATION_SYSTEM_FETCH + " (" + ReportLabels.YES_NO + " )",
+                ReportLabels.NUMBER_OF_SROS_INTEGRATED_WITH_LAND_RECORDS + " (" + ReportLabels.NO + " )",
                 ReportLabels.REGISTRATION_SYSTEM_FACILITY_AUTO_TRIGGER + " (" + ReportLabels.YES_NO + " )",
                 ReportLabels.IS_PENDENCY_OF_REVENUE_COURT_CASE + " (" + ReportLabels.YES_NO + " )",
                 ReportLabels.AADHAAR_PAN_FINGERPRINT_DETAILS_MASKED + " (" + ReportLabels.YES_NO + " )",
@@ -1123,12 +1124,12 @@ public class PhyscialProgressReportControllerExcel {
         // Header spans for merged and unmerged cells
         String[] headerSpanMerged = {
                 "A1:N1", "A2:N2", "A3:N3", "A4:N4", "A5:N5",
-                "A6:A7", "B6:B7", "C6:C7", "D6:D7", "E6:E7", "F6:F7", "G6:G7", "H6:H7", "I6:I7", "J6:J7", "K6:K7", "L6:L7", "M6:M7", "N6:N7", "O6:O7", "P6:P7", "Q6:Q7", "R6:R7", "S6:S7", "T6:T7", "U6:U7", "V6:V7", "W6:W7", "X6:X7", "Y6:Y7", "Z6:Z7", "AA6:AA7"
+                "A6:A7", "B6:B7", "C6:C7", "D6:D7", "E6:E7", "F6:F7", "G6:G7", "H6:H7", "I6:I7", "J6:J7", "K6:K7", "L6:L7", "M6:M7", "N6:N7", "O6:O7", "P6:P7", "Q6:Q7", "R6:R7", "S6:S7", "T6:T7", "U6:U7", "V6:V7", "W6:W7", "X6:X7", "Y6:Y7", "Z6:Z7", "AA6:AA7", "AB6:AB7"
 
         };
         String[] headerSpanUnmerged = {};
         eComponent.setReportName(ReportLabels.SRO_REPORT);
-        eComponent.setNoOfColumns(27);
+        eComponent.setNoOfColumns(28);
         eComponent.setNoOfheaderRows(7);
         eComponent.setHeaderText(headerText);
         eComponent.setHeaderSpanMerged(headerSpanMerged);
@@ -1166,6 +1167,7 @@ public class PhyscialProgressReportControllerExcel {
                     strings.add(String.valueOf(map.getDigitalFormatRegisteredDocuments() != null ? map.getDigitalFormatRegisteredDocuments() : "NO"));
                     strings.add(String.valueOf(map.getOnlineGrievanceRedressalSystem() != null ? map.getOnlineGrievanceRedressalSystem() : "NO"));
                     strings.add(String.valueOf(map.getFetchPropertyDetailsFromLandRecords() != null ? map.getFetchPropertyDetailsFromLandRecords() : "NO"));
+                    strings.add(String.valueOf(map.getNumberOfSROsIntegratedWithLandRecords() != null ? map.getNumberOfSROsIntegratedWithLandRecords() : 0));
                     strings.add(String.valueOf(map.getAutoTriggerMutationAvailable() != null ? map.getAutoTriggerMutationAvailable() : "NO"));
                     strings.add(String.valueOf(map.getRevenueCourtCaseRedFlagged() != null ? map.getRevenueCourtCaseRedFlagged() : "NO"));
                     strings.add(String.valueOf(map.getMaskingSensitiveDetailsInRegisteredDeeds() != null ? map.getMaskingSensitiveDetailsInRegisteredDeeds() : "NO"));
@@ -1202,6 +1204,7 @@ public class PhyscialProgressReportControllerExcel {
                 grandTotalList.add(gt.getDigitalFormatRegisteredDocuments() != null ? gt.getDigitalFormatRegisteredDocuments() : "NO");
                 grandTotalList.add(gt.getOnlineGrievanceRedressalSystem() != null ? gt.getOnlineGrievanceRedressalSystem() : "NO");
                 grandTotalList.add(gt.getFetchPropertyDetailsFromLandRecords() != null ? gt.getFetchPropertyDetailsFromLandRecords() : "NO");
+                grandTotalList.add(String.valueOf(gt.getNumberOfSROsIntegratedWithLandRecords() != null ? gt.getNumberOfSROsIntegratedWithLandRecords() : 0));
                 grandTotalList.add(gt.getAutoTriggerMutationAvailable() != null ? gt.getAutoTriggerMutationAvailable() : "NO");
                 grandTotalList.add(gt.getRevenueCourtCaseRedFlagged() != null ? gt.getRevenueCourtCaseRedFlagged() : "NO");
                 grandTotalList.add(gt.getMaskingSensitiveDetailsInRegisteredDeeds() != null ? gt.getMaskingSensitiveDetailsInRegisteredDeeds() : "NO");

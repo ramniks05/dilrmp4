@@ -19,6 +19,7 @@ import in.gov.dilrmp.models.reportDTO.mrr.MrrViewReport;
 import in.gov.dilrmp.models.reportDTO.rcms.DistrictRcmsReportDTO;
 import in.gov.dilrmp.models.reportDTO.rcms.RcmsReportDTO;
 import in.gov.dilrmp.models.reportDTO.sro.SroReportDTO;
+import in.gov.dilrmp.models.reportDTO.sroModernization.DistrictSroModernizationReport;
 import in.gov.dilrmp.models.reportDTO.sroModernization.SroModernizationReport;
 import in.gov.dilrmp.models.reportDTO.surveyresurvey.DistrictSurveyResurveyViewReport;
 import in.gov.dilrmp.models.reportDTO.surveyresurvey.SurveyResurveyViewReport;
@@ -230,6 +231,17 @@ public class ReportsController {
             session.setAttribute("stateLegacyData", stateGrandTotalLegacyData);
 
             try {
+                List<DistrictSroModernizationReport> districtSroModernizationData =
+                        sroModernizationReportService.getDistrictListByStateId(stateId);
+                List<SroModernizationReport> stateSroModernizationData =
+                        sroModernizationReportService.getStateTotalsForDistrictPage(stateId);
+                session.setAttribute("districtSroModernizationData", districtSroModernizationData);
+                session.setAttribute("stateSroModernizationData", stateSroModernizationData);
+            } catch (Exception sroModEx) {
+                logger.error("SRO modernization district report could not be loaded for download", sroModEx);
+            }
+
+            try {
                 List<DistrictLegacyRevenueReport> districtLegacyRevenueData =
                         legacyRevenueReportService.getDistrictListByStateId(stateId);
                 List<LegacyRevenueReport> stateGrandTotalLegacyRevenueData =
@@ -344,6 +356,10 @@ public class ReportsController {
         data.put("legacy_digitization", "Legacy Registered Documents Digitization");
         data.put("prf_legacy_digitization_url", "/physcial/report/district/pdf/district_legacy_digitization");
         data.put("excel_legacy_digitization_url", "/physcial/report/excel/legacy-digitization-district");
+
+        data.put("sro_modernization", ReportLabels.SRO_MODERNIZATION_REPORT);
+        data.put("prf_sro_modernization_url", "/physcial/report/district/pdf/district_sro_modernization");
+        data.put("excel_sro_modernization_url", "/physcial/report/excel/sro-modernization-district");
 
         data.put("legacy_revenue", ReportLabels.LEGACY_REVENUE_REPORT);
         data.put("prf_legacy_revenue_url", "/physcial/report/district/pdf/district_legacy_revenue");

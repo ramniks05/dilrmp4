@@ -17,9 +17,12 @@ import in.gov.dilrmp.models.reportDTO.mrr.DistrictMrrViewReport;
 import in.gov.dilrmp.models.reportDTO.mrr.MrrViewReport;
 import in.gov.dilrmp.models.reportDTO.rcms.DistrictRcmsReportDTO;
 import in.gov.dilrmp.models.reportDTO.rcms.RcmsReportDTO;
+import in.gov.dilrmp.models.reportDTO.sroModernization.DistrictSroModernizationReport;
+import in.gov.dilrmp.models.reportDTO.sroModernization.SroModernizationReport;
 import in.gov.dilrmp.models.reportDTO.surveyresurvey.DistrictSurveyResurveyViewReport;
 import in.gov.dilrmp.models.reportDTO.surveyresurvey.SurveyResurveyViewReport;
 import in.gov.dilrmp.utils.AadhaarReportExportV5Util;
+import in.gov.dilrmp.utils.SroModernizationExportUtil;
 import in.gov.dilrmp.utils.LegacyDigitizationExportUtil;
 import in.gov.dilrmp.utils.LegacyRevenueExportUtil;
 import in.gov.dilrmp.utils.MapDigitizationReportExportV5Util;
@@ -889,6 +892,91 @@ public class PhysicalProgressReportDistrictLevelControllerPDF {
                 grandTotalList.add("Grand Total");
                 grandTotalList.add(gt.getTotalTehsils() != null ? String.valueOf(gt.getTotalTehsils()) : "0");
                 LegacyDigitizationExportUtil.appendStateRaw(grandTotalList, gt);
+                grandTotalData.add(grandTotalList);
+            });
+        }
+        pComponent.setReportDataList(reportDataList);
+        pComponent.setGrandTotal(grandTotalData);
+        PdfExporter.createPdf(pComponent, response);
+    }
+
+    //v5 Modernization of Registration Office (SRO) — district PDF
+    @GetMapping("/district_sro_modernization")
+    public void getDistrictSroModernizationPdf(HttpServletResponse response, HttpSession session) {
+        PdfExporterComponent pComponent = new PdfExporterComponent();
+        List<DistrictSroModernizationReport> districtList =
+                (List<DistrictSroModernizationReport>) session.getAttribute("districtSroModernizationData");
+        List<SroModernizationReport> grandTotal =
+                (List<SroModernizationReport>) session.getAttribute("stateSroModernizationData");
+        String stateName = SroModernizationExportUtil.resolveStateName(grandTotal,
+                (String) session.getAttribute("stateName"));
+        String head[] = {ReportLabels.SRO_MODERNIZATION_REPORT, ReportLabels.STATE_UT + " - " + stateName};
+        pComponent.setReportHeading(head);
+        pComponent.setReportName(ReportLabels.SRO_MODERNIZATION_REPORT);
+        float col_width[] = {18f, 70f, 36f, 36f, 52f, 42f, 36f, 48f, 42f, 36f, 42f, 42f};
+        pComponent.setCol_width(col_width);
+        String col_head[] = {
+                ReportLabels.SERIAL_NUMBER,
+                ReportLabels.DISTRICT_NAME,
+                ReportLabels.TOTAL_TEHSILS,
+                ReportLabels.TOTAL_SROS,
+                ReportLabels.SROS_USING_ONLINE_REGISTRATION_A,
+                ReportLabels.SROS_MODERNISED_STATE_FUNDS,
+                ReportLabels.SROS_SANCTIONED_DILRMP,
+                ReportLabels.SROS_MODERNISED_DILRMP_FUNDS,
+                ReportLabels.SROS_MODERNISED_TOTAL,
+                ReportLabels.NOS,
+                ReportLabels.PERCENTAGE,
+                ReportLabels.NOS,
+                ReportLabels.PERCENTAGE,
+                ReportLabels.NOS,
+                ReportLabels.PERCENTAGE
+        };
+        pComponent.setCol_head(col_head);
+        Integer[] rwspn2col = {0, 1, 2, 3, 4, 6};
+        Integer[] rwspn3col = {};
+        Integer[] rwspn4col = {};
+        Integer[] rwspn5col = {};
+        Integer[] simplecell = {9, 10, 11, 12, 13, 14};
+        pComponent.setRowspn5(rwspn5col);
+        pComponent.setRowspn4(rwspn4col);
+        pComponent.setRowspn3(rwspn3col);
+        pComponent.setRowspn2(rwspn2col);
+        pComponent.setRowspan1(simplecell);
+        List<List<Integer>> colspanval = new ArrayList<List<Integer>>();
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(5, 2)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(7, 2)));
+        colspanval.add(new ArrayList<Integer>(Arrays.asList(8, 2)));
+        pComponent.setColumnspan(colspanval);
+        List<List<Integer>> colsBreak = new ArrayList<List<Integer>>();
+        colsBreak.add(new ArrayList<Integer>(Arrays.asList(5, 2)));
+        colsBreak.add(new ArrayList<Integer>(Arrays.asList(7, 2)));
+        colsBreak.add(new ArrayList<Integer>(Arrays.asList(8, 2)));
+        pComponent.setColumnnumber(colsBreak);
+        pComponent.setColumnBreakCountNo(3);
+        List<List<String>> reportDataList = new ArrayList<List<String>>();
+        AtomicInteger indexHolder = new AtomicInteger();
+        if (districtList != null && !districtList.isEmpty()) {
+            districtList.forEach(map -> {
+                List<String> strings = new ArrayList<>();
+                strings.add(Integer.toString(indexHolder.incrementAndGet()));
+                strings.add(map.getDistrictName() != null ? map.getDistrictName().toUpperCase() : "N/A");
+                strings.add(map.getTotalTehsils() != null ? String.valueOf(map.getTotalTehsils()) : "0");
+                strings.add(map.getTotalSros() != null ? String.valueOf(map.getTotalSros()) : "0");
+                SroModernizationExportUtil.appendDistrict(strings, map);
+                reportDataList.add(strings);
+            });
+        }
+        List<List<String>> grandTotalData = new ArrayList<>();
+        if (grandTotal != null && !grandTotal.isEmpty()) {
+            String totalTehsils = SroModernizationExportUtil.sumTehsils(districtList);
+            grandTotal.forEach(gt -> {
+                List<String> grandTotalList = new ArrayList<>();
+                grandTotalList.add("");
+                grandTotalList.add("Grand Total");
+                grandTotalList.add(totalTehsils);
+                grandTotalList.add(gt.getFormattingTotalSros() != null ? gt.getFormattingTotalSros() : "0");
+                SroModernizationExportUtil.appendStateFormatted(grandTotalList, gt);
                 grandTotalData.add(grandTotalList);
             });
         }

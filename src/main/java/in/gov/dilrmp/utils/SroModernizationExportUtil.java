@@ -1,5 +1,6 @@
 package in.gov.dilrmp.utils;
 
+import in.gov.dilrmp.models.reportDTO.sroModernization.DistrictSroModernizationReport;
 import in.gov.dilrmp.models.reportDTO.sroModernization.SroModernizationReport;
 
 import java.util.List;
@@ -30,6 +31,36 @@ public final class SroModernizationExportUtil {
         row.add(pct(r.getSrosModernisedDilrmpFundsPercent()));
         row.add(num(r.getSrosModernisedTotal()));
         row.add(pct(r.getSrosModernisedTotalPercent()));
+    }
+
+    public static void appendDistrict(List<String> row, DistrictSroModernizationReport r) {
+        row.add(num(r.getSrosUsingOnlineRegistration()));
+        row.add(num(r.getSrosModernisedStateFunds()));
+        row.add(pct(r.getSrosModernisedStateFundsPercent()));
+        row.add(num(r.getSrosDilrmpSanctioned()));
+        row.add(num(r.getSrosModernisedDilrmpFunds()));
+        row.add(pct(r.getSrosModernisedDilrmpFundsPercent()));
+        row.add(num(r.getSrosModernisedTotal()));
+        row.add(pct(r.getSrosModernisedTotalPercent()));
+    }
+
+    public static String sumTehsils(List<DistrictSroModernizationReport> districts) {
+        long total = 0;
+        if (districts != null) {
+            for (DistrictSroModernizationReport d : districts) {
+                if (d.getTotalTehsils() != null) {
+                    total += d.getTotalTehsils();
+                }
+            }
+        }
+        return String.valueOf(total);
+    }
+
+    public static String resolveStateName(List<SroModernizationReport> stateTotals, String fallback) {
+        if (stateTotals != null && !stateTotals.isEmpty() && stateTotals.get(0).getStateName() != null) {
+            return stateTotals.get(0).getStateName();
+        }
+        return fallback != null ? fallback : "";
     }
 
     private static String nz(String v) {

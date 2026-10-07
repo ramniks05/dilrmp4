@@ -27,6 +27,7 @@ import in.gov.dilrmp.models.reportDTO.mrr.MrrViewReport;
 import in.gov.dilrmp.models.reportDTO.rcms.DistrictRcmsReportDTO;
 import in.gov.dilrmp.models.reportDTO.rcms.RcmsReportDTO;
 import in.gov.dilrmp.models.reportDTO.sro.SroReportDTO;
+import in.gov.dilrmp.models.reportDTO.sroModernization.DistrictSroModernizationReport;
 import in.gov.dilrmp.models.reportDTO.sroModernization.SroModernizationReport;
 import in.gov.dilrmp.models.reportDTO.surveyresurvey.DistrictSurveyResurveyViewReport;
 import in.gov.dilrmp.models.reportDTO.surveyresurvey.SurveyResurveyViewReport;
@@ -2751,6 +2752,83 @@ public class PhyscialProgressReportControllerExcel {
                 grandTotalList.add("");
                 grandTotalList.add(gt.getStateName() != null ? gt.getStateName() : "Grand Total");
                 grandTotalList.add(gt.getFormattingTotalDistricts() != null ? gt.getFormattingTotalDistricts() : "0");
+                grandTotalList.add(gt.getFormattingTotalSros() != null ? gt.getFormattingTotalSros() : "0");
+                SroModernizationExportUtil.appendStateFormatted(grandTotalList, gt);
+                reportDataList.add(grandTotalList);
+            });
+        }
+        eComponent.setReportDataList(reportDataList);
+        try {
+            ExcelExporter.generateExcelFile(response, eComponent);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //v5 Modernization of Registration Office (SRO) — district Excel
+    @GetMapping("/sro-modernization-district")
+    public void exportSroModernizationDistrictExcelFile(HttpServletResponse response, HttpSession session) {
+        ExcelExporterComponent eComponent = new ExcelExporterComponent();
+        List<DistrictSroModernizationReport> districtList =
+                (List<DistrictSroModernizationReport>) session.getAttribute("districtSroModernizationData");
+        List<SroModernizationReport> grandTotal =
+                (List<SroModernizationReport>) session.getAttribute("stateSroModernizationData");
+        String stateName = SroModernizationExportUtil.resolveStateName(grandTotal,
+                (String) session.getAttribute("stateName"));
+        String[] headerText = {
+                "Department of Land Resources",
+                "Ministry of Rural Development, Government of India",
+                "Digital India Land Records Modernization Programme (DILRMP)",
+                ReportLabels.SRO_MODERNIZATION_REPORT, ReportLabels.STATE_UT + " : " + stateName, "",
+                // Merged order must match headerSpanMerged: A,B,C,D,E,H then F:G, I:J, K:L
+                ReportLabels.SERIAL_NUMBER,
+                ReportLabels.DISTRICT_NAME,
+                ReportLabels.TOTAL_TEHSILS,
+                ReportLabels.TOTAL_SROS,
+                ReportLabels.SROS_USING_ONLINE_REGISTRATION_A,
+                ReportLabels.SROS_SANCTIONED_DILRMP,
+                ReportLabels.SROS_MODERNISED_STATE_FUNDS,
+                ReportLabels.SROS_MODERNISED_DILRMP_FUNDS,
+                ReportLabels.SROS_MODERNISED_TOTAL,
+                ReportLabels.NOS,
+                ReportLabels.PERCENTAGE,
+                ReportLabels.NOS,
+                ReportLabels.PERCENTAGE,
+                ReportLabels.NOS,
+                ReportLabels.PERCENTAGE
+        };
+        String[] headerSpanMerged = {
+                "A1:L1", "A2:L2", "A3:L3", "A4:L4", "A5:L5", "A6:L6",
+                "A7:A8", "B7:B8", "C7:C8", "D7:D8", "E7:E8", "H7:H8",
+                "F7:G7", "I7:J7", "K7:L7"
+        };
+        String[] headerSpanUnmerged = {"F8", "G8", "I8", "J8", "K8", "L8"};
+        eComponent.setReportName(ReportLabels.SRO_MODERNIZATION_REPORT);
+        eComponent.setNoOfColumns(12);
+        eComponent.setNoOfheaderRows(8);
+        eComponent.setHeaderText(headerText);
+        eComponent.setHeaderSpanMerged(headerSpanMerged);
+        eComponent.setHeaderSpanUnMerged(headerSpanUnmerged);
+        List<List<String>> reportDataList = new ArrayList<>();
+        AtomicInteger indexHolder = new AtomicInteger();
+        if (districtList != null && !districtList.isEmpty()) {
+            districtList.forEach(map -> {
+                List<String> strings = new ArrayList<>();
+                strings.add(Integer.toString(indexHolder.incrementAndGet()));
+                strings.add(map.getDistrictName() != null ? map.getDistrictName().toUpperCase() : "N/A");
+                strings.add(map.getTotalTehsils() != null ? String.valueOf(map.getTotalTehsils()) : "0");
+                strings.add(map.getTotalSros() != null ? String.valueOf(map.getTotalSros()) : "0");
+                SroModernizationExportUtil.appendDistrict(strings, map);
+                reportDataList.add(strings);
+            });
+        }
+        if (grandTotal != null && !grandTotal.isEmpty()) {
+            String totalTehsils = SroModernizationExportUtil.sumTehsils(districtList);
+            grandTotal.forEach(gt -> {
+                List<String> grandTotalList = new ArrayList<>();
+                grandTotalList.add("");
+                grandTotalList.add("Grand Total");
+                grandTotalList.add(totalTehsils);
                 grandTotalList.add(gt.getFormattingTotalSros() != null ? gt.getFormattingTotalSros() : "0");
                 SroModernizationExportUtil.appendStateFormatted(grandTotalList, gt);
                 reportDataList.add(grandTotalList);

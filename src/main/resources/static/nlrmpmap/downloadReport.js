@@ -75,6 +75,16 @@ document.addEventListener("DOMContentLoaded", function () {
       toggleExcelLinks();
     });
 
+    function renumberReportRows() {
+      let serial = 0;
+      document.querySelectorAll("#data tbody tr").forEach(row => {
+        const cell = row.querySelector("td.report-sno");
+        if (cell && row.style.display !== "none") {
+          cell.innerText = ++serial;
+        }
+      });
+    }
+
     function fetchReportData() {
       const stateId = document.getElementById("stateId").value;
 
@@ -153,6 +163,8 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
               document.getElementById("legacyRevenueRow").style.display = "none";
             }
+
+            renumberReportRows();
 
             // Show the table if there is data
             document.getElementById("data").style.display = "table";

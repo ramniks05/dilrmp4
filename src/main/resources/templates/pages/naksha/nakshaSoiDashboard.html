@@ -65,10 +65,15 @@
 
 
 
+    <link sec:authorize="!isAuthenticated()" rel="stylesheet" th:href="@{/static/css/dilrmp.css}">
+
+
+
+
 </head>
 <body>
 <div id="dashboard-content" style="display: none;">
-    <div class="content-wrapper" style=" background-color: #f4f3f2;min-height: 469px;margin-left: 0px !important;" layout:fragment="content">
+    <div class="content-wrapper dilrmp-legacy" style=" background-color: #f4f3f2;min-height: 469px;margin-left: 0px !important;" layout:fragment="content">
         <div class="card-header" style="background-color: #8ddfef; text-align: center; padding: 10px;">
 
 

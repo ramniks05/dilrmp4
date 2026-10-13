@@ -7,6 +7,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DILRMP MIS</title>
+    <meta name="description" content="DILRMP-MIS 4.0 - Management Information System of the Digital India Land Records Modernization Programme, Department of Land Resources, Ministry of Rural Development, Government of India.">
+    <meta name="keywords" content="DILRMP, DILRMP MIS, Digital India Land Records Modernization Programme, Department of Land Resources, DoLR, Ministry of Rural Development, Land Records, Computerization of Land Records, Survey Resurvey, SRO, Modern Record Room">
+    <meta name="author" content="Department of Land Resources, Ministry of Rural Development, Government of India">
     <!-- Google Font: Source Sans Pro -->
     <!-- jQuery -->
     <script th:src="@{/static/js/jquery.min.js}"></script>
@@ -16,7 +19,6 @@
     <link rel="stylesheet"  th:href="@{/static/css/choice.min.css.css}">
     <!-- Font Awesome -->
     <link rel="stylesheet" th:href="@{/static/css/all.min.css}">
-    <link sec:authorize="!isAuthenticated()" rel="stylesheet" th:href="@{/static/css/dilrmp.css}">
     <!-- Theme style -->
     <link rel="stylesheet" th:href="@{/static/css/adminlte.css}">
     <link rel="stylesheet" th:href="@{/static/css/topnav.css}">
@@ -28,6 +30,12 @@
     <link rel="stylesheet" th:href="@{/static/css/buttons.bootstrap4.min.css}">
     <link rel="stylesheet" th:href="@{/static/css/adminlte.css}">
     <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+    <link rel="stylesheet" th:href="@{/static/ux4g/3.3.2/ux4g-dilrmp.css}">
+    <link rel="stylesheet" th:href="@{/static/css/ux4g-bridge.css}">
+    <link rel="stylesheet" th:href="@{/static/css/ux4g-theme.css}">
+    <link rel="stylesheet" th:href="@{/static/css/gigw.css}">
+    <script th:src="@{/static/ux4g/3.3.2/ux4g.js}" defer></script>
+    <script th:src="@{/static/js/gigw.js}" defer></script>
 
 </head>
 
@@ -36,7 +44,7 @@
 <span th:replace="~{fragments/top-header :: top-header}"></span>
 <div class="wrapper">
     <span sec:authorize="!isAuthenticated()" th:replace="~{fragments/header :: header}"></span>
-
+    <div id="main-content" class="gigw-skip-target" tabindex="-1"></div>
 
     <section layout:fragment="content" id="content"><!--dynamic content-->
         <!--you can replace this using page-->

@@ -432,9 +432,10 @@
         
         
     </style>
+    <link sec:authorize="!isAuthenticated()" rel="stylesheet" th:href="@{/static/css/dilrmp.css}">
 </head>
 <body>
-<div class="content-wrapper" layout:fragment="content">
+<div class="content-wrapper dilrmp-legacy" layout:fragment="content">
     <div class="containerOne">
         <div class="card-header"
              style="background: linear-gradient(45deg, rgb(16, 137, 211) 0%, rgb(19, 111, 130) 100%);">

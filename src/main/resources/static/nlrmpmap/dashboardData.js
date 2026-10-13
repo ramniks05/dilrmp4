@@ -396,7 +396,9 @@ var fields = [
 
 // Function to format numbers in Indian style (e.g., 35,75,26,763)
 function formatIndianNumber(num) {
-    return num.toString().replace(/\B(?=(\d{2})+(?!\d))/g, ",");
+    var parts = num.toString().split('.');
+    parts[0] = parts[0].replace(/(\d)(?=(\d\d)+\d$)/g, "$1,");
+    return parts.join('.');
 }
 
 // Define colors for the pie chart slices (Optional)
@@ -454,7 +456,9 @@ Highcharts.chart('physicalProgressChart', {
 
  // Function to format numbers in Indian style (e.g., 35,75,26,763)
         function formatIndianNumber(num) {
-            return num.toString().replace(/\B(?=(\d{2})+(?!\d))/g, ",");
+            var parts = num.toString().split('.');
+            parts[0] = parts[0].replace(/(\d)(?=(\d\d)+\d$)/g, "$1,");
+            return parts.join('.');
         }
 
         // Data Fields with Values Only (No Percentage)

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/dashboard1">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sitemap - DILRMP-MIS 4.0</title>
+</head>
+
+<body>
+<div class="content" layout:fragment="content">
+    <article class="gigw-page gigw-sitemap">
+        <h1>Sitemap</h1>
+        <ul>
+            <li><a th:href="@{/}">Home</a></li>
+            <li>Dashboards
+                <ul>
+                    <li><a th:href="@{/dashboard-chart}">Chart</a></li>
+                    <li><a th:href="@{/naksha-dashboard}">Naksha Dashboard</a></li>
+                </ul>
+            </li>
+            <li>Reports
+                <ul>
+                    <li><a th:href="@{/reports/physical-progress-report}">Physical Progress Report</a></li>
+                    <li><a th:href="@{/reports/download-progress-report}">Download Reports (PDF / Excel)</a></li>
+                </ul>
+            </li>
+            <li>About
+                <ul>
+                    <li><a th:href="@{/userProfile/about-us}">About Us</a></li>
+                    <li><a th:href="@{/userProfile/contact-us}">Contact Us</a></li>
+                </ul>
+            </li>
+            <li>Login
+                <ul>
+                    <li><a th:href="@{/loginPage}">Login</a></li>
+                    <li><a th:href="@{/userProfile/forget-password}">Forgot Password</a></li>
+                </ul>
+            </li>
+            <li>Website Information
+                <ul>
+                    <li><a th:href="@{/site/website-policies}">Website Policies</a></li>
+                    <li><a th:href="@{/site/website-policies#copyright-policy}">Copyright Policy</a></li>
+                    <li><a th:href="@{/site/website-policies#hyperlinking-policy}">Hyperlinking Policy</a></li>
+                    <li><a th:href="@{/site/website-policies#privacy-policy}">Privacy Policy</a></li>
+                    <li><a th:href="@{/site/website-policies#terms-and-conditions}">Terms &amp; Conditions</a></li>
+                    <li><a th:href="@{/site/website-policies#disclaimer}">Disclaimer</a></li>
+                    <li><a th:href="@{/site/help}">Help</a></li>
+                    <li><a th:href="@{/site/help#screen-reader-access}">Screen Reader Access</a></li>
+                    <li><a th:href="@{/site/feedback}">Feedback</a></li>
+                    <li><a th:href="@{/site/sitemap}">Sitemap</a></li>
+                </ul>
+            </li>
+            <li>Related Websites (open in a new window)
+                <ul>
+                    <li><a href="https://dolr.gov.in/" target="_blank">Department of Land Resources</a></li>
+                    <li><a href="https://ngdrs.gov.in/" target="_blank">National Generic Document Registration System (NGDRS)</a></li>
+                    <li><a href="https://larr.dolr.gov.in/" target="_blank">LACRRIS</a></li>
+                    <li><a href="https://www.india.gov.in/" target="_blank">National Portal of India</a></li>
+                </ul>
+            </li>
+        </ul>
+    </article>
+</div>
+</body>
+
+</html>

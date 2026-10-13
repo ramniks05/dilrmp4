@@ -8,9 +8,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DILRMP-MIS-4.0</title>
   <style>
-    body{background-color:#F9F9FC;font-family: 'Roboto', sans-serif;font-size:14px;}
+    body{background-color:var(--ux4g-bg-neutral);font-size:14px;}
         .table-bordered th, .table-bordered td {
-    border: 1px solid #16aec6;
+    border: 1px solid var(--ux4g-border-color-neutral-subtle);
     }
 
 
@@ -24,7 +24,6 @@
   background: transparent;
 
 
-  letter-spacing: .2rem;
 
   transition: .2s;
   cursor: pointer;
@@ -62,7 +61,7 @@
 	margin: 0 auto;
 	background: rgba(255, 255, 255, 0.85);
 	border-radius: 20px;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.43);
+	box-shadow: var(--ux4g-shadow-l1);
 	display: none;
 }
 
@@ -81,7 +80,7 @@
     padding: 0.5rem 0.75rem;
     margin-left: -1px;
     line-height: 1.25;
-    color: #007bff;
+    color: var(--ux4g-text-brand-primary-default);
     background-color: #fff;
     border: 1px solid var(--cyan);
 }
@@ -101,7 +100,7 @@
 	margin: 0 auto;
 	background: rgba(255, 255, 255, 0.85);
 	border-radius: 20px;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.43);
+	box-shadow: var(--ux4g-shadow-l1);
 	display: none;
 }
 
@@ -127,7 +126,7 @@
 	margin: 0 auto;
 	background: rgba(255, 255, 255, 0.85);
 	border-radius: 20px;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.43);
+	box-shadow: var(--ux4g-shadow-l1);
 	display: none;
 }
 
@@ -161,7 +160,7 @@
   content: "";
   width: 50px;
   height: 2px;
-  background: #3498db;
+  background: var(--ux4g-color-primary-600);
   display: inline-block;
 }
 
@@ -180,7 +179,7 @@
             color: blue;
         }
         .bg-info {
-    background-color: #32b4c8 !important;
+    background-color: var(--ux4g-bg-primary-strong) !important;
 }
     </style>
   <script>
@@ -205,7 +204,7 @@
 
 
 
-<div class="content-wrapper" layout:fragment="content" style="box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;">
+<div class="content-wrapper" layout:fragment="content" style="box-shadow: var(--ux4g-shadow-l1)">
   <!-- Content Header (Page header) -->
   <section class="content">
     <div class="container-fluid">

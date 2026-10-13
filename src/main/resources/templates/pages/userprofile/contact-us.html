@@ -47,12 +47,12 @@
 
 /* Theme Colors */
 :root {
-  --primary-color: #4CC082;
-  --light-primary-color: #E2F3F0;
-  --secondary-color: #EC6C5A;
-  --light-secondary-color: #FFE9E5;
-  --tertiary-color: #FFEED3;
-  --dark-color: #31333A;
+  --primary-color: var(--ux4g-color-primary-600);
+  --light-primary-color: var(--ux4g-color-primary-50);
+  --secondary-color: var(--ux4g-color-blue-600);
+  --light-secondary-color: var(--ux4g-color-blue-100);
+  --tertiary-color: var(--ux4g-color-secondary-50);
+  --dark-color: var(--ux4g-text-neutral-primary);
   --light-color: #FFFFFF;
   --grey-color: #BBC7D4;
   --light-dark-color: #727272;
@@ -61,8 +61,8 @@
 
 /* Fonts */
 :root {
-  --body-font: 'Inter', sans-serif;
-  --heading-font: 'Inter', sans-serif;
+  --body-font: var(--ux4g-font-family-base);
+  --heading-font: var(--ux4g-font-family-base);
 }
 
 body {
@@ -75,25 +75,25 @@ body {
 
   --bs-light-rgb: 248, 248, 248;
 
-  --bs-font-sans-serif: var(var(--body-font));
+  --bs-font-sans-serif: var(--body-font);
   --bs-body-font-family: var(--bs-font-sans-serif);
   --bs-body-font-size: 1rem;
   --bs-body-font-weight: 400;
   --bs-body-line-height: 1.3rem;
   --bs-body-color: var(--dark-color);
 
-  --bs-primary: #4CC082;
-  --bs-primary-rgb: 76, 192, 130;
-  --bs-primary-bg-subtle: #E2F3F0;
+  --bs-primary: var(--ux4g-color-primary-600);
+  --bs-primary-rgb: 74, 43, 194;
+  --bs-primary-bg-subtle: var(--ux4g-color-primary-50);
 
-  --bs-border-color: #F7F7F7;
+  --bs-border-color: var(--ux4g-border-color-neutral-subtle);
 
-  --bs-secondary: #EC6C5A;
-  --bs-secondary-rgb: 236, 108, 90;
-  --bs-secondary-bg-subtle: #FFE9E5;
+  --bs-secondary: var(--ux4g-color-blue-600);
+  --bs-secondary-rgb: 50, 113, 234;
+  --bs-secondary-bg-subtle: var(--ux4g-color-blue-100);
 
-  --bs-tertiary: #f8be60;
-  --bs-tertiary-bg-subtle: #FFEED3;
+  --bs-tertiary: var(--ux4g-color-secondary-600);
+  --bs-tertiary-bg-subtle: var(--ux4g-color-secondary-50);
 
 }
 
@@ -114,7 +114,7 @@ body {
 
 .primary:hover {
   background: var(--bs-primary);
-  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  box-shadow: var(--ux4g-shadow-l2);
 }
 
 .secondary {
@@ -129,7 +129,7 @@ body {
 
 .secondary:hover {
   background: var(--bs-secondary);
-  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  box-shadow: var(--ux4g-shadow-l2);
 }
 
 .tertiary {
@@ -144,11 +144,11 @@ body {
 
 .tertiary:hover {
   background: var(--bs-tertiary);
-  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  box-shadow: var(--ux4g-shadow-l2);
 }
 
 .gray {
-  background: #e0e5eb;
+  background: var(--ux4g-color-neutral-100);
   transition: all 0.3s ease-in;
 }
 
@@ -158,8 +158,8 @@ body {
 }
 
 .gray:hover {
-  background: #1d1a1a;
-  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  background: var(--ux4g-color-primary-600);
+  box-shadow: var(--ux4g-shadow-l2);
 }
 
 .primary:hover .svg-primary,
@@ -212,7 +212,7 @@ img, svg {
 }
 .iconContent1 {
     font-size: 60px;
-    color: #7cbdaa;
+    color: var(--ux4g-color-primary-600);
 }
 
 .top-boxes {
@@ -227,11 +227,14 @@ img, svg {
 <!-- Content Wrapper. Contains page content -->
 <div class="content" layout:fragment="content">
 
-    <div class="card-header" style="background-color: #8ddfef; text-align: center; padding: 10px;">
-        <div style="display: inline-block; background-color: #ffffff; padding: 10px 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-            <marquee scrollamount="10" style="font-family: Arial, sans-serif; font-size: 16px; color: red; font-weight: bold;">
-                <h4 style="margin: 0;">The new MIS 4.0 was launched on October 15, 2024. All States/UTs are required to complete data entry by the end of this week.</h4>
-            </marquee>
+    <div class="card-header" style="background-color: var(--ux4g-bg-primary); text-align: center; padding: 10px">
+        <div style="display: inline-block; background-color: #ffffff; padding: 10px 20px; border-radius: 8px; box-shadow: var(--ux4g-shadow-l1)">
+            <div class="gigw-ticker" role="region" aria-label="Announcement">
+                <div class="gigw-ticker-viewport" tabindex="0">
+                    <p class="gigw-ticker-text" style="margin: 0; font-size: 16px; color: #c00000; font-weight: bold">The new MIS 4.0 was launched on October 15, 2024. All States/UTs are required to complete data entry by the end of this week.</p>
+                </div>
+                <button type="button" class="gigw-ticker-toggle" data-gigw-ticker-toggle aria-pressed="false" aria-label="Pause scrolling announcement">Pause</button>
+            </div>
         </div>
     </div>
 

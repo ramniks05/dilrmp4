@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/dashboard1">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Feedback - DILRMP-MIS 4.0</title>
+</head>
+
+<body>
+<div class="content" layout:fragment="content">
+    <article class="gigw-page">
+        <h1>Feedback</h1>
+        <p>We welcome your feedback, suggestions and queries about this website. Fields marked with
+            <span aria-hidden="true">*</span> are required. Submitting the form opens your e-mail application with
+            the message ready to send to <strong>support-dilrmp[at]gov[dot]in</strong>. Queries are normally answered
+            within 7 working days.</p>
+
+        <div id="feedbackStatus" role="status" aria-live="polite" class="mb-3"></div>
+
+        <form id="feedbackForm" class="gigw-form" novalidate>
+            <div class="form-group">
+                <label for="fbName" class="required">Name</label>
+                <input type="text" class="form-control" id="fbName" name="name" autocomplete="name" required
+                       maxlength="100" aria-describedby="fbNameError">
+                <small id="fbNameError" class="text-danger"></small>
+            </div>
+            <div class="form-group">
+                <label for="fbEmail" class="required">E-mail</label>
+                <input type="email" class="form-control" id="fbEmail" name="email" autocomplete="email" required
+                       maxlength="150" aria-describedby="fbEmailError">
+                <small id="fbEmailError" class="text-danger"></small>
+            </div>
+            <div class="form-group">
+                <label for="fbPhone">Mobile Number</label>
+                <input type="tel" class="form-control" id="fbPhone" name="phone" autocomplete="tel" maxlength="15"
+                       aria-describedby="fbPhoneHint">
+                <small id="fbPhoneHint" class="form-text text-muted">Optional. 10 digit mobile number.</small>
+            </div>
+            <div class="form-group">
+                <label for="fbCategory" class="required">Category</label>
+                <select class="form-control" id="fbCategory" name="category" required aria-describedby="fbCategoryError">
+                    <option value="">Select category</option>
+                    <option value="Suggestion">Suggestion</option>
+                    <option value="Query">Query</option>
+                    <option value="Data related issue">Data related issue</option>
+                    <option value="Accessibility issue">Accessibility issue</option>
+                    <option value="Technical issue">Technical issue</option>
+                    <option value="Other">Other</option>
+                </select>
+                <small id="fbCategoryError" class="text-danger"></small>
+            </div>
+            <div class="form-group">
+                <label for="fbMessage" class="required">Message</label>
+                <textarea class="form-control" id="fbMessage" name="message" rows="5" required maxlength="1500"
+                          aria-describedby="fbMessageError"></textarea>
+                <small id="fbMessageError" class="text-danger"></small>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit Feedback</button>
+            <button type="reset" class="btn btn-secondary">Reset</button>
+        </form>
+
+        <h2>Other ways to reach us</h2>
+        <p>Department of Land Resources, Ministry of Rural Development, Government of India, Kartavya Bhavan-3,
+            Dr. Rajendra Prasad Road, New Delhi-110001.<br>
+            Phone: 011-23063224 &nbsp;|&nbsp; E-mail: support-dilrmp[at]gov[dot]in<br>
+            See <a th:href="@{/userProfile/contact-us}">Contact Us</a> for contact details of officers.</p>
+    </article>
+
+    <script>
+        (function () {
+            var form = document.getElementById('feedbackForm');
+            if (!form) { return; }
+            var status = document.getElementById('feedbackStatus');
+
+            function setError(field, errorId, message) {
+                document.getElementById(errorId).textContent = message;
+                field.setAttribute('aria-invalid', message ? 'true' : 'false');
+            }
+
+            form.addEventListener('reset', function () {
+                status.textContent = '';
+                form.querySelectorAll('.text-danger').forEach(function (el) { el.textContent = ''; });
+                form.querySelectorAll('[aria-invalid]').forEach(function (el) { el.removeAttribute('aria-invalid'); });
+            });
+
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+                var fields = {
+                    name: document.getElementById('fbName'),
+                    email: document.getElementById('fbEmail'),
+                    phone: document.getElementById('fbPhone'),
+                    category: document.getElementById('fbCategory'),
+                    message: document.getElementById('fbMessage')
+                };
+                var name = fields.name.value.trim();
+                var email = fields.email.value.trim();
+                var phone = fields.phone.value.trim();
+                var category = fields.category.value;
+                var message = fields.message.value.trim();
+                var firstInvalid = null;
+
+                setError(fields.name, 'fbNameError', name ? '' : 'Please enter your name.');
+                if (!name) { firstInvalid = firstInvalid || fields.name; }
+
+                var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+                setError(fields.email, 'fbEmailError', emailOk ? '' : 'Please enter a valid e-mail address, for example name@example.com.');
+                if (!emailOk) { firstInvalid = firstInvalid || fields.email; }
+
+                setError(fields.category, 'fbCategoryError', category ? '' : 'Please select a category.');
+                if (!category) { firstInvalid = firstInvalid || fields.category; }
+
+                setError(fields.message, 'fbMessageError', message ? '' : 'Please enter your message.');
+                if (!message) { firstInvalid = firstInvalid || fields.message; }
+
+                if (firstInvalid) {
+                    status.textContent = 'Please correct the errors in the form.';
+                    firstInvalid.focus();
+                    return;
+                }
+
+                var body = 'Name: ' + name + '\nE-mail: ' + email
+                    + (phone ? '\nMobile: ' + phone : '') + '\nCategory: ' + category + '\n\n' + message;
+                window.location.href = 'mailto:support-dilrmp@gov.in'
+                    + '?subject=' + encodeURIComponent('DILRMP-MIS Feedback: ' + category)
+                    + '&body=' + encodeURIComponent(body);
+                status.textContent = 'Your e-mail application has been opened with the feedback message. Please send the e-mail to complete your feedback.';
+            });
+        })();
+    </script>
+</div>
+</body>
+
+</html>

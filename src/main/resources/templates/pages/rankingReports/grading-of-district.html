@@ -20,7 +20,7 @@
             <div class="card-header">
               <div class="row">
                 <div class="col-sm-10">
-                  <h3 class="card-title" style="font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a;  letter-spacing: 2px;">Grading of District in Platinum, Gold and Silver categories</h3>
+                  <h3 class="card-title" style="font-size: 1.125rem">Grading of District in Platinum, Gold and Silver categories</h3>
                 </div>
                 <div class="col-sm-2">
                   <a th:href="@{/physcial/report/pdf/grading-district}">
@@ -39,7 +39,7 @@
               <div class="table-responsive text-nowrap">
                 <div class="alert alert-success" role="alert" th:text="${success}" th:if="${success}"></div>
                 <table id="example2" class="table table-bordered table-striped">
-                  <thead class="card-info" style="background-color: #91c9d2;">
+                  <thead class="card-info" style="background-color: var(--dilrmp-th-bg)">
                   <tr>
                     <th>S.No.</th>
                     <th>State/UT Name</th>

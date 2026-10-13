@@ -10,8 +10,9 @@
     .btn-xxs{padding:.15rem .5rem;font-size:.75rem;line-height:1;border-radius:9999px}
     .btn-icon-xxs{padding:.15rem .4rem;font-size:.8rem;line-height:1;border-radius:9999px}
     </style>
+    <link sec:authorize="!isAuthenticated()" rel="stylesheet" th:href="@{/static/css/dilrmp.css}">
 </head>
-<div class="content-wrapper" layout:fragment="content">
+<div class="content-wrapper dilrmp-legacy" layout:fragment="content">
     <!-- Content Header (Page header) -->
     <section class="content containerOne">
         <div class="card-header"

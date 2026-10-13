@@ -75,6 +75,8 @@
   }
 </style>
 
+    <link sec:authorize="!isAuthenticated()" rel="stylesheet" th:href="@{/static/css/dilrmp.css}">
+
 </head>
 
 <body>
@@ -82,7 +84,7 @@
 
 
 
-    <div class="content-wrapper" style=" background-color: #ffffff; margin-left:0px !important;min-height:0px !important" layout:fragment="content">
+    <div class="content-wrapper dilrmp-legacy" style=" background-color: #ffffff; margin-left:0px !important;min-height:0px !important" layout:fragment="content">
         <div class="card-header"  style="background-color: #8ddfef; text-align: center; padding: 10px;">
             <div class="button" style="display: inline-block;
             color: #ffffff;

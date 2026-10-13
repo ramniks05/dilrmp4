@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/dashboard1">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Help - DILRMP-MIS 4.0</title>
+</head>
+
+<body>
+<div class="content" layout:fragment="content">
+    <article class="gigw-page">
+        <h1>Help</h1>
+
+        <nav aria-label="Topics on this page">
+            <ul class="gigw-toc">
+                <li><a href="#navigation">Navigating the website</a></li>
+                <li><a href="#accessibility-features">Accessibility features</a></li>
+                <li><a href="#screen-reader-access">Screen Reader Access</a></li>
+                <li><a href="#viewing-documents">Viewing information in various file formats</a></li>
+                <li><a href="#reports-help">Reports and downloads</a></li>
+                <li><a href="#login-help">Login help</a></li>
+            </ul>
+        </nav>
+
+        <section id="navigation">
+            <h2>Navigating the website</h2>
+            <ul>
+                <li>The main menu at the top of every page gives access to Home, Chart, Naksha, Report, Download,
+                    Login and Contact pages.</li>
+                <li>The links at the bottom of every page give access to Website Policies, Help, Sitemap, Feedback and
+                    Contact Us.</li>
+                <li>The <a th:href="@{/site/sitemap}">Sitemap</a> lists all the main pages of the website.</li>
+                <li>Use the <strong>Skip to main content</strong> link (first link on every page, available with the
+                    <kbd>Tab</kbd> key) to move directly past the menus to the page content.</li>
+                <li>All features can be used with the keyboard: <kbd>Tab</kbd> moves to the next link or control,
+                    <kbd>Shift</kbd> + <kbd>Tab</kbd> moves back, and <kbd>Enter</kbd> activates it.</li>
+            </ul>
+        </section>
+
+        <section id="accessibility-features">
+            <h2>Accessibility features</h2>
+            <p>The accessibility bar at the top of every page provides the following options. Your choice is
+                remembered in your browser.</p>
+            <table>
+                <caption>Accessibility options</caption>
+                <thead>
+                <tr>
+                    <th scope="col">Option</th>
+                    <th scope="col">What it does</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>A<sup>-</sup> / A / A<sup>+</sup></td>
+                    <td>Decrease, reset or increase the text size of the page.</td>
+                </tr>
+                <tr>
+                    <td>High contrast (dark A)</td>
+                    <td>Shows the page in white and yellow text on a black background.</td>
+                </tr>
+                <tr>
+                    <td>Normal contrast (light A)</td>
+                    <td>Returns the page to its standard colours.</td>
+                </tr>
+                <tr>
+                    <td>Skip to main content</td>
+                    <td>Moves the keyboard focus directly to the main content of the page.</td>
+                </tr>
+                </tbody>
+            </table>
+            <p>Links that open in a new window are announced as such, and a message is shown before you are taken to
+                a non-government website. The scrolling announcement on the home page can be paused with its
+                <strong>Pause</strong> button, or by moving the mouse or keyboard focus over it.</p>
+        </section>
+
+        <section id="screen-reader-access">
+            <h2>Screen Reader Access</h2>
+            <p>This website complies with the Guidelines for Indian Government Websites (GIGW 3.0) and the Web Content
+                Accessibility Guidelines (WCAG) 2.1 level AA. This enables people with visual impairments to access
+                the website using assistive technologies, such as screen readers. The following table lists
+                information about different screen readers:</p>
+            <table>
+                <caption>Screen readers</caption>
+                <thead>
+                <tr>
+                    <th scope="col">Screen Reader</th>
+                    <th scope="col">Website</th>
+                    <th scope="col">Free / Commercial</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Non Visual Desktop Access (NVDA)</td>
+                    <td><a href="https://www.nvaccess.org/" target="_blank">https://www.nvaccess.org/</a></td>
+                    <td>Free</td>
+                </tr>
+                <tr>
+                    <td>System Access To Go</td>
+                    <td><a href="https://www.satogo.com/" target="_blank">https://www.satogo.com/</a></td>
+                    <td>Free</td>
+                </tr>
+                <tr>
+                    <td>Hal</td>
+                    <td><a href="https://yourdolphin.com/" target="_blank">https://yourdolphin.com/</a></td>
+                    <td>Commercial</td>
+                </tr>
+                <tr>
+                    <td>JAWS</td>
+                    <td><a href="https://www.freedomscientific.com/products/software/jaws/" target="_blank">https://www.freedomscientific.com/products/software/jaws/</a></td>
+                    <td>Commercial</td>
+                </tr>
+                <tr>
+                    <td>Supernova</td>
+                    <td><a href="https://yourdolphin.com/" target="_blank">https://yourdolphin.com/</a></td>
+                    <td>Commercial</td>
+                </tr>
+                <tr>
+                    <td>VoiceOver (macOS / iOS)</td>
+                    <td><a href="https://www.apple.com/accessibility/vision/" target="_blank">https://www.apple.com/accessibility/vision/</a></td>
+                    <td>Free (built in)</td>
+                </tr>
+                <tr>
+                    <td>TalkBack (Android)</td>
+                    <td><a href="https://support.google.com/accessibility/android/" target="_blank">https://support.google.com/accessibility/android/</a></td>
+                    <td>Free (built in)</td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="viewing-documents">
+            <h2>Viewing information in various file formats</h2>
+            <p>Reports on this website can be downloaded in the following formats. You may need the software listed
+                below to view them.</p>
+            <table>
+                <caption>File formats and viewers</caption>
+                <thead>
+                <tr>
+                    <th scope="col">Document Type</th>
+                    <th scope="col">Software / Plug-in</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Portable Document Format (PDF)</td>
+                    <td>Adobe Acrobat Reader (<a href="https://get.adobe.com/reader/" target="_blank">https://get.adobe.com/reader/</a>)
+                        or any modern web browser</td>
+                </tr>
+                <tr>
+                    <td>Microsoft Excel (XLS / XLSX)</td>
+                    <td>Microsoft Excel, LibreOffice Calc (<a href="https://www.libreoffice.org/" target="_blank">https://www.libreoffice.org/</a>)
+                        or Microsoft Excel Viewer</td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="reports-help">
+            <h2>Reports and downloads</h2>
+            <ul>
+                <li><strong>Report</strong> shows physical progress reports. Select a State/UT to see district-wise
+                    details.</li>
+                <li><strong>Download</strong> lets you download reports as PDF or Excel files. The file type is
+                    shown by the PDF and Excel icons next to each report.</li>
+                <li>Data shown is entered by the respective State Governments/UT Administrations.</li>
+            </ul>
+        </section>
+
+        <section id="login-help">
+            <h2>Login help</h2>
+            <ul>
+                <li>Login is available only to authorised officers of the Department of Land Resources, the
+                    States/UTs, Districts and IGR offices.</li>
+                <li>If you have forgotten your password, use the <strong>Forgot Password</strong> option on the
+                    login page.</li>
+                <li>For any other problem, please see <a th:href="@{/userProfile/contact-us}">Contact Us</a>.</li>
+            </ul>
+        </section>
+    </article>
+</div>
+</body>
+
+</html>

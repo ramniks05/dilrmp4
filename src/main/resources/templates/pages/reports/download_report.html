@@ -40,7 +40,7 @@
     margin: 0 auto;
     background: rgba(255, 255, 255, 0.85);
     border-radius: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.43);
+    box-shadow: var(--ux4g-shadow-l1);
     display: none;
     }
     #wait img {
@@ -54,7 +54,7 @@
 
 .btn-primary {
     color: #fff;
-    background-color: #8ddfef;
+    background-color: var(--ux4g-bg-primary);
     border-color: #36d0e9;
     box-shadow: none;
 }
@@ -97,9 +97,9 @@
 <hr>
 <!-- Content Wrapper. Contains page content -->
 <div class="content" layout:fragment="content">
-    <div class="card-header" style="background-color: #8ddfef; text-align: center; padding: 10px;">
-        <div style="display: inline-block; background-color: #ffffff; padding: 10px 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-            <marquee scrollamount="10" style="font-family: Arial, sans-serif; font-size: 16px; color: red; font-weight: bold;">
+    <div class="card-header" style="background-color: var(--ux4g-bg-primary); text-align: center; padding: 10px">
+        <div style="display: inline-block; background-color: #ffffff; padding: 10px 20px; border-radius: 8px; box-shadow: var(--ux4g-shadow-l1)">
+            <marquee scrollamount="10" style="font-size: 16px; color: red; font-weight: bold">
                 <h4 style="margin: 0;">The new MIS 4.0 was launched on October 15, 2024. All States/UTs are required to complete data entry by the end of this week.</h4>
             </marquee>
         </div>
@@ -137,7 +137,7 @@
           <br />Please Wait...
         </div>
        <table  id="data"class="table   table-bordered   table-striped "style="display: none;">
-        <thead style="color: #fff; background-color: #7bdef3;">
+        <thead style="color: var(--dilrmp-th-text); background-color: var(--dilrmp-th-bg)">
 
         <tr>
           <th>S.No.</th>

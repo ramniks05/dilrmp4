@@ -25,21 +25,21 @@
 
 
     .bg-sky {
-    background-color: #51d4d4 !important;
+    background-color: var(--ux4g-color-skyblue-600) !important;
 }
 
 .bg-dark {
-  background-color: #343a40 !important;
+  background-color: var(--ux4g-color-neutral-900) !important;
 }
 
 .bg-dark,
 .bg-dark>a {
-  color: #51d4d4 !important;
+  color: var(--ux4g-color-primary-200) !important;
 }
 
 .bg-dark.btn:hover {
   border-color: #51d4d4;
-  color: #51d4d4;
+  color: var(--ux4g-color-primary-200);
 }
 
 
@@ -87,7 +87,7 @@
             padding: 20px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            box-shadow: var(--ux4g-shadow-l1);
             z-index: 9999;
         }
 
@@ -118,19 +118,19 @@
 
         .active-box {
             z-index: 10;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            box-shadow: var(--ux4g-shadow-l1);
             transform: scale(1.05);
             transition: all 0.3s ease-in-out;
 
         }
 
         .active-box.bg-success {
-            background-color: #28a745 !important;
+            background-color: var(--ux4g-color-green-600) !important;
 
         }
 
         .active-box.bg-primary {
-            background-color: #007bff !important;
+            background-color: var(--ux4g-bg-primary-strong) !important;
         }
 
         /* Full-screen overlay for GIF */
@@ -176,7 +176,7 @@
     margin: 0 auto;
     background: rgba(255, 255, 255, 0.85);
     border-radius: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.43);
+    box-shadow: var(--ux4g-shadow-l1);
     display: none;
     }
     #wait img {
@@ -185,7 +185,7 @@
 
 
     .bg-dark1 {
-    background-color: #6ab2a4 !important;
+    background-color: var(--dilrmp-tile-3) !important;
     style="color: #ffffff;"
 }
 
@@ -193,22 +193,19 @@
 
 
   #user_table tbody tr:hover {
-    background-color: #8ddfef; /* Light blue background for hover effect */
+    background-color: var(--ux4g-bg-primary); /* Light blue background for hover effect */
 
     font-weight: bold;
 
    table, th, td {
   border: 1px solid white;
   border-collapse: collapse;
-   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+   box-shadow: var(--ux4g-shadow-l1);
 }
 
 
 .card-title {
-    font-size: 26px;
-    font-family: auto;
-    text-shadow: 2px 3px 4px #e2eded;
-    letter-spacing: 2px;
+    font-size: 1.125rem;
     text-align: center; /* Centers the text */
     width: 100%; /* Full width */
     height: auto; /* Adjusts height automatically */
@@ -243,12 +240,12 @@
 
 /* Theme Colors */
 :root {
-  --primary-color: #4CC082;
-  --light-primary-color: #E2F3F0;
-  --secondary-color: #EC6C5A;
-  --light-secondary-color: #FFE9E5;
-  --tertiary-color: #FFEED3;
-  --dark-color: #31333A;
+  --primary-color: var(--ux4g-color-primary-600);
+  --light-primary-color: var(--ux4g-color-primary-50);
+  --secondary-color: var(--ux4g-color-blue-600);
+  --light-secondary-color: var(--ux4g-color-blue-100);
+  --tertiary-color: var(--ux4g-color-secondary-50);
+  --dark-color: var(--ux4g-text-neutral-primary);
   --light-color: #FFFFFF;
   --grey-color: #BBC7D4;
   --light-dark-color: #727272;
@@ -257,8 +254,8 @@
 
 /* Fonts */
 :root {
-  --body-font: 'Inter', sans-serif;
-  --heading-font: 'Inter', sans-serif;
+  --body-font: var(--ux4g-font-family-base);
+  --heading-font: var(--ux4g-font-family-base);
 }
 
 body {
@@ -271,25 +268,25 @@ body {
 
   --bs-light-rgb: 248, 248, 248;
 
-  --bs-font-sans-serif: var(var(--body-font));
+  --bs-font-sans-serif: var(--body-font);
   --bs-body-font-family: var(--bs-font-sans-serif);
   --bs-body-font-size: 1rem;
   --bs-body-font-weight: 400;
   --bs-body-line-height: 1.3rem;
   --bs-body-color: var(--dark-color);
 
-  --bs-primary: #4CC082;
-  --bs-primary-rgb: 76, 192, 130;
-  --bs-primary-bg-subtle: #E2F3F0;
+  --bs-primary: var(--ux4g-color-primary-600);
+  --bs-primary-rgb: 74, 43, 194;
+  --bs-primary-bg-subtle: var(--ux4g-color-primary-50);
 
-  --bs-border-color: #F7F7F7;
+  --bs-border-color: var(--ux4g-border-color-neutral-subtle);
 
-  --bs-secondary: #EC6C5A;
-  --bs-secondary-rgb: 236, 108, 90;
-  --bs-secondary-bg-subtle: #FFE9E5;
+  --bs-secondary: var(--ux4g-color-blue-600);
+  --bs-secondary-rgb: 50, 113, 234;
+  --bs-secondary-bg-subtle: var(--ux4g-color-blue-100);
 
-  --bs-tertiary: #f8be60;
-  --bs-tertiary-bg-subtle: #FFEED3;
+  --bs-tertiary: var(--ux4g-color-secondary-600);
+  --bs-tertiary-bg-subtle: var(--ux4g-color-secondary-50);
 
 }
 
@@ -310,7 +307,7 @@ body {
 
 .primary:hover {
   background: var(--bs-primary);
-  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  box-shadow: var(--ux4g-shadow-l2);
 }
 
 .secondary {
@@ -325,7 +322,7 @@ body {
 
 .secondary:hover {
   background: var(--bs-secondary);
-  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  box-shadow: var(--ux4g-shadow-l2);
 }
 
 .tertiary {
@@ -340,11 +337,11 @@ body {
 
 .tertiary:hover {
   background: var(--bs-tertiary);
-  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  box-shadow: var(--ux4g-shadow-l2);
 }
 
 .gray {
-  background: #dbf2f7;
+  background: var(--ux4g-color-skyblue-100);
   transition: all 0.3s ease-in;
 
 }
@@ -355,8 +352,8 @@ body {
 }
 
 .gray:hover {
-  background: #8ddfef;
-  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  background: var(--ux4g-bg-primary);
+  box-shadow: var(--ux4g-shadow-l2);
 }
 
 .primary:hover .svg-primary,
@@ -412,29 +409,29 @@ img, svg {
 }
 .iconContent1 {
     font-size: 60px;
-    color: #7cbdaa;
+    color: var(--ux4g-color-primary-600);
 
 }
 .iconContent2 {
     font-size: 60px;
-    color: #dca605;
+    color: var(--ux4g-color-secondary-600);
 }
 .iconContent3 {
     font-size: 60px;
-    color: #db4646;
+    color: var(--ux4g-color-blue-600);
 }
 
 .iconContent4 {
     font-size: 60px;
-    color: #24b8d0;
+    color: var(--ux4g-color-skyblue-600);
 }
 
 
 
 
 #example6 {
-    --bs-table-bg: #9defff;
-    --bs-table-striped-bg: #85def0;
+    --bs-table-bg: var(--ux4g-color-neutral-0);
+    --bs-table-striped-bg: var(--ux4g-color-neutral-50);
 }
 .table-success th, .table-success td, .table-success thead th, .table-success tbody+tbody {
     border-color: #31613c;
@@ -443,9 +440,9 @@ img, svg {
 
 #example5 tbody tr:hover,
 #example6 tbody tr:hover {
-    background-color: #FFD700;
+    background-color: var(--dilrmp-row-hover);
     font-weight: bold;
-     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+     box-shadow: var(--ux4g-shadow-l2);
 }
 
 /* Table, th, and td border styling */
@@ -455,7 +452,6 @@ table, th, td {
 }
 
 .banner-ad .banner-content .categories {
-    font-family: 'Garamond';
     font-size: 37px;
     text-transform: capitalize;
     color: var(--dark-color);
@@ -470,9 +466,9 @@ table, th, td {
 <body>
 <div id="dashboard-content" style="display: none;">
   <div class="content-wrapper" style=" background-color: #ffffff; margin-left:0px !important;min-height:0px !important" layout:fragment="content">
-    <div class="card-header" style="background-color: #8ddfef; text-align: center; padding: 10px;">
-      <div style="display: inline-block; background-color: #ffffff; padding: 10px 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-        <marquee scrollamount="10" style="font-family: Arial, sans-serif; font-size: 16px; color: red; font-weight: bold;">
+    <div class="card-header" style="background-color: var(--ux4g-bg-primary); text-align: center; padding: 10px">
+      <div style="display: inline-block; background-color: #ffffff; padding: 10px 20px; border-radius: 8px; box-shadow: var(--ux4g-shadow-l1)">
+        <marquee scrollamount="10" style="font-size: 16px; color: red; font-weight: bold">
           <h4 style="margin: 0;">The new MIS 4.0 was launched on October 15, 2024. All States/UTs are required to complete data entry by the end of this week.</h4>
         </marquee>
       </div>
@@ -493,9 +489,8 @@ table, th, td {
         <div class="row px-4 px-lg-12 ">
           <div class="col-md-12">
             <h3 class="card-title"
-                style="font-size: 26px; font-family: auto; text-shadow: 2px 3px 4px #e2eded;
-    letter-spacing: 2px; text-align: center; width: 100%; height: auto;
-    display: flex; justify-content: center; align-items: center; margin-bottom: 15px; padding: 10px;">
+                style="font-size: 1.125rem; text-align: center; width: 100%; height: auto;
+    display: flex; justify-content: center; align-items: center; margin-bottom: 15px; padding: 10px">
               Digital India Land Records Modernization Programme-MIS 4.0 Dashboard
             </h3>
 
@@ -611,7 +606,7 @@ table, th, td {
 
               <div class="col-sm-10">
                 <h3 class="card-title"
-                    style="font-size: 26px;font-family: auto;text-shadow: 2px 3px 4px #e2eded;letter-spacing: 2px;">
+                    style="font-size: 1.125rem">
                   Top 5 States/UTs</h3>
               </div>
               <div class="card-header" >
@@ -646,7 +641,7 @@ table, th, td {
                 <div class="card" >
                   <div class="col-sm-10">
                     <h3 class="card-title"
-                        style="font-size: 26px;font-family: auto;text-shadow: 2px 3px 4px #e2eded;letter-spacing: 2px;">
+                        style="font-size: 1.125rem">
                       Bottom 5 States/UTs</h3>
                   </div>
                   <div class="card-header" >

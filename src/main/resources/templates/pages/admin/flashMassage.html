@@ -3,14 +3,14 @@
 <div th:fragment="target-flash-massage">
     <style>
    #flashMessageTable tbody tr:hover {
-    background-color: #FFD700; /* Light blue background for hover effect */
+    background-color: var(--dilrmp-row-hover); /* Light blue background for hover effect */
 
     font-weight: bold;
     }
     /* Normal button style */
 .btnb {
-    box-shadow: 0 0 15px 1px #6eabc7;
-    background: #0fa4bc;
+    box-shadow: var(--ux4g-shadow-l1);
+    background: var(--ux4g-bg-primary-strong);
     color: #FFF;
     padding: 10px 30px !important;
     border: none;
@@ -20,8 +20,8 @@
 
 /* Button hover effect */
 .btnb:hover {
-    background-color: #8ddfef; /* New color for hover */
-    box-shadow: 0 0 15px 1px #2e6b83; /* Optional: Change the shadow color */
+    background-color: var(--ux4g-bg-primary); /* New color for hover */
+    box-shadow: var(--ux4g-shadow-l2); /* Optional: Change the shadow color */
 }
 </style>
 
@@ -30,10 +30,10 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card card-info">
-                        <div class="card-header" style="background: linear-gradient(to right, #32b4c8 0%, rgb(64 101 142));">
+                        <div class="card-header">
                             <div class="row">
                                 <div class="col-sm-10">
-                                    <h3 class="card-title"  style=" color: #eff3f6; font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a;  letter-spacing: 2px;"> &nbsp; &nbsp; Flash Massage</h3>
+                                    <h3 class="card-title"  style="font-size: 1.125rem"> &nbsp; &nbsp; Flash Massage</h3>
                                 </div>
 
                             </div>
@@ -172,7 +172,7 @@
                                 <h4>Flash Messages</h4>
 
                                 <table class="table table-bordered table-striped" id="flashMessageTable">
-                                    <thead class="table-info" style="background-color: #148fa2;color:#ffff">
+                                    <thead class="table-info" style="background-color: var(--dilrmp-th-bg); color: var(--dilrmp-th-text)">
                                     <tr>
 
                                         <th>S.No</th>

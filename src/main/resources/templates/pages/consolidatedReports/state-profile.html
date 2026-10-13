@@ -7,7 +7,7 @@
                         <div class="row">
                             <div class="col-sm-10">
                                 <h3 class="card-title"
-                                    style="font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a;  letter-spacing: 2px;">
+                                    style="font-size: 1.125rem">
                                     State/UT - Profile Report DILRMP</h3>
                             </div>
                             <div class="col-sm-2">
@@ -22,18 +22,17 @@
 
                     <style>
         body {
-            background-color: #F9F9FC;
-            font-family: 'Roboto', sans-serif;
+            background-color: var(--ux4g-bg-neutral);
             font-size: 14px;
         }
 
         .table-bordered th,
         .table-bordered td {
-            border: 2px solid #16aec6;
+            border: 1px solid var(--ux4g-border-color-neutral-subtle);
         }
 
         .table-bordered {
-            border: 2px solid #16aec6;
+            border: 1px solid var(--ux4g-border-color-neutral-subtle);
             ;
         }
 
@@ -94,10 +93,10 @@
                         <table id="example1" class="table table-bordered table-striped">
                             <thead>
                             <tr class=" text-center" style="text-align: center;  padding: 10px 0px;">
-                                <td colspan="25" style="background-color: #FE8A7D; font-size: 28px;font-family: auto;letter-spacing: 2px;font-style: inherit;">Computerization of Land Records (CLR)</td>
+                                <td colspan="25" style="background-color: var(--dilrmp-section-bg); font-size: 1.125rem">Computerization of Land Records (CLR)</td>
                             </tr>
                             </thead>
-                            <thead class="card-info" style="background-color: #feb8b0; font-size: 16px; font-weight: bold;">
+                            <thead class="card-info" style="background-color: var(--dilrmp-th-bg); font-size: 16px; font-weight: bold">
                             <tr>
                                 <th rowspan="2" th:text="${clrlabels['serialNumber']}"></th>
                                 <th rowspan="2" th:text="${clrlabels['totalDistricts']}"></th>
@@ -211,14 +210,14 @@
                              th:if="${success}"></div>
                         <table id="example2" class="table table-bordered table-striped">
                             <thead>
-                            <tr class=" text-center" style="background-color: #FE8A7D; font-size: 28px;font-family: auto;letter-spacing: 2px;font-style: inherit;">
+                            <tr class=" text-center" style="background-color: var(--dilrmp-section-bg); font-size: 1.125rem">
                                 <td colspan="31"
-                                    style="font-size: 28px;font-family: auto;letter-spacing: 2px;font-style: inherit;">
+                                    style="font-size: 1.125rem">
                                     Map Digitization
                                 </td>
                             </tr>
                             </thead>
-                            <thead class="card-info" style="background-color: #feb8b0; font-size: 16px; font-weight: bold;">
+                            <thead class="card-info" style="background-color: var(--dilrmp-th-bg); font-size: 16px; font-weight: bold">
                             <tr>
                                 <th rowspan="3" th:text="${maplabels['serialNumber']}"></th>
                                 <th rowspan="3" th:text="${maplabels['totalDistricts']}"></th>
@@ -352,14 +351,14 @@
                              th:if="${success}"></div>
                         <table id="example3" class="table table-bordered table-striped">
                             <thead>
-                            <tr class=" text-center" style="background-color: #FE8A7D; font-size: 28px;font-family: auto;letter-spacing: 2px;font-style: inherit;">
+                            <tr class=" text-center" style="background-color: var(--dilrmp-section-bg); font-size: 1.125rem">
                                 <td colspan="26"
-                                    style="font-size: 28px;font-family: auto;letter-spacing: 2px;font-style: inherit;">
+                                    style="font-size: 1.125rem">
                                     Computerization of Registration (SRO)
                                 </td>
                             </tr>
                             </thead>
-                            <thead class="card-info" style="background-color: #feb8b0; font-size: 16px; font-weight: bold;">
+                            <thead class="card-info" style="background-color: var(--dilrmp-th-bg); font-size: 16px; font-weight: bold">
                             <tr>
                                 <th rowspan="1" th:text="${srolabels['serialNumber']}"></th>
                                 <th rowspan="1" th:text="${srolabels['totalDistricts']}"></th>
@@ -458,12 +457,12 @@
                             <thead>
                             <tr class=" text-center" style="text-align: center;  padding: 10px 0px;">
                                 <td colspan="13"
-                                    style="background-color: #FE8A7D; font-size: 28px;font-family: auto;letter-spacing: 2px;font-style: inherit;">
+                                    style="background-color: var(--dilrmp-section-bg); font-size: 1.125rem">
                                     Survey/Re-Survey under NLRMP/DILRMP
                                 </td>
                             </tr>
                             </thead>
-                            <thead class="card-info" style="background-color: #feb8b0; font-size: 16px; font-weight: bold;">
+                            <thead class="card-info" style="background-color: var(--dilrmp-th-bg); font-size: 16px; font-weight: bold">
                             <tr>
                                 <th rowspan="2" th:text="${surveylabels['serialNumber']}"></th>
                                 <th rowspan="2" th:text="${surveylabels['totalDistricts']}"></th>
@@ -527,12 +526,12 @@
                             <thead>
                             <tr class=" text-center" style="text-align: center;  padding: 10px 0px;">
                                 <td colspan="18"
-                                    style="background-color: #FE8A7D; font-size: 28px;font-family: auto;letter-spacing: 2px;font-style: inherit;">
+                                    style="background-color: var(--dilrmp-section-bg); font-size: 1.125rem">
                                     Computerization of Revenue Court Management System (e-RCMS)
                                 </td>
                             </tr>
                             </thead>
-                            <thead class="card-info" style="background-color: #feb8b0; font-size: 16px; font-weight: bold;">
+                            <thead class="card-info" style="background-color: var(--dilrmp-th-bg); font-size: 16px; font-weight: bold">
                             <tr>
                                 <th rowspan="3" th:text="${rcmslabels['serialNumber']}"></th>
                                 <th rowspan="3" th:text="${rcmslabels['totalDistricts']}"></th>
@@ -618,12 +617,12 @@
                             <thead>
                             <tr class=" text-center" style="text-align: center;  padding: 10px 0px;">
                                 <td colspan="22"
-                                    style="background-color: #FE8A7D; font-size: 28px;font-family: auto;letter-spacing: 2px;font-style: inherit;">
+                                    style="background-color: var(--dilrmp-section-bg); font-size: 1.125rem">
                                     Consent-based linkage of Aadhaar with Record of Rights (RoR)
                                 </td>
                             </tr>
                             </thead>
-                            <thead class="card-info" style="background-color: #feb8b0; font-size: 16px; font-weight: bold;">
+                            <thead class="card-info" style="background-color: var(--dilrmp-th-bg); font-size: 16px; font-weight: bold">
                             <tr>
                                 <th rowspan="3" th:text="${addharlabels['serialNumber']}"></th>
                                 <th rowspan="3" th:text="${addharlabels['totalDistricts']}"></th>
@@ -695,12 +694,12 @@
                             <thead>
                             <tr class=" text-center" style="text-align: center;  padding: 10px 0px;">
                                 <td colspan="9"
-                                    style="background-color: #FE8A7D; font-size: 28px;font-family: auto;letter-spacing: 2px;font-style: inherit;">
+                                    style="background-color: var(--dilrmp-section-bg); font-size: 1.125rem">
                                     Modern Record Room (MRR)
                                 </td>
                             </tr>
                             </thead>
-                            <thead class="card-info" style="background-color: #feb8b0; font-size: 16px; font-weight: bold;">
+                            <thead class="card-info" style="background-color: var(--dilrmp-th-bg); font-size: 16px; font-weight: bold">
                             <tr>
                                 <th rowspan="2" th:text="${mrrlabels['serialNumber']}"></th>
                                 <th rowspan="2" th:text="${mrrlabels['totalDistricts']}"></th>
@@ -752,12 +751,12 @@
                             <thead>
                             <tr class=" text-center" style="text-align: center;  padding: 10px 0px;">
                                 <td colspan="12"
-                                    style="background-color: #FE8A7D; font-size: 28px;font-family: auto;letter-spacing: 2px;font-style: inherit;">
+                                    style="background-color: var(--dilrmp-section-bg); font-size: 1.125rem">
                                     Legacy Registered Documents Digitization
                                 </td>
                             </tr>
                             </thead>
-                            <thead class="card-info" style="background-color: #feb8b0; font-size: 16px; font-weight: bold;">
+                            <thead class="card-info" style="background-color: var(--dilrmp-th-bg); font-size: 16px; font-weight: bold">
                             <tr>
                                 <th rowspan="2" th:text="${legacylabels['serialNumber']}"></th>
                                 <th rowspan="2" th:text="${legacylabels['totalDistricts']}"></th>

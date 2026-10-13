@@ -1,0 +1,674 @@
+/* DILRMP-MIS 4.0 site theme: restyles the existing Bootstrap 4 / AdminLTE 3 / DataTables / Choices.js markup
+   with UX4G 3.3.2 design tokens (static/ux4g/3.3.2/ux4g-dilrmp.css must be loaded first).
+   Unlayered on purpose so it wins over the layered UX4G bundle and over adminlte.css; load it after all vendor CSS.
+   High-contrast mode in gigw.css uses !important and still overrides everything here. */
+
+:root {
+    --dilrmp-th-bg: var(--ux4g-color-blue-900);
+    --dilrmp-th-text: var(--ux4g-color-neutral-0);
+    --dilrmp-th-border: var(--ux4g-color-blue-800);
+    --dilrmp-th-accent: var(--ux4g-color-orange-600);
+    --dilrmp-section-bg: var(--ux4g-color-blue-100);
+    --dilrmp-section-text: var(--ux4g-color-blue-900);
+    --dilrmp-total-bg: var(--ux4g-color-blue-100);
+    --dilrmp-total-text: var(--ux4g-color-blue-900);
+    --dilrmp-cell-border: var(--ux4g-color-neutral-200);
+    --dilrmp-row-hover: var(--ux4g-color-blue-50);
+    --dilrmp-row-stripe: var(--ux4g-color-neutral-50);
+    --dilrmp-focus-ring: 0 0 0 0.2rem rgba(74, 43, 194, 0.18);
+
+    --dilrmp-tile-1: var(--ux4g-color-primary-600);
+    --dilrmp-tile-2: var(--ux4g-color-blue-600);
+    --dilrmp-tile-3: var(--ux4g-color-skyblue-600);
+    --dilrmp-tile-4: var(--ux4g-color-green-600);
+    --dilrmp-tile-5: var(--ux4g-color-secondary-600);
+    --dilrmp-tile-6: var(--ux4g-color-tertiary-600);
+}
+
+/* ---------- Base ---------- */
+body {
+    font-family: var(--ux4g-font-family-base);
+    color: var(--ux4g-text-neutral-primary);
+    background-color: var(--ux4g-bg-neutral);
+}
+
+.content-wrapper:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.wrapper,
+#content {
+    background-color: var(--ux4g-bg-neutral);
+}
+
+h1:where(:not(.dilrmp-legacy, .dilrmp-legacy *)), h2:where(:not(.dilrmp-legacy, .dilrmp-legacy *)), h3:where(:not(.dilrmp-legacy, .dilrmp-legacy *)), h4:where(:not(.dilrmp-legacy, .dilrmp-legacy *)), h5:where(:not(.dilrmp-legacy, .dilrmp-legacy *)), h6:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.h1:where(:not(.dilrmp-legacy, .dilrmp-legacy *)), .h2:where(:not(.dilrmp-legacy, .dilrmp-legacy *)), .h3:where(:not(.dilrmp-legacy, .dilrmp-legacy *)), .h4:where(:not(.dilrmp-legacy, .dilrmp-legacy *)), .h5:where(:not(.dilrmp-legacy, .dilrmp-legacy *)), .h6:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    font-family: var(--ux4g-font-family-base);
+    font-weight: 600;
+}
+
+a:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    color: var(--ux4g-text-link-default-default);
+}
+
+a:hover:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    color: var(--ux4g-color-primary-700);
+}
+
+hr:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    border-top-color: var(--ux4g-border-color-neutral-subtle);
+}
+
+.top-boxes:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    padding-top: 6px;
+}
+
+.text-primary:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) { color: var(--ux4g-text-brand-primary-default) !important; }
+.text-info:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) { color: var(--ux4g-color-skyblue-700) !important; }
+.text-success:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) { color: var(--ux4g-text-success-default) !important; }
+.text-danger:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) { color: var(--ux4g-text-error-default) !important; }
+.text-warning:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) { color: var(--ux4g-color-orange-800) !important; }
+.text-muted:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) { color: var(--ux4g-text-neutral-tertiary) !important; }
+.fa-trash:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) { color: var(--ux4g-text-error-default); }
+
+/* ---------- Cards ---------- */
+.card:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    border: 1px solid var(--ux4g-border-color-neutral-subtle);
+    border-radius: var(--ux4g-radius-md);
+    box-shadow: var(--ux4g-shadow-l1);
+    background-color: var(--ux4g-color-neutral-0);
+}
+
+.card-header:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.card-primary:not(.card-outline) > .card-header:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.card-info:not(.card-outline) > .card-header:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.card-success:not(.card-outline) > .card-header:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.card-secondary:not(.card-outline) > .card-header:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.card-dark:not(.card-outline) > .card-header:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.card-warning:not(.card-outline) > .card-header:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.card-danger:not(.card-outline) > .card-header:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background: var(--ux4g-color-neutral-0);
+    color: var(--ux4g-text-neutral-primary);
+    border-bottom: 1px solid var(--ux4g-border-color-neutral-subtle);
+    border-top-left-radius: var(--ux4g-radius-md);
+    border-top-right-radius: var(--ux4g-radius-md);
+}
+
+.card-primary:not(.card-outline) > .card-header a:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.card-info:not(.card-outline) > .card-header a:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.card-success:not(.card-outline) > .card-header a:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.card-secondary:not(.card-outline) > .card-header a:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.card-dark:not(.card-outline) > .card-header a:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    color: var(--ux4g-text-brand-primary-default);
+}
+
+.card-primary:not(.card-outline) > .card-header:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) { border-top: 3px solid var(--ux4g-color-primary-600); }
+.card-info:not(.card-outline) > .card-header:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) { border-top: 3px solid var(--ux4g-color-skyblue-600); }
+.card-success:not(.card-outline) > .card-header:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) { border-top: 3px solid var(--ux4g-color-green-600); }
+.card-warning:not(.card-outline) > .card-header:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) { border-top: 3px solid var(--ux4g-color-orange-600); }
+.card-danger:not(.card-outline) > .card-header:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) { border-top: 3px solid var(--ux4g-color-red-600); }
+
+.card-primary.card-outline:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.card-info.card-outline:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.card-success.card-outline:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    border-top: 3px solid var(--ux4g-color-primary-600);
+}
+
+.card-title:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.card-header .card-title:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.card-header h3:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.card-header h4:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.card-header h5:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: inherit;
+    margin-bottom: 0;
+}
+
+.card-footer:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--ux4g-bg-neutral);
+    border-top: 1px solid var(--ux4g-border-color-neutral-subtle);
+}
+
+/* ---------- Dashboard tiles (AdminLTE small-box / info-box) ---------- */
+.small-box:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.info-box:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    border-radius: var(--ux4g-radius-md);
+    box-shadow: var(--ux4g-shadow-l1);
+}
+
+.small-box > .small-box-footer:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: rgba(0, 0, 0, 0.12);
+    border-bottom-left-radius: var(--ux4g-radius-md);
+    border-bottom-right-radius: var(--ux4g-radius-md);
+}
+
+.small-box .icon > i:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    opacity: 0.25;
+}
+
+.info-box .info-box-icon:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    border-radius: var(--ux4g-radius-md);
+}
+
+.bg-primary:where(:not(.dilrmp-legacy, .dilrmp-legacy *)), .bg-gradient-primary:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) { background: var(--ux4g-color-primary-600) !important; color: #fff !important; }
+.bg-info:where(:not(.dilrmp-legacy, .dilrmp-legacy *)), .bg-gradient-info:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) { background: var(--ux4g-color-skyblue-600) !important; color: #fff !important; }
+.bg-success:where(:not(.dilrmp-legacy, .dilrmp-legacy *)), .bg-gradient-success:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) { background: var(--ux4g-color-green-600) !important; color: #fff !important; }
+.bg-danger:where(:not(.dilrmp-legacy, .dilrmp-legacy *)), .bg-gradient-danger:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) { background: var(--ux4g-color-red-600) !important; color: #fff !important; }
+.bg-warning:where(:not(.dilrmp-legacy, .dilrmp-legacy *)), .bg-gradient-warning:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) { background: var(--ux4g-color-orange-200) !important; color: var(--ux4g-color-neutral-900) !important; }
+.bg-secondary:where(:not(.dilrmp-legacy, .dilrmp-legacy *)), .bg-gradient-secondary:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) { background: var(--ux4g-color-neutral-600) !important; color: #fff !important; }
+.bg-dark:where(:not(.dilrmp-legacy, .dilrmp-legacy *)), .bg-gradient-dark:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) { background: var(--ux4g-color-neutral-900) !important; color: #fff !important; }
+.bg-light:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) { background: var(--ux4g-color-neutral-100) !important; }
+
+.bg-primary > a:where(:not(.dilrmp-legacy, .dilrmp-legacy *)), .bg-info > a:where(:not(.dilrmp-legacy, .dilrmp-legacy *)), .bg-success > a:where(:not(.dilrmp-legacy, .dilrmp-legacy *)), .bg-danger > a:where(:not(.dilrmp-legacy, .dilrmp-legacy *)), .bg-secondary > a:where(:not(.dilrmp-legacy, .dilrmp-legacy *)), .bg-dark > a:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) { color: #fff !important; }
+.bg-warning > a:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) { color: var(--ux4g-color-neutral-900) !important; }
+
+/* ---------- Tables: one scheme everywhere (navy header, white/grey rows, soft navy totals) ---------- */
+/* table.table outranks Bootstrap's contextual classes (.table-success etc.) and the Bootstrap 5 table snippet some pages paste into <style>. */
+table.table:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    --bs-table-bg: transparent;
+    --bs-table-accent-bg: transparent;
+    --bs-table-striped-bg: transparent;
+    --bs-table-active-bg: transparent;
+    --bs-table-hover-bg: var(--dilrmp-row-hover);
+    --bs-table-color: inherit;
+    --bs-table-striped-color: inherit;
+    --bs-table-border-color: var(--dilrmp-cell-border);
+    --bs-border-width: 1px;
+    font-size: 0.875rem;
+    color: var(--ux4g-text-neutral-primary);
+    background-color: var(--ux4g-color-neutral-0);
+    border-color: var(--dilrmp-cell-border);
+}
+
+table.table:is(.table-success, .table-info, .table-primary, .table-secondary, .table-light, .table-warning, .table-danger, .table-dark):where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    color: var(--ux4g-text-neutral-primary);
+    background-color: var(--ux4g-color-neutral-0);
+}
+
+table.table > :is(thead, tbody, tfoot) > tr > :is(th, td):where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    box-shadow: none;
+}
+
+table.table thead.table-info:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--dilrmp-th-bg);
+}
+
+table.table [style*="dilrmp-section-bg"]:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    color: var(--dilrmp-section-text);
+    font-weight: 600;
+}
+
+table.table > tbody:first-child > tr:first-child > th:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--dilrmp-th-bg);
+    color: var(--dilrmp-th-text);
+    font-weight: 600;
+    text-align: center;
+    vertical-align: middle;
+    border-color: var(--dilrmp-th-border);
+    border-bottom: 2px solid var(--dilrmp-th-accent);
+}
+
+.table th:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.table td:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    border-top-color: var(--dilrmp-cell-border);
+    vertical-align: middle;
+}
+
+.table-bordered:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.table-bordered th:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.table-bordered td:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    border: 1px solid var(--dilrmp-cell-border);
+}
+
+.table thead th:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.table thead td:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+table.dataTable thead th:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--dilrmp-th-bg);
+    color: var(--dilrmp-th-text);
+    font-weight: 600;
+    text-align: center;
+    vertical-align: middle;
+    border-color: var(--dilrmp-th-border);
+}
+
+.table thead tr:last-child th:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    border-bottom: 2px solid var(--dilrmp-th-accent);
+}
+
+.table .thead-dark th:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.table .thead-light th:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--dilrmp-th-bg);
+    color: var(--dilrmp-th-text);
+    border-color: var(--dilrmp-th-border);
+}
+
+.table tfoot th:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.table tfoot td:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--dilrmp-total-bg);
+    color: var(--dilrmp-total-text);
+    font-weight: 700;
+    border-top: 2px solid var(--dilrmp-th-bg);
+}
+
+.table-striped tbody tr:nth-of-type(odd):where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--dilrmp-row-stripe);
+}
+
+.table-hover tbody tr:hover:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+table.dataTable.hover tbody tr:hover:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+table.dataTable.display tbody tr:hover:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--dilrmp-row-hover);
+    color: inherit;
+}
+
+.table-responsive:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    border-radius: var(--ux4g-radius-md);
+}
+
+/* ---------- DataTables ---------- */
+.dataTables_wrapper .dataTables_length:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.dataTables_wrapper .dataTables_filter:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.dataTables_wrapper .dataTables_info:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    font-size: 0.875rem;
+    color: var(--ux4g-text-neutral-secondary);
+}
+
+.dataTables_wrapper .dataTables_filter input:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.dataTables_wrapper .dataTables_length select:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    border: 1px solid var(--ux4g-border-color-neutral-default);
+    border-radius: var(--ux4g-radius-md);
+}
+
+.dt-buttons .btn:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.dt-buttons .btn-secondary:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.dt-button:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--ux4g-color-neutral-0);
+    color: var(--ux4g-text-brand-primary-default);
+    border: 1px solid var(--ux4g-border-color-primary-strong);
+    border-radius: var(--ux4g-radius-md);
+    font-weight: 500;
+}
+
+.dt-buttons .btn:hover:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.dt-buttons .btn-secondary:hover:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.dt-button:hover:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--ux4g-bg-primary);
+    color: var(--ux4g-color-primary-700);
+    border-color: var(--ux4g-color-primary-700);
+}
+
+.dt-buttons .btn-secondary:not(:disabled):not(.disabled):active:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.dt-buttons .btn-secondary:not(:disabled):not(.disabled).active:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--ux4g-bg-primary-soft);
+    color: var(--ux4g-color-primary-800);
+    border-color: var(--ux4g-color-primary-800);
+}
+
+/* ---------- Pagination ---------- */
+.page-link:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    color: var(--ux4g-text-brand-primary-default);
+    border-color: var(--ux4g-border-color-neutral-subtle);
+}
+
+.page-link:hover:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    color: var(--ux4g-color-primary-700);
+    background-color: var(--ux4g-bg-primary);
+    border-color: var(--ux4g-border-color-neutral-subtle);
+}
+
+.page-item.active .page-link:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--ux4g-color-primary-600);
+    border-color: var(--ux4g-color-primary-600);
+    color: #fff;
+}
+
+.page-item:first-child .page-link:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    border-top-left-radius: var(--ux4g-radius-md);
+    border-bottom-left-radius: var(--ux4g-radius-md);
+}
+
+.page-item:last-child .page-link:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    border-top-right-radius: var(--ux4g-radius-md);
+    border-bottom-right-radius: var(--ux4g-radius-md);
+}
+
+/* ---------- Buttons ---------- */
+.btn:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    border-radius: var(--ux4g-radius-md);
+    font-weight: 500;
+}
+
+.btn:focus:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.btn.focus:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    box-shadow: var(--dilrmp-focus-ring);
+}
+
+.btn-primary:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--ux4g-color-primary-600);
+    border-color: var(--ux4g-color-primary-600);
+    color: #fff;
+}
+
+.btn-primary:hover:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.btn-primary:focus:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--ux4g-color-primary-700);
+    border-color: var(--ux4g-color-primary-700);
+    color: #fff;
+}
+
+.btn-primary:not(:disabled):not(.disabled):active:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.btn-primary:not(:disabled):not(.disabled).active:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--ux4g-color-primary-800);
+    border-color: var(--ux4g-color-primary-800);
+}
+
+.btn-outline-primary:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    color: var(--ux4g-text-brand-primary-default);
+    border-color: var(--ux4g-color-primary-600);
+}
+
+.btn-outline-primary:hover:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.btn-outline-primary:not(:disabled):not(.disabled):active:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--ux4g-bg-primary);
+    color: var(--ux4g-color-primary-700);
+    border-color: var(--ux4g-color-primary-700);
+}
+
+.btn-info:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--ux4g-bg-primary-soft);
+    border-color: var(--ux4g-bg-primary-soft);
+    color: var(--ux4g-color-primary-800);
+}
+
+.btn-info:hover:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.btn-info:focus:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.btn-info:not(:disabled):not(.disabled):active:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--ux4g-bg-primary-subtle);
+    border-color: var(--ux4g-bg-primary-subtle);
+    color: var(--ux4g-color-primary-900);
+}
+
+.btn-success:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--ux4g-color-green-600);
+    border-color: var(--ux4g-color-green-600);
+    color: #fff;
+}
+
+.btn-success:hover:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.btn-success:focus:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--ux4g-color-green-700);
+    border-color: var(--ux4g-color-green-700);
+    color: #fff;
+}
+
+.btn-danger:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--ux4g-color-red-600);
+    border-color: var(--ux4g-color-red-600);
+    color: #fff;
+}
+
+.btn-danger:hover:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.btn-danger:focus:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--ux4g-color-red-700);
+    border-color: var(--ux4g-color-red-700);
+    color: #fff;
+}
+
+.btn-warning:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--ux4g-color-orange-100);
+    border-color: var(--ux4g-color-orange-200);
+    color: var(--ux4g-color-orange-900);
+}
+
+.btn-warning:hover:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.btn-warning:focus:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--ux4g-color-orange-200);
+    border-color: var(--ux4g-color-orange-300);
+    color: var(--ux4g-color-orange-900);
+}
+
+.btn-secondary:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.btn-default:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.btn-light:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--ux4g-color-neutral-0);
+    border-color: var(--ux4g-border-color-neutral-default);
+    color: var(--ux4g-text-neutral-secondary);
+}
+
+.btn-secondary:hover:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.btn-default:hover:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.btn-light:hover:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.btn-secondary:focus:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.btn-default:focus:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--ux4g-bg-neutral-soft);
+    border-color: var(--ux4g-border-color-neutral-strong);
+    color: var(--ux4g-text-neutral-primary);
+}
+
+.btn-link:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    color: var(--ux4g-text-link-default-default);
+}
+
+.btn-link:hover:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    color: var(--ux4g-color-primary-700);
+}
+
+/* ---------- Forms ---------- */
+.form-control:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.custom-select:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.choices__inner:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    border: 1px solid var(--ux4g-border-color-neutral-default);
+    border-radius: var(--ux4g-radius-md);
+    color: var(--ux4g-text-neutral-primary);
+    background-color: var(--ux4g-color-neutral-0);
+}
+
+.form-control:focus:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.custom-select:focus:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.is-focused .choices__inner:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.is-open .choices__inner:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    border-color: var(--ux4g-color-primary-600);
+    box-shadow: var(--dilrmp-focus-ring);
+}
+
+.form-control:disabled:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.form-control[readonly]:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--ux4g-bg-neutral-soft);
+}
+
+.input-group-text:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--ux4g-bg-neutral-soft);
+    border-color: var(--ux4g-border-color-neutral-default);
+    color: var(--ux4g-text-neutral-secondary);
+}
+
+label:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.col-form-label:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    color: var(--ux4g-text-neutral-secondary);
+}
+
+.form-group label:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    font-weight: 600;
+}
+
+.custom-control-input:checked ~ .custom-control-label:where(:not(.dilrmp-legacy, .dilrmp-legacy *))::before {
+    background-color: var(--ux4g-color-primary-600);
+    border-color: var(--ux4g-color-primary-600);
+}
+
+.choices__list--dropdown .choices__item--selectable.is-highlighted:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--ux4g-bg-primary);
+}
+
+.choices__list--multiple .choices__item:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--ux4g-color-primary-600);
+    border-color: var(--ux4g-color-primary-700);
+    border-radius: var(--ux4g-radius-full);
+}
+
+/* ---------- Tabs & pills (content area, not the sidebar) ---------- */
+.nav-tabs:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    border-bottom: 1px solid var(--ux4g-border-color-neutral-subtle);
+}
+
+.nav-tabs .nav-link:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.nav-tabs .nav-item .nav-link:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    color: var(--ux4g-text-neutral-secondary);
+    background-color: transparent;
+    border: 0;
+    border-bottom: 3px solid transparent;
+    border-radius: 0;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.nav-tabs .nav-link:hover:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    color: var(--ux4g-text-brand-primary-default);
+    border-bottom-color: var(--ux4g-color-primary-200);
+}
+
+.nav-tabs .nav-link.active:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.nav-tabs .nav-item.show .nav-link:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    color: var(--ux4g-text-brand-primary-default);
+    background-color: transparent;
+    border-bottom-color: var(--ux4g-color-primary-600);
+    font-weight: 600;
+}
+
+.tab-content:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--ux4g-color-neutral-0);
+    padding: 20px;
+    border: 1px solid var(--ux4g-border-color-neutral-subtle);
+    border-top: none;
+}
+
+.nav-pills:not(.nav-sidebar) .nav-link:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    color: var(--ux4g-text-neutral-secondary);
+    border-radius: var(--ux4g-radius-md);
+}
+
+.nav-pills:not(.nav-sidebar) .nav-link.active:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.nav-pills:not(.nav-sidebar) .show > .nav-link:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--ux4g-color-primary-600);
+    color: #fff;
+}
+
+/* ---------- Alerts, badges, modals, breadcrumb ---------- */
+.alert:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    border: 1px solid transparent;
+    border-left-width: 4px;
+    border-radius: var(--ux4g-radius-md);
+}
+
+.alert-success:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) { background-color: var(--ux4g-bg-success); border-color: var(--ux4g-border-color-success-default); border-left-color: var(--ux4g-border-color-success-strong); color: var(--ux4g-text-status-success); }
+.alert-danger:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) { background-color: var(--ux4g-bg-error); border-color: var(--ux4g-border-color-error-default); border-left-color: var(--ux4g-border-color-error-strong); color: var(--ux4g-text-status-error); }
+.alert-warning:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) { background-color: var(--ux4g-bg-warning); border-color: var(--ux4g-border-color-warning-default); border-left-color: var(--ux4g-border-color-warning-strong); color: var(--ux4g-text-status-warning); }
+.alert-info:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) { background-color: var(--ux4g-bg-info); border-color: var(--ux4g-border-color-info-default); border-left-color: var(--ux4g-border-color-info-strong); color: var(--ux4g-text-status-info); }
+.alert-primary:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) { background-color: var(--ux4g-bg-primary); border-color: var(--ux4g-border-color-primary-default); border-left-color: var(--ux4g-border-color-primary-strong); color: var(--ux4g-color-primary-800); }
+
+.badge:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    border-radius: var(--ux4g-radius-full);
+    font-weight: 600;
+    padding: 0.3em 0.65em;
+}
+
+.modal-content:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    border: 1px solid var(--ux4g-border-color-neutral-subtle);
+    border-radius: var(--ux4g-radius-lg);
+    box-shadow: var(--ux4g-shadow-l2);
+}
+
+.modal-header:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    border-bottom: 1px solid var(--ux4g-border-color-neutral-subtle);
+}
+
+.modal-footer:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    border-top: 1px solid var(--ux4g-border-color-neutral-subtle);
+}
+
+.breadcrumb:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: transparent;
+    font-size: 0.875rem;
+}
+
+.breadcrumb-item.active:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    color: var(--ux4g-text-neutral-tertiary);
+}
+
+/* ---------- Signed-in shell: AdminLTE top bar and sidebar ---------- */
+.main-header.navbar:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--ux4g-color-neutral-0);
+    border-bottom: 1px solid var(--ux4g-border-color-neutral-subtle);
+    box-shadow: none;
+}
+
+.main-header .nav-link:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    color: var(--ux4g-text-neutral-secondary);
+}
+
+.main-header .nav-link:hover:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    color: var(--ux4g-text-brand-primary-default);
+}
+
+.dilrmp-clock:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    color: var(--ux4g-text-brand-primary-default);
+}
+
+.dilrmp-user-dot:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    color: var(--ux4g-text-success-default);
+}
+
+.dilrmp-user-name:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    color: var(--ux4g-text-neutral-primary);
+}
+
+.main-sidebar.sidebar-dark-primary:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+.sidebar-dark-primary:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--ux4g-color-primary-950);
+}
+
+.main-sidebar.elevation-4:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    box-shadow: var(--ux4g-shadow-l2) !important;
+}
+
+[class*=sidebar-dark-] .brand-link:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    color: #fff;
+    border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+
+[class*=sidebar-dark-] .nav-sidebar .nav-link:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+[class*=sidebar-dark-] .nav-sidebar .nav-link p:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    color: rgba(255, 255, 255, 0.82);
+}
+
+[class*=sidebar-dark-] .nav-sidebar > .nav-item:hover > .nav-link:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+[class*=sidebar-dark-] .nav-sidebar > .nav-item.menu-open > .nav-link:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+[class*=sidebar-dark-] .nav-treeview > .nav-item > .nav-link:hover:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #fff;
+}
+
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: var(--ux4g-color-primary-600);
+    color: #fff;
+    box-shadow: none;
+}
+
+[class*=sidebar-dark-] .nav-treeview > .nav-item > .nav-link.active:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+[class*=sidebar-dark-] .nav-treeview > .nav-item > .nav-link.active:hover:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+    background-color: rgba(255, 255, 255, 0.12);
+    color: #fff;
+}
+
+/* ---------- Print ---------- */
+@media print {
+    .card:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+    .small-box:where(:not(.dilrmp-legacy, .dilrmp-legacy *)),
+    .info-box:where(:not(.dilrmp-legacy, .dilrmp-legacy *)) {
+        box-shadow: none;
+    }
+}
+
+/* ---------- Naksha pages (.dilrmp-legacy) keep their original AdminLTE look ---------- */
+.dilrmp-legacy {
+    font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #212529;
+}

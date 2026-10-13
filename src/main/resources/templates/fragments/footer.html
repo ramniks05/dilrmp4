@@ -1,61 +1,108 @@
-
-
 <section th:fragment="footer">
-  <div sec:authorize="!isAuthenticated()" class="nationalMarks">
-    <a href="https://www.digitalindia.gov.in/" target="_blank"> <img th:src="@{/static/images/digital-india.png}"></a>
-    <a href="https://www.makeinindia.com/home" target="_blank"> <img th:src="@{/static/images/makeinindia.png}"></a>
-    <a href="https://www.india.gov.in/" target="_blank"> <img th:src="@{/static/images/india-gov.png}"></a>
-    <a href="https://igod.gov.in/" target="_blank"> <img th:src="@{/static/images/goidirectory.png}"></a>
-    <a href="https://data.gov.in/" target="_blank"> <img th:src="@{/static/images/data-gov.png}"></a>
-    <a href="https://www.mygov.in/" target="_blank"> <img th:src="@{/static/images/mygov.png}"></a>
-  </div>
+  <footer class="ux4g-scope dilrmp-footer" role="contentinfo">
+    <div sec:authorize="!isAuthenticated()" class="dilrmp-national-marks">
+      <a href="https://www.digitalindia.gov.in/" target="_blank" rel="noopener noreferrer" title="Digital India (opens in a new window)"><img th:src="@{/static/images/digital-india.png}" alt="Digital India"></a>
+      <a href="https://www.makeinindia.com/home" target="_blank" rel="noopener noreferrer" title="Make in India (opens in a new window)"><img th:src="@{/static/images/makeinindia.png}" alt="Make in India"></a>
+      <a href="https://www.india.gov.in/" target="_blank" rel="noopener noreferrer" title="National Portal of India (opens in a new window)"><img th:src="@{/static/images/india-gov.png}" alt="National Portal of India"></a>
+      <a href="https://igod.gov.in/" target="_blank" rel="noopener noreferrer" title="Integrated Government Online Directory (opens in a new window)"><img th:src="@{/static/images/goidirectory.png}" alt="Integrated Government Online Directory"></a>
+      <a href="https://data.gov.in/" target="_blank" rel="noopener noreferrer" title="Open Government Data Platform India (opens in a new window)"><img th:src="@{/static/images/data-gov.png}" alt="Open Government Data Platform India"></a>
+      <a href="https://www.mygov.in/" target="_blank" rel="noopener noreferrer" title="MyGov (opens in a new window)"><img th:src="@{/static/images/mygov.png}" alt="MyGov"></a>
+      <a href="https://amritmahotsav.nic.in/" target="_blank" rel="noopener noreferrer" title="Azadi Ka Amrit Mahotsav (opens in a new window)"><img th:src="@{/static/images/Item.png}" alt="Azadi Ka Amrit Mahotsav"></a>
+      <a href="https://www.g20.in/en/" target="_blank" rel="noopener noreferrer" title="G20 India (opens in a new window)"><img th:src="@{/static/images/Item (1).png}" alt="G20 India"></a>
+    </div>
 
-  <div class="footer web-content">
-    <div>
-      <a href="https://www.nic.in/" target="_blank"> <img th:src="@{/static/images/nic-logo.png}"></a>
-      <h4>Website Content Managed by</h4>
-      <p> Government of India</p>
-      <p>Ministry of Rural Development</p>
-      <p>Department of Land Resources </p>
-      <p>Designed, Developed and Hosted by</p>
-      <p>National Informatics Centre( NIC )</p>
-    </div>
-    <div>
-      <h4>Quick Links</h4>
-      <a th:href="@{/}">Home</a>
-      <a th:href="@{/userProfile/about-us}"> About Us</a>
-      <a href="https://dilrmp.gov.in/grading/">Dashboard</a>
-      <a th:href="@{/userProfile/contact-us}">Contact Us</a>
-    </div>
-    <div>
-      <h4>DILRMP MIS Programme</h4>
-      <!-- <a target="_blank"  href="https://dilrmp.gov.in/dilrmp">DILRMP</a> -->
-      <a target="_blank"  href="https://dolr.gov.in/">DoLR</a>
-      <a target="_blank"  href="https://larr.dolr.gov.in/">LACRRIS</a>
-      <a target="_blank"  href="https://ngdrs.gov.in/">NGDRS</a>
-      <a target="_blank"  href="https://tejasvi.gov.in/staging/shared/NqsjFOoflcJaZGjUhRtocfIJAKkCielrpDugaYQcDgFbkYLBWlHuBveGtXlcLRCRyozuElhEcOwVVmFlzwnOutfcrl">RCCMS Dashboard</a>
-    </div>
-    <div>
-      <h4>Contact Us for Support</h4>
-      <p>Department of Land Resources</p>
-      <p>Ministry of Rural Development</p>
-      <p> Government of India</p>
-      <p>Kartavya Bhavan-3</p>
-      <p>Dr. Rajendra Prasad Road, New Delhi-110001</p>
+    <div class="ux4g-footer ux4g-footer-dark">
+      <div class="ux4g-footer-wrapper">
+        <div class="ux4g-ns-t1 ux4g-bg-neutral ux4g-radius-m">
+          <div>
+            <h2 class="ux4g-title-m-strong">Need Support?</h2>
+            <p class="ux4g-body-m-default">DILRMP-MIS helpdesk: Phone 011-23063224 &middot; Email support-dilrmp[at]gov[dot]in</p>
+          </div>
+          <a class="ux4g-btn-primary ux4g-btn-xl ux4g-radius-full" th:href="@{/userProfile/contact-us}">
+            Get in touch<i class="ux4g-icon-outlined" aria-hidden="true">arrow_outward</i>
+          </a>
+        </div>
 
-      <h3>Phone-011-23063224, </h3>
-      <h3>Email-support-dilrmp[at]gov[dot]in</h3>
-    </div>
-  </div>
-  <div class="footer disclamer" style="padding-top: 60px !important;">
-    <div class="container-fluid" style="margin-top:-44px; ">
-      <!-- <hr style="height:1px;border-width:0;color:gray;background-color:white"> -->
-      <div class="container">
-        <p style="line-height: 18px; text-align: center; font-size: 14px;"> <strong>Disclaimer:  </strong>Data presented in this site has been updated by respective State Governments/UT Administration and Department of Land Resources, Ministry of Rural Development(MoRD), Government of India.
-          Website hosted and maintained by National Informatics Centre.</p>
-        <!-- <strong style="text-align: center;">Total Visitor: 20</strong> -->
+        <div class="ux4g-divider-horizontal"></div>
+
+        <div class="ux4g-f-links ux4g-f-links-cols-4 ux4g-w-100 ux4g-py-2xl">
+          <div class="ux4g-col">
+            <h2 class="ux4g-label-l-strong ux4g-mb-m">Website Content Managed by</h2>
+            <a href="https://www.nic.in/" target="_blank" rel="noopener noreferrer" title="National Informatics Centre (opens in a new window)">
+              <img class="dilrmp-footer-logo" th:src="@{/static/images/nic-logo.png}" alt="National Informatics Centre">
+            </a>
+            <div class="dilrmp-footer-text ux4g-body-s-default">
+              <span>Department of Land Resources</span>
+              <span>Ministry of Rural Development, Government of India</span>
+              <span>Designed, Developed and Hosted by National Informatics Centre (NIC)</span>
+            </div>
+          </div>
+
+          <div class="ux4g-col">
+            <h2 class="ux4g-label-l-strong ux4g-mb-m">Quick Links</h2>
+            <ul class="ux4g-f-link-list">
+              <li><a class="ux4g-text-link-neutral-s" th:href="@{/}">Home</a></li>
+              <li><a class="ux4g-text-link-neutral-s" th:href="@{/userProfile/about-us}">About Us</a></li>
+              <li><a class="ux4g-text-link-neutral-s" href="https://dilrmp.gov.in/grading/">Dashboard</a></li>
+              <li><a class="ux4g-text-link-neutral-s" th:href="@{/site/sitemap}">Sitemap</a></li>
+              <li><a class="ux4g-text-link-neutral-s" th:href="@{/site/feedback}">Feedback</a></li>
+              <li><a class="ux4g-text-link-neutral-s" th:href="@{/userProfile/contact-us}">Contact Us</a></li>
+            </ul>
+          </div>
+
+          <div class="ux4g-col">
+            <h2 class="ux4g-label-l-strong ux4g-mb-m">DILRMP MIS Programme</h2>
+            <ul class="ux4g-f-link-list">
+              <li><a class="ux4g-text-link-neutral-s" href="https://dolr.gov.in/" target="_blank" rel="noopener noreferrer" title="DoLR (opens in a new window)">DoLR<i class="ux4g-icon-outlined ux4g-text-neutral-tertiary" aria-hidden="true">north_east</i></a></li>
+              <li><a class="ux4g-text-link-neutral-s" href="https://larr.dolr.gov.in/" target="_blank" rel="noopener noreferrer" title="LACRRIS (opens in a new window)">LACRRIS<i class="ux4g-icon-outlined ux4g-text-neutral-tertiary" aria-hidden="true">north_east</i></a></li>
+              <li><a class="ux4g-text-link-neutral-s" href="https://ngdrs.gov.in/" target="_blank" rel="noopener noreferrer" title="NGDRS (opens in a new window)">NGDRS<i class="ux4g-icon-outlined ux4g-text-neutral-tertiary" aria-hidden="true">north_east</i></a></li>
+              <li><a class="ux4g-text-link-neutral-s" href="https://tejasvi.gov.in/staging/shared/NqsjFOoflcJaZGjUhRtocfIJAKkCielrpDugaYQcDgFbkYLBWlHuBveGtXlcLRCRyozuElhEcOwVVmFlzwnOutfcrl" target="_blank" rel="noopener noreferrer" title="RCCMS Dashboard (opens in a new window)">RCCMS Dashboard<i class="ux4g-icon-outlined ux4g-text-neutral-tertiary" aria-hidden="true">north_east</i></a></li>
+            </ul>
+          </div>
+
+          <div class="ux4g-col">
+            <h2 class="ux4g-label-l-strong ux4g-mb-m">Contact Us for Support</h2>
+            <address class="contact-wrapper ux4g-body-s-default">
+              <p><span class="ux4g-icon-outlined" aria-hidden="true">location_on</span>
+                <span>Department of Land Resources, Ministry of Rural Development, Government of India, Kartavya Bhavan-3, Dr. Rajendra Prasad Road, New Delhi-110001</span></p>
+              <p><span class="ux4g-icon-outlined" aria-hidden="true">call</span><span>Phone: 011-23063224</span></p>
+              <p><span class="ux4g-icon-outlined" aria-hidden="true">mail</span><span>Email: support-dilrmp[at]gov[dot]in</span></p>
+            </address>
+          </div>
+        </div>
+
+        <div class="ux4g-divider-horizontal"></div>
+
+        <p class="dilrmp-disclaimer ux4g-body-s-default">
+          <strong>Disclaimer:</strong> Data presented in this site has been updated by respective State Governments/UT Administration and Department of Land Resources, Ministry of Rural Development (MoRD), Government of India.
+          Website hosted and maintained by National Informatics Centre.
+        </p>
+      </div>
+
+      <div class="ux4g-fbs-t4">
+        <div class="ux4g-fbs-logo-wrapper">
+          <img class="dilrmp-fbs-logo" th:src="@{/static/images/emblum.png}" alt="">
+          <span class="ux4g-heading-xs-strong ux4g-text-white">DILRMP-MIS 4.0</span>
+        </div>
+        <nav aria-label="Website policies and help" class="ux4g-fbs-links ux4g-d-flex ux4g-gap-x-l ux4g-flex-wrap">
+          <a class="ux4g-text-link-neutral-s" th:href="@{/site/website-policies}">Website Policies</a>
+          <a class="ux4g-text-link-neutral-s" th:href="@{/site/website-policies#copyright-policy}">Copyright Policy</a>
+          <a class="ux4g-text-link-neutral-s" th:href="@{/site/website-policies#hyperlinking-policy}">Hyperlinking Policy</a>
+          <a class="ux4g-text-link-neutral-s" th:href="@{/site/website-policies#privacy-policy}">Privacy Policy</a>
+          <a class="ux4g-text-link-neutral-s" th:href="@{/site/website-policies#terms-and-conditions}">Terms &amp; Conditions</a>
+          <a class="ux4g-text-link-neutral-s" th:href="@{/site/website-policies#disclaimer}">Disclaimer</a>
+          <a class="ux4g-text-link-neutral-s" th:href="@{/site/help}">Help</a>
+          <a class="ux4g-text-link-neutral-s" th:href="@{/site/help#screen-reader-access}">Screen Reader Access</a>
+        </nav>
+      </div>
+      <div class="ux4g-fbs-t2 dilrmp-footer-meta">
+        <p class="ux4g-body-xs-default">
+          Last Updated / Reviewed on:
+          <strong th:text="${@environment.getProperty('dilrmp.site.last-updated', '07 Oct 2026')}">07 Oct 2026</strong>
+          &middot; &copy; <span th:text="${#dates.year(#dates.createNow())}">2026</span>
+          Content owned by Department of Land Resources, Ministry of Rural Development, Government of India.
+        </p>
       </div>
     </div>
-  </div>
-
+  </footer>
 </section>

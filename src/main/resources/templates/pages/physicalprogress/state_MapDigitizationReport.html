@@ -25,13 +25,13 @@
             position: sticky;
             left: 0;
             z-index: 5;
-            background-color: #4a6c52;
-            color: #ffff;
+            background-color: var(--dilrmp-th-bg);
+            color: var(--dilrmp-th-text);
             border-right: 2px solid #ddd;
         }
         
         .table td:nth-child(1) {
-            background-color: #f8f9fa;
+            background-color: var(--ux4g-bg-neutral);
             color: #000;
         }
         
@@ -41,13 +41,13 @@
             position: sticky;
             left: 60px; /* Will be dynamically adjusted by JavaScript */
             z-index: 5;
-            background-color: #4a6c52;
-            color: #ffff;
+            background-color: var(--dilrmp-th-bg);
+            color: var(--dilrmp-th-text);
             border-right: 2px solid #ddd;
         }
         
         .table td:nth-child(2) {
-            background-color: #f8f9fa;
+            background-color: var(--ux4g-bg-neutral);
             color: #000;
         }
         
@@ -63,8 +63,8 @@
             position: sticky;
             left: 0;
             z-index: 15;
-            background-color: #4a6c52;
-            color: #ffff;
+            background-color: var(--dilrmp-th-bg);
+            color: var(--dilrmp-th-text);
             border-right: 2px solid #ddd;
         }
         
@@ -85,8 +85,8 @@
             left: 0;
             top: 60px;
             z-index: 12;
-            background-color: #4a6c52;
-            color: #ffff;
+            background-color: var(--dilrmp-th-bg);
+            color: var(--dilrmp-th-text);
             border-right: 2px solid #ddd;
         }
         
@@ -96,31 +96,31 @@
             left: 60px; /* Will be dynamically adjusted by JavaScript */
             top: 60px;
             z-index: 12;
-            background-color: #4a6c52;
-            color: #ffff;
+            background-color: var(--dilrmp-th-bg);
+            color: var(--dilrmp-th-text);
             border-right: 2px solid #ddd;
         }
         
         /* Grand total row styling */
         .grand-total-row td {
-           background-color: #f8f9fa;
+           background-color: var(--ux4g-bg-neutral);
             color: #000;
         }
         /* Top grand total row (inside thead) should match header color */
         thead .grand-total-row td {
-            background-color: #f8f9fa;
+            background-color: var(--ux4g-bg-neutral);
             color: #000;
         }
         /* Footer grand total row (inside tfoot) should match last row style */
         tfoot .grand-total-row td {
-            background-color: #f8f9fa;
+            background-color: var(--ux4g-bg-neutral);
             color: #000;
         }
         
         /* Ensure grand total rows in frozen columns have consistent styling */
         .grand-total-row td:nth-child(1),
         .grand-total-row td:nth-child(2) {
-            background-color: #f8f9fa;
+            background-color: var(--ux4g-bg-neutral);
             color: #000;
         }
         
@@ -203,8 +203,8 @@
         }
         
         .table th {
-            background-color: #4a6c52;
-            color: #ffff;
+            background-color: var(--dilrmp-th-bg);
+            color: var(--dilrmp-th-text);
         }
         
         /* Shadow effect for frozen columns */
@@ -223,7 +223,7 @@
         
         /* Ensure table body rows have proper background */
         .table tbody tr:nth-child(even) td {
-            background-color: #f8f9fa;
+            background-color: var(--ux4g-bg-neutral);
         }
         
         .table tbody tr:nth-child(odd) td {
@@ -241,13 +241,13 @@
         
         .table tbody tr td:nth-child(1) {
             left: 0;
-            background-color: #f8f9fa;
+            background-color: var(--ux4g-bg-neutral);
             color: #000;
         }
         
         .table tbody tr td:nth-child(2) {
             left: 60px; /* Will be dynamically adjusted by JavaScript */
-            background-color: #f8f9fa;
+            background-color: var(--ux4g-bg-neutral);
             color: #000;
         }
 
@@ -257,7 +257,7 @@
             position: sticky;
             left: 0;
             z-index: 10;
-            background-color: #f8f9fa;
+            background-color: var(--ux4g-bg-neutral);
             color: #000;
             border-right: 2px solid #ddd;
             box-shadow: 2px 0 5px rgba(0,0,0,0.1);
@@ -334,7 +334,7 @@
 
 <body>
 <div layout:fragment="content"
-     style="box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;">
+     style="box-shadow: var(--ux4g-shadow-l1)">
     <section class="content">
     <div class="container-fluid">
         <div class="row">
@@ -344,7 +344,7 @@
                         <div class="row">
                             <div class="col-sm-10">
                                 <h3 class="card-title"
-                                    style="font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a; letter-spacing: 2px;">
+                                    style="font-size: 1.125rem">
                                     <span th:text="${labels['reportName']}"></span>
                                 </h3>
                             </div>
@@ -402,7 +402,7 @@
                         </form>
                         <div class="table-responsive text-nowrap">
                             <table id="example2" class="table table-bordered  table-striped-columns table-success table-striped  table-responsive">
-                                <thead class="card-info wrap-text" style="background-color: #4a6c52; color:#ffff">
+                                <thead class="card-info wrap-text" style="background-color: var(--dilrmp-th-bg); color: var(--dilrmp-th-text)">
                                 <tr>
                                     <th rowspan="3" th:text="${labels['serialNumber']}"></th>
                                     <th rowspan="3" th:text="${labels['stateUT']}"></th>

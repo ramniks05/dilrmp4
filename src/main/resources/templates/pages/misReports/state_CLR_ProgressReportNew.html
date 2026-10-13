@@ -24,13 +24,13 @@
             position: sticky;
             left: 0;
             z-index: 5;
-            background-color: #4a6c52;
-            color: #ffff;
+            background-color: var(--dilrmp-th-bg);
+            color: var(--dilrmp-th-text);
             border-right: 2px solid #ddd;
         }
         
         .table td:nth-child(1) {
-            background-color: #f8f9fa;
+            background-color: var(--ux4g-bg-neutral);
             color: #000;
         }
         
@@ -40,13 +40,13 @@
             position: sticky;
             left: 60px; /* Will be dynamically adjusted by JavaScript */
             z-index: 5;
-            background-color: #4a6c52;
-            color: #ffff;
+            background-color: var(--dilrmp-th-bg);
+            color: var(--dilrmp-th-text);
             border-right: 2px solid #ddd;
         }
         
         .table td:nth-child(2) {
-            background-color: #f8f9fa;
+            background-color: var(--ux4g-bg-neutral);
             color: #000;
         }
         
@@ -62,8 +62,8 @@
             position: sticky;
             left: 0;
             z-index: 15;
-            background-color: #4a6c52;
-            color: #ffff;
+            background-color: var(--dilrmp-th-bg);
+            color: var(--dilrmp-th-text);
             border-right: 2px solid #ddd;
         }
         
@@ -83,8 +83,8 @@
             position: sticky;
             left: 0;
             z-index: 12;
-            background-color: #4a6c52;
-            color: #ffff;
+            background-color: var(--dilrmp-th-bg);
+            color: var(--dilrmp-th-text);
             border-right: 2px solid #ddd;
         }
         
@@ -93,8 +93,8 @@
             position: sticky;
             left: 60px; /* Will be dynamically adjusted by JavaScript */
             z-index: 12;
-            background-color: #4a6c52;
-            color: #ffff;
+            background-color: var(--dilrmp-th-bg);
+            color: var(--dilrmp-th-text);
             border-right: 2px solid #ddd;
         }
         
@@ -193,8 +193,8 @@
         }
         
         .table th {
-            background-color: #4a6c52;
-            color: #ffff;
+            background-color: var(--dilrmp-th-bg);
+            color: var(--dilrmp-th-text);
         }
         
 
@@ -213,7 +213,7 @@
         
         /* Ensure table body rows have proper background */
         .table tbody tr:nth-child(even) td {
-            background-color: #f8f9fa;
+            background-color: var(--ux4g-bg-neutral);
         }
         
         .table tbody tr:nth-child(odd) td {
@@ -350,7 +350,7 @@
 </head>
 <body>
 <div layout:fragment="content"
-     style="box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;">
+     style="box-shadow: var(--ux4g-shadow-l1)">
     <!-- Content Header (Page header) -->
     <section class="content">
         <div class="container-fluid">
@@ -361,7 +361,7 @@
                             <div class="row">
                                 <div class="col-sm-10">
                                     <h3 class="card-title"
-                                        style="font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a; letter-spacing: 2px;">
+                                        style="font-size: 1.125rem">
                                         <span th:text="${labels['reportName']}"></span>
                                     </h3>
                                 </div>
@@ -419,7 +419,7 @@
                             </form>
                             <div class="table-responsive text-nowrap">
                                 <table id="example2" class="table table-bordered card-info wrap-text table-striped-columns table-success table-striped table-responsive">
-                                    <thead class="card-info wrap-text" style="background-color: #4a6c52; color:#ffff">
+                                    <thead class="card-info wrap-text" style="background-color: var(--dilrmp-th-bg); color: var(--dilrmp-th-text)">
                                     <tr>
                                         <th rowspan="2" th:text="${labels['serialNumber']}"></th>
                                         <th rowspan="2" th:text="${labels['stateUT']}"></th>

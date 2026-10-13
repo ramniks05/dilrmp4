@@ -8,8 +8,7 @@
     <link th:href="@{/css/jquery-ui.css}" rel="stylesheet"/>
     <style>
         body {
-            background-color: #F9F9FC;
-            font-family: 'Roboto', sans-serif;
+            background-color: var(--ux4g-bg-neutral);
             font-size: 14px;
         }
 
@@ -23,8 +22,8 @@
         }
 
         .card {
-            box-shadow: 0 0 13px 0 rgba(82, 63, 105, .05);
-            background-color: #fafafa;
+            box-shadow: var(--ux4g-shadow-l1);
+            background-color: var(--ux4g-bg-neutral);
             margin-bottom: 20px;
             border-radius: 4px;
             padding: 20px;
@@ -58,8 +57,8 @@
         .table th,
         .table thead th {
             text-align: left;
-            background-color: #0994aa;
-            color: #fff;
+            background-color: var(--dilrmp-th-bg);
+            color: var(--dilrmp-th-text);
             padding: 5px;
             border-bottom: 2px solid #ddd;
         }
@@ -92,7 +91,7 @@
             margin: 0 auto;
             background: rgba(255, 255, 255, 0.85);
             border-radius: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.43);
+            box-shadow: var(--ux4g-shadow-l1);
             display: none;
         }
 
@@ -110,7 +109,7 @@
 <div class="content-wrapper" layout:fragment="content">
     <!-- Content Wrapper. Contains page content -->
     <div th:fragment="date_wise_report_comparison_impComponenet"
-         style="box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;">
+         style="box-shadow: var(--ux4g-shadow-l1)">
         <!-- Content Header (Page header) -->
 
 
@@ -119,11 +118,11 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card card-info">
-                            <div class="card-header" style="background-color: #8ddfef">
+                            <div class="card-header" style="background-color: var(--ux4g-bg-primary)">
                                 <div class="row">
                                     <div class="col-sm-10">
                                         <h3 class="card-title"
-                                            style="font-size: 26px; font-family: auto; text-shadow: 2px 2px 4px #576666;  letter-spacing: 2px;">
+                                            style="font-size: 1.125rem">
                                             Date-wise Physical Progress Difference Report: Comparison Across All
                                             Components (Data available from October 18,
                                             2024)</h3>
@@ -407,7 +406,7 @@ function getDataByDate() {
 <div class="modal fade" id="availableDatesModal" tabindex="-1" role="dialog" aria-labelledby="availableDatesModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content" style="border-radius: 12px;">
-            <div class="modal-header" style="background-color: #16aec6; color: #fff; border-top-left-radius: 12px; border-top-right-radius: 12px;">
+            <div class="modal-header" style="background-color: var(--ux4g-bg-primary-strong); color: #fff; border-top-left-radius: 12px; border-top-right-radius: 12px">
                 <h5 class="modal-title" id="availableDatesModalLabel">Data Available Dates</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -464,7 +463,7 @@ function getDataByDate() {
 </script>
 <style>
   #example2 tbody tr:hover {
-    background-color: #FFD700; /* Light blue background for hover effect */
+    background-color: var(--dilrmp-row-hover); /* Light blue background for hover effect */
     font-weight: bold;
     /* cursor: pointer;  Change cursor to pointer */
   }
@@ -483,11 +482,11 @@ function getDataByDate() {
                                             <div class="table-container" id="tableWrapper">
                                                 <table id="example2"
                                                        class="table table-bordered  table-striped-columns table-success table-striped">
-                                                <thead style="background-color: #4a6c52;; color:#ffff">
+                                                <thead style="background-color: var(--dilrmp-th-bg); color: var(--dilrmp-th-text)">
                                                 <tr>
                                                     <th colspan="25">
                                                         <h4 class="card-title"
-                                                            style="font-size: 24px; font-family: auto; background-color: #6faab1; text-align: center; color: #090a0a; letter-spacing: 2px;">
+                                                            style="font-size: 1.125rem; background-color: var(--dilrmp-th-bg); text-align: center; color: var(--dilrmp-th-text)">
                                                             <span id="dateRange"></span>
                                                             <br>
                                                         </h4>

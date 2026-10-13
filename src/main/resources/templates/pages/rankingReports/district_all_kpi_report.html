@@ -1,5 +1,5 @@
 <div th:fragment="district-all-kpi"
-     style="box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;">
+     style="box-shadow: var(--ux4g-shadow-l1)">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
@@ -8,7 +8,7 @@
                         <div class="row">
                             <div class="col-sm-10">
                                 <h3 class="card-title"
-                                    style="font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a; letter-spacing: 2px;">
+                                    style="font-size: 1.125rem">
                                     <span th:text="${labels['districtreportName']}"></span>
                                 </h3>
                             </div>
@@ -24,18 +24,17 @@
                     <div class="card-body">
                         <style>
         body {
-            background-color: #F9F9FC;
-            font-family: 'Roboto', sans-serif;
+            background-color: var(--ux4g-bg-neutral);
             font-size: 14px;
         }
 
         .table-bordered th,
         .table-bordered td {
-            border: 1px solid #16aec6;
+            border: 1px solid var(--ux4g-border-color-neutral-subtle);
         }
 
         .table-bordered {
-            border: 2px solid #16aec6;
+            border: 1px solid var(--ux4g-border-color-neutral-subtle);
             ;
         }
 
@@ -63,7 +62,7 @@
                         </style>
                         <div class="table-responsive text-nowrap">
                             <table id="example2" class="table table-bordered table-striped">
-                                <thead class="card-info" style="background-color: #91c9d2;">
+                                <thead class="card-info" style="background-color: var(--dilrmp-th-bg)">
                                 <tr>
                                     <th rowspan="3" th:text="${labels['serialNumber']}"></th>
                                     <th rowspan="3" th:text="${labels['districtName']}"></th>

@@ -1,0 +1,300 @@
+/* UX4G inside the Bootstrap 4 / AdminLTE site.
+   UX4G markup must sit inside an element with class "ux4g-scope". There the UX4G reset and base
+   typography apply, and the unlayered site CSS (Bootstrap, AdminLTE, ux4g-theme.css, topnav.css) is
+   reverted so the layered UX4G component styles win. Pages outside .ux4g-scope are untouched.
+   Site-specific UX4G styling goes in @layer dilrmp (the last layer, so it is not reverted). */
+
+@layer dilrmp-important, ux4g-tokens, ux4g-semantics, ux4g-reset, ux4g-foundations, ux4g-layout, ux4g-components, ux4g-patterns, ux4g-utilities, ux4g-templates, dilrmp;
+
+/* The never-matching id lifts this above Bootstrap/AdminLTE selectors such as a:hover or .navbar a. */
+:is(.ux4g-scope, #ux4g-scope-specificity) :where(*) {
+    all: revert-layer;
+}
+
+@layer ux4g-reset {
+    :where(.ux4g-scope) {
+        font-family: var(--ux4g-font-family-base, "Noto Sans", system-ui, sans-serif);
+        font-size: 1rem;
+        line-height: 1.5;
+        text-align: left;
+        color: var(--ux4g-text-neutral-primary);
+    }
+
+    :where(.ux4g-scope, .ux4g-scope *, .ux4g-scope *::before, .ux4g-scope *::after) {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        outline: 0;
+    }
+
+    :where(.ux4g-scope img) {
+        max-width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    :where(.ux4g-scope :is(button, input, optgroup, select, textarea)) {
+        font: inherit;
+        color: inherit;
+    }
+
+    :where(.ux4g-scope button) {
+        background: none;
+        cursor: pointer;
+    }
+
+    :where(.ux4g-scope a) {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    :where(.ux4g-scope ul) {
+        list-style: none;
+    }
+}
+
+/* UX4G declares layered !important colours (e.g. dark footer links). Only !important in this first
+   layer beats them, so overrides of those colours, the GIGW high-contrast mode and the focus ring live here. */
+@layer dilrmp-important {
+    /* UX4G's dark-footer "a" colour ties with its button override and wins; keep link-buttons readable. */
+    :where(.dilrmp-footer) a.ux4g-btn-primary {
+        color: var(--ux4g-text-brand-primary-default) !important;
+    }
+
+    body.gigw-high-contrast .ux4g-scope,
+    body.gigw-high-contrast .ux4g-scope * {
+        background-color: #000000 !important;
+        background-image: none !important;
+        color: #ffffff !important;
+        border-color: #ffffff !important;
+        text-shadow: none !important;
+        box-shadow: none !important;
+    }
+
+    body.gigw-high-contrast .ux4g-scope a,
+    body.gigw-high-contrast .ux4g-scope a * {
+        color: #ffff00 !important;
+        text-decoration: underline !important;
+    }
+
+    body.gigw-high-contrast .ux4g-scope :is(img, svg) {
+        background-color: transparent !important;
+    }
+
+    .ux4g-scope :is(a, button, input, select, textarea, [tabindex]):focus-visible {
+        outline: 3px solid #ffbf47 !important;
+        outline-offset: 2px !important;
+        box-shadow: 0 0 0 1px #000000 !important;
+    }
+}
+
+@layer dilrmp {
+    /* Bootstrap's collapse rules are reverted inside the scope; UX4G Collapse (ux4g.js) relies on them. */
+    .ux4g-scope .collapse:not(.show) {
+        display: none;
+    }
+
+    .ux4g-scope .collapsing {
+        height: 0;
+        overflow: hidden;
+        transition: height 0.2s ease;
+    }
+
+    /* ---------- Top bar ---------- */
+    .dilrmp-topbar .ux4g-topbar__wrap {
+        flex-wrap: wrap;
+        row-gap: var(--ux4g-gap-row-xs, 4px);
+        min-height: 2.875rem;
+    }
+
+    .dilrmp-topbar .dilrmp-topbar-start {
+        flex-wrap: wrap;
+        column-gap: var(--ux4g-gap-column-l, 16px);
+    }
+
+    .dilrmp-topbar .dilrmp-topbar-utils {
+        flex-wrap: wrap;
+        column-gap: var(--ux4g-gap-column-s, 8px);
+    }
+
+    .dilrmp-topbar .ux4g-topbar__iconbtn[aria-pressed="true"] {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: var(--ux4g-radius-sm, 6px);
+    }
+
+    .dilrmp-visitors {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--ux4g-gap-column-xs, 4px);
+        white-space: nowrap;
+    }
+
+    .dilrmp-visitors strong {
+        font-weight: var(--ux4g-fw-semibold, 600);
+    }
+
+    /* ---------- Navbar ---------- */
+    .dilrmp-navbar {
+        position: relative;
+        z-index: 1030;
+    }
+
+    .dilrmp-navbar .ux4g-navbar-logo {
+        height: 3.25rem;
+    }
+
+    .dilrmp-navbar .dilrmp-brand {
+        color: var(--ux4g-text-neutral-primary);
+        text-decoration: none;
+    }
+
+    .dilrmp-navbar .dilrmp-brand-text {
+        line-height: 1.3;
+    }
+
+    .dilrmp-navbar .ux4g-navbar-links {
+        flex-wrap: wrap;
+        column-gap: var(--ux4g-gap-column-l, 16px);
+    }
+
+    .dilrmp-navbar .ux4g-navbar-links a {
+        display: inline-flex;
+        align-items: center;
+        gap: 2px;
+        white-space: nowrap;
+    }
+
+    .dilrmp-navbar .ux4g-navbar-links .ux4g-icon-outlined {
+        font-size: var(--ux4g-fs-16, 16px);
+    }
+
+    .dilrmp-navbar .dilrmp-navbar-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--ux4g-gap-column-s, 8px);
+    }
+
+    .dilrmp-navbar .dilrmp-mobile-nav {
+        border-top: 1px solid var(--ux4g-border-color-neutral-subtle, #e5e5e5);
+    }
+
+    .dilrmp-navbar .dilrmp-mobile-nav .ux4g-list {
+        padding: var(--ux4g-padding-xs, 8px) 0;
+        box-shadow: none;
+        border-radius: 0;
+    }
+
+    .dilrmp-navbar .dilrmp-mobile-nav .ux4g-list-item-row {
+        display: flex;
+        align-items: center;
+        gap: var(--ux4g-gap-column-s, 8px);
+        width: 100%;
+        color: var(--ux4g-text-neutral-primary);
+    }
+
+    /* The menu links do not fit beside the brand below 1200px, so switch to the menu button earlier than UX4G's 992px. */
+    @media (max-width: 1199.98px) {
+        .dilrmp-navbar .ux4g-navbar-desktop {
+            display: none !important;
+        }
+
+        .dilrmp-navbar .ux4g-navbar-mobile {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+        }
+    }
+
+    @media (min-width: 1200px) {
+        .dilrmp-navbar .dilrmp-mobile-nav {
+            display: none !important;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .dilrmp-navbar .ux4g-navbar-logo {
+            height: 2.5rem;
+        }
+
+        .dilrmp-navbar .dilrmp-brand-sub {
+            display: none;
+        }
+    }
+
+    /* ---------- Footer ---------- */
+    /* Same stacking as the old .footer so the AdminLTE sidebar does not cover it after login. */
+    .dilrmp-footer {
+        position: relative;
+        z-index: 9999;
+    }
+
+    .dilrmp-national-marks {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: var(--ux4g-column-xl, 32px);
+        padding: var(--ux4g-padding-m, 16px) var(--ux4g-padding-l, 24px);
+        background: var(--ux4g-bg-neutral-elevated, #ffffff);
+        border-top: 1px solid var(--ux4g-border-color-neutral-subtle, #e5e5e5);
+    }
+
+    .dilrmp-national-marks img {
+        height: 2.75rem;
+        width: auto;
+    }
+
+    .dilrmp-footer .ux4g-footer-wrapper {
+        padding-top: var(--ux4g-padding-xl, 32px);
+    }
+
+    .dilrmp-footer .dilrmp-footer-text {
+        display: grid;
+        row-gap: var(--ux4g-gap-row-xs, 4px);
+    }
+
+    .dilrmp-footer .dilrmp-footer-logo {
+        height: 2.5rem;
+        width: auto;
+        margin-bottom: var(--ux4g-margin-s, 8px);
+        background: #ffffff;
+        border-radius: var(--ux4g-radius-sm, 6px);
+        padding: 2px 6px;
+    }
+
+    .dilrmp-footer .contact-wrapper .ux4g-icon-outlined {
+        font-size: var(--ux4g-fs-20, 20px);
+    }
+
+    .dilrmp-footer .dilrmp-disclaimer {
+        padding: var(--ux4g-padding-m, 16px) 0;
+        text-align: center;
+    }
+
+    .dilrmp-footer address {
+        font-style: normal;
+    }
+
+    .dilrmp-footer .dilrmp-fbs-logo {
+        height: 2.25rem;
+        width: auto;
+        filter: brightness(0) invert(1);
+    }
+
+    .dilrmp-footer .ux4g-fbs-links {
+        row-gap: var(--ux4g-gap-row-xs, 4px);
+    }
+
+    .dilrmp-footer .dilrmp-footer-meta {
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        text-align: center;
+    }
+
+    @media (max-width: 768px) {
+        .dilrmp-footer .ux4g-footer-wrapper {
+            padding-left: var(--ux4g-padding-m, 16px);
+            padding-right: var(--ux4g-padding-m, 16px);
+        }
+    }
+}

@@ -10,8 +10,7 @@
 
   <style>
         body {
-            background-color: #F9F9FC;
-            font-family: 'Roboto', sans-serif;
+            background-color: var(--ux4g-bg-neutral);
             font-size: 14px;
         }
 
@@ -25,8 +24,8 @@
         }
 
         .card {
-            box-shadow: 0 0 13px 0 rgba(82, 63, 105, .05);
-            background-color: #fafafa;
+            box-shadow: var(--ux4g-shadow-l1);
+            background-color: var(--ux4g-bg-neutral);
             margin-bottom: 20px;
             border-radius: 4px;
             padding: 20px;
@@ -45,8 +44,8 @@
         .table th,
         .table thead th {
             text-align: left;
-            background-color: #0994aa;
-            color: #fff;
+            background-color: var(--dilrmp-th-bg);
+            color: var(--dilrmp-th-text);
             padding: 5px;
             border-bottom: 2px solid #ddd;
         }
@@ -79,7 +78,7 @@
             margin: 0 auto;
             background: rgba(255, 255, 255, 0.85);
             border-radius: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.43);
+            box-shadow: var(--ux4g-shadow-l1);
             display: none;
         }
 
@@ -97,7 +96,7 @@
 <body>
 <div class="content-wrapper" layout:fragment="content">
 <!-- Content Wrapper. Contains page content -->
-<div th:fragment="date_wise_report_comparison" style="box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;">
+<div th:fragment="date_wise_report_comparison" style="box-shadow: var(--ux4g-shadow-l1)">
   <!-- Content Header (Page header) -->
 
 
@@ -106,11 +105,11 @@
       <div class="row">
         <div class="col-md-12">
           <div class="card card-info">
-            <div class="card-header" style="background-color: #8ddfef">
+            <div class="card-header" style="background-color: var(--ux4g-bg-primary)">
               <div class="row">
                 <div class="col-sm-10" >
                   <h3 class="card-title"
-                      style="font-size: 26px; font-family: auto; text-shadow: 2px 2px 4px #576666;  letter-spacing: 2px;">
+                      style="font-size: 1.125rem">
                     Physical Progress Comparison Report (Data available from October 18, 2024)</h3>
                 </div>
 
@@ -404,11 +403,11 @@ function getDataByDate() {
                 <div class="col-sm-12">
                   <div class="form-group">
                     <table id="example2" class="table table-bordered  table-striped-columns table-success table-striped  table-responsive">
-                      <thead style="background-color: #4a6c52;; color:#ffff">
+                      <thead style="background-color: var(--dilrmp-th-bg); color: var(--dilrmp-th-text)">
                       <tr>
                         <th colspan="14" >
                           <h4 class="card-title"
-                              style="font-size: 24px; font-family:background-color: #6faab1; auto;text-align: center;  #090a0a; letter-spacing: 2px;">
+                              style="font-size: 1.125rem;text-align: center">
                             <span id="dateRange"></span>
                             <br>
                           </h4>

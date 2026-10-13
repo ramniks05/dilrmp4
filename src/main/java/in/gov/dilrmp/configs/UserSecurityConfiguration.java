@@ -84,6 +84,7 @@ public class UserSecurityConfiguration {
                     .authorizeHttpRequests(requests -> requests
                                                 .requestMatchers("/userProfile/contact-us").permitAll()
                                                 .requestMatchers("/userProfile/about-us").permitAll()
+                                                .requestMatchers("/site/**").permitAll()
                                                 .requestMatchers("/userProfile/forget-password").permitAll()
                                                 .requestMatchers("/userProfile/login").permitAll()
                                                 .requestMatchers("/reports/**").permitAll()

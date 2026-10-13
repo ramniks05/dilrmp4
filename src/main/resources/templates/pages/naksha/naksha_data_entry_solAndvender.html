@@ -501,9 +501,10 @@
     return isValid;
   }
 </script>
+    <link sec:authorize="!isAuthenticated()" rel="stylesheet" th:href="@{/static/css/dilrmp.css}">
 </head>
 <body>
-<div class="content-wrapper" layout:fragment="content"
+<div class="content-wrapper dilrmp-legacy" layout:fragment="content"
      style="box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;">
     <!-- Content Header (Page header) -->
     <section class="content">

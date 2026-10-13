@@ -208,6 +208,12 @@
 
                                 </li>
                                 <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN') ">
+                                    <a href="#" hx-get="/dolr/physical-progress-as-on-date" hx-target="#content" hx-swap="innerHTML" hx-push-url="false" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Physical Progress Report As on Date</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN') ">
                                     <a href="#" hx-get="/dolr/date-wise-report-comparison" hx-target="#content" hx-swap="innerHTML" hx-push-url="false"  class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Date-wise Report Comparison</p>
@@ -443,12 +449,17 @@
         <script>
     // Show loader when HTMX makes a request
     document.body.addEventListener('htmx:beforeRequest', function() {
-        document.getElementById("loader").style.display = "block";
+        var loader = document.getElementById("loader");
+        if (loader) {
+            loader.style.display = "block";
+        }
     });
 
-    // Hide loader after HTMX request is loaded
-    document.body.addEventListener('htmx:afterOnLoad', function() {
-        document.getElementById("loader").style.display = "none";
+    document.body.addEventListener('htmx:afterRequest', function() {
+        var loader = document.getElementById("loader");
+        if (loader) {
+            loader.style.display = "none";
+        }
     });
 </script>
         <!-- /.sidebar-menu -->

@@ -1,11 +1,13 @@
 package in.gov.dilrmp.controllers.physicalProgressReports;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
 import in.gov.dilrmp.repositories.physicalProgressRepositories.StateClrReportViewRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +16,7 @@ import in.gov.dilrmp.models.reportDTO.clr.DistrictClrReportView;
 import in.gov.dilrmp.models.reportDTO.clr.StateClrReportView;
 import in.gov.dilrmp.services.DataEntryForm.StateMISDataEntryService;
 import in.gov.dilrmp.services.physicalProgressServices.DistrictCLRService;
+import in.gov.dilrmp.services.physicalProgressServices.StateCLRAsOnDateService;
 import in.gov.dilrmp.services.physicalProgressServices.StateCLRService;
 import jakarta.servlet.http.HttpSession;
 
@@ -30,6 +33,8 @@ public class CLRReportController {
 
     @Autowired
     StateClrReportViewRepository stateClrReportViewRepository;
+    @Autowired
+    StateCLRAsOnDateService stateCLRAsOnDateService;
 
     @GetMapping("/state-level")
     public String getCLRReportView(Model model, HttpSession session) {
@@ -44,6 +49,28 @@ public class CLRReportController {
 
         return "pages/misReports/state_CLR_ProgressReportNew";
     }
+    @GetMapping("/state-level-as-on-date")
+    public String getCLRReportAsOnDate(@RequestParam(name = "asOnDate", required = false)
+                                       @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate asOnDate,
+                                       Model model) {
+        LocalDate today = LocalDate.now();
+        if (asOnDate == null || asOnDate.isAfter(today)) {
+            asOnDate = today;
+        }
+        StateCLRAsOnDateService.AsOnDateResult result = stateCLRAsOnDateService.getReportAsOn(asOnDate);
+
+        model.addAttribute("labels", stateCLRService.createLabels());
+        model.addAttribute("stateClrList", result.getStateList());
+        model.addAttribute("grandTotal", result.getGrandTotal());
+        model.addAttribute("asOnDate", asOnDate);
+        model.addAttribute("snapshotDate", result.getSnapshotDate());
+        model.addAttribute("liveData", result.isLive());
+        model.addAttribute("approximateStates", result.getApproximateStates());
+        model.addAttribute("minDate", stateCLRAsOnDateService.getFirstAvailableDate());
+        model.addAttribute("maxDate", today);
+        return "pages/misReports/state_CLR_ProgressReportAsOnDate";
+    }
+
     @PostMapping("/sorting-clr")
     public String filterAndSortStateCLR(@Valid StateClrReportView stateClrReportView,
                                         @RequestParam(name = "parameter", required = false) String parameter,

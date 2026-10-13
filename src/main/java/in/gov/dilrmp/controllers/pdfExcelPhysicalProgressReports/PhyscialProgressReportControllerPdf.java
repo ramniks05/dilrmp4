@@ -1235,8 +1235,14 @@ public void getCLRNEWPdf(HttpServletResponse response, HttpSession session) {
         colsBreak.add(new ArrayList<Integer>(Arrays.asList(8, 2)));
         pComponent.setColumnnumber(colsBreak);
         pComponent.setColumnBreakCountNo(3);
-        List<LegacyRevenueReport> legacyList = legacyRevenueReportService.getAllFormattedList();
-        List<LegacyRevenueReport> grandTotal = legacyRevenueReportService.getGrandTotalFormatted();
+        List<LegacyRevenueReport> legacyList =
+                (List<LegacyRevenueReport>) session.getAttribute("legacyRevenueList");
+        List<LegacyRevenueReport> grandTotal =
+                (List<LegacyRevenueReport>) session.getAttribute("legacyRevenueGrandTotal");
+        if (legacyList == null) {
+            legacyList = legacyRevenueReportService.getAllFormattedList();
+            grandTotal = legacyRevenueReportService.getGrandTotalFormatted();
+        }
         List<List<String>> reportDataList = new ArrayList<List<String>>();
         AtomicInteger indexHolder = new AtomicInteger();
         if (legacyList != null && !legacyList.isEmpty()) {

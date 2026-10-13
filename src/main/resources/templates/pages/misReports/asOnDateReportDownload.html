@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/dashboard">
+<head>
+    <meta charset="UTF-8">
+    <title>Physical Progress Reports - As on Date</title>
+    <link th:href="@{/css/report/report.css}" rel="stylesheet"/>
+</head>
+<body>
+<div class="content-wrapper" layout:fragment="content"
+     style="box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;">
+    <div th:fragment="asOnDateReportDownload">
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-info">
+                        <div class="card-header">
+                            <h3 class="card-title"
+                                style="font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a; letter-spacing: 2px;">
+                                Physical Progress Reports (State Level) - As on Date
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <a th:unless="${embedded}" th:href="@{/reports/physical-progress-report}" class="btn btn-primary" style="font-size: 13px;">
+                                ← Back
+                            </a>
+
+                            <div th:if="${error != null}" class="alert alert-danger mt-3" role="alert" th:text="${error}"></div>
+
+                            <form th:action="@{/physicalProgressReports/as-on-date}" method="get" class="mt-3" id="asOnDateDownloadForm">
+                                <div class="form-row align-items-end">
+                                    <div class="col-md-3 mb-2">
+                                        <label for="asOnDate">Select Date (As on):</label>
+                                        <input type="date" id="asOnDate" name="asOnDate" class="form-control" required
+                                               th:value="${asOnDate}" th:min="${minDate}" th:max="${maxDate}">
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label for="component">Select Component:</label>
+                                        <select id="component" name="component" class="form-control" required>
+                                            <option th:each="c : ${components}" th:value="${c.name()}" th:text="${c.label}"
+                                                    th:selected="${selectedComponent == c}"></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <button type="submit" class="btn btn-primary" style="font-size: 16px;"
+                                                th:attr="hx-get=${embedded} ? @{/dolr/physical-progress-as-on-date} : null,
+                                                         hx-target=${embedded} ? '#content' : null,
+                                                         hx-swap=${embedded} ? 'innerHTML' : null,
+                                                         hx-include=${embedded} ? '#asOnDateDownloadForm' : null">
+                                            Show Report
+                                        </button>
+                                        <a class="btn btn-primary ml-2" style="font-size: 16px;" target="_blank"
+                                           th:href="@{/physicalProgressReports/as-on-date/pdf(asOnDate=${asOnDate}, component=${selectedComponent.name()})}">
+                                            Download PDF
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <div class="mt-2" style="font-size: 14px;">
+                                <p class="mb-2">
+                                    Data is available from
+                                    <strong th:text="${minDate != null ? #temporals.format(minDate, 'dd-MM-yyyy') : '-'}"></strong>.
+                                </p>
+                            </div>
+
+                            <div class="mt-2" th:if="${reportReady}">
+                                <div th:replace="~{__${reportFragment}__ :: reportTable}"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    </div>
+</div>
+</body>
+</html>

@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -14,6 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
 import com.itextpdf.text.Anchor;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
@@ -90,8 +93,33 @@ public class PdfExporter {
 
         }
 
+        /** Request attribute (String[]): extra heading lines appended below the report heading. */
+        public static final String EXTRA_HEADING_ATTRIBUTE = "pdfExtraHeadingLines";
+        /** Request attribute (String): appended to the downloaded file name. */
+        public static final String FILE_NAME_SUFFIX_ATTRIBUTE = "pdfFileNameSuffix";
+
+        private static void applyRequestHeadingExtras(PdfExporterComponent pComponent) {
+                RequestAttributes attrs = RequestContextHolder.getRequestAttributes();
+                if (attrs == null) {
+                        return;
+                }
+                Object extra = attrs.getAttribute(EXTRA_HEADING_ATTRIBUTE, RequestAttributes.SCOPE_REQUEST);
+                if (extra instanceof String[] && pComponent.getReportHeading() != null) {
+                        String[] head = pComponent.getReportHeading();
+                        String[] lines = (String[]) extra;
+                        String[] merged = Arrays.copyOf(head, head.length + lines.length);
+                        System.arraycopy(lines, 0, merged, head.length, lines.length);
+                        pComponent.setReportHeading(merged);
+                }
+                Object suffix = attrs.getAttribute(FILE_NAME_SUFFIX_ATTRIBUTE, RequestAttributes.SCOPE_REQUEST);
+                if (suffix instanceof String) {
+                        pComponent.setReportName(pComponent.getReportName() + suffix);
+                }
+        }
+
         public static void createPdf(PdfExporterComponent pComponent, HttpServletResponse response, Font theFont) {
                 Document document = new Document();
+                applyRequestHeadingExtras(pComponent);
                 try {
                         response.setContentType("application/pdf");
                         String headerKey = "Content-Disposition";

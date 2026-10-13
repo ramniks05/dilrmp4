@@ -23,4 +23,12 @@ public interface StateMISDataEntryRepository extends JpaRepository<StateMISDataE
 
     @Query("SELECT COUNT(e) FROM StateMISDataEntry e WHERE e.autoMutationFacility = true")
     Long countAutoMutationFacilityYesNational();
+
+    // Same column order as StateMISDataEntryBackupRepository.findClrFlagHistory().
+    @Query(value = "SELECT state_id, last_update_on_date, ror_available_online, digitally_signed_ror_available, " +
+            "digitally_signed_ror_legally_valid, online_mutation_facility, auto_trigger_mutation, " +
+            "bank_red_flag_mortgage_in_land_records, land_records_online_from_registration_system, " +
+            "revenue_court_proceedings_paperless, case_filing_red_flagged_in_land_records_from_civil_courts " +
+            "FROM state_mis_data_entry", nativeQuery = true)
+    List<Object[]> findClrFlagsCurrent();
 }

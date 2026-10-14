@@ -537,8 +537,8 @@
                                     <tr th:each="report, status : ${stateClrList}"
                                         th:if="${report != null && report.stateId != 999}">
                                         <td th:text="${status.count}"></td>
-                                        <td th:if="${liveData}"><a th:href="@{/physicalProgressReports/clr/district-level/{stateId}(stateId=${report.stateId})}" th:text="${report.stateName}" target="_blank"></a></td>
-                                        <td th:unless="${liveData}" th:text="${report.stateName}"></td>
+                                        <td th:if="${liveData and hideStateLinks != true}"><a th:href="@{/physicalProgressReports/clr/district-level/{stateId}(stateId=${report.stateId})}" th:text="${report.stateName}" target="_blank"></a></td>
+                                        <td th:unless="${liveData and hideStateLinks != true}" th:text="${report.stateName}"></td>
                                         <td th:text="${report.formattingTotalDistrict != null ? report.formattingTotalDistrict : 0}"></td>
                                         <td th:text="${report.formattingTotalTehsils != null ? report.formattingTotalTehsils : 0}"></td>
                                         <td th:text="${report.formattingTotalVillages != null ? report.formattingTotalVillages : 0}"></td>

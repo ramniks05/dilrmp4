@@ -447,77 +447,6 @@
         </div>
 
         <script>
-    window.asOnDateIsoParts = function (iso) {
-        var p = (iso || '').split('-');
-        if (p.length !== 3) {
-            return null;
-        }
-        return new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
-    };
-    window.asOnDateFormatIso = function (date) {
-        var month = String(date.getMonth() + 1);
-        var day = String(date.getDate());
-        if (month.length < 2) { month = '0' + month; }
-        if (day.length < 2) { day = '0' + day; }
-        return date.getFullYear() + '-' + month + '-' + day;
-    };
-    window.initAsOnDatePicker = function () {
-        var display = document.getElementById('asOnDateDisplay');
-        var hidden = document.getElementById('asOnDate');
-        if (!display || !window.jQuery || !jQuery.ui || !jQuery.fn.datepicker) {
-            return;
-        }
-        var minDate = window.asOnDateIsoParts(display.getAttribute('data-min'));
-        var maxDate = window.asOnDateIsoParts(display.getAttribute('data-max'));
-        var $display = jQuery(display);
-        if ($display.hasClass('hasDatepicker')) {
-            $display.datepicker('destroy');
-        }
-        $display.datepicker({
-            dateFormat: 'dd-mm-yy',
-            minDate: minDate,
-            maxDate: maxDate,
-            changeMonth: true,
-            changeYear: true,
-            yearRange: (minDate ? minDate.getFullYear() : 2024) + ':' + (maxDate ? maxDate.getFullYear() : new Date().getFullYear()),
-            onSelect: function (text) {
-                var parts = text.split('-');
-                if (hidden && parts.length === 3) {
-                    hidden.value = parts[2] + '-' + parts[1] + '-' + parts[0];
-                }
-            }
-        });
-    };
-    window.updateAsOnDateLimit = function (sel) {
-        var minIso = sel.options[sel.selectedIndex].getAttribute('data-min');
-        var display = document.getElementById('asOnDateDisplay');
-        var hidden = document.getElementById('asOnDate');
-        var label = document.getElementById('availableFrom');
-        var minDate = window.asOnDateIsoParts(minIso);
-        if (!minIso || !display || !minDate) {
-            return;
-        }
-        display.setAttribute('data-min', minIso);
-        if (label) {
-            label.textContent = window.asOnDateFormatIso(minDate).split('-').reverse().join('-');
-        }
-        var $display = window.jQuery ? jQuery(display) : null;
-        if ($display && $display.hasClass('hasDatepicker')) {
-            $display.datepicker('option', 'minDate', minDate);
-            $display.datepicker('option', 'yearRange', minDate.getFullYear() + ':' + (display.getAttribute('data-max') || '').substring(0, 4));
-        }
-        var current = hidden && hidden.value ? window.asOnDateIsoParts(hidden.value) : null;
-        if (current && current < minDate) {
-            if ($display && $display.hasClass('hasDatepicker')) {
-                $display.datepicker('setDate', minDate);
-            } else {
-                display.value = window.asOnDateFormatIso(minDate).split('-').reverse().join('-');
-            }
-            if (hidden) {
-                hidden.value = minIso;
-            }
-        }
-    };
     // Show loader when HTMX makes a request
     document.body.addEventListener('htmx:beforeRequest', function() {
         var loader = document.getElementById("loader");
@@ -530,9 +459,6 @@
         var loader = document.getElementById("loader");
         if (loader) {
             loader.style.display = "none";
-        }
-        if (typeof window.initAsOnDatePicker === 'function' && document.getElementById('asOnDateDisplay')) {
-            window.initAsOnDatePicker();
         }
     });
 </script>

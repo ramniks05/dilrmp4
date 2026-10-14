@@ -96,8 +96,10 @@
                                     <tr th:each="data, iterator : ${legacyList}">
                                         <td th:text="${iterator.count}">1</td>
                                         <td>
-                                            <a th:href="@{/physicalProgressReports/legacy-digitization/district-level/{stateId}(stateId=${data.stateId})}"
+                                            <a th:unless="${hideStateLinks}"
+                                               th:href="@{/physicalProgressReports/legacy-digitization/district-level/{stateId}(stateId=${data.stateId})}"
                                                th:text="${data.stateName}" target="_blank">State</a>
+                                            <span th:if="${hideStateLinks}" th:text="${data.stateName}"></span>
                                         </td>
                                         <td th:text="${data.formattingTotalDistrict}">0</td>
                                         <td th:text="${data.formattingTotalTehsils}">0</td>

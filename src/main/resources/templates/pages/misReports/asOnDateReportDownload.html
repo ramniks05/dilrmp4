@@ -74,8 +74,27 @@
                             </div>
 
                             <div class="mt-2" th:if="${reportReady}">
+                                <h4 class="text-center font-weight-bold mb-2" style="font-size: 18px;"
+                                    th:text="${selectedComponent.label + ' - As on ' + #temporals.format(asOnDate, 'dd-MM-yyyy')}"></h4>
                                 <div th:replace="~{__${reportFragment}__ :: reportTable}"></div>
                             </div>
+                            <style>
+                                #asOnDateDisplay { cursor: pointer; }
+                                #ui-datepicker-div .ui-datepicker-header { padding: 4px 28px; }
+                                #ui-datepicker-div .ui-datepicker-prev,
+                                #ui-datepicker-div .ui-datepicker-next {
+                                    top: 6px; width: 22px; height: 22px; cursor: pointer;
+                                    text-align: center; line-height: 22px; font-weight: bold;
+                                }
+                                #ui-datepicker-div .ui-datepicker-prev { left: 4px; }
+                                #ui-datepicker-div .ui-datepicker-next { right: 4px; }
+                                #ui-datepicker-div .ui-datepicker-prev .ui-icon,
+                                #ui-datepicker-div .ui-datepicker-next .ui-icon { display: none; }
+                                #ui-datepicker-div .ui-datepicker-prev:after { content: '\2039'; font-size: 20px; }
+                                #ui-datepicker-div .ui-datepicker-next:after { content: '\203A'; font-size: 20px; }
+                                #ui-datepicker-div .ui-state-disabled { opacity: 0.35; }
+                                #ui-datepicker-div select { font-size: 13px; padding: 1px; }
+                            </style>
                             <script th:inline="javascript">
                                 window.asOnDateIsoParts = function (iso) {
                                     var p = (iso || '').split('-');
@@ -103,19 +122,30 @@
                                     if ($display.hasClass('hasDatepicker')) {
                                         $display.datepicker('destroy');
                                     }
+                                    $display.off('click.asOnDate');
                                     $display.datepicker({
                                         dateFormat: 'dd-mm-yy',
                                         minDate: minDate,
                                         maxDate: maxDate,
                                         changeMonth: true,
                                         changeYear: true,
+                                        showAnim: '',
                                         yearRange: (minDate ? minDate.getFullYear() : 2024) + ':' + (maxDate ? maxDate.getFullYear() : new Date().getFullYear()),
+                                        beforeShow: function (input, inst) {
+                                            setTimeout(function () {
+                                                inst.dpDiv.css('z-index', 2000);
+                                            }, 0);
+                                        },
                                         onSelect: function (text) {
                                             var parts = text.split('-');
                                             if (hidden && parts.length === 3) {
                                                 hidden.value = parts[2] + '-' + parts[1] + '-' + parts[0];
                                             }
+                                            display.blur();
                                         }
+                                    });
+                                    $display.on('click.asOnDate', function () {
+                                        $display.datepicker('show');
                                     });
                                 };
                                 window.updateAsOnDateLimit = function (sel) {

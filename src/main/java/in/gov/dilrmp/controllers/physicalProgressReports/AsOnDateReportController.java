@@ -72,6 +72,7 @@ public class AsOnDateReportController {
                 ? snapshot.getApproximateStates() : Collections.emptyList());
         model.addAttribute("reportReady", snapshot.getSnapshotDate() != null);
         model.addAttribute("reportFragment", reportFragment(component));
+        model.addAttribute("hideStateLinks", true);
     }
 
     private static String reportFragment(Component component) {

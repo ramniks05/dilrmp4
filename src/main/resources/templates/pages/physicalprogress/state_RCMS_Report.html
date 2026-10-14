@@ -439,8 +439,10 @@ state_Survey_ProgresReportNew<!DOCTYPE html>
                                         th:if="${report != null && report.stateId != 999}">
                                         <td th:text="${status.count}"></td>
                                         <td>
-                                            <a th:href="@{/physicalProgressReports/rcms/district-level/{stateId}(stateId=${report.stateId})}"
-                                               th:text="${report.stateName}" target="_blank"></a></td>
+                                            <a th:unless="${hideStateLinks}"
+                                               th:href="@{/physicalProgressReports/rcms/district-level/{stateId}(stateId=${report.stateId})}"
+                                               th:text="${report.stateName}" target="_blank"></a>
+                                            <span th:if="${hideStateLinks}" th:text="${report.stateName}"></span></td>
                                         <td th:text="${report.totalDistrict}"></td>
                                         <td th:text="${report.totalTehsils}"></td>
                                         <td th:text="${report.totalRevenueCourts}"></td>

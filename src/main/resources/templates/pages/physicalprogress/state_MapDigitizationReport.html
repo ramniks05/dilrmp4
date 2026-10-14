@@ -553,7 +553,7 @@
                                 <tbody>
                                 <tr th:each="data, iterator : ${reportData}">
                                     <td th:text="${iterator.count}"></td>
-                                    <td><a th:href="@{/physicalProgressReports/map/district-level/{lgdCode}(lgdCode=${data.lgdCode})}" th:text="${data.stateName}" target="_blank"></a></td>
+                                    <td><a th:unless="${hideStateLinks}" th:href="@{/physicalProgressReports/map/district-level/{lgdCode}(lgdCode=${data.lgdCode})}" th:text="${data.stateName}" target="_blank"></a><span th:if="${hideStateLinks}" th:text="${data.stateName}"></span></td>
 
                                     <td th:text="${data.formattingTotalDistrict}"></td>
                                     <td th:text="${data.formattingTotalTehsils}"></td>

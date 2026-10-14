@@ -74,15 +74,15 @@ public class ComparisonReportController {
                                            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate asOnDate,
                                            @RequestParam(name = "component", required = false) Component component,
                                            Model model) {
-        LocalDate today = LocalDate.now();
-        LocalDate minDate = stateReportsAsOnDateService.getFirstAvailableDate();
-        if (asOnDate == null || asOnDate.isAfter(today)) {
-            asOnDate = today;
-        } else if (asOnDate.isBefore(minDate)) {
-            asOnDate = minDate;
-        }
         if (component == null) {
             component = Component.CLR;
+        }
+        LocalDate today = LocalDate.now();
+        LocalDate minDate = stateReportsAsOnDateService.getFirstAvailableDate(component);
+        if (asOnDate == null || asOnDate.isAfter(today)) {
+            asOnDate = today;
+        } else if (minDate != null && asOnDate.isBefore(minDate)) {
+            asOnDate = minDate;
         }
         asOnDateReportController.fillReport(model, asOnDate, component);
         model.addAttribute("components", Component.values());
@@ -90,6 +90,7 @@ public class ComparisonReportController {
         model.addAttribute("asOnDate", asOnDate);
         model.addAttribute("minDate", minDate);
         model.addAttribute("maxDate", today);
+        model.addAttribute("componentMinDates", stateReportsAsOnDateService.firstAvailableDates());
         model.addAttribute("error", null);
         model.addAttribute("embedded", true);
         return "pages/misReports/asOnDateReportDownload::asOnDateReportDownload";

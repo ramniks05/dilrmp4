@@ -139,4 +139,16 @@ public interface DistrictMISDataEntryBackupRepository extends JpaRepository<Dist
             + "AND e.district_id NOT IN (SELECT district_id FROM hist) "
             + ") u", nativeQuery = true)
     List<Object[]> sumSroModernizationNationalAsOn(@Param("asOnDate") LocalDate asOnDate);
+
+    @Query(value = "SELECT MIN(backup_date) FROM districtmisdata_entry_backup "
+            + "WHERE legacy_total_pages IS NOT NULL OR legacy_total_digitised_pages IS NOT NULL", nativeQuery = true)
+    LocalDate findFirstLegacyDigitizationDate();
+
+    @Query(value = "SELECT MIN(backup_date) FROM districtmisdata_entry_backup "
+            + "WHERE revenue_legacy_total_pages IS NOT NULL", nativeQuery = true)
+    LocalDate findFirstLegacyRevenueDate();
+
+    @Query(value = "SELECT MIN(backup_date) FROM districtmisdata_entry_backup "
+            + "WHERE sros_modernised_state_funds IS NOT NULL OR sros_modernised_dilrmp_funds IS NOT NULL", nativeQuery = true)
+    LocalDate findFirstSroModernizationDate();
 }

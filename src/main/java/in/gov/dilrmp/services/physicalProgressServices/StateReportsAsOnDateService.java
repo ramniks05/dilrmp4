@@ -37,6 +37,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -151,11 +152,36 @@ public class StateReportsAsOnDateService {
     @Autowired
     DistrictMISDataEntryBackupRepository districtMISDataEntryBackupRepository;
 
-    /** Legacy, SRO modernization and Legacy Revenue reports were added in October 2026. */
-    public static final LocalDate REPORTS_AVAILABLE_FROM = LocalDate.of(2026, 10, 1);
+    /**
+     * First day this component has stored data. Older state reports follow the nightly backup.
+     * Legacy documents, legacy revenue and SRO modernization follow the first day their own fields were saved.
+     */
+    public LocalDate getFirstAvailableDate(Component component) {
+        LocalDate date;
+        switch (component) {
+            case LEGACY:
+                date = districtMISDataEntryBackupRepository.findFirstLegacyDigitizationDate();
+                break;
+            case LEGACY_REVENUE:
+                date = districtMISDataEntryBackupRepository.findFirstLegacyRevenueDate();
+                break;
+            case SRO_MODERNIZATION:
+                date = districtMISDataEntryBackupRepository.findFirstSroModernizationDate();
+                break;
+            default:
+                date = stateCLRAsOnDateService.getFirstAvailableDate();
+                break;
+        }
+        return date != null ? date : stateCLRAsOnDateService.getFirstAvailableDate();
+    }
 
-    public LocalDate getFirstAvailableDate() {
-        return REPORTS_AVAILABLE_FROM;
+    public Map<String, String> firstAvailableDates() {
+        Map<String, String> dates = new LinkedHashMap<>();
+        for (Component component : Component.values()) {
+            LocalDate date = getFirstAvailableDate(component);
+            dates.put(component.name(), date == null ? "" : date.toString());
+        }
+        return dates;
     }
 
     public Map<String, String> labelsFor(Component component) {

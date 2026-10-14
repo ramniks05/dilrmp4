@@ -30,17 +30,24 @@
 
                             <form th:action="@{/physicalProgressReports/as-on-date}" method="get" class="mt-3" id="asOnDateDownloadForm">
                                 <div class="form-row align-items-end">
-                                    <div class="col-md-3 mb-2">
-                                        <label for="asOnDate">Select Date (As on):</label>
-                                        <input type="date" id="asOnDate" name="asOnDate" class="form-control" required
-                                               th:value="${asOnDate}" th:min="${minDate}" th:max="${maxDate}">
-                                    </div>
                                     <div class="col-md-4 mb-2">
                                         <label for="component">Select Component:</label>
-                                        <select id="component" name="component" class="form-control" required>
+                                        <select id="component" name="component" class="form-control" required
+                                                onchange="if (window.updateAsOnDateLimit) { updateAsOnDateLimit(this); }">
                                             <option th:each="c : ${components}" th:value="${c.name()}" th:text="${c.label}"
+                                                    th:attr="data-min=${componentMinDates[c.name()]}"
                                                     th:selected="${selectedComponent == c}"></option>
                                         </select>
+                                    </div>
+                                    <div class="col-md-3 mb-2">
+                                        <label for="asOnDateDisplay">Select Date (As on):</label>
+                                        <input type="text" id="asOnDateDisplay" class="form-control" required readonly
+                                               autocomplete="off" placeholder="dd-mm-yyyy"
+                                               style="background-color: #fff;"
+                                               th:value="${asOnDate != null ? #temporals.format(asOnDate, 'dd-MM-yyyy') : ''}"
+                                               th:attr="data-min=${minDate != null ? #temporals.format(minDate, 'yyyy-MM-dd') : ''}, data-max=${maxDate != null ? #temporals.format(maxDate, 'yyyy-MM-dd') : ''}">
+                                        <input type="hidden" id="asOnDate" name="asOnDate"
+                                               th:value="${asOnDate != null ? #temporals.format(asOnDate, 'yyyy-MM-dd') : ''}">
                                     </div>
                                     <div class="col-md-4 mb-2">
                                         <button type="submit" class="btn btn-primary" style="font-size: 16px;"
@@ -61,13 +68,92 @@
                             <div class="mt-2" style="font-size: 14px;">
                                 <p class="mb-2">
                                     Data is available from
-                                    <strong th:text="${minDate != null ? #temporals.format(minDate, 'dd-MM-yyyy') : '-'}"></strong>.
+                                    <strong id="availableFrom" th:text="${minDate != null ? #temporals.format(minDate, 'dd-MM-yyyy') : '-'}"></strong>
+                                    onwards.
                                 </p>
                             </div>
 
                             <div class="mt-2" th:if="${reportReady}">
                                 <div th:replace="~{__${reportFragment}__ :: reportTable}"></div>
                             </div>
+                            <script th:inline="javascript">
+                                window.asOnDateIsoParts = function (iso) {
+                                    var p = (iso || '').split('-');
+                                    if (p.length !== 3) {
+                                        return null;
+                                    }
+                                    return new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
+                                };
+                                window.asOnDateFormatIso = function (date) {
+                                    var month = String(date.getMonth() + 1);
+                                    var day = String(date.getDate());
+                                    if (month.length < 2) { month = '0' + month; }
+                                    if (day.length < 2) { day = '0' + day; }
+                                    return date.getFullYear() + '-' + month + '-' + day;
+                                };
+                                window.initAsOnDatePicker = function () {
+                                    var display = document.getElementById('asOnDateDisplay');
+                                    var hidden = document.getElementById('asOnDate');
+                                    if (!display || !window.jQuery || !jQuery.ui || !jQuery.fn.datepicker) {
+                                        return;
+                                    }
+                                    var minDate = window.asOnDateIsoParts(display.getAttribute('data-min'));
+                                    var maxDate = window.asOnDateIsoParts(display.getAttribute('data-max'));
+                                    var $display = jQuery(display);
+                                    if ($display.hasClass('hasDatepicker')) {
+                                        $display.datepicker('destroy');
+                                    }
+                                    $display.datepicker({
+                                        dateFormat: 'dd-mm-yy',
+                                        minDate: minDate,
+                                        maxDate: maxDate,
+                                        changeMonth: true,
+                                        changeYear: true,
+                                        yearRange: (minDate ? minDate.getFullYear() : 2024) + ':' + (maxDate ? maxDate.getFullYear() : new Date().getFullYear()),
+                                        onSelect: function (text) {
+                                            var parts = text.split('-');
+                                            if (hidden && parts.length === 3) {
+                                                hidden.value = parts[2] + '-' + parts[1] + '-' + parts[0];
+                                            }
+                                        }
+                                    });
+                                };
+                                window.updateAsOnDateLimit = function (sel) {
+                                    var minIso = sel.options[sel.selectedIndex].getAttribute('data-min');
+                                    var display = document.getElementById('asOnDateDisplay');
+                                    var hidden = document.getElementById('asOnDate');
+                                    var label = document.getElementById('availableFrom');
+                                    var minDate = window.asOnDateIsoParts(minIso);
+                                    if (!minIso || !display || !minDate) {
+                                        return;
+                                    }
+                                    display.setAttribute('data-min', minIso);
+                                    if (label) {
+                                        label.textContent = window.asOnDateFormatIso(minDate).split('-').reverse().join('-');
+                                    }
+                                    var $display = window.jQuery ? jQuery(display) : null;
+                                    if ($display && $display.hasClass('hasDatepicker')) {
+                                        $display.datepicker('option', 'minDate', minDate);
+                                        $display.datepicker('option', 'yearRange', minDate.getFullYear() + ':' + (display.getAttribute('data-max') || '').substring(0, 4));
+                                    }
+                                    var current = hidden && hidden.value ? window.asOnDateIsoParts(hidden.value) : null;
+                                    if (current && current < minDate) {
+                                        if ($display && $display.hasClass('hasDatepicker')) {
+                                            $display.datepicker('setDate', minDate);
+                                        } else {
+                                            display.value = window.asOnDateFormatIso(minDate).split('-').reverse().join('-');
+                                        }
+                                        if (hidden) {
+                                            hidden.value = minIso;
+                                        }
+                                    }
+                                };
+                                if (document.readyState === 'loading') {
+                                    document.addEventListener('DOMContentLoaded', window.initAsOnDatePicker);
+                                } else {
+                                    window.initAsOnDatePicker();
+                                }
+                            </script>
                         </div>
                     </div>
                 </div>

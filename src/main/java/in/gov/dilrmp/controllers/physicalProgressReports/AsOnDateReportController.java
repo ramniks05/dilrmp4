@@ -39,15 +39,15 @@ public class AsOnDateReportController {
                                  @RequestParam(name = "component", required = false) Component component,
                                  @RequestParam(name = "error", required = false) String error,
                                  Model model) {
-        LocalDate today = LocalDate.now();
-        LocalDate minDate = stateReportsAsOnDateService.getFirstAvailableDate();
-        if (asOnDate == null || asOnDate.isAfter(today)) {
-            asOnDate = today;
-        } else if (asOnDate.isBefore(minDate)) {
-            asOnDate = minDate;
-        }
         if (component == null) {
             component = Component.CLR;
+        }
+        LocalDate today = LocalDate.now();
+        LocalDate minDate = stateReportsAsOnDateService.getFirstAvailableDate(component);
+        if (asOnDate == null || asOnDate.isAfter(today)) {
+            asOnDate = today;
+        } else if (minDate != null && asOnDate.isBefore(minDate)) {
+            asOnDate = minDate;
         }
         fillReport(model, asOnDate, component);
         model.addAttribute("components", Component.values());
@@ -55,6 +55,7 @@ public class AsOnDateReportController {
         model.addAttribute("asOnDate", asOnDate);
         model.addAttribute("minDate", minDate);
         model.addAttribute("maxDate", today);
+        model.addAttribute("componentMinDates", stateReportsAsOnDateService.firstAvailableDates());
         model.addAttribute("error", error);
         return "pages/misReports/asOnDateReportDownload";
     }
@@ -94,10 +95,10 @@ public class AsOnDateReportController {
                             @RequestParam("component") Component component,
                             HttpServletRequest request, HttpServletResponse response, HttpSession session) throws IOException {
         LocalDate today = LocalDate.now();
-        LocalDate minDate = stateReportsAsOnDateService.getFirstAvailableDate();
+        LocalDate minDate = stateReportsAsOnDateService.getFirstAvailableDate(component);
         if (asOnDate.isAfter(today)) {
             asOnDate = today;
-        } else if (asOnDate.isBefore(minDate)) {
+        } else if (minDate != null && asOnDate.isBefore(minDate)) {
             asOnDate = minDate;
         }
         StateReportsAsOnDateService.Snapshot<?> snapshot = stateReportsAsOnDateService.getReportAsOn(component, asOnDate);

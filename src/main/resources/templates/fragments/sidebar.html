@@ -143,6 +143,14 @@
 
                                 </li>
 
+                                <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR')">
+                                    <a class="nav-link" href="#" hx-get="/dolr/state-profile-word"
+                                       hx-swap="innerHTML" hx-target="#content" hx-push-url="false" >
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>State Profile (Word)</p>
+                                    </a>
+                                </li>
+
                                 <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN')">
                                     <a class="nav-link" href="#" hx-get="/current-status/district_profile"
                                        hx-swap="innerHTML" hx-target="#content" hx-push-url="false" >

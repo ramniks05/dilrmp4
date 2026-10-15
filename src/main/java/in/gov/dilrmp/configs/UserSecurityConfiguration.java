@@ -100,6 +100,8 @@ public class UserSecurityConfiguration {
                                                 .requestMatchers("/user/create-top-level-user").permitAll()
                                                 .requestMatchers("/token/**", "/verifyCaptcha/**")
                                                 .permitAll()
+                                                .requestMatchers("/dolr/state-profile-word/**")
+                                                .hasRole("DOLR")
                                                 .requestMatchers("/dolr/**")
                                                 .hasAnyRole("DOLR","ADMIN","SGO")
                                                 .requestMatchers("/state/**")

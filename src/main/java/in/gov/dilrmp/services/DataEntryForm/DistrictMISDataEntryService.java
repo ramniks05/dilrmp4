@@ -3,6 +3,7 @@ package in.gov.dilrmp.services.DataEntryForm;
 import in.gov.dilrmp.models.administrativeBoundry.District;
 import in.gov.dilrmp.models.dataEntryModel.DistrictMISDataEntry;
 import in.gov.dilrmp.repositories.DistrictMISDataEntryForm.DistrictMISDataEntryRepository;
+import in.gov.dilrmp.repositories.DistrictMISDataEntryForm.DolrDistrictMisDataEntryRepository;
 
 import in.gov.dilrmp.services.administrativeBoundry.DistrictService;
 import in.gov.dilrmp.utils.DateUtils;
@@ -24,6 +25,8 @@ public class DistrictMISDataEntryService {
 
     @Autowired
     DistrictMISDataEntryPermissionService permissionService;
+    @Autowired
+    DolrDistrictMisDataEntryRepository dolrDistrictMisDataEntryRepository;
 
     Logger logger = LoggerFactory.getLogger(DistrictMISDataEntryService.class);
 
@@ -109,6 +112,16 @@ public class DistrictMISDataEntryService {
         return repository.findByDistrictId(districtId);
     }
 
+    /** DILRMP SRO sanction entered by DoLR for this district. Shown read-only on the modernization forms. */
+    public int dolrSroSanctioned(Long districtId) {
+        if (districtId == null || districtId <= 0) {
+            return 0;
+        }
+        return dolrDistrictMisDataEntryRepository.findByDistrict_Id(districtId)
+                .map(entry -> entry.getSrosDilrmpSanctioned() == null ? 0 : entry.getSrosDilrmpSanctioned())
+                .orElse(0);
+    }
+
     /**
      * IGR district-wise SRO Modernization entry: updates only the four SRO fields of the district record,
      * creating the record when the district has not saved District MIS data yet.
@@ -152,14 +165,14 @@ public class DistrictMISDataEntryService {
         return null;
     }
 
-    /** [2], [2.1] and [2.3] cannot be greater than [1] Total SROs. */
+    /** [2], [3] and [4] cannot be greater than [1] Total SROs. */
     private static String sroModernizationError(Integer totalSro, Integer computerized, Integer stateFunds, Integer dilrmpFunds) {
         int total = totalSro == null ? 0 : totalSro;
         int a = computerized == null ? 0 : computerized;
         int b = stateFunds == null ? 0 : stateFunds;
         int d = dilrmpFunds == null ? 0 : dilrmpFunds;
         if (a > total || b > total || d > total) {
-            return "S.No. [2], [2.1] and [2.3] must be equal to or less than S.No. [1] (Total number of SROs).";
+            return "S.No. [2], [3] and [4] must be equal to or less than S.No. [1] (Total number of SROs).";
         }
         return null;
     }

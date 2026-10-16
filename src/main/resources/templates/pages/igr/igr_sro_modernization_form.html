@@ -34,7 +34,6 @@
                     <p class="small text-muted mb-3">
                       Last updated:
                       <span th:text="${entry.updateOnDate != null ? #temporals.format(entry.updateOnDate, 'dd-MM-yyyy HH:mm') : 'Not entered yet'}"></span>.
-                      DILRMP sanctioned count is entered by DoLR (Sanction Entry).
                     </p>
 
                     <div class="form-group row">
@@ -56,7 +55,7 @@
                     </div>
 
                     <div class="form-group row">
-                      <label for="igrSrosModernisedStateFunds" class="col-md-8 col-form-label"><span class="red-text">[2.1]</span>
+                      <label for="igrSrosModernisedStateFunds" class="col-md-8 col-form-label"><span class="red-text">[3]</span>
                         Total SROs Modernized from State/UT funds/PPP model on lines of Passport Seva Kendra:</label>
                       <div class="col-md-4">
                         <input type="number" id="igrSrosModernisedStateFunds" name="srosModernisedStateFunds" class="form-control" min="0"
@@ -65,7 +64,16 @@
                     </div>
 
                     <div class="form-group row">
-                      <label for="igrSrosModernisedDilrmpFunds" class="col-md-8 col-form-label"><span class="red-text">[2.3]</span>
+                      <label for="igrSrosDilrmpSanctioned" class="col-md-8 col-form-label">
+                        Total SROs sanctioned for Modernization under DILRMP (entered by DoLR):</label>
+                      <div class="col-md-4">
+                        <input type="number" id="igrSrosDilrmpSanctioned" class="form-control" readonly
+                               th:value="${srosDilrmpSanctioned != null ? srosDilrmpSanctioned : 0}">
+                      </div>
+                    </div>
+
+                    <div class="form-group row">
+                      <label for="igrSrosModernisedDilrmpFunds" class="col-md-8 col-form-label"><span class="red-text">[4]</span>
                         Total SROs Modernized from DILRMP funds on lines of Passport Seva Kendra:</label>
                       <div class="col-md-4">
                         <input type="number" id="igrSrosModernisedDilrmpFunds" name="srosModernisedDilrmpFunds" class="form-control" min="0"
@@ -94,7 +102,7 @@
         return false;
       }
       var total = parseInt(els[0].value || 0, 10);
-      var labels = ['[2]', '[2.1]', '[2.3]'];
+      var labels = ['[2]', '[3]', '[4]'];
       var valid = true;
       for (var i = 1; i < els.length; i++) {
         if (parseInt(els[i].value || 0, 10) > total) {

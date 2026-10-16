@@ -103,6 +103,7 @@ public class DistrictMISDataEntryController {
         boolean districtSelected = districtId != null && districtId > 0;
         model.addAttribute("showPermissionAllowedAlert",
                 districtSelected && permissionStatus.isAllowDecrease());
+        model.addAttribute("srosDilrmpSanctioned", districtMISDataEntryService.dolrSroSanctioned(districtId));
     }
 
     @PostMapping("/district-mis-data/save")

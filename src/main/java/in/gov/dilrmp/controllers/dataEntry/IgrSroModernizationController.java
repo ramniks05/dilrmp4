@@ -55,6 +55,7 @@ public class IgrSroModernizationController {
         DistrictMISDataEntry entry = districtMISDataEntryService.getDistrictData(districtId);
         model.addAttribute("district", district);
         model.addAttribute("entry", entry != null ? entry : new DistrictMISDataEntry());
+        model.addAttribute("srosDilrmpSanctioned", districtMISDataEntryService.dolrSroSanctioned(districtId));
         return PAGE + "::sroFields";
     }
 

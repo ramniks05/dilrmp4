@@ -87,12 +87,6 @@
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" id="sro-tab" data-toggle="tab" href="#sro-modernization" role="tab"
-                    aria-controls="sro-modernization" aria-selected="false" data-tab-state="disabled">
-                    <i class="fas fa-building"></i> SRO Modernization
-                  </a>
-                </li>
-                <li class="nav-item">
                   <a class="nav-link" id="legacy-digitization-tab" data-toggle="tab" href="#legacy-digitization" role="tab"
                     aria-controls="legacy-digitization" aria-selected="false" data-tab-state="disabled">
                     <i class="fas fa-file-alt"></i> Legacy Digitization
@@ -102,6 +96,12 @@
                   <a class="nav-link" id="legacy-revenue-tab" data-toggle="tab" href="#legacy-revenue" role="tab"
                     aria-controls="legacy-revenue" aria-selected="false" data-tab-state="disabled">
                     <i class="fas fa-scroll"></i> Legacy Revenue Records
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="sro-tab" data-toggle="tab" href="#sro-modernization" role="tab"
+                    aria-controls="sro-modernization" aria-selected="false" data-tab-state="disabled">
+                    <i class="fas fa-building"></i> SRO Modernization
                   </a>
                 </li>
               </ul>
@@ -809,7 +809,7 @@
                     </div>
                   </div>
                   <p class="small text-muted mb-3">
-                    DILRMP sanctioned count is entered by DoLR (Sanction Entry). Enter progress figures here.
+                    Enter progress figures here. The DILRMP sanctioned count is entered by DoLR and is shown below for reference.
                   </p>
 
                   <div class="form-group row">
@@ -833,7 +833,7 @@
                   </div>
 
                   <div class="form-group row">
-                    <label for="srosModernisedStateFunds" class="col-sm-8 col-form-label"><span class="red-text">[2.1]</span>
+                    <label for="srosModernisedStateFunds" class="col-sm-8 col-form-label"><span class="red-text">[3]</span>
                       Total SROs Modernized from State/UT funds/PPP model on lines of Passport Seva Kendra:</label>
                     <div class="col-sm-4">
                       <input type="number" id="srosModernisedStateFunds" name="srosModernisedStateFunds"
@@ -844,7 +844,16 @@
                   </div>
 
                   <div class="form-group row">
-                    <label for="srosModernisedDilrmpFunds" class="col-sm-8 col-form-label"><span class="red-text">[2.3]</span>
+                    <label for="srosDilrmpSanctionedView" class="col-sm-8 col-form-label">
+                      Total SROs sanctioned for Modernization under DILRMP (entered by DoLR):</label>
+                    <div class="col-sm-4">
+                      <input type="number" id="srosDilrmpSanctionedView" class="form-control" readonly
+                             th:value="${srosDilrmpSanctioned != null ? srosDilrmpSanctioned : 0}">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="srosModernisedDilrmpFunds" class="col-sm-8 col-form-label"><span class="red-text">[4]</span>
                       Total SROs Modernized from DILRMP funds on lines of Passport Seva Kendra:</label>
                     <div class="col-sm-4">
                       <input type="number" id="srosModernisedDilrmpFunds" name="srosModernisedDilrmpFunds"
@@ -1546,13 +1555,13 @@ $(document).ready(function() {
 
    }
 
-    // SRO Modernization: [2], [2.1] and [2.3] cannot be more than [1] Total SROs
+    // SRO Modernization: [2], [3] and [4] cannot be more than [1] Total SROs
     function validateSroModernization() {
       const totalEl = document.getElementById("totalSRO");
       const checks = [
         [document.getElementById("sroComputerized"), "[2]"],
-        [document.getElementById("srosModernisedStateFunds"), "[2.1]"],
-        [document.getElementById("srosModernisedDilrmpFunds"), "[2.3]"]
+        [document.getElementById("srosModernisedStateFunds"), "[3]"],
+        [document.getElementById("srosModernisedDilrmpFunds"), "[4]"]
       ];
       [totalEl].concat(checks.map(function (c) { return c[0]; })).forEach(function (el) {
         if (el && (el.value === '' || el.value === null)) {

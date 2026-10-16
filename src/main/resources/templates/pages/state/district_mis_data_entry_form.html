@@ -817,7 +817,8 @@
                       Total number of SROs in the District:</label>
                     <div class="col-sm-4">
                       <input type="number" id="totalSRO" name="totalSRO" th:field="*{totalSRO}"
-                             class="form-control" min="0" oninput="validateSroModernization()">
+                             class="form-control" min="0"
+                             oninput="validateSroModernization()" onchange="resetSroModernizationIfBlank(this)">
                       <small id="totalSroError" class="text-danger"></small>
                     </div>
                   </div>
@@ -827,7 +828,8 @@
                       Number of SROs using online registration application (Computerized):</label>
                     <div class="col-sm-4">
                       <input type="number" id="sroComputerized" name="sroComputerized" th:field="*{sroComputerized}"
-                             class="form-control" min="0" oninput="validateSroModernization()">
+                             class="form-control" min="0"
+                             oninput="validateSroModernization()" onchange="resetSroModernizationIfBlank(this)">
                       <small id="sroComputerizedError" class="text-danger"></small>
                     </div>
                   </div>
@@ -838,7 +840,7 @@
                     <div class="col-sm-4">
                       <input type="number" id="srosModernisedStateFunds" name="srosModernisedStateFunds"
                              th:field="*{srosModernisedStateFunds}" class="form-control" min="0"
-                             oninput="validateSroModernization()">
+                             oninput="validateSroModernization()" onchange="resetSroModernizationIfBlank(this)">
                       <small id="srosModernisedStateFundsError" class="text-danger"></small>
                     </div>
                   </div>
@@ -858,7 +860,7 @@
                     <div class="col-sm-4">
                       <input type="number" id="srosModernisedDilrmpFunds" name="srosModernisedDilrmpFunds"
                              th:field="*{srosModernisedDilrmpFunds}" class="form-control" min="0"
-                             oninput="validateSroModernization()">
+                             oninput="validateSroModernization()" onchange="resetSroModernizationIfBlank(this)">
                       <small id="srosModernisedDilrmpFundsError" class="text-danger"></small>
                     </div>
                   </div>
@@ -1350,6 +1352,108 @@ $(document).ready(function() {
 
             <script>
 
+    var misPreviousValue = {};
+
+    function rememberMisField(id) {
+      var el = document.getElementById(id);
+      if (el && el.id) {
+        misPreviousValue[el.id] = el.value !== "" ? el.value : "0";
+      }
+    }
+
+    function rememberAllMisValues() {
+      var form = document.getElementById("districtMisDataForm");
+      if (!form) {
+        return;
+      }
+      form.querySelectorAll("input").forEach(function (el) {
+        if (el.id) {
+          misPreviousValue[el.id] = el.value !== "" ? el.value : "0";
+        }
+      });
+    }
+
+    function misErrorEl(input) {
+      var id = input.id + "InlineError";
+      var el = document.getElementById(id);
+      if (!el) {
+        el = document.createElement("small");
+        el.id = id;
+        el.className = "text-danger d-block";
+        input.insertAdjacentElement("afterend", el);
+      }
+      return el;
+    }
+
+    function restoreMisField(input, limit) {
+      var previous = misPreviousValue[input.id] != null ? misPreviousValue[input.id] : "0";
+      var previousNumber = Number(previous);
+      var max = Number(limit);
+      if (isNaN(max)) {
+        max = 0;
+      }
+      if (isNaN(previousNumber) || previousNumber > max) {
+        previous = String(max);
+      }
+      input.value = previous;
+      misPreviousValue[input.id] = previous;
+    }
+
+    function checkMisLimit(input, limit, message) {
+      if (!input) {
+        return;
+      }
+      var err = misErrorEl(input);
+      if (input.value === "" || input.value === null) {
+        err.textContent = "";
+        return;
+      }
+      var value = Number(input.value);
+      var max = Number(limit);
+      if (isNaN(value)) {
+        return;
+      }
+      if (isNaN(max)) {
+        max = 0;
+      }
+      if (value > max) {
+        restoreMisField(input, max);
+        err.textContent = message + " Previous value restored.";
+      } else {
+        err.textContent = "";
+        if (!(value === 0 && Number(misPreviousValue[input.id]) > 0)) {
+          misPreviousValue[input.id] = input.value;
+        }
+      }
+    }
+
+    function checkMisYear(input, message) {
+      if (!input) {
+        return;
+      }
+      var err = misErrorEl(input);
+      if (input.value === "" || input.value === null) {
+        err.textContent = "";
+        return;
+      }
+      var year = parseInt(input.value, 10);
+      if (isNaN(year) || year === 0) {
+        err.textContent = "";
+        if (!isNaN(year) && !(year === 0 && Number(misPreviousValue[input.id]) > 0)) {
+          misPreviousValue[input.id] = input.value;
+        }
+        return;
+      }
+      if (year < 1900 || year > 2100) {
+        var previous = misPreviousValue[input.id] != null ? misPreviousValue[input.id] : "0";
+        input.value = previous;
+        err.textContent = message + " Previous value restored.";
+      } else {
+        err.textContent = "";
+        misPreviousValue[input.id] = input.value;
+      }
+    }
+
     function validateVillages() {
     const totalVillages = document.getElementById("totalVillages").value;
     validateNotStarted(totalVillages, 'totalVillages');
@@ -1415,61 +1519,18 @@ $(document).ready(function() {
     }
 
 
-    if (parseInt(villagesComputerizationCompleted) > parseInt(totalVillages)) {
-       alert("S.No. [4] must be equal to or lesser than S.No. [3].");
-      document.getElementById("villagesComputerizationCompleted").value = 0;
-    }
-
-
-     if (parseInt(villagesGeoreferenced) > parseInt(totalVillages)) {
-       alert("S.No. [20] must be equal to or lesser than S.No. [3].");
-      document.getElementById("villagesGeoreferenced").value = 0;
-    }
-
-     if (parseInt(villagesWithULIPN) > parseInt(totalVillages)) {
-       alert("S.No. [24] must be equal to or lesser than S.No. [3].");
-      document.getElementById("villagesWithULIPN").value = 0;
-    }
-
-    if (parseInt(villagesMap1Generated) > parseInt(totalVillages)) {
-       alert("S.No. [32] must be equal to or lesser than S.No. [3].");
-      document.getElementById("villagesMap1Generated").value = 0;
-    }
-
-    if (parseInt(villagesDraftMapPublished) > parseInt(totalVillages)) {
-       alert("S.No. [33] must be equal to or lesser than S.No. [3].");
-      document.getElementById("villagesDraftMapPublished").value = 0;
-    }
-
-    if (parseInt(villagesFinalPromulgationDone) > parseInt(totalVillages)) {
-       alert("S.No. [34] must be equal to or lesser than S.No. [3].");
-      document.getElementById("villagesFinalPromulgationDone").value = 0;
-    }
-
-    if (parseInt(villagesDroneFlyingCompleted) > parseInt(totalVillages)) {
-       alert("S.No. [30] must be equal to or lesser than S.No. [3].");
-      document.getElementById("villagesDroneFlyingCompleted").value = 0;
-    }
-
-    if (parseInt(villagesWithRoRLinkedAadhaar) > parseInt(totalVillages)) {
-       alert("S.No. [39] must be equal to or lesser than S.No. [3].");
-      document.getElementById("villagesWithRoRLinkedAadhaar").value = 0;
-    }
-
-    if (parseInt(villagesWith100PercentRoRLinkedAadhaar) > parseInt(totalVillages)) {
-       alert("S.No. [40] must be equal to or lesser than S.No. [3].");
-      document.getElementById("villagesWith100PercentRoRLinkedAadhaar").value = 0;
-    }
-
-     if (parseInt(villagesSurveyNotStarted) > parseInt(totalVillages)) {
-       alert("S.No. [35] must be equal to or lesser than S.No. [3].");
-      document.getElementById("villagesSurveyNotStarted").value = 0;
-    }
-
-     if (parseInt(villagesLinkedWithRoR) > parseInt(totalVillages)) {
-       alert("S.No. [17] must be equal to or lesser than S.No. [3].");
-      document.getElementById("villagesLinkedWithRoR").value = 0;
-    }
+    var villageTotal = parseInt(totalVillages, 10) || 0;
+    checkMisLimit(document.getElementById("villagesComputerizationCompleted"), villageTotal, "S.No. [4] must be equal to or less than S.No. [3].");
+    checkMisLimit(document.getElementById("villagesLinkedWithRoR"), villageTotal, "S.No. [17] must be equal to or less than S.No. [3].");
+    checkMisLimit(document.getElementById("villagesGeoreferenced"), villageTotal, "S.No. [20] must be equal to or less than S.No. [3].");
+    checkMisLimit(document.getElementById("villagesWithULIPN"), villageTotal, "S.No. [24] must be equal to or less than S.No. [3].");
+    checkMisLimit(document.getElementById("villagesDroneFlyingCompleted"), villageTotal, "S.No. [30] must be equal to or less than S.No. [3].");
+    checkMisLimit(document.getElementById("villagesMap1Generated"), villageTotal, "S.No. [32] must be equal to or less than S.No. [3].");
+    checkMisLimit(document.getElementById("villagesDraftMapPublished"), villageTotal, "S.No. [33] must be equal to or less than S.No. [3].");
+    checkMisLimit(document.getElementById("villagesFinalPromulgationDone"), villageTotal, "S.No. [34] must be equal to or less than S.No. [3].");
+    checkMisLimit(document.getElementById("villagesSurveyNotStarted"), villageTotal, "S.No. [35] must be equal to or less than S.No. [3].");
+    checkMisLimit(document.getElementById("villagesWithRoRLinkedAadhaar"), villageTotal, "S.No. [39] must be equal to or less than S.No. [3].");
+    checkMisLimit(document.getElementById("villagesWith100PercentRoRLinkedAadhaar"), villageTotal, "S.No. [40] must be equal to or less than S.No. [3].");
 
   }
 
@@ -1491,15 +1552,9 @@ $(document).ready(function() {
      document.getElementById("landParcelsWithULIPN").value = 0;
     }
 
-    if (parseInt(georeferencedLandParcels) > parseInt(totalLandParcels)) {
-       alert("S.No. [23] must be equal to or lesser than S.No. [22].");
-      document.getElementById("georeferencedLandParcels").value = 0;
-    }
-
-     if (parseInt(landParcelsWithULIPN) > parseInt(totalLandParcels)) {
-       alert("S.No. [25] must be equal to or lesser than S.No. [22].");
-      document.getElementById("landParcelsWithULIPN").value = 0;
-    }
+    var parcelTotal = parseInt(totalLandParcels, 10) || 0;
+    checkMisLimit(document.getElementById("georeferencedLandParcels"), parcelTotal, "S.No. [23] must be equal to or less than S.No. [22].");
+    checkMisLimit(document.getElementById("landParcelsWithULIPN"), parcelTotal, "S.No. [25] must be equal to or less than S.No. [22].");
 
    }
 
@@ -1531,54 +1586,90 @@ $(document).ready(function() {
      rorLinkedWithAddressEl.value = 0;
     }
 
-    if (parseInt(rorComputerized) > parseInt(totalRoR)) {
-       alert("S.No. [6] must be equal to or lesser than S.No. [5].");
-      document.getElementById("rorComputerized").value = 0;
-    }
+    checkMisLimit(document.getElementById("rorComputerized"), parseInt(totalRoR, 10) || 0, "S.No. [6] must be equal to or less than S.No. [5].");
 
     validateRorWithCadastralMapV5(); //v5
 
-    if (parseInt(rorLinkedWithAadhaar) > parseInt(rorComputerized)) {
-       alert("S.No. [41] must be equal to or lesser than S.No. [6].");
-      document.getElementById("rorLinkedWithAadhaar").value = 0;
-    }
-
-    if (parseInt(rorLinkedWithMobileNumber) > parseInt(rorComputerized)) {
-       alert("S.No. [42] must be equal to or lesser than S.No. [6].");
-      document.getElementById("rorLinkedWithMobileNumber").value = 0;
-    }
-
-    if (rorLinkedWithAddressEl && parseInt(rorLinkedWithAddressEl.value || 0, 10) > parseInt(rorComputerized)) {
-       alert("S.No. [43] must be equal to or lesser than S.No. [6].");
-      rorLinkedWithAddressEl.value = 0;
-    }
+    var computerizedRoR = parseInt(document.getElementById("rorComputerized").value, 10) || 0;
+    checkMisLimit(document.getElementById("rorLinkedWithAadhaar"), computerizedRoR, "S.No. [41] must be equal to or less than S.No. [6].");
+    checkMisLimit(document.getElementById("rorLinkedWithMobileNumber"), computerizedRoR, "S.No. [42] must be equal to or less than S.No. [6].");
+    checkMisLimit(rorLinkedWithAddressEl, computerizedRoR, "S.No. [43] must be equal to or less than S.No. [6].");
 
    }
 
-    // SRO Modernization: [2], [3] and [4] cannot be more than [1] Total SROs
-    function validateSroModernization() {
-      const totalEl = document.getElementById("totalSRO");
-      const checks = [
-        [document.getElementById("sroComputerized"), "[2]"],
-        [document.getElementById("srosModernisedStateFunds"), "[3]"],
-        [document.getElementById("srosModernisedDilrmpFunds"), "[4]"]
-      ];
-      [totalEl].concat(checks.map(function (c) { return c[0]; })).forEach(function (el) {
-        if (el && (el.value === '' || el.value === null)) {
-          el.value = 0;
-        }
+    // Same inline check as the old IGR SRO fields: message under the box, previous value restored.
+    var sroPreviousValue = {};
+
+    function rememberSroModernizationValues() {
+      ["totalSRO", "sroComputerized", "srosModernisedStateFunds", "srosModernisedDilrmpFunds"].forEach(function (id) {
+        var el = document.getElementById(id);
+        sroPreviousValue[id] = el && el.value !== "" ? el.value : "0";
       });
-      const total = parseInt(totalEl ? totalEl.value || 0 : 0, 10);
-      let valid = true;
-      checks.forEach(function (c) {
-        if (c[0] && parseInt(c[0].value || 0, 10) > total) {
-          alert("S.No. " + c[1] + " must be equal to or less than Total number of SROs (S.No. [1]).");
-          c[0].value = 0;
-          valid = false;
-        }
-      });
-      return valid;
     }
+
+    function sroFieldError(id, text) {
+      var el = document.getElementById(id);
+      if (el) {
+        el.textContent = text || "";
+      }
+    }
+
+    function restoreSroField(el, total) {
+      var previous = sroPreviousValue[el.id] != null ? sroPreviousValue[el.id] : "0";
+      var previousNumber = parseInt(previous, 10);
+      if (isNaN(previousNumber) || previousNumber > total) {
+        previous = String(total);
+      }
+      el.value = previous;
+      sroPreviousValue[el.id] = previous;
+    }
+
+    function validateSroModernization() {
+      sroFieldError("totalSroError", "");
+      sroFieldError("sroComputerizedError", "");
+      sroFieldError("srosModernisedStateFundsError", "");
+      sroFieldError("srosModernisedDilrmpFundsError", "");
+
+      var totalEl = document.getElementById("totalSRO");
+      var total = parseInt(totalEl && totalEl.value !== "" ? totalEl.value : "0", 10);
+      if (isNaN(total) || total < 0) {
+        total = 0;
+      }
+
+      [
+        { id: "sroComputerized", errorId: "sroComputerizedError", no: "[2]" },
+        { id: "srosModernisedStateFunds", errorId: "srosModernisedStateFundsError", no: "[3]" },
+        { id: "srosModernisedDilrmpFunds", errorId: "srosModernisedDilrmpFundsError", no: "[4]" }
+      ].forEach(function (rule) {
+        var el = document.getElementById(rule.id);
+        if (!el || el.value === "") {
+          return;
+        }
+        var value = parseInt(el.value, 10);
+        if (isNaN(value)) {
+          return;
+        }
+        if (value > total) {
+          restoreSroField(el, total);
+          sroFieldError(rule.errorId, "S.No. " + rule.no + " must be equal to or less than S.No. [1] (Total number of SROs). Previous value restored.");
+        } else {
+          sroPreviousValue[rule.id] = el.value;
+        }
+      });
+      if (totalEl && totalEl.value !== "") {
+        sroPreviousValue.totalSRO = totalEl.value;
+      }
+      return true;
+    }
+
+    function resetSroModernizationIfBlank(el) {
+      if (!el || String(el.value).trim() !== "") {
+        return;
+      }
+      el.value = sroPreviousValue[el.id] != null ? sroPreviousValue[el.id] : "0";
+    }
+
+    rememberSroModernizationValues();
 
     //v5 Aadhaar: Land owners [44]-[46] <= Total land owners [7]
     function validateLandOwnersLinkage() {
@@ -1602,18 +1693,9 @@ $(document).ready(function() {
     }
 
     const total = parseInt(totalLandOwnersEl ? totalLandOwnersEl.value || 0 : 0, 10);
-    if (landOwnersAadharEl && parseInt(landOwnersAadharEl.value || 0, 10) > total) {
-      alert("S.No. [44] must be equal to or lesser than S.No. [7].");
-      landOwnersAadharEl.value = 0;
-    }
-    if (landOwnersMobileEl && parseInt(landOwnersMobileEl.value || 0, 10) > total) {
-      alert("S.No. [45] must be equal to or lesser than S.No. [7].");
-      landOwnersMobileEl.value = 0;
-    }
-    if (landOwnersAddressEl && parseInt(landOwnersAddressEl.value || 0, 10) > total) {
-      alert("S.No. [46] must be equal to or lesser than S.No. [7].");
-      landOwnersAddressEl.value = 0;
-    }
+    checkMisLimit(landOwnersAadharEl, total, "S.No. [44] must be equal to or less than S.No. [7].");
+    checkMisLimit(landOwnersMobileEl, total, "S.No. [45] must be equal to or less than S.No. [7].");
+    checkMisLimit(landOwnersAddressEl, total, "S.No. [46] must be equal to or less than S.No. [7].");
    }
 
     //v5 Legacy Digitization [47]-[51]
@@ -1636,18 +1718,9 @@ $(document).ready(function() {
       const totalDigitised = parseInt(totalDigitisedEl ? totalDigitisedEl.value || 0 : 0, 10);
       const year = parseInt(yearEl ? yearEl.value || 0 : 0, 10);
 
-      if (stateFunds > total) {
-        alert("S.No. [48] must be equal to or lesser than S.No. [47].");
-        if (stateFundsEl) stateFundsEl.value = 0;
-      }
-      if (totalDigitised > total) {
-        alert("S.No. [50] must be equal to or lesser than S.No. [47].");
-        if (totalDigitisedEl) totalDigitisedEl.value = 0;
-      }
-      if (yearEl && year !== 0 && (year < 1900 || year > 2100)) {
-        alert("S.No. [51] must be a valid year (YYYY).");
-        yearEl.value = 0;
-      }
+      checkMisLimit(stateFundsEl, total, "S.No. [48] must be equal to or less than S.No. [47].");
+      checkMisLimit(totalDigitisedEl, total, "S.No. [50] must be equal to or less than S.No. [47].");
+      checkMisYear(yearEl, "S.No. [51] must be a valid year (YYYY).");
    }
 
     //v5 Legacy Revenue Records Digitisation [52]-[55]
@@ -1667,14 +1740,8 @@ $(document).ready(function() {
       const stateFunds = parseInt(stateFundsEl ? stateFundsEl.value || 0 : 0, 10);
       const year = parseInt(yearEl ? yearEl.value || 0 : 0, 10);
 
-      if (stateFunds > total) {
-        alert("S.No. [53] must be equal to or lesser than S.No. [52].");
-        if (stateFundsEl) stateFundsEl.value = 0;
-      }
-      if (yearEl && year !== 0 && (year < 1900 || year > 2100)) {
-        alert("S.No. [55] must be a valid year (YYYY).");
-        yearEl.value = 0;
-      }
+      checkMisLimit(stateFundsEl, total, "S.No. [53] must be equal to or less than S.No. [52].");
+      checkMisYear(yearEl, "S.No. [55] must be a valid year (YYYY).");
    }
   }
 
@@ -1690,10 +1757,7 @@ $(document).ready(function() {
       rorWithCadastralMapEl.value = 0;
       return;
     }
-    if (parseInt(rorWithCadastralMap, 10) > totalRoR) {
-      alert("S.No. [6.1] must be equal to or lesser than S.No. [5].");
-      rorWithCadastralMapEl.value = 0;
-    }
+    checkMisLimit(rorWithCadastralMapEl, totalRoR, "S.No. [6.1] must be equal to or less than S.No. [5].");
   }
 
 
@@ -1730,15 +1794,8 @@ $(document).ready(function() {
     const digitizedCadastralMaps = parseInt(digitizedEl.value || 0, 10);
     const mapsInGoodCondition = getMapsInGoodConditionCountV5();
 
-    if (digitizedCadastralMaps > totalCadastralMaps) {
-      alert("S.No. [12] must be equal to or lesser than S.No. [11].");
-      digitizedEl.value = 0;
-      return;
-    }
-    if (digitizedCadastralMaps > mapsInGoodCondition) {
-      alert("S.No. [12] must be equal to or lesser than Map in Good Condition (S.No. [11] − [11.1]).");
-      digitizedEl.value = 0;
-    }
+    checkMisLimit(digitizedEl, totalCadastralMaps, "S.No. [12] must be equal to or less than S.No. [11].");
+    checkMisLimit(digitizedEl, mapsInGoodCondition, "S.No. [12] must be equal to or less than Map in Good Condition (S.No. [11] − [11.1]).");
   }
 
   //v5 Map Digitization: S.No. [11.1] — compare with S.No. [11] only (not FMB/Tippan)
@@ -1753,10 +1810,7 @@ $(document).ready(function() {
       totalDamagedMissingMapsEl.value = 0;
       totalDamagedMissingMaps = 0;
     }
-    if (parseInt(totalDamagedMissingMaps, 10) > totalCadastralMaps) {
-      alert("S.No. [11.1] must be equal to or lesser than S.No. [11].");
-      totalDamagedMissingMapsEl.value = 0;
-    }
+    checkMisLimit(totalDamagedMissingMapsEl, totalCadastralMaps, "S.No. [11.1] must be equal to or less than S.No. [11].");
     updateMapsInGoodConditionV5(); //v5
     validateDigitizedCadastralMapsV5(); //v5
   }
@@ -1795,15 +1849,8 @@ $(document).ready(function() {
      document.getElementById("digitizedTippans").value = 0;
     }
 
-    if (parseInt(digitizedFMBs) > parseInt(totalFMBs)) {
-       alert("S.No. [14] must be equal to or lesser than S.No. [13].");
-      document.getElementById("digitizedFMBs").value = 0;
-    }
-
-      if (parseInt(digitizedTippans) > parseInt(totalTippans)) {
-       alert("S.No. [16] must be equal to or lesser than S.No. [15].");
-      document.getElementById("digitizedTippans").value = 0;
-    }
+    checkMisLimit(document.getElementById("digitizedFMBs"), parseInt(totalFMBs, 10) || 0, "S.No. [14] must be equal to or less than S.No. [13].");
+    checkMisLimit(document.getElementById("digitizedTippans"), parseInt(totalTippans, 10) || 0, "S.No. [16] must be equal to or less than S.No. [15].");
   }
 
 
@@ -1823,10 +1870,7 @@ function validateTotalMaps() {
      document.getElementById("georeferencedMaps").value = 0;
     }
 
-    if (parseInt(georeferencedMaps) > parseInt(totalMaps)) {
-       alert("S.No. [16]+[14]+[12] must be equal to or lesser than S.No. [21].");
-      document.getElementById("georeferencedMaps").value = 0;
-    }
+    checkMisLimit(document.getElementById("georeferencedMaps"), totalMaps, "S.No. [21] must be equal to or less than S.No. [12] + [14] + [16].");
 }
 
 
@@ -1847,16 +1891,8 @@ function validateTotalMaps() {
         document.getElementById("mrrCompleted").value = 0;
         }
 
-        if (parseInt(mrrSanctioned) > parseInt(totalTehsils)) {
-        alert("S.No. [26] must be equal to or lesser than S.No. [2].");
-        document.getElementById("mrrSanctioned").value = 0;
-        }
-
-
-         if (parseInt(mrrCompleted) > parseInt(mrrSanctioned)) {
-        alert("S.No. [27] must be equal to or lesser than S.No. [26].");
-        document.getElementById("mrrCompleted").value = 0;
-        }
+        checkMisLimit(document.getElementById("mrrSanctioned"), totalTehsils, "S.No. [26] must be equal to or less than S.No. [2].");
+        checkMisLimit(document.getElementById("mrrCompleted"), parseInt(document.getElementById("mrrSanctioned").value, 10) || 0, "S.No. [27] must be equal to or less than S.No. [26].");
 
   }
 
@@ -1882,22 +1918,9 @@ function validateTotalMaps() {
         document.getElementById("areaSurveyNotStarted").value = 0.0;
         }
 
-         if (parseFloat(areaSanctionedForSurvey) > parseFloat(totalRuralRevenueArea)) {
-        alert("S.No. [29] must be equal to or lesser than S.No. [28].");
-        document.getElementById("areaSanctionedForSurvey").value = 0.0;
-        }
-
-
-         if (parseFloat(areaDroneFlyingCompleted) > parseFloat(totalRuralRevenueArea)) {
-        alert("S.No. [31] must be equal to or lesser than S.No. [28].");
-        document.getElementById("areaDroneFlyingCompleted").value = 0.0;
-        }
-
-
-         if (parseFloat(areaSurveyNotStarted) > parseFloat(areaSanctionedForSurvey)) {
-        alert("S.No. [36] must be equal to or lesser than S.No. [29].");
-        document.getElementById("areaSurveyNotStarted").value = 0.0;
-        }
+         checkMisLimit(document.getElementById("areaSanctionedForSurvey"), totalRuralRevenueArea, "S.No. [29] must be equal to or less than S.No. [28].");
+         checkMisLimit(document.getElementById("areaDroneFlyingCompleted"), totalRuralRevenueArea, "S.No. [31] must be equal to or less than S.No. [28].");
+         checkMisLimit(document.getElementById("areaSurveyNotStarted"), parseFloat(document.getElementById("areaSanctionedForSurvey").value) || 0, "S.No. [36] must be equal to or less than S.No. [29].");
   }
 
   function validateNotStarted(){
@@ -1932,9 +1955,10 @@ function validateArea(){
         document.getElementById("areaSurveyNotStarted").value = 0.0;
         }
 
-         if (parseFloat(areaSurveyNotStarted) > parseFloat(notStartedArea)) {
-        alert("S.No. [40]-[43] must be equal to or lesser than S.No. [49].");
-        document.getElementById("areaSurveyNotStarted").value = 0.0;
+         if (parseFloat(areaSurveyNotStarted) > parseFloat(typeof notStartedArea === "undefined" ? "NaN" : notStartedArea)) {
+        var notStartedEl = document.getElementById("areaSurveyNotStarted");
+        restoreMisField(notStartedEl, 0);
+        misErrorEl(notStartedEl).textContent = "S.No. [36] must be equal to or less than the balance area. Previous value restored.";
         }
 }
 
@@ -1952,10 +1976,7 @@ function validateArea(){
         }
 
 
-          if (parseInt(revenueCourtsComputerized) > parseInt(totalRevenueCourts)) {
-           alert("S.No. [38] must be equal to or lesser than S.No. [37].");
-           document.getElementById("revenueCourtsComputerized").value = 0;
-          }
+          checkMisLimit(document.getElementById("revenueCourtsComputerized"), totalRevenueCourts, "S.No. [38] must be equal to or less than S.No. [37].");
 
   }
 
@@ -1977,21 +1998,34 @@ function validateArea(){
         document.getElementById("totalFemaleLandOwners").value = 0;
         }
 
-     if (totalMaleLandOwners + totalFemaleLandOwners > totalLandOwners) {
-       alert("S.No. [9]+[10] must be equal to or lesser than S.No. [7].");
-        document.getElementById("totalMaleLandOwners").value = 0;
-        document.getElementById("totalFemaleLandOwners").value = 0;
-    }
-
-    if (totalMaleLandOwners + totalFemaleLandOwners > totalLandOwners) {
-        document.getElementById("totalMaleLandOwners").value = 0;
-        document.getElementById("totalFemaleLandOwners").value = 0;
-    } else {
-        document.getElementById("totalMaleLandOwners").value = totalMaleLandOwners;
-        document.getElementById("totalFemaleLandOwners").value = totalFemaleLandOwners;
-    }
+     var maleEl = document.getElementById("totalMaleLandOwners");
+     var femaleEl = document.getElementById("totalFemaleLandOwners");
+     var ownerTotal = parseInt(document.getElementById("totalLandOwners").value, 10) || 0;
+     var maleCount = parseInt(maleEl.value, 10) || 0;
+     var femaleCount = parseInt(femaleEl.value, 10) || 0;
+     if (maleCount + femaleCount > ownerTotal) {
+        var prevMale = misPreviousValue.totalMaleLandOwners != null ? misPreviousValue.totalMaleLandOwners : "0";
+        var prevFemale = misPreviousValue.totalFemaleLandOwners != null ? misPreviousValue.totalFemaleLandOwners : "0";
+        var prevSum = (parseInt(prevMale, 10) || 0) + (parseInt(prevFemale, 10) || 0);
+        if (prevSum <= ownerTotal) {
+          maleEl.value = prevMale;
+          femaleEl.value = prevFemale;
+        } else {
+          maleEl.value = "0";
+          femaleEl.value = "0";
+        }
+        misErrorEl(maleEl).textContent = "S.No. [9] + [10] must be equal to or less than S.No. [7]. Previous value restored.";
+        misErrorEl(femaleEl).textContent = "S.No. [9] + [10] must be equal to or less than S.No. [7]. Previous value restored.";
+     } else {
+        misErrorEl(maleEl).textContent = "";
+        misErrorEl(femaleEl).textContent = "";
+        misPreviousValue.totalMaleLandOwners = maleEl.value;
+        misPreviousValue.totalFemaleLandOwners = femaleEl.value;
+     }
 
  }
+
+    rememberAllMisValues();
 
   </script>
             <script>
@@ -1999,6 +2033,9 @@ function validateArea(){
     // Attach submit event listener to the form
     $('#districtMisDataForm').submit(function(e) {
         e.preventDefault(); // Prevent the default form submission
+        ["totalSRO", "sroComputerized", "srosModernisedStateFunds", "srosModernisedDilrmpFunds"].forEach(function (id) {
+            resetSroModernizationIfBlank(document.getElementById(id));
+        });
         if (typeof validateSroModernization === 'function' && !validateSroModernization()) {
             return false;
         }

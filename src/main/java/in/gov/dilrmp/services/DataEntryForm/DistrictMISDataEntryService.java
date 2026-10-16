@@ -75,12 +75,6 @@ public class DistrictMISDataEntryService {
                 entry.setMapsUpdatePeriod(DateUtils.parseDate(entry.getMapsUpdatePeriodDate()));
             }
 
-            // SRO Modernization is owned by the IGR district-wise form; the District MIS form only displays it.
-            entry.setTotalSRO(existingEntry != null ? existingEntry.getTotalSRO() : 0);
-            entry.setSroComputerized(existingEntry != null ? existingEntry.getSroComputerized() : 0);
-            entry.setSrosModernisedStateFunds(existingEntry != null ? existingEntry.getSrosModernisedStateFunds() : 0);
-            entry.setSrosModernisedDilrmpFunds(existingEntry != null ? existingEntry.getSrosModernisedDilrmpFunds() : 0);
-
             boolean allowDecrease = permissionService.isDecreaseAllowed(entry.getDistrict().getId());
             int revertedFields = DistrictMISIncreaseOnlyEnforcer.enforce(entry, existingEntry, allowDecrease);
             if (revertedFields > 0) {

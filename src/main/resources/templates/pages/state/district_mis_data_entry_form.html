@@ -1546,32 +1546,29 @@ $(document).ready(function() {
 
    }
 
-    // SRO Modernization: [2],[2.1],[2.3] <= [1] Total SROs
+    // SRO Modernization: [2], [2.1] and [2.3] cannot be more than [1] Total SROs
     function validateSroModernization() {
       const totalEl = document.getElementById("totalSRO");
-      const computerizedEl = document.getElementById("sroComputerized");
-      const stateFundsEl = document.getElementById("srosModernisedStateFunds");
-      const dilrmpFundsEl = document.getElementById("srosModernisedDilrmpFunds");
-
-      [totalEl, computerizedEl, stateFundsEl, dilrmpFundsEl].forEach(function (el) {
+      const checks = [
+        [document.getElementById("sroComputerized"), "[2]"],
+        [document.getElementById("srosModernisedStateFunds"), "[2.1]"],
+        [document.getElementById("srosModernisedDilrmpFunds"), "[2.3]"]
+      ];
+      [totalEl].concat(checks.map(function (c) { return c[0]; })).forEach(function (el) {
         if (el && (el.value === '' || el.value === null)) {
           el.value = 0;
         }
       });
-
       const total = parseInt(totalEl ? totalEl.value || 0 : 0, 10);
-      if (computerizedEl && parseInt(computerizedEl.value || 0, 10) > total) {
-        alert("S.No. [2] must be equal to or lesser than S.No. [1].");
-        computerizedEl.value = 0;
-      }
-      if (stateFundsEl && parseInt(stateFundsEl.value || 0, 10) > total) {
-        alert("S.No. [2.1] must be equal to or lesser than S.No. [1].");
-        stateFundsEl.value = 0;
-      }
-      if (dilrmpFundsEl && parseInt(dilrmpFundsEl.value || 0, 10) > total) {
-        alert("S.No. [2.3] must be equal to or lesser than S.No. [1].");
-        dilrmpFundsEl.value = 0;
-      }
+      let valid = true;
+      checks.forEach(function (c) {
+        if (c[0] && parseInt(c[0].value || 0, 10) > total) {
+          alert("S.No. " + c[1] + " must be equal to or less than Total number of SROs (S.No. [1]).");
+          c[0].value = 0;
+          valid = false;
+        }
+      });
+      return valid;
     }
 
     //v5 Aadhaar: Land owners [44]-[46] <= Total land owners [7]
@@ -1993,6 +1990,9 @@ function validateArea(){
     // Attach submit event listener to the form
     $('#districtMisDataForm').submit(function(e) {
         e.preventDefault(); // Prevent the default form submission
+        if (typeof validateSroModernization === 'function' && !validateSroModernization()) {
+            return false;
+        }
         var form = $(this);
         var formData = new FormData(form[0]);
         $.ajax({

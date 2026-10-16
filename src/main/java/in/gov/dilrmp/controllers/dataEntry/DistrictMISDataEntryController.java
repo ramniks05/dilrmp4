@@ -118,6 +118,8 @@ public class DistrictMISDataEntryController {
 
             if ("success".equals(message)) {
                 return ResponseEntity.ok("District MIS Data Saved successfully!.");
+            } else if (message != null && !"error-message".equals(message)) {
+                return ResponseEntity.badRequest().body(message);
             } else {
 
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong. Please try again.");

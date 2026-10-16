@@ -75,6 +75,12 @@ public class DistrictMISDataEntryService {
                 entry.setMapsUpdatePeriod(DateUtils.parseDate(entry.getMapsUpdatePeriodDate()));
             }
 
+            String sroError = sroModernizationError(entry.getTotalSRO(), entry.getSroComputerized(),
+                    entry.getSrosModernisedStateFunds(), entry.getSrosModernisedDilrmpFunds());
+            if (sroError != null) {
+                return sroError;
+            }
+
             boolean allowDecrease = permissionService.isDecreaseAllowed(entry.getDistrict().getId());
             int revertedFields = DistrictMISIncreaseOnlyEnforcer.enforce(entry, existingEntry, allowDecrease);
             if (revertedFields > 0) {
@@ -122,8 +128,9 @@ public class DistrictMISDataEntryService {
         if (total < 0 || a < 0 || b < 0 || d < 0) {
             return "Values cannot be negative.";
         }
-        if (a > total || b > total || d > total) {
-            return "S.No. [2], [2.1] and [2.3] must be equal to or less than S.No. [1] (Total SROs in the District).";
+        String sroError = sroModernizationError(total, a, b, d);
+        if (sroError != null) {
+            return sroError;
         }
 
         DistrictMISDataEntry entry = repository.findByDistrictId(districtId);
@@ -142,6 +149,18 @@ public class DistrictMISDataEntryService {
         entry.setUpdateOnDate(DateUtils.getCurrentLocalDateTime());
         repository.save(entry);
         logger.info("IGR saved SRO Modernization for district ID: {}", districtId);
+        return null;
+    }
+
+    /** [2], [2.1] and [2.3] cannot be greater than [1] Total SROs. */
+    private static String sroModernizationError(Integer totalSro, Integer computerized, Integer stateFunds, Integer dilrmpFunds) {
+        int total = totalSro == null ? 0 : totalSro;
+        int a = computerized == null ? 0 : computerized;
+        int b = stateFunds == null ? 0 : stateFunds;
+        int d = dilrmpFunds == null ? 0 : dilrmpFunds;
+        if (a > total || b > total || d > total) {
+            return "S.No. [2], [2.1] and [2.3] must be equal to or less than S.No. [1] (Total number of SROs).";
+        }
         return null;
     }
 

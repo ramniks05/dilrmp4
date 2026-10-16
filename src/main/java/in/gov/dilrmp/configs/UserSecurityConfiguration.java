@@ -104,6 +104,8 @@ public class UserSecurityConfiguration {
                                                 .hasRole("IGR")
                                                 .requestMatchers("/dolr/state-profile-word/**")
                                                 .hasRole("DOLR")
+                                                .requestMatchers("/state/state-profile-word/**")
+                                                .hasRole("STATE")
                                                 .requestMatchers("/dolr/**")
                                                 .hasAnyRole("DOLR","ADMIN","SGO")
                                                 .requestMatchers("/state/**")

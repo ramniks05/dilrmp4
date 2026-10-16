@@ -314,6 +314,13 @@
 
                 </li>
 
+                <li class="nav-item" sec:authorize="hasRole('ROLE_STATE')">
+                    <a href="#" hx-get="/state/state-profile-word" hx-target="#content" hx-swap="innerHTML" hx-push-url="false" class="nav-link">
+                        <i class="fa fa-file-word"></i>
+                        <p>State Profile (Word)</p>
+                    </a>
+                </li>
+
 
                 <li class="nav-item" sec:authorize="hasRole('ROLE_STATE')|| hasRole('ROLE_IGR')">
                     <a href="#" hx-get="/igr/igr-mis-data/form" hx-target="#content" hx-swap="innerHTML" hx-push-url="false"  class="nav-link">

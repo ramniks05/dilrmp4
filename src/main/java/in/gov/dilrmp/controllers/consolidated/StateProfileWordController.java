@@ -1,5 +1,6 @@
 package in.gov.dilrmp.controllers.consolidated;
 
+import in.gov.dilrmp.models.administrativeBoundry.AdministrativeBoundry;
 import in.gov.dilrmp.models.profile.StateProfileWordEntry;
 import in.gov.dilrmp.models.reportDTO.profile.StateProfileWordInput;
 import in.gov.dilrmp.services.administrativeBoundry.StateService;
@@ -7,6 +8,9 @@ import in.gov.dilrmp.services.physicalProgressServices.StateProfileWordEntryServ
 import in.gov.dilrmp.services.physicalProgressServices.StateProfileWordService;
 import in.gov.dilrmp.services.physicalProgressServices.StateReportsAsOnDateService;
 import in.gov.dilrmp.services.physicalProgressServices.StateReportsAsOnDateService.Component;
+import in.gov.dilrmp.services.user.UserService;
+import in.gov.dilrmp.utils.LoogedInUserUtility;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,7 +33,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("dolr/state-profile-word")
+@RequestMapping({"/dolr/state-profile-word", "/state/state-profile-word"})
 public class StateProfileWordController {
 
     private static final String DOCX = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
@@ -43,40 +47,42 @@ public class StateProfileWordController {
     StateProfileWordEntryService stateProfileWordEntryService;
     @Autowired
     StateReportsAsOnDateService stateReportsAsOnDateService;
+    @Autowired
+    LoogedInUserUtility loogedInUserUtility;
 
     @GetMapping
-    public String form(Model model) {
-        LocalDate today = LocalDate.now();
-        model.addAttribute("asOnDate", today);
-        model.addAttribute("stateList", stateService.findAllOrderByStateName());
-        model.addAttribute("minDate", stateReportsAsOnDateService.getFirstAvailableDate(Component.CLR));
-        model.addAttribute("maxDate", today);
+    public String form(HttpServletRequest request, Model model) {
+        shell(request, model);
+        if (stateLogin(request)) {
+            Long stateId = loggedInStateId();
+            if (stateId == null) {
+                model.addAttribute("error", "This login is not linked to a State/UT.");
+            } else {
+                openProfile(model, stateId, LocalDate.now());
+            }
+        }
         return PAGE + "::state-profile-word";
     }
 
     @PostMapping("/load")
-    public String load(@RequestParam(value = "stateId", required = false) Long stateId,
+    public String load(HttpServletRequest request,
+                       @RequestParam(value = "stateId", required = false) Long stateId,
                        @RequestParam(value = "asOnDate", required = false) String asOnDate, Model model) {
+        model.addAttribute("basePath", basePath(request));
+        stateId = resolveStateId(request, stateId);
         if (stateId == null || stateId <= 0) {
             model.addAttribute("error", "Please select a State/UT.");
             return PAGE + "::profileBody";
         }
-        LocalDate date = clampDate(parse(asOnDate));
-        Optional<StateProfileWordEntry> saved = stateProfileWordEntryService.find(stateId, date);
-        StateProfileWordEntry source = saved.orElse(null);
-        if (source == null) {
-            source = stateProfileWordEntryService.latest(stateId).orElse(null);
-            if (source != null) {
-                model.addAttribute("prefilledFrom", source.getAsOnDate());
-            }
-        }
-        fillBody(model, stateProfileWordEntryService.toInput(source, stateId, date), saved.orElse(null));
+        openProfile(model, stateId, parse(asOnDate));
         return PAGE + "::profileBody";
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute StateProfileWordInput input, @RequestParam("action") String action,
-                       Principal principal, Model model) {
+    public String save(HttpServletRequest request, @ModelAttribute StateProfileWordInput input,
+                       @RequestParam("action") String action, Principal principal, Model model) {
+        model.addAttribute("basePath", basePath(request));
+        input.setStateId(resolveStateId(request, input.getStateId()));
         if (input.getStateId() == null || input.getStateId() <= 0) {
             model.addAttribute("error", "Please select a State/UT.");
             return PAGE + "::profileBody";
@@ -99,7 +105,9 @@ public class StateProfileWordController {
     }
 
     @PostMapping("/download")
-    public void download(@ModelAttribute StateProfileWordInput input, HttpServletResponse response) throws IOException {
+    public void download(HttpServletRequest request, @ModelAttribute StateProfileWordInput input,
+                         HttpServletResponse response) throws IOException {
+        input.setStateId(resolveStateId(request, input.getStateId()));
         if (input.getStateId() == null || input.getStateId() <= 0) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Select a State/UT.");
             return;
@@ -119,6 +127,63 @@ public class StateProfileWordController {
         response.setContentLength(file.length);
         response.getOutputStream().write(file);
         response.flushBuffer();
+    }
+
+    private void shell(HttpServletRequest request, Model model) {
+        LocalDate today = LocalDate.now();
+        boolean stateLogin = stateLogin(request);
+        model.addAttribute("asOnDate", today);
+        model.addAttribute("minDate", stateReportsAsOnDateService.getFirstAvailableDate(Component.CLR));
+        model.addAttribute("maxDate", today);
+        model.addAttribute("basePath", basePath(request));
+        model.addAttribute("fixedState", stateLogin);
+        if (stateLogin) {
+            AdministrativeBoundry state = loggedInState();
+            model.addAttribute("fixedStateId", state == null ? null : state.getId());
+            model.addAttribute("fixedStateName", state == null ? "" : state.getName());
+        } else {
+            model.addAttribute("stateList", stateService.findAllOrderByStateName());
+        }
+    }
+
+    private void openProfile(Model model, Long stateId, LocalDate date) {
+        date = clampDate(date);
+        Optional<StateProfileWordEntry> saved = stateProfileWordEntryService.find(stateId, date);
+        StateProfileWordEntry source = saved.orElse(null);
+        if (source == null) {
+            source = stateProfileWordEntryService.latest(stateId).orElse(null);
+            if (source != null) {
+                model.addAttribute("prefilledFrom", source.getAsOnDate());
+            }
+        }
+        fillBody(model, stateProfileWordEntryService.toInput(source, stateId, date), saved.orElse(null));
+    }
+
+    /** State login may save only its own State/UT. DoLR keeps the state chosen on the form. */
+    private Long resolveStateId(HttpServletRequest request, Long requested) {
+        if (!stateLogin(request)) {
+            return requested;
+        }
+        return loggedInStateId();
+    }
+
+    private Long loggedInStateId() {
+        AdministrativeBoundry state = loggedInState();
+        return state == null ? null : state.getId();
+    }
+
+    private AdministrativeBoundry loggedInState() {
+        UserService user = loogedInUserUtility.getLoggedinUser();
+        return user == null ? null : user.getBoundry();
+    }
+
+    private static boolean stateLogin(HttpServletRequest request) {
+        String path = request.getServletPath();
+        return path != null && path.startsWith("/state/state-profile-word");
+    }
+
+    private static String basePath(HttpServletRequest request) {
+        return stateLogin(request) ? "/state/state-profile-word" : "/dolr/state-profile-word";
     }
 
     private void fillBody(Model model, StateProfileWordInput input, StateProfileWordEntry entry) {

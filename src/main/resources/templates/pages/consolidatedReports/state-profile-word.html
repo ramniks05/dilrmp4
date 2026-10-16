@@ -47,7 +47,12 @@
                     <div class="card-body spw">
                         <form id="spwSelect" onsubmit="return false;">
                             <div class="form-row align-items-end">
-                                <div class="col-md-4 mb-2">
+                                <div class="col-md-4 mb-2" th:if="${fixedState}">
+                                    <label>State/UT:</label>
+                                    <input type="text" class="form-control" th:value="${fixedStateName}" readonly>
+                                    <input type="hidden" name="stateId" th:value="${fixedStateId}">
+                                </div>
+                                <div class="col-md-4 mb-2" th:unless="${fixedState}">
                                     <label for="spwStateId">Select State/UT:</label>
                                     <select class="form-control" id="spwStateId" name="stateId">
                                         <option value="">Select State</option>
@@ -65,7 +70,7 @@
                                 </div>
                                 <div class="col-md-3 mb-2">
                                     <button type="button" class="btn btn-primary"
-                                            hx-post="/dolr/state-profile-word/load" hx-include="#spwSelect"
+                                            th:attr="hx-post=${basePath + '/load'}" hx-include="#spwSelect"
                                             hx-target="#spwBody" hx-swap="innerHTML">
                                         <i class="fas fa-search"></i> Load Profile
                                     </button>
@@ -91,11 +96,11 @@
                                          th:text="${'Entries are pre-filled from the profile saved for ' + #temporals.format(prefilledFrom, 'dd-MM-yyyy') + '. Review and save for this date.'}"></div>
                                     <div class="mt-1 text-muted" style="font-size: 13px;">
                                         <span class="tag tag-mis">MIS</span> figures are read from MIS for the selected date and cannot be changed here.
-                                        <span class="tag tag-entry">Entry</span> fields are filled by DoLR; anything left empty stays blank in the Word file.
+                                        <span class="tag tag-entry">Entry</span> fields are saved with this profile; anything left empty stays blank in the Word file.
                                     </div>
                                 </div>
 
-                                <form id="spwForm" th:action="@{/dolr/state-profile-word/download}" method="post">
+                                <form id="spwForm" th:action="@{|${basePath}/download|}" method="post">
                                     <input type="hidden" name="stateId" th:value="${input.stateId}">
                                     <input type="hidden" name="asOnDate" th:value="${#temporals.format(input.asOnDate, 'yyyy-MM-dd')}">
 
@@ -335,12 +340,12 @@
                                     <div class="actions">
                                         <th:block th:if="${!locked}">
                                             <button type="button" class="btn btn-secondary"
-                                                    hx-post="/dolr/state-profile-word/save?action=draft" hx-include="#spwForm"
+                                                    th:attr="hx-post=${basePath + '/save?action=draft'}" hx-include="#spwForm"
                                                     hx-target="#spwBody" hx-swap="innerHTML">
                                                 <i class="fas fa-save"></i> Save as Draft
                                             </button>
                                             <button type="button" class="btn btn-success"
-                                                    hx-post="/dolr/state-profile-word/save?action=final" hx-include="#spwForm"
+                                                    th:attr="hx-post=${basePath + '/save?action=final'}" hx-include="#spwForm"
                                                     hx-target="#spwBody" hx-swap="innerHTML"
                                                     hx-confirm="After Final Save the entries for this State and date cannot be changed. Continue?">
                                                 <i class="fas fa-check-circle"></i> Final Save

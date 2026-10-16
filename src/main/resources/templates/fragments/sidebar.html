@@ -322,6 +322,12 @@
                     </a>
 
                 </li>
+                <li class="nav-item" sec:authorize="hasRole('ROLE_IGR')">
+                    <a href="#" hx-get="/igr/sro-modernization" hx-target="#content" hx-swap="innerHTML" hx-push-url="false"  class="nav-link">
+                        <i class="fa fa-building"></i>
+                        <p>SRO Modernization (District-wise)</p>
+                    </a>
+                </li>
                 <li class="nav-item" sec:authorize="hasRole('ROLE_STATEULB')">
                     <a href="/ulb/ulb-naksha-mis-data/form"  class="nav-link">
                         <i class="fa fa-user"></i>

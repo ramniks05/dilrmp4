@@ -75,6 +75,12 @@ public class DistrictMISDataEntryService {
                 entry.setMapsUpdatePeriod(DateUtils.parseDate(entry.getMapsUpdatePeriodDate()));
             }
 
+            // SRO Modernization is owned by the IGR district-wise form; the District MIS form only displays it.
+            entry.setTotalSRO(existingEntry != null ? existingEntry.getTotalSRO() : 0);
+            entry.setSroComputerized(existingEntry != null ? existingEntry.getSroComputerized() : 0);
+            entry.setSrosModernisedStateFunds(existingEntry != null ? existingEntry.getSrosModernisedStateFunds() : 0);
+            entry.setSrosModernisedDilrmpFunds(existingEntry != null ? existingEntry.getSrosModernisedDilrmpFunds() : 0);
+
             boolean allowDecrease = permissionService.isDecreaseAllowed(entry.getDistrict().getId());
             int revertedFields = DistrictMISIncreaseOnlyEnforcer.enforce(entry, existingEntry, allowDecrease);
             if (revertedFields > 0) {
@@ -101,6 +107,48 @@ public class DistrictMISDataEntryService {
 
     public DistrictMISDataEntry getDistrictData(Long districtId) {
         return repository.findByDistrictId(districtId);
+    }
+
+    /**
+     * IGR district-wise SRO Modernization entry: updates only the four SRO fields of the district record,
+     * creating the record when the district has not saved District MIS data yet.
+     *
+     * @return null on success, otherwise the validation message
+     */
+    public String saveSroModernization(Long stateId, Long districtId, Integer totalSro, Integer computerized,
+                                       Integer stateFunds, Integer dilrmpFunds) {
+        District district = districtService.findById(districtId).orElse(null);
+        if (district == null || district.getState() == null || !district.getState().getId().equals(stateId)) {
+            return "Please select a district of your State.";
+        }
+        int total = totalSro == null ? 0 : totalSro;
+        int a = computerized == null ? 0 : computerized;
+        int b = stateFunds == null ? 0 : stateFunds;
+        int d = dilrmpFunds == null ? 0 : dilrmpFunds;
+        if (total < 0 || a < 0 || b < 0 || d < 0) {
+            return "Values cannot be negative.";
+        }
+        if (a > total || b > total || d > total) {
+            return "S.No. [2], [2.1] and [2.3] must be equal to or less than S.No. [1] (Total SROs in the District).";
+        }
+
+        DistrictMISDataEntry entry = repository.findByDistrictId(districtId);
+        if (entry == null) {
+            entry = new DistrictMISDataEntry();
+            entry.setDistrict(district);
+            entry.setState(district.getState());
+            entry.setUser(loggedInUserUtility.getLoggedinUser().getUser());
+            entry.setCreatedOnDate(DateUtils.getCurrentLocalDateTime());
+            entry.setVersion(0);
+        }
+        entry.setTotalSRO(total);
+        entry.setSroComputerized(a);
+        entry.setSrosModernisedStateFunds(b);
+        entry.setSrosModernisedDilrmpFunds(d);
+        entry.setUpdateOnDate(DateUtils.getCurrentLocalDateTime());
+        repository.save(entry);
+        logger.info("IGR saved SRO Modernization for district ID: {}", districtId);
+        return null;
     }
 
     public boolean isDecreaseAllowed(Long districtId) {

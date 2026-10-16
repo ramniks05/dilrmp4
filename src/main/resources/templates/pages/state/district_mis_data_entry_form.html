@@ -808,17 +808,17 @@
                       </ul>
                     </div>
                   </div>
-                  <p class="small text-muted mb-3">
-                    DILRMP sanctioned count is entered by DoLR (Sanction Entry). Enter progress figures here.
-                  </p>
+                  <div class="alert alert-info mb-3">
+                    View only. SRO Modernization figures are entered by the <strong>IGR</strong> login
+                    (SRO Modernization District-wise). DILRMP sanctioned count is entered by DoLR.
+                  </div>
 
                   <div class="form-group row">
                     <label for="totalSRO" class="col-sm-8 col-form-label"><span class="red-text">[1]</span>
                       Total number of SROs in the District:</label>
                     <div class="col-sm-4">
                       <input type="number" id="totalSRO" name="totalSRO" th:field="*{totalSRO}"
-                             class="form-control" min="0" oninput="validateSroModernization()">
-                      <small id="totalSroError" class="text-danger"></small>
+                             class="form-control" readonly>
                     </div>
                   </div>
 
@@ -827,8 +827,7 @@
                       Number of SROs using online registration application (Computerized):</label>
                     <div class="col-sm-4">
                       <input type="number" id="sroComputerized" name="sroComputerized" th:field="*{sroComputerized}"
-                             class="form-control" min="0" oninput="validateSroModernization()">
-                      <small id="sroComputerizedError" class="text-danger"></small>
+                             class="form-control" readonly>
                     </div>
                   </div>
 
@@ -837,9 +836,7 @@
                       Total SROs Modernized from State/UT funds/PPP model on lines of Passport Seva Kendra:</label>
                     <div class="col-sm-4">
                       <input type="number" id="srosModernisedStateFunds" name="srosModernisedStateFunds"
-                             th:field="*{srosModernisedStateFunds}" class="form-control" min="0"
-                             oninput="validateSroModernization()">
-                      <small id="srosModernisedStateFundsError" class="text-danger"></small>
+                             th:field="*{srosModernisedStateFunds}" class="form-control" readonly>
                     </div>
                   </div>
 
@@ -848,9 +845,7 @@
                       Total SROs Modernized from DILRMP funds on lines of Passport Seva Kendra:</label>
                     <div class="col-sm-4">
                       <input type="number" id="srosModernisedDilrmpFunds" name="srosModernisedDilrmpFunds"
-                             th:field="*{srosModernisedDilrmpFunds}" class="form-control" min="0"
-                             oninput="validateSroModernization()">
-                      <small id="srosModernisedDilrmpFundsError" class="text-danger"></small>
+                             th:field="*{srosModernisedDilrmpFunds}" class="form-control" readonly>
                     </div>
                   </div>
                 </div>

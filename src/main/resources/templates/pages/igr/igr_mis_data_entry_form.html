@@ -33,17 +33,44 @@
                     </div>
                   </div>
 
-                  <!-- SRO total / computerized / B / D → District MIS; C (sanction) → DoLR district -->
-                  <input type="hidden" th:field="*{numberOfSROsInState}" />
-                  <input type="hidden" th:field="*{numberOfSROsUsingOnlineRegistration}" />
+                  <!-- Number of SROs in the State (Computerization of Registration report) -->
+                  <div class="col-md-12 mb-3">
+                    <div class="form-group row">
+                      <label for="numberOfSROsInState" class="col-md-8 col-form-label">
+                        <span class="red-text">[1]</span> Number of SROs in the State:
+                      </label>
+                      <div class="col-md-4">
+                        <input type="number" id="numberOfSROsInState" name="numberOfSROsInState"
+                          th:field="*{numberOfSROsInState}" class="form-control"  min="0"
+                          oninput="validateSRONumbers()" onchange="validateAndResetField()">
+                        <small id="stateError" class="text-danger"></small>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Number of SROs using Online Registration -->
+                  <div class="col-md-12 mb-3">
+                    <div class="form-group row">
+                      <label for="numberOfSROsUsingOnlineRegistration" class="col-md-8 col-form-label">
+                        <span class="red-text">[2]</span> Number of SROs using online registration application:
+                      </label>
+                      <div class="col-md-4">
+                        <input type="number" id="numberOfSROsUsingOnlineRegistration"
+                          name="numberOfSROsUsingOnlineRegistration" th:field="*{numberOfSROsUsingOnlineRegistration}"
+                          class="form-control"  min="0" value="0" oninput="validateSRONumbers()" onchange="validateAndResetField()">
+                        <small id="registrationError" class="text-danger"></small>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- SRO Modernization is entered district-wise; DILRMP sanction is entered by DoLR -->
                   <input type="hidden" th:field="*{srosModernisedStateFunds}" />
                   <input type="hidden" th:field="*{srosModernisedDilrmpFunds}" />
                   <input type="hidden" th:field="*{srosDilrmpSanctioned}" />
                   <div class="col-md-12 mb-3">
                     <div class="alert alert-info mb-0">
-                      SRO counts and modernization progress ([1], [2], [2.1], [2.3]) are entered in
-                      <strong>District MIS Data Entry</strong> (SRO Modernization component).
-                      Only DILRMP sanctioned count ([2.2]) is entered by <strong>DoLR</strong> at district level.
+                      SRO Modernization progress ([1], [2], [2.1], [2.3]) is entered district-wise in
+                      <strong>SRO Modernization (District-wise)</strong>.
                     </div>
                   </div>
 
@@ -51,7 +78,7 @@
                   <div class="col-md-12 mb-3">
                     <div class="form-group row">
                       <label for="legacyRecordsAvailableFromYearSRO" class="col-md-8 col-form-label">
-                        <span class="red-text">[1]</span> Year from which Legacy Records digitized and available for
+                        <span class="red-text">[3]</span> Year from which Legacy Records digitized and available for
                         search by SRO official:
                       </label>
                       <div class="col-md-4">
@@ -66,7 +93,7 @@
                   <div class="col-md-12 mb-3">
                     <div class="form-group row">
                       <label for="legacyRecordsAvailableFromYearPublic" class="col-md-8 col-form-label">
-                        <span class="red-text">[2]</span> Year from which Legacy Records digitized and available for
+                        <span class="red-text">[4]</span> Year from which Legacy Records digitized and available for
                         search by public:
                       </label>
                       <div class="col-md-4">
@@ -607,28 +634,13 @@
   function validateSRONumbers() {
     const numberOfSROsInState = parseInt(document.getElementById('numberOfSROsInState').value || 0);
     const numberOfSROsUsingOnlineRegistration = parseInt(document.getElementById('numberOfSROsUsingOnlineRegistration').value || 0);
-    const srosModernisedStateFunds = parseInt(document.getElementById('srosModernisedStateFunds').value || 0);
-    const srosModernisedDilrmpFunds = parseInt(document.getElementById('srosModernisedDilrmpFunds').value || 0);
 
-    // Reset error messages
     document.getElementById('stateError').textContent = '';
     document.getElementById('registrationError').textContent = '';
-    document.getElementById('modernisedStateError').textContent = '';
-    document.getElementById('modernisedDilrmpError').textContent = '';
 
-    // If the second field exceeds the first, reset it to 0 and display an error message
     if (numberOfSROsUsingOnlineRegistration > numberOfSROsInState) {
       document.getElementById('numberOfSROsUsingOnlineRegistration').value = 0;
       document.getElementById('registrationError').textContent = 'Number of SROs using online registration cannot exceed the total number of SROs in the state.';
-    }
-    // B and D must not exceed online SROs (A)
-    if (srosModernisedStateFunds > numberOfSROsUsingOnlineRegistration) {
-      document.getElementById('srosModernisedStateFunds').value = 0;
-      document.getElementById('modernisedStateError').textContent = 'S.No. [2.1] cannot exceed S.No. [2] (online registration SROs).';
-    }
-    if (srosModernisedDilrmpFunds > numberOfSROsUsingOnlineRegistration) {
-      document.getElementById('srosModernisedDilrmpFunds').value = 0;
-      document.getElementById('modernisedDilrmpError').textContent = 'S.No. [2.2] cannot exceed S.No. [2] (online registration SROs).';
     }
   }
 </script>
@@ -637,28 +649,16 @@
       // Store the original value when the page loads
       window.originalNumberOfSROsInState = document.getElementById('numberOfSROsInState').value;
        window.originalNumberOfSROsUsingOnlineRegistration = document.getElementById('numberOfSROsUsingOnlineRegistration').value;
-       window.originalSrosModernisedStateFunds = document.getElementById('srosModernisedStateFunds').value;
-       window.originalSrosModernisedDilrmpFunds = document.getElementById('srosModernisedDilrmpFunds').value;
     });
 
     function validateAndResetField() {
       let inputField = document.getElementById('numberOfSROsInState');
        let inputField1 = document.getElementById('numberOfSROsUsingOnlineRegistration');
-       let inputFieldB = document.getElementById('srosModernisedStateFunds');
-       let inputFieldD = document.getElementById('srosModernisedDilrmpFunds');
       if (inputField.value.trim() === '') {
-        // Reset to original value if the field is empty
         inputField.value = window.originalNumberOfSROsInState;
       }
        if (inputField1.value.trim() === '') {
-        // Reset to original value if the field is empty
         inputField1.value = window.originalNumberOfSROsUsingOnlineRegistration;
-      }
-       if (inputFieldB && inputFieldB.value.trim() === '') {
-        inputFieldB.value = window.originalSrosModernisedStateFunds || 0;
-      }
-       if (inputFieldD && inputFieldD.value.trim() === '') {
-        inputFieldD.value = window.originalSrosModernisedDilrmpFunds || 0;
       }
     }
   </script>

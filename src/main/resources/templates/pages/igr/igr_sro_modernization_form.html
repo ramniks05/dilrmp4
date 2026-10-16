@@ -1,0 +1,143 @@
+<div th:fragment="igr-sro-modernization">
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card card-info">
+            <div class="card-header">
+              <h3 class="card-title">SRO Modernization (District-wise) Data Entry</h3>
+            </div>
+            <div class="card-body">
+              <div class="form-group row">
+                <label for="igrSroDistrictId" class="col-md-4 col-form-label">Select District:</label>
+                <div class="col-md-4">
+                  <select class="form-control" id="igrSroDistrictId" name="districtId"
+                          hx-post="/igr/sro-modernization/load" hx-trigger="change"
+                          hx-target="#igrSroFields" hx-swap="innerHTML">
+                    <option value="">Select District</option>
+                    <option th:each="d : ${districts}" th:value="${d.id}" th:text="${d.name}"></option>
+                  </select>
+                </div>
+              </div>
+
+              <div id="igrSroFields">
+                <div th:fragment="sroFields" th:if="${entry != null or error != null}">
+                  <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
+
+                  <form th:if="${entry != null}" id="igrSroForm" onsubmit="return saveIgrSroModernization(event);">
+                    <input type="hidden" name="districtId" th:value="${district.id}">
+
+                    <div class="card-header p-2 mb-3"
+                         style="font-size: 20px; font-family: auto; letter-spacing: 1px; color: var(--danger);">
+                      Component: Modernization of Registration Office (SRO) – <span th:text="${district.name}"></span>
+                    </div>
+                    <p class="small text-muted mb-3">
+                      Last updated:
+                      <span th:text="${entry.updateOnDate != null ? #temporals.format(entry.updateOnDate, 'dd-MM-yyyy HH:mm') : 'Not entered yet'}"></span>.
+                    </p>
+
+                    <div class="form-group row">
+                      <label for="igrTotalSRO" class="col-md-8 col-form-label"><span class="red-text">[1]</span>
+                        Total number of SROs in the District:</label>
+                      <div class="col-md-4">
+                        <input type="number" id="igrTotalSRO" name="totalSRO" class="form-control" min="0"
+                               th:value="${entry.totalSRO != null ? entry.totalSRO : 0}" oninput="validateIgrSro()">
+                      </div>
+                    </div>
+
+                    <div class="form-group row">
+                      <label for="igrSroComputerized" class="col-md-8 col-form-label"><span class="red-text">[2]</span>
+                        Number of SROs using online registration application (Computerized):</label>
+                      <div class="col-md-4">
+                        <input type="number" id="igrSroComputerized" name="sroComputerized" class="form-control" min="0"
+                               th:value="${entry.sroComputerized != null ? entry.sroComputerized : 0}" oninput="validateIgrSro()">
+                      </div>
+                    </div>
+
+                    <div class="form-group row">
+                      <label for="igrSrosModernisedStateFunds" class="col-md-8 col-form-label"><span class="red-text">[3]</span>
+                        Total SROs Modernized from State/UT funds/PPP model on lines of Passport Seva Kendra:</label>
+                      <div class="col-md-4">
+                        <input type="number" id="igrSrosModernisedStateFunds" name="srosModernisedStateFunds" class="form-control" min="0"
+                               th:value="${entry.srosModernisedStateFunds != null ? entry.srosModernisedStateFunds : 0}" oninput="validateIgrSro()">
+                      </div>
+                    </div>
+
+                    <div class="form-group row">
+                      <label for="igrSrosDilrmpSanctioned" class="col-md-8 col-form-label">
+                        Total SROs sanctioned for Modernization under DILRMP (entered by DoLR):</label>
+                      <div class="col-md-4">
+                        <input type="number" id="igrSrosDilrmpSanctioned" class="form-control" readonly
+                               th:value="${srosDilrmpSanctioned != null ? srosDilrmpSanctioned : 0}">
+                      </div>
+                    </div>
+
+                    <div class="form-group row">
+                      <label for="igrSrosModernisedDilrmpFunds" class="col-md-8 col-form-label"><span class="red-text">[4]</span>
+                        Total SROs Modernized from DILRMP funds on lines of Passport Seva Kendra:</label>
+                      <div class="col-md-4">
+                        <input type="number" id="igrSrosModernisedDilrmpFunds" name="srosModernisedDilrmpFunds" class="form-control" min="0"
+                               th:value="${entry.srosModernisedDilrmpFunds != null ? entry.srosModernisedDilrmpFunds : 0}" oninput="validateIgrSro()">
+                      </div>
+                    </div>
+
+                    <div class="col-md-12 d-flex justify-content-center mt-4">
+                      <button type="submit" class="btn btn-primary btn-lg px-4 py-2 rounded-pill shadow-sm">Save</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    function validateIgrSro() {
+      var ids = ['igrTotalSRO', 'igrSroComputerized', 'igrSrosModernisedStateFunds', 'igrSrosModernisedDilrmpFunds'];
+      var els = ids.map(function (id) { return document.getElementById(id); });
+      if (els.some(function (el) { return !el; })) {
+        return false;
+      }
+      var total = parseInt(els[0].value || 0, 10);
+      var labels = ['[2]', '[3]', '[4]'];
+      var valid = true;
+      for (var i = 1; i < els.length; i++) {
+        if (parseInt(els[i].value || 0, 10) > total) {
+          alert('S.No. ' + labels[i - 1] + ' must be equal to or less than Total number of SROs (S.No. [1]).');
+          els[i].value = 0;
+          valid = false;
+        }
+      }
+      return valid;
+    }
+
+    function saveIgrSroModernization(e) {
+      e.preventDefault();
+      if (!validateIgrSro()) {
+        return false;
+      }
+      var form = document.getElementById('igrSroForm');
+      ['igrTotalSRO', 'igrSroComputerized', 'igrSrosModernisedStateFunds', 'igrSrosModernisedDilrmpFunds'].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el && el.value.trim() === '') {
+          el.value = 0;
+        }
+      });
+      $.ajax({
+        type: 'POST',
+        url: '/igr/sro-modernization/save',
+        data: $(form).serialize(),
+        success: function (data) {
+          Swal.fire({title: 'Success', text: data, icon: 'success', confirmButtonText: 'OK'});
+        },
+        error: function (jqXHR) {
+          Swal.fire({title: 'Error', text: jqXHR.responseText, icon: 'error', confirmButtonText: 'OK'});
+        }
+      });
+      return false;
+    }
+  </script>
+</div>

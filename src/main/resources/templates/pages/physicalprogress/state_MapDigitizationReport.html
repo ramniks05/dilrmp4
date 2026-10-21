@@ -400,7 +400,7 @@
                                 </button>
                             </div>
                         </form>
-                        <div class="table-responsive text-nowrap">
+                        <div class="table-responsive text-nowrap" th:fragment="reportTable">
                             <table id="example2" class="table table-bordered  table-striped-columns table-success table-striped  table-responsive">
                                 <thead class="card-info wrap-text" style="background-color: var(--dilrmp-th-bg); color: var(--dilrmp-th-text)">
                                 <tr>
@@ -553,7 +553,7 @@
                                 <tbody>
                                 <tr th:each="data, iterator : ${reportData}">
                                     <td th:text="${iterator.count}"></td>
-                                    <td><a th:href="@{/physicalProgressReports/map/district-level/{lgdCode}(lgdCode=${data.lgdCode})}" th:text="${data.stateName}" target="_blank"></a></td>
+                                    <td><a th:unless="${hideStateLinks}" th:href="@{/physicalProgressReports/map/district-level/{lgdCode}(lgdCode=${data.lgdCode})}" th:text="${data.stateName}" target="_blank"></a><span th:if="${hideStateLinks}" th:text="${data.stateName}"></span></td>
 
                                     <td th:text="${data.formattingTotalDistrict}"></td>
                                     <td th:text="${data.formattingTotalTehsils}"></td>

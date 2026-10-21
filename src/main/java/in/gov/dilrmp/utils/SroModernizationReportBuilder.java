@@ -53,9 +53,16 @@ public class SroModernizationReportBuilder {
     }
 
     public void enrichStateReports(List<SroModernizationReport> reports) {
-        Map<Long, int[]> misByState = toMisStateMap(districtMISDataEntryRepository.sumSroModernizationByStateId());
+        enrichStateReports(reports,
+                districtMISDataEntryRepository.sumSroModernizationByStateId(),
+                districtMISDataEntryRepository.sumSroModernizationNational());
+    }
+
+    /** Same as {@link #enrichStateReports(List)} using district rows already resolved as on a date. */
+    public void enrichStateReports(List<SroModernizationReport> reports, List<Object[]> stateRows, List<Object[]> nationalRows) {
+        Map<Long, int[]> misByState = toMisStateMap(stateRows);
         Map<Long, Integer> dolrCByState = dolrSanctionMap(dolrDistrictMisDataEntryRepository.sumSroSanctionedByStateId());
-        int[] nationalMis = firstMisNational(districtMISDataEntryRepository.sumSroModernizationNational());
+        int[] nationalMis = firstMisNational(nationalRows);
         int nationalC = dolrSanctionNational();
         reports.forEach(report -> {
             int[] metrics;

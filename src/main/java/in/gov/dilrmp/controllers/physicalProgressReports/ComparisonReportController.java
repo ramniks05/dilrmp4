@@ -5,10 +5,13 @@ import in.gov.dilrmp.repositories.physicalProgressRepositories.DistrictAadhaarLi
 import in.gov.dilrmp.services.physicalProgressServices.ComparisonDateByMisReportService;
 import in.gov.dilrmp.services.physicalProgressServices.MapDigitizationReportService;
 import in.gov.dilrmp.services.physicalProgressServices.StateMAPService;
+import in.gov.dilrmp.services.physicalProgressServices.StateReportsAsOnDateService;
+import in.gov.dilrmp.services.physicalProgressServices.StateReportsAsOnDateService.Component;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,6 +43,11 @@ public class ComparisonReportController {
     @Autowired
     DistrictAadhaarLinkingRepository districtAadhaarLinkingRepository;
 
+    @Autowired
+    StateReportsAsOnDateService stateReportsAsOnDateService;
+    @Autowired
+    AsOnDateReportController asOnDateReportController;
+
     @GetMapping("/date-wise-report-comparison")
     public String dateWiseReportComparison() {
         return "pages/physicalprogress/date_wise_report_comparison::date_wise_report_comparison";
@@ -59,6 +67,33 @@ public class ComparisonReportController {
     public String dateWiseReport() {
         return "pages/physicalprogress/date_wise_report::date_wise_report";
 
+    }
+
+    @GetMapping("/physical-progress-as-on-date")
+    public String physicalProgressAsOnDate(@RequestParam(name = "asOnDate", required = false)
+                                           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate asOnDate,
+                                           @RequestParam(name = "component", required = false) Component component,
+                                           Model model) {
+        if (component == null) {
+            component = Component.CLR;
+        }
+        LocalDate today = LocalDate.now();
+        LocalDate minDate = stateReportsAsOnDateService.getFirstAvailableDate(component);
+        if (asOnDate == null || asOnDate.isAfter(today)) {
+            asOnDate = today;
+        } else if (minDate != null && asOnDate.isBefore(minDate)) {
+            asOnDate = minDate;
+        }
+        asOnDateReportController.fillReport(model, asOnDate, component);
+        model.addAttribute("components", Component.values());
+        model.addAttribute("selectedComponent", component);
+        model.addAttribute("asOnDate", asOnDate);
+        model.addAttribute("minDate", minDate);
+        model.addAttribute("maxDate", today);
+        model.addAttribute("componentMinDates", stateReportsAsOnDateService.firstAvailableDates());
+        model.addAttribute("error", null);
+        model.addAttribute("embedded", true);
+        return "pages/misReports/asOnDateReportDownload::asOnDateReportDownload";
     }
 
 

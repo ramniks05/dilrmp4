@@ -38,4 +38,10 @@ public interface IgrMISDataEntryRepository extends JpaRepository<StateRegistrati
             + "COALESCE(SUM(e.number_of_sros_in_state), 0) "
             + "FROM state_registration_system e", nativeQuery = true)
     List<Object[]> sumSroModernizationNational();
+
+    // Same column order as StateRegistrationSystemBackupRepository.findSroAsOnDateFieldHistory().
+    @Query(value = "SELECT state_id, last_update_on_date, legacy_records_available_from_year_sro, "
+            + "legacy_records_available_from_year_public, number_of_sros_integrated_with_land_records "
+            + "FROM state_registration_system", nativeQuery = true)
+    List<Object[]> findSroAsOnDateFieldsCurrent();
 }

@@ -374,7 +374,7 @@ state_Survey_ProgresReportNew<!DOCTYPE html>
                                     </button>
                                 </div>
                             </form>
-                            <div class="table-responsive text-nowrap">
+                            <div class="table-responsive text-nowrap" th:fragment="reportTable">
                                 <table id="example2"
                                        class="table table-bordered  table-striped-columns table-success table-striped  table-responsive">
                                     <thead class="card-info wrap-text" style="background-color: var(--dilrmp-th-bg); color: var(--dilrmp-th-text)">
@@ -439,8 +439,10 @@ state_Survey_ProgresReportNew<!DOCTYPE html>
                                         th:if="${report != null && report.stateId != 999}">
                                         <td th:text="${status.count}"></td>
                                         <td>
-                                            <a th:href="@{/physicalProgressReports/rcms/district-level/{stateId}(stateId=${report.stateId})}"
-                                               th:text="${report.stateName}" target="_blank"></a></td>
+                                            <a th:unless="${hideStateLinks}"
+                                               th:href="@{/physicalProgressReports/rcms/district-level/{stateId}(stateId=${report.stateId})}"
+                                               th:text="${report.stateName}" target="_blank"></a>
+                                            <span th:if="${hideStateLinks}" th:text="${report.stateName}"></span></td>
                                         <td th:text="${report.totalDistrict}"></td>
                                         <td th:text="${report.totalTehsils}"></td>
                                         <td th:text="${report.totalRevenueCourts}"></td>

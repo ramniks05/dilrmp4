@@ -1,0 +1,405 @@
+<div th:fragment="state-profile-word">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-info">
+                    <div class="card-header">
+                        <h3 class="card-title"
+                            style="font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a; letter-spacing: 2px;">
+                            State Profile (Word)
+                        </h3>
+                    </div>
+
+                    <style>
+                        .spw { font-size: 14px; }
+                        .spw label { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+                        .spw .section { border: 1px solid #dee2e6; border-radius: 4px; margin-bottom: 16px; }
+                        .spw .section-head {
+                            background-color: #feb8b0; font-weight: bold; padding: 8px 12px; font-size: 15px;
+                            display: flex; justify-content: space-between; align-items: center;
+                        }
+                        .spw .section-body { padding: 12px; }
+                        .spw .sub-head { font-weight: bold; margin: 10px 0 6px; }
+                        .spw .tag { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 10px; margin-left: 6px; }
+                        .spw .tag-mis { background: #6c757d; color: #fff; }
+                        .spw .tag-entry { background: #007bff; color: #fff; }
+                        .spw .mis-box { background: #f4f6f9; border: 1px dashed #adb5bd; border-radius: 4px; padding: 10px 12px; }
+                        .spw table.mis-kv { width: 100%; margin: 0; }
+                        .spw table.mis-kv td { padding: 5px 8px; border-bottom: 1px solid #e3e6ea; vertical-align: top; }
+                        .spw table.mis-kv td:first-child { width: 32%; font-weight: 600; }
+                        .spw table.grid { width: 100%; margin-bottom: 0; }
+                        .spw table.grid th { background: #d9e2f3; text-align: center; vertical-align: middle; font-size: 13px; }
+                        .spw table.grid td { vertical-align: middle; font-size: 13px; }
+                        .spw table.grid td.num { text-align: center; white-space: nowrap; }
+                        .spw table.grid td.txt { text-align: left; }
+                        .spw table.grid td.mis { background: #f4f6f9; }
+                        .spw table.grid input.form-control { font-size: 13px; padding: 2px 6px; height: 30px; }
+                        .spw .stat { background: #f4f6f9; border: 1px dashed #adb5bd; border-radius: 4px; text-align: center; padding: 8px; }
+                        .spw .stat .val { font-size: 20px; font-weight: bold; }
+                        .spw .empty { color: #999; font-style: italic; }
+                        .spw .status-bar { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; padding: 8px 12px; margin-bottom: 12px; }
+                        .spw .actions { position: sticky; bottom: 0; background: #fff; border-top: 1px solid #dee2e6; padding: 10px 0; z-index: 5; }
+                        .spw fieldset[disabled] .form-control { background-color: #fdfdfd; }
+                        #spwAsOnDateDisplay { cursor: pointer; background-color: #fff; }
+                        #ui-datepicker-div { z-index: 2000 !important; }
+                    </style>
+
+                    <div class="card-body spw">
+                        <form id="spwSelect" onsubmit="return false;">
+                            <div class="form-row align-items-end">
+                                <div class="col-md-4 mb-2" th:if="${fixedState}">
+                                    <label>State/UT:</label>
+                                    <input type="text" class="form-control" th:value="${fixedStateName}" readonly>
+                                    <input type="hidden" name="stateId" th:value="${fixedStateId}">
+                                </div>
+                                <div class="col-md-4 mb-2" th:unless="${fixedState}">
+                                    <label for="spwStateId">Select State/UT:</label>
+                                    <select class="form-control" id="spwStateId" name="stateId">
+                                        <option value="">Select State</option>
+                                        <option th:each="state : ${stateList}" th:value="${state.id}" th:text="${state.name}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="spwAsOnDateDisplay">Physical Progress As on:</label>
+                                    <input type="text" id="spwAsOnDateDisplay" class="form-control" readonly
+                                           autocomplete="off" placeholder="dd-mm-yyyy"
+                                           th:value="${#temporals.format(asOnDate, 'dd-MM-yyyy')}"
+                                           th:attr="data-min=${minDate != null ? #temporals.format(minDate, 'yyyy-MM-dd') : ''}, data-max=${#temporals.format(maxDate, 'yyyy-MM-dd')}">
+                                    <input type="hidden" id="spwAsOnDate" name="asOnDate"
+                                           th:value="${#temporals.format(asOnDate, 'yyyy-MM-dd')}">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <button type="button" class="btn btn-primary"
+                                            th:attr="hx-post=${basePath + '/load'}" hx-include="#spwSelect"
+                                            hx-target="#spwBody" hx-swap="innerHTML">
+                                        <i class="fas fa-search"></i> Load Profile
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div id="spwBody">
+                            <div th:fragment="profileBody" th:if="${mis != null or error != null}">
+                                <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
+                                <div class="alert alert-success" th:if="${message}" th:text="${message}"></div>
+
+                                <th:block th:if="${mis != null}">
+                                <div class="status-bar">
+                                    <strong th:text="${mis.stateName + ' – Profile as on ' + #temporals.format(mis.asOnDate, 'dd-MM-yyyy')}"></strong>
+                                    &nbsp;|&nbsp; Status:
+                                    <span th:if="${entry == null}" class="badge badge-secondary">Not saved</span>
+                                    <span th:if="${entry != null and !locked}" class="badge badge-warning">Draft</span>
+                                    <span th:if="${locked}" class="badge badge-success">Final (locked)</span>
+                                    <span th:if="${entry != null}" class="ml-2 text-muted"
+                                          th:text="${'Last saved' + (entry.updatedBy != null ? ' by ' + entry.updatedBy : '') + ' on ' + #temporals.format(entry.updatedOn, 'dd-MM-yyyy HH:mm')}"></span>
+                                    <div th:if="${prefilledFrom != null}" class="text-info mt-1"
+                                         th:text="${'Entries are pre-filled from the profile saved for ' + #temporals.format(prefilledFrom, 'dd-MM-yyyy') + '. Review and save for this date.'}"></div>
+                                    <div class="mt-1 text-muted" style="font-size: 13px;">
+                                        <span class="tag tag-mis">MIS</span> figures are read from MIS for the selected date and cannot be changed here.
+                                        <span class="tag tag-entry">Entry</span> fields are saved with this profile; anything left empty stays blank in the Word file.
+                                    </div>
+                                </div>
+
+                                <form id="spwForm" th:action="@{|${basePath}/download|}" method="post">
+                                    <input type="hidden" name="stateId" th:value="${input.stateId}">
+                                    <input type="hidden" name="asOnDate" th:value="${#temporals.format(input.asOnDate, 'yyyy-MM-dd')}">
+
+                                    <fieldset th:disabled="${locked}">
+
+                                    <!-- 1. State level information -->
+                                    <div class="section">
+                                        <div class="section-head">1. State level information on Schemes <span class="tag tag-mis">MIS</span></div>
+                                        <div class="section-body">
+                                            <div class="form-row">
+                                                <div class="col-md-4"><div class="stat"><div>Districts</div><div class="val" th:text="${mis.districts}"></div></div></div>
+                                                <div class="col-md-4"><div class="stat"><div>Tehsils</div><div class="val" th:text="${mis.tehsils}"></div></div></div>
+                                                <div class="col-md-4"><div class="stat"><div>Villages</div><div class="val" th:text="${mis.villages}"></div></div></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 2. DILRMP -->
+                                    <div class="section">
+                                        <div class="section-head">2. Digital India Land Records Modernisation programme (DILRMP)</div>
+                                        <div class="section-body">
+                                            <div class="sub-head">2.1 Financial Progress: Fund release Status (₹ in crore) <span class="tag tag-entry">Entry</span></div>
+                                            <table class="table table-bordered grid">
+                                                <thead>
+                                                <tr><th style="width: 16%"></th><th>2008-09 to 2013-14</th><th>2014-15 to 2020-21</th><th>2021-22 to 2025-26</th></tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td class="txt"><strong>Fund Released</strong></td>
+                                                    <td><input type="text" class="form-control text-center" name="fundReleased1" th:value="${input.fundReleased1}"></td>
+                                                    <td><input type="text" class="form-control text-center" name="fundReleased2" th:value="${input.fundReleased2}"></td>
+                                                    <td><input type="text" class="form-control text-center" name="fundReleased3" th:value="${input.fundReleased3}"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="txt"><strong>Fund Spent</strong></td>
+                                                    <td><input type="text" class="form-control text-center" name="fundSpent1" th:value="${input.fundSpent1}"></td>
+                                                    <td><input type="text" class="form-control text-center" name="fundSpent2" th:value="${input.fundSpent2}"></td>
+                                                    <td><input type="text" class="form-control text-center" name="fundSpent3" th:value="${input.fundSpent3}"></td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                            <div class="form-row mt-3">
+                                                <div class="col-md-4 mb-2">
+                                                    <label>2.2 Unspent funds with State (₹ crore) <span class="tag tag-entry">Entry</span></label>
+                                                    <input type="text" class="form-control" name="unspentFunds" th:value="${input.unspentFunds}">
+                                                </div>
+                                                <div class="col-md-4 mb-2">
+                                                    <label>Unspent funds as per PFMS on</label>
+                                                    <input type="text" class="form-control" name="unspentAsPerPfmsDate" placeholder="dd.mm.yyyy" th:value="${input.unspentAsPerPfmsDate}">
+                                                </div>
+                                                <div class="col-md-4 mb-2">
+                                                    <label>2.3 Pending UC (₹ crore) <span class="tag tag-entry">Entry</span></label>
+                                                    <input type="text" class="form-control" name="pendingUc" th:value="${input.pendingUc}">
+                                                </div>
+                                            </div>
+
+                                            <div class="sub-head">
+                                                <span th:text="${'2.4 Physical Progress: As per MIS as on ' + #temporals.format(mis.asOnDate, 'dd.MM.yyyy')}"></span>
+                                                <span class="tag tag-mis">MIS</span>
+                                                <span class="text-muted" style="font-weight: normal; font-size: 13px;">(only "Reason for incompletion" is entered)</span>
+                                            </div>
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered grid">
+                                                    <thead>
+                                                    <tr>
+                                                        <th rowspan="2">Sl. No.</th>
+                                                        <th rowspan="2">Components</th>
+                                                        <th rowspan="2">Unit</th>
+                                                        <th colspan="2">National</th>
+                                                        <th colspan="2" th:text="${mis.stateName}"></th>
+                                                        <th rowspan="2" style="min-width: 220px;">Reason for incompletion <span class="tag tag-entry">Entry</span></th>
+                                                    </tr>
+                                                    <tr><th>Total</th><th>Completed</th><th>Total</th><th>Completed</th></tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr th:each="row, st : ${mis.rows}">
+                                                        <td class="num mis" th:text="${st.count}"></td>
+                                                        <td class="txt mis" th:text="${row.label}"></td>
+                                                        <td class="txt mis" th:text="${row.unit}"></td>
+                                                        <td class="num mis" th:text="${row.nationalTotal}"></td>
+                                                        <td class="num mis" th:text="${row.nationalCompleted}"></td>
+                                                        <td class="num mis" th:text="${row.stateTotal}"></td>
+                                                        <td class="num mis" th:text="${row.stateCompleted}"></td>
+                                                        <td><input type="text" class="form-control" th:name="|reasons[${st.index}]|" th:value="${input.reasonAt(st.index)}"></td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 3. Other components -->
+                                    <div class="section">
+                                        <div class="section-head">3. Status of Other Components under DILRMP <span class="tag tag-entry">Entry</span></div>
+                                        <div class="section-body">
+                                            <div class="form-group">
+                                                <label>3.1 National Generic Document Registration System (NGDRS) / e-Registration</label>
+                                                <textarea class="form-control" rows="2" name="ngdrsStatus" th:text="${input.ngdrsStatus}"></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>3.2 Revenue Court Case Management System (RCCMS)</label>
+                                                <textarea class="form-control" rows="2" name="rccmsStatus" th:text="${input.rccmsStatus}"></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>3.3 Introduction of Gender Column in RoR</label>
+                                                <textarea class="form-control" rows="2" name="genderColumnStatus" th:text="${input.genderColumnStatus}"></textarea>
+                                            </div>
+                                            <div class="form-group mb-0">
+                                                <label>3.4 Bharat Land Stack</label>
+                                                <textarea class="form-control" rows="2" name="landStackStatus" th:text="${input.landStackStatus}"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 4. NAKSHA -->
+                                    <div class="section">
+                                        <div class="section-head">4. NAKSHA Programme</div>
+                                        <div class="section-body">
+                                            <div class="sub-head">Physical Status <span class="tag tag-mis">MIS</span></div>
+                                            <div class="mis-box">
+                                                <p class="mb-2" th:if="${!#strings.isEmpty(mis.ulbText)}" th:text="${mis.ulbText}"></p>
+                                                <table class="mis-kv">
+                                                    <tr><td>1. Aerial Flying</td><td th:text="${mis.flying}" th:classappend="${#strings.isEmpty(mis.flying)} ? 'empty'"></td></tr>
+                                                    <tr><td>2. Rovers, SPMU &amp; Teams</td><td th:text="${mis.roversTeams}"></td></tr>
+                                                    <tr><td>3. Ortho Rectified Imagery (ORI)</td><td th:text="${mis.ori}"></td></tr>
+                                                    <tr><td>4. 2D Feature Extraction</td><td th:text="${mis.feature2d}"></td></tr>
+                                                    <tr><td>5. 3D Feature Extraction</td><td th:text="${mis.feature3d}"></td></tr>
+                                                    <tr><td>6. Ground Truthing</td><td th:text="${mis.groundTruthing}"></td></tr>
+                                                    <tr><td>7. Capacity Building</td><td th:text="${mis.capacityBuilding}"></td></tr>
+                                                    <tr><td>8. Total Sanctioned Budget</td><td th:text="${mis.sanctionedBudget}"></td></tr>
+                                                    <tr><td th:text="${mis.releaseLabel}"></td><td th:text="${mis.amountReleased}"></td></tr>
+                                                </table>
+                                                <div class="text-muted mt-1" style="font-size: 12px;">Items left blank above are not available in MIS for this State; they stay blank in the Word file.</div>
+                                            </div>
+
+                                            <div class="sub-head mt-3">Not available in MIS <span class="tag tag-entry">Entry</span></div>
+                                            <div class="form-group">
+                                                <label>6. RoR Tagging</label>
+                                                <textarea class="form-control" rows="2" name="nakshaRorTagging" th:text="${input.nakshaRorTagging}"
+                                                          placeholder="e.g. Initiated in Coimbatore (1.36%), Karaikudi (38.33%)"></textarea>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="col-md-4 mb-2">
+                                                    <label>10. Amount Utilized (₹ crore)</label>
+                                                    <input type="text" class="form-control" name="nakshaAmountUtilized" th:value="${input.nakshaAmountUtilized}">
+                                                </div>
+                                                <div class="col-md-8 mb-2">
+                                                    <label>11. Amount Recommended in SASCI</label>
+                                                    <input type="text" class="form-control" name="nakshaSasci" th:value="${input.nakshaSasci}">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Other NAKSHA points (one per line, numbered from 12)</label>
+                                                <textarea class="form-control" rows="2" name="nakshaPhysicalStatus" th:text="${input.nakshaPhysicalStatus}"></textarea>
+                                            </div>
+
+                                            <div class="sub-head">ULB-wise status and prescribed timelines</div>
+                                            <table class="table table-bordered grid">
+                                                <thead>
+                                                <tr>
+                                                    <th style="width: 6%">S.No.</th>
+                                                    <th>ULB / Town / City</th>
+                                                    <th style="width: 10%">GT % <span class="tag tag-mis">MIS</span></th>
+                                                    <th style="width: 14%">RoR % <span class="tag tag-entry">Entry</span></th>
+                                                    <th style="width: 18%">Timeline for Draft UrPro Card <span class="tag tag-entry">Entry</span></th>
+                                                    <th style="width: 18%">Final UrPro Card Publication <span class="tag tag-entry">Entry</span></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr th:if="${#lists.isEmpty(ulbRows)}"><td colspan="6" class="text-center empty">No NAKSHA ULB found in MIS for this State.</td></tr>
+                                                <tr th:each="u, st : ${ulbRows}">
+                                                    <td class="num mis" th:text="${st.count}"></td>
+                                                    <td class="txt mis">
+                                                        <span th:text="${u[0]}"></span>
+                                                        <input type="hidden" th:name="|ulbNames[${st.index}]|" th:value="${u[0]}">
+                                                    </td>
+                                                    <td class="num mis" th:text="${u[1]}"></td>
+                                                    <td><input type="text" class="form-control text-center" th:name="|ulbRor[${st.index}]|" th:value="${u[2]}"></td>
+                                                    <td><input type="text" class="form-control text-center" th:name="|ulbDraftTimeline[${st.index}]|" th:value="${u[3]}" placeholder="dd-mm-yyyy"></td>
+                                                    <td><input type="text" class="form-control text-center" th:name="|ulbFinalPublication[${st.index}]|" th:value="${u[4]}" placeholder="dd-mm-yyyy"></td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <!-- 5 & 6 -->
+                                    <div class="section">
+                                        <div class="section-head">5. Any Similar Scheme Funded by the State Government <span class="tag tag-entry">Entry</span></div>
+                                        <div class="section-body">
+                                            <textarea class="form-control" rows="2" name="similarScheme" th:text="${input.similarScheme}"
+                                                      placeholder="One point per line; lines are numbered in the Word file"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="section">
+                                        <div class="section-head">6. Issues Flagged by the State Government <span class="tag tag-entry">Entry</span></div>
+                                        <div class="section-body">
+                                            <textarea class="form-control" rows="3" name="issuesByState" th:text="${input.issuesByState}"
+                                                      placeholder="One point per line; lines are numbered in the Word file"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <!-- 7. Issues by DoLR -->
+                                    <div class="section">
+                                        <div class="section-head">7. Issues Flagged by the DoLR</div>
+                                        <div class="section-body">
+                                            <div class="sub-head">(a) DILRMP – (i) Financial Progress <span class="tag tag-entry">Entry</span></div>
+                                            <textarea class="form-control" rows="3" name="issuesByDolrFinancial" th:text="${input.issuesByDolrFinancial}"
+                                                      placeholder="One point per line"></textarea>
+
+                                            <div class="sub-head">(a) DILRMP – (ii) Physical Progress</div>
+                                            <div class="mis-box mb-2">
+                                                <div class="mb-1">Components below 100% for the State <span class="tag tag-mis">MIS</span></div>
+                                                <table class="table table-bordered grid bg-white">
+                                                    <thead><tr><th style="width: 8%">S.No.</th><th>Component</th><th style="width: 30%">State Completed</th></tr></thead>
+                                                    <tbody>
+                                                    <tr th:if="${#lists.isEmpty(mis.lagging)}"><td colspan="3" class="text-center empty">No lagging component as per MIS.</td></tr>
+                                                    <tr th:each="row, st : ${mis.lagging}">
+                                                        <td class="num" th:text="${st.count}"></td>
+                                                        <td class="txt" th:text="${row.label}"></td>
+                                                        <td class="num" th:text="${row.stateCompleted}"></td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <textarea class="form-control" rows="3" name="issuesByDolrPhysical" th:text="${input.issuesByDolrPhysical}"
+                                                      placeholder="Additional points, one per line"></textarea>
+
+                                            <div class="sub-head">(b) NAKSHA Programme <span class="tag tag-entry">Entry</span></div>
+                                            <textarea class="form-control" rows="3" name="issuesByDolrNaksha" th:text="${input.issuesByDolrNaksha}"
+                                                      placeholder="One point per line"></textarea>
+                                        </div>
+                                    </div>
+
+                                    </fieldset>
+
+                                    <div class="actions">
+                                        <th:block th:if="${!locked}">
+                                            <button type="button" class="btn btn-secondary"
+                                                    th:attr="hx-post=${basePath + '/save?action=draft'}" hx-include="#spwForm"
+                                                    hx-target="#spwBody" hx-swap="innerHTML">
+                                                <i class="fas fa-save"></i> Save as Draft
+                                            </button>
+                                            <button type="button" class="btn btn-success"
+                                                    th:attr="hx-post=${basePath + '/save?action=final'}" hx-include="#spwForm"
+                                                    hx-target="#spwBody" hx-swap="innerHTML"
+                                                    hx-confirm="After Final Save the entries for this State and date cannot be changed. Continue?">
+                                                <i class="fas fa-check-circle"></i> Final Save
+                                            </button>
+                                        </th:block>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-file-word"></i> Download Word
+                                        </button>
+                                    </div>
+                                </form>
+                                </th:block>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            var display = document.getElementById('spwAsOnDateDisplay');
+            var hidden = document.getElementById('spwAsOnDate');
+            if (!display || !window.jQuery || !jQuery.ui || !jQuery.fn.datepicker) {
+                return;
+            }
+            function parseIso(iso) {
+                var p = (iso || '').split('-');
+                return p.length === 3 ? new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2])) : null;
+            }
+            var minDate = parseIso(display.getAttribute('data-min'));
+            var maxDate = parseIso(display.getAttribute('data-max'));
+            var $display = jQuery(display);
+            if ($display.hasClass('hasDatepicker')) {
+                $display.datepicker('destroy');
+            }
+            $display.off('click.spw').datepicker({
+                dateFormat: 'dd-mm-yy',
+                minDate: minDate,
+                maxDate: maxDate,
+                changeMonth: true,
+                changeYear: true,
+                showAnim: '',
+                yearRange: (minDate ? minDate.getFullYear() : 2024) + ':' + (maxDate ? maxDate.getFullYear() : new Date().getFullYear()),
+                onSelect: function (text) {
+                    var parts = text.split('-');
+                    if (parts.length === 3) {
+                        hidden.value = parts[2] + '-' + parts[1] + '-' + parts[0];
+                    }
+                    display.blur();
+                }
+            }).on('click.spw', function () {
+                $display.datepicker('show');
+            });
+        })();
+    </script>
+</div>

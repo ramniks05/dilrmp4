@@ -143,6 +143,14 @@
 
                                 </li>
 
+                                <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR')">
+                                    <a class="nav-link" href="#" hx-get="/dolr/state-profile-word"
+                                       hx-swap="innerHTML" hx-target="#content" hx-push-url="false" >
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>State Profile (Word)</p>
+                                    </a>
+                                </li>
+
                                 <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN')">
                                     <a class="nav-link" href="#" hx-get="/current-status/district_profile"
                                        hx-swap="innerHTML" hx-target="#content" hx-push-url="false" >
@@ -206,6 +214,12 @@
                                         <p>Date-wise Report</p>
                                     </a>
 
+                                </li>
+                                <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN') ">
+                                    <a href="#" hx-get="/dolr/physical-progress-as-on-date" hx-target="#content" hx-swap="innerHTML" hx-push-url="false" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Physical Progress Report As on Date</p>
+                                    </a>
                                 </li>
                                 <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN') ">
                                     <a href="#" hx-get="/dolr/date-wise-report-comparison" hx-target="#content" hx-swap="innerHTML" hx-push-url="false"  class="nav-link">
@@ -300,6 +314,13 @@
 
                 </li>
 
+                <li class="nav-item" sec:authorize="hasRole('ROLE_STATE')">
+                    <a href="#" hx-get="/state/state-profile-word" hx-target="#content" hx-swap="innerHTML" hx-push-url="false" class="nav-link">
+                        <i class="fa fa-file-word"></i>
+                        <p>State Profile (Word)</p>
+                    </a>
+                </li>
+
 
                 <li class="nav-item" sec:authorize="hasRole('ROLE_STATE')|| hasRole('ROLE_IGR')">
                     <a href="#" hx-get="/igr/igr-mis-data/form" hx-target="#content" hx-swap="innerHTML" hx-push-url="false"  class="nav-link">
@@ -307,6 +328,12 @@
                         <p>IGR MIS Data Entry</p>
                     </a>
 
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ROLE_IGR')">
+                    <a href="#" hx-get="/igr/sro-modernization" hx-target="#content" hx-swap="innerHTML" hx-push-url="false"  class="nav-link">
+                        <i class="fa fa-building"></i>
+                        <p>SRO Modernization (District-wise)</p>
+                    </a>
                 </li>
                 <li class="nav-item" sec:authorize="hasRole('ROLE_STATEULB')">
                     <a href="/ulb/ulb-naksha-mis-data/form"  class="nav-link">
@@ -443,12 +470,17 @@
         <script>
     // Show loader when HTMX makes a request
     document.body.addEventListener('htmx:beforeRequest', function() {
-        document.getElementById("loader").style.display = "block";
+        var loader = document.getElementById("loader");
+        if (loader) {
+            loader.style.display = "block";
+        }
     });
 
-    // Hide loader after HTMX request is loaded
-    document.body.addEventListener('htmx:afterOnLoad', function() {
-        document.getElementById("loader").style.display = "none";
+    document.body.addEventListener('htmx:afterRequest', function() {
+        var loader = document.getElementById("loader");
+        if (loader) {
+            loader.style.display = "none";
+        }
     });
 </script>
         <!-- /.sidebar-menu -->

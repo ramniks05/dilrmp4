@@ -54,9 +54,16 @@ public class LegacyDigitizationReportBuilder {
     }
 
     public void enrichStateReports(List<LegacyDigitizationReport> reports) {
-        Map<Long, int[]> byState = toMetricMap(districtMISDataEntryRepository.sumLegacyDigitizationByStateId());
+        enrichStateReports(reports,
+                districtMISDataEntryRepository.sumLegacyDigitizationByStateId(),
+                districtMISDataEntryRepository.sumLegacyDigitizationNational());
+    }
+
+    /** Same as {@link #enrichStateReports(List)} using district rows already resolved as on a date. */
+    public void enrichStateReports(List<LegacyDigitizationReport> reports, List<Object[]> stateRows, List<Object[]> nationalRows) {
+        Map<Long, int[]> byState = toMetricMap(stateRows);
         Map<Long, Integer> dolrSanctionByState = dolrLegacySanctionMap();
-        int[] national = firstNational(districtMISDataEntryRepository.sumLegacyDigitizationNational());
+        int[] national = firstNational(nationalRows);
         int nationalDolrSanction = dolrLegacySanctionNational();
         reports.forEach(report -> {
             int[] metrics;

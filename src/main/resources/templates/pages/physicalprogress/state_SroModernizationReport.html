@@ -34,7 +34,7 @@
                         </div>
                         <div class="card-body">
                             <a th:href="@{/reports/physical-progress-report}" class="btn btn-primary" style="font-size: 13px;">&larr; Back</a>
-                            <div class="table-responsive text-nowrap mt-3">
+                            <div class="table-responsive text-nowrap mt-3" th:fragment="reportTable">
                                 <table id="example2" class="table table-bordered table-striped-columns table-success table-striped">
                                     <thead class="card-info wrap-text" style="background-color: var(--dilrmp-th-bg); color: var(--dilrmp-th-text)">
                                     <!-- Row 1: main titles -->
@@ -94,9 +94,11 @@
                                     <tr th:each="data, iterator : ${sroModernizationList}">
                                         <td th:text="${iterator.count}">1</td>
                                         <td>
-                                            <a th:href="@{/physicalProgressReports/sro-modernization/district-level/{stateId}(stateId=${data.stateId})}"
+                                            <a th:unless="${hideStateLinks}"
+                                               th:href="@{/physicalProgressReports/sro-modernization/district-level/{stateId}(stateId=${data.stateId})}"
                                                th:text="${data.stateName}"
                                                style="color: #0d6efd; text-decoration: underline;">State</a>
+                                            <span th:if="${hideStateLinks}" th:text="${data.stateName}"></span>
                                         </td>
                                         <td th:text="${data.formattingTotalDistricts}">0</td>
                                         <td th:text="${data.formattingTotalSros}">0</td>

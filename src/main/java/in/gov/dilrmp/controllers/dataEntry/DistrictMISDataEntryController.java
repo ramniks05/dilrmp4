@@ -103,6 +103,7 @@ public class DistrictMISDataEntryController {
         boolean districtSelected = districtId != null && districtId > 0;
         model.addAttribute("showPermissionAllowedAlert",
                 districtSelected && permissionStatus.isAllowDecrease());
+        model.addAttribute("srosDilrmpSanctioned", districtMISDataEntryService.dolrSroSanctioned(districtId));
     }
 
     @PostMapping("/district-mis-data/save")
@@ -118,6 +119,8 @@ public class DistrictMISDataEntryController {
 
             if ("success".equals(message)) {
                 return ResponseEntity.ok("District MIS Data Saved successfully!.");
+            } else if (message != null && !"error-message".equals(message)) {
+                return ResponseEntity.badRequest().body(message);
             } else {
 
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong. Please try again.");

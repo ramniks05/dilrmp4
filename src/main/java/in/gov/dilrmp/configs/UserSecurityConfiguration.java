@@ -92,7 +92,7 @@ public class UserSecurityConfiguration {
 
 
 
-                                                .requestMatchers("/","/favicon.ico","/error","/dashboard-chart","/getDashboardData","/getStateData","/getDocument", "/loginPage","/check-login","/getToken","/static/**", "/user/create-igr-user",
+                                                .requestMatchers("/","/mis","/favicon.ico","/error","/dashboard-chart","/getDashboardData","/getStateData","/getDocument", "/loginPage","/check-login","/getToken","/static/**", "/user/create-igr-user",
                                                                 "/captcha-servlet", "/PhyscialComponent/**","/api/chart/**","/physicalProgressReports/**","/physcial/report/**","/css/**","/js/**","/plugins/**","/naksha-dashboard",
 
                                                                 "/dilrmp/**", "/images/**","/dashboard/**","/master/report/pdf/**","/PhyscialComponent/CLR/**","/topandbottom/report/**")

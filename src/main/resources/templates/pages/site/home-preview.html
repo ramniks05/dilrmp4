@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home (design preview) - DILRMP-MIS 4.0</title>
+    <meta name="description" content="DILRMP-MIS 4.0 - National progress of the Digital India Land Records Modernization Programme, Department of Land Resources, Ministry of Rural Development, Government of India.">
+
+    <link rel="stylesheet" th:href="@{/static/ux4g/3.3.2/ux4g-dilrmp.css}">
+    <link rel="stylesheet" th:href="@{/static/css/gigw.css}">
+    <link rel="stylesheet" href="https://js.arcgis.com/3.25/esri/css/esri.css">
+    <link rel="stylesheet" th:href="@{/static/css/home-preview.css}">
+
+    <script th:src="@{/static/js/jquery.min.js}"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+    <script th:src="@{/static/js/gigw.js}" defer></script>
+</head>
+<body class="hp" th:with="icons=@{/static/images/icons/dilrmp-icons.svg}">
+
+<div class="hp-preview-ribbon" role="note">
+    <strong>Design preview</strong> &middot; live data &middot; the public home page is unchanged.
+    <a th:href="@{/}">Back to current home page</a>
+</div>
+
+<a class="hp-skip" href="#main-content">Skip to main content</a>
+
+<!-- ============================ HEADER ============================ -->
+<header class="hp-header" id="hp-header">
+    <div class="hp-gov-bar">
+        <div class="hp-container hp-gov-bar__inner">
+            <div class="hp-gov-bar__start">
+                <a href="https://www.india.gov.in/" target="_blank" rel="noopener noreferrer" title="Government of India - National Portal (opens in a new window)">
+                    <span class="hp-flag" aria-hidden="true"></span>
+                    <span><span lang="hi">भारत सरकार</span> | Government of India</span>
+                </a>
+                <span class="hp-gov-bar__sep" aria-hidden="true"></span>
+                <a href="https://dilrmp.gov.in/dilrmpold" target="_blank" rel="noopener noreferrer" title="Old MIS 3.0 (opens in a new window)">Old MIS 3.0 (till 14.10.2024)</a>
+            </div>
+            <nav class="hp-gov-bar__tools" aria-label="Accessibility tools">
+                <a href="#main-content">Skip to Main Content</a>
+                <a th:href="@{/site/help#screen-reader-access}">Screen Reader Access</a>
+                <div class="hp-tool-group" role="group" aria-label="Text size">
+                    <button type="button" data-gigw-text="dec" aria-label="Decrease text size" title="Decrease text size">A<sup>-</sup></button>
+                    <button type="button" data-gigw-text="md" aria-label="Normal text size" title="Normal text size">A</button>
+                    <button type="button" data-gigw-text="inc" aria-label="Increase text size" title="Increase text size">A<sup>+</sup></button>
+                </div>
+                <div class="hp-tool-group" role="group" aria-label="Colour contrast">
+                    <button type="button" class="hp-contrast hp-contrast--dark" data-gigw-contrast="high" aria-label="High contrast" title="High contrast">A</button>
+                    <button type="button" class="hp-contrast hp-contrast--light" data-gigw-contrast="normal" aria-label="Normal contrast" title="Normal contrast">A</button>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <div class="hp-brand-bar">
+        <div class="hp-container hp-brand-bar__inner">
+            <a class="hp-brand" th:href="@{/}" title="Home - DILRMP-MIS 4.0">
+                <img class="hp-brand__emblem" th:src="@{/static/images/emblum.png}" alt="National Emblem of India">
+                <span class="hp-brand__divider" aria-hidden="true"></span>
+                <span class="hp-brand__text">
+                    <span class="hp-brand__hi" lang="hi">भूमि संसाधन विभाग</span>
+                    <span class="hp-brand__en">Department of Land Resources</span>
+                    <span class="hp-brand__sub">Ministry of Rural Development, Government of India</span>
+                </span>
+            </a>
+            <div class="hp-brand-bar__end">
+                <span class="hp-product">
+                    <span class="hp-product__name">DILRMP-MIS <b>4.0</b></span>
+                    <span class="hp-product__tag">Digital India Land Records Modernization Programme</span>
+                </span>
+                <img class="hp-brand__di" th:src="@{/static/images/digital-india.png}" alt="Digital India">
+            </div>
+        </div>
+    </div>
+
+    <nav class="hp-nav" aria-label="Main navigation">
+        <div class="hp-container hp-nav__inner">
+            <button type="button" class="hp-nav__toggle" aria-controls="hp-nav-menu" aria-expanded="false" data-hp-nav-toggle>
+                <svg aria-hidden="true"><use th:href="${icons} + '#i-menu'"/></svg><span>Menu</span>
+            </button>
+            <ul class="hp-nav__menu" id="hp-nav-menu">
+                <li><a class="is-active" href="#overview" aria-current="page">Home</a></li>
+                <li><a href="#map">Map</a></li>
+                <li><a href="#components">Components</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#survey">Survey</a></li>
+                <li><a href="#trend">Trends</a></li>
+                <li class="hp-has-sub">
+                    <button type="button" aria-expanded="false" data-hp-sub>Reports</button>
+                    <ul class="hp-sub">
+                        <li><a th:href="@{/reports/physical-progress-report}">Physical Progress Report</a></li>
+                        <li><a th:href="@{/reports/download-progress-report}">Download Reports (PDF / Excel)</a></li>
+                    </ul>
+                </li>
+                <li class="hp-has-sub">
+                    <button type="button" aria-expanded="false" data-hp-sub>Dashboards</button>
+                    <ul class="hp-sub">
+                        <li><a th:href="@{/dashboard-chart}">Chart Dashboard</a></li>
+                        <li><a th:href="@{/naksha-dashboard}">Naksha Dashboard</a></li>
+                        <li><a target="_blank" rel="noopener noreferrer" href="https://wdcpmksymapservice.dolr.gov.in/vias/shared/oxvBnEldKhf26JaTSSy5bMKs4jOoB9bTvTlZV6ul2OhnOgZhzK3YQAUxF9DTaWGrF9fpHc4EtrjEflghciXmPKQWH7">RCCMS Dashboard</a></li>
+                    </ul>
+                </li>
+                <li><a th:href="@{/userProfile/about-us}">About</a></li>
+                <li><a th:href="@{/userProfile/contact-us}">Contact Us</a></li>
+            </ul>
+            <a class="hp-btn hp-btn--saffron hp-nav__cta" th:href="@{/mis}">
+                <svg aria-hidden="true"><use th:href="${icons} + '#i-login'"/></svg>Login to MIS
+            </a>
+        </div>
+        <div class="hp-tricolour" aria-hidden="true"><span></span><span></span><span></span></div>
+    </nav>
+</header>
+
+<main id="main-content" tabindex="-1">
+
+    <!-- ============================ HERO ============================ -->
+    <section class="hp-hero" id="overview" aria-labelledby="hp-hero-title">
+        <div class="hp-container hp-hero__inner">
+            <div class="hp-hero__copy">
+                <span class="hp-eyebrow"><span class="hp-live-dot" aria-hidden="true"></span>National progress &middot; <span id="hp-asOn">live</span></span>
+                <h1 id="hp-hero-title">Modernising India's land records, <span>village by village</span></h1>
+                <p>One view of the Digital India Land Records Modernization Programme across every State and Union Territory: records, maps, registration and courts.</p>
+                <div class="hp-hero__actions">
+                    <a class="hp-btn hp-btn--saffron" href="#map">
+                        Explore progress map<svg aria-hidden="true"><use th:href="${icons} + '#i-arrow'"/></svg>
+                    </a>
+                    <a class="hp-btn hp-btn--ghost" th:href="@{/reports/download-progress-report}">
+                        <svg aria-hidden="true"><use th:href="${icons} + '#i-download'"/></svg>Download reports
+                    </a>
+                </div>
+            </div>
+            <div class="hp-hero__art" aria-hidden="true">
+                <img th:src="@{/static/images/home/hero-land.svg}" alt="">
+            </div>
+        </div>
+
+        <div class="hp-container">
+            <ul class="hp-master" aria-label="Administrative coverage">
+                <li>
+                    <span class="hp-master__icon"><svg aria-hidden="true"><use th:href="${icons} + '#i-state'"/></svg></span>
+                    <span><b class="hp-count" id="hp-totalState" data-skeleton>36</b><small>States / UTs</small></span>
+                </li>
+                <li>
+                    <span class="hp-master__icon"><svg aria-hidden="true"><use th:href="${icons} + '#i-district'"/></svg></span>
+                    <span><b class="hp-count" id="hp-totalDistrict" data-skeleton>&nbsp;</b><small>Districts</small></span>
+                </li>
+                <li>
+                    <span class="hp-master__icon"><svg aria-hidden="true"><use th:href="${icons} + '#i-tehsil'"/></svg></span>
+                    <span><b class="hp-count" id="hp-totalTehsil" data-skeleton>&nbsp;</b><small>Tehsils</small></span>
+                </li>
+                <li>
+                    <span class="hp-master__icon"><svg aria-hidden="true"><use th:href="${icons} + '#i-village'"/></svg></span>
+                    <span><b class="hp-count" id="hp-totalVillage" data-skeleton>&nbsp;</b><small>Villages</small></span>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ============================ MAP + DETAILS ============================ -->
+
+    <section class="hp-mapzone" id="map" aria-labelledby="hp-map-title">
+        <div class="hp-container">
+            <div class="hp-section__head">
+                <div>
+                    <span class="hp-kicker">Geographic view</span>
+                    <h2 id="hp-map-title">State/UT progress map</h2>
+                </div>
+                <p>Select a component, then a State/UT on the map or in the search box.</p>
+            </div>
+        </div>
+        <div class="hp-container hp-mapzone__grid">
+            <div class="hp-panel hp-panel--map">
+                <div class="hp-panel__head hp-panel__head--map">
+                    <div class="hp-chips" role="group" aria-label="Choose component for the map">
+                        <button type="button" class="hp-chip is-active" data-hp-select="clr">CLR</button>
+                        <button type="button" class="hp-chip" data-hp-select="MapDigitization">Map digitization</button>
+                        <button type="button" class="hp-chip" data-hp-select="mrr">MRR</button>
+                        <button type="button" class="hp-chip" data-hp-select="surveyReservey">Survey</button>
+                        <button type="button" class="hp-chip" data-hp-select="rccms">e-RCMS</button>
+                        <button type="button" class="hp-chip" data-hp-select="linkedwithaadhaar">Aadhaar</button>
+                        <button type="button" class="hp-chip" data-hp-select="legacyRegistered">Legacy registered<em class="hp-new">New</em></button>
+                        <button type="button" class="hp-chip" data-hp-select="legacyRevenue">Legacy revenue<em class="hp-new">New</em></button>
+                        <button type="button" class="hp-chip" data-hp-select="sro" title="SRO Computerization (State/UT level)">SRO</button>
+                        <button type="button" class="hp-chip" data-hp-select="sroModernization">SRO modernisation<em class="hp-new">New</em></button>
+                    </div>
+                    <button type="button" class="hp-btn hp-btn--outline hp-btn--sm" onclick="downloadimage()" title="Download map as image">
+                        <svg aria-hidden="true"><use th:href="${icons} + '#i-download'"/></svg>Map
+                    </button>
+                </div>
+                <div id="mapdivparent" class="hp-map-wrap">
+                    <h2 class="hp-map-title" id="maptitle"></h2>
+                    <button type="button" class="hp-btn hp-btn--outline hp-btn--sm hp-map-back" id="hp-map-back" hidden>
+                        <svg aria-hidden="true"><use th:href="${icons} + '#i-back'"/></svg>All India
+                    </button>
+                    <div id="mapDiv"></div>
+                    <ul class="hp-legend" aria-label="Map colour legend. Select a range to list its States/UTs.">
+                        <li><button type="button" data-hp-band="0"><span style="background:#FF0000"></span>0 - 30%</button></li>
+                        <li><button type="button" data-hp-band="1"><span style="background:#FF9A00"></span>30 - 65%</button></li>
+                        <li><button type="button" data-hp-band="2"><span style="background:#FFDB00"></span>65 - 80%</button></li>
+                        <li><button type="button" data-hp-band="3"><span style="background:#059212"></span>80 - 100%</button></li>
+                    </ul>
+                </div>
+            </div>
+
+            <aside class="hp-panel hp-details" id="hp-details" aria-labelledby="hp-details-title">
+                <label class="hp-search">
+                    <svg aria-hidden="true"><use th:href="${icons} + '#i-search'"/></svg>
+                    <span class="sr-only-gigw">Search State/UT</span>
+                    <input type="search" id="hp-state-search" list="hp-state-list" placeholder="Search State/UT" autocomplete="off">
+                </label>
+                <datalist id="hp-state-list"></datalist>
+
+                <div id="hp-details-dynamic" class="hp-details__dynamic" aria-live="polite" hidden></div>
+
+                <div id="hp-details-national" class="hp-details__national">
+                <div class="hp-details__head">
+                    <span class="hp-kicker">State/UT details</span>
+                    <h2 id="hp-details-title">All India</h2>
+                    <p id="hp-details-hint">Select a State/UT on the map to see its details here.</p>
+                </div>
+
+                <div class="hp-details__focus" id="hp-details-focus">
+                    <span class="hp-details__label" id="hp-focus-label">Computerization of Land Records</span>
+                    <b class="hp-details__value" id="hp-focus-value" data-skeleton>&nbsp;</b>
+                    <span class="hp-area__bar"><i id="hp-focus-bar" style="width:0%"></i></span>
+                    <small id="hp-focus-note"></small>
+                </div>
+
+                <div>
+                    <h3 class="hp-mini-title">States/UTs by progress range</h3>
+                    <ul class="hp-bands" id="hp-band-summary"><li data-skeleton>&nbsp;</li></ul>
+                </div>
+
+                <div class="hp-details__actions">
+                    <a class="hp-btn hp-btn--saffron hp-btn--sm" href="#components">All 9 components<svg aria-hidden="true"><use th:href="${icons} + '#i-arrow'"/></svg></a>
+                    <a class="hp-btn hp-btn--outline hp-btn--sm" th:href="@{/reports/download-progress-report}">Download reports</a>
+                </div>
+                </div>
+            </aside>
+
+            <!-- statemap.js still writes the State/UT table into these elements; kept hidden so the map script runs unchanged -->
+            <div hidden>
+                <h3 id="tabletitle"></h3>
+                <div id="user_table"></div>
+                <!-- SRO Computerization has no card; loadMatribhoomiData('sro') still looks this element up by id -->
+                <a id="sro" class="small-box"></a>
+            </div>
+        </div>
+        <div id="gifOverlay" class="hp-overlay"><span class="hp-spinner" role="status" aria-label="Loading map"></span></div>
+    </section>
+
+    <!-- ============================ COMPONENTS ============================ -->
+    <section class="hp-section" id="components" aria-labelledby="hp-components-title">
+        <div class="hp-container">
+            <div class="hp-section__head">
+                <div>
+                    <span class="hp-kicker">9 programme components</span>
+                    <h2 id="hp-components-title">Progress at a glance</h2>
+                </div>
+                <p>Select a component to colour the map. <a th:href="@{/dashboard-chart}">Chart dashboard</a></p>
+            </div>
+
+            <div class="hp-kpis">
+                <article class="hp-kpi small-box" data-tone="navy">
+                    <a href="#map" id="clr" class="hp-kpi__link" data-hp-component title="Show on map">
+                        <span class="hp-kpi__icon"><svg aria-hidden="true"><use th:href="${icons} + '#i-ror'"/></svg></span>
+                        <span class="hp-kpi__body">
+                            <span class="hp-kpi__name"><i>1</i>Computerization of Land Records</span>
+                            <span class="hp-kpi__value" data-key="rorComputerized" data-skeleton>&nbsp;</span>
+                            <span class="hp-kpi__sub">RoR computerized</span>
+                        </span>
+                        <span class="hp-ring" data-ring="rorComputerizedPercent"><svg viewBox="0 0 44 44" aria-hidden="true"><circle class="hp-ring__track" cx="22" cy="22" r="18"/><circle class="hp-ring__bar" cx="22" cy="22" r="18"/></svg><b>0%</b></span>
+                    </a>
+                </article>
+
+                <article class="hp-kpi small-box" data-tone="saffron">
+                    <a href="#map" id="MapDigitization" class="hp-kpi__link" data-hp-component title="Show on map">
+                        <span class="hp-kpi__icon"><svg aria-hidden="true"><use th:href="${icons} + '#i-map'"/></svg></span>
+                        <span class="hp-kpi__body">
+                            <span class="hp-kpi__name"><i>2</i>Map Digitization</span>
+                            <span class="hp-kpi__value" data-key="digitizedCadastralMaps" data-skeleton>&nbsp;</span>
+                            <span class="hp-kpi__sub">Cadastral maps digitized</span>
+                        </span>
+                        <span class="hp-ring" data-ring="digitizedCadastralMapsPercent"><svg viewBox="0 0 44 44" aria-hidden="true"><circle class="hp-ring__track" cx="22" cy="22" r="18"/><circle class="hp-ring__bar" cx="22" cy="22" r="18"/></svg><b>0%</b></span>
+                    </a>
+                </article>
+
+                <article class="hp-kpi small-box" data-tone="green">
+                    <a href="#map" id="mrr" class="hp-kpi__link" data-hp-component title="Show on map">
+                        <span class="hp-kpi__icon"><svg aria-hidden="true"><use th:href="${icons} + '#i-mrr'"/></svg></span>
+                        <span class="hp-kpi__body">
+                            <span class="hp-kpi__name"><i>3</i>Modern Record Room</span>
+                            <span class="hp-kpi__value" data-key="mrrCompleted" data-skeleton>&nbsp;</span>
+                            <span class="hp-kpi__sub">MRR completed of sanctioned</span>
+                        </span>
+                        <span class="hp-ring" data-ring="mrrCompletedOutOfTotalSanctionedPercentforDashboaerd"><svg viewBox="0 0 44 44" aria-hidden="true"><circle class="hp-ring__track" cx="22" cy="22" r="18"/><circle class="hp-ring__bar" cx="22" cy="22" r="18"/></svg><b>0%</b></span>
+                    </a>
+                </article>
+
+                <article class="hp-kpi small-box" data-tone="navy">
+                    <a href="#map" id="surveyReservey" class="hp-kpi__link" data-hp-component title="Show on map">
+                        <span class="hp-kpi__icon"><svg aria-hidden="true"><use th:href="${icons} + '#i-survey'"/></svg></span>
+                        <span class="hp-kpi__body">
+                            <span class="hp-kpi__name"><i>4</i>Survey / Re-survey</span>
+                            <span class="hp-kpi__value" data-key="villagesDroneFlyingCompleted" data-skeleton>&nbsp;</span>
+                            <span class="hp-kpi__sub">Villages completed</span>
+                        </span>
+                        <span class="hp-ring" data-ring="villagesDroneFlyingCompletedPercent"><svg viewBox="0 0 44 44" aria-hidden="true"><circle class="hp-ring__track" cx="22" cy="22" r="18"/><circle class="hp-ring__bar" cx="22" cy="22" r="18"/></svg><b>0%</b></span>
+                    </a>
+                </article>
+
+                <article class="hp-kpi small-box" data-tone="saffron">
+                    <a href="#map" id="rccms" class="hp-kpi__link" data-hp-component title="Show on map">
+                        <span class="hp-kpi__icon"><svg aria-hidden="true"><use th:href="${icons} + '#i-court'"/></svg></span>
+                        <span class="hp-kpi__body">
+                            <span class="hp-kpi__name"><i>5</i>e-RCMS</span>
+                            <span class="hp-kpi__value" data-key="revenueCourtsComputerized" data-skeleton>&nbsp;</span>
+                            <span class="hp-kpi__sub">Revenue courts computerized</span>
+                        </span>
+                        <span class="hp-ring" data-ring="totalRevenueCourtsPercent"><svg viewBox="0 0 44 44" aria-hidden="true"><circle class="hp-ring__track" cx="22" cy="22" r="18"/><circle class="hp-ring__bar" cx="22" cy="22" r="18"/></svg><b>0%</b></span>
+                    </a>
+                </article>
+
+                <article class="hp-kpi small-box" data-tone="teal">
+                    <a href="#map" id="linkedwithaadhaar" class="hp-kpi__link" data-hp-component title="Show on map">
+                        <span class="hp-kpi__icon"><svg aria-hidden="true"><use th:href="${icons} + '#i-aadhaar'"/></svg></span>
+                        <span class="hp-kpi__body">
+                            <span class="hp-kpi__name"><i>6</i>Aadhaar with RoR</span>
+                            <span class="hp-kpi__value" data-key="villagesWith100PercentRorLinkedAadhaar" data-skeleton>&nbsp;</span>
+                            <span class="hp-kpi__sub">Villages 100% linked</span>
+                        </span>
+                        <span class="hp-ring" data-ring="villagesWith100PercentRorLinkedAadhaarPercent"><svg viewBox="0 0 44 44" aria-hidden="true"><circle class="hp-ring__track" cx="22" cy="22" r="18"/><circle class="hp-ring__bar" cx="22" cy="22" r="18"/></svg><b>0%</b></span>
+                    </a>
+                </article>
+
+                <article class="hp-kpi small-box" data-tone="green">
+                    <a href="#map" id="legacyRegistered" class="hp-kpi__link" data-hp-component title="Show on map">
+                        <span class="hp-kpi__icon"><svg aria-hidden="true"><use th:href="${icons} + '#i-legacy-doc'"/></svg></span>
+                        <span class="hp-kpi__body">
+                            <span class="hp-kpi__name"><i>7</i>Legacy Registered Documents<em class="hp-new">New</em></span>
+                            <span class="hp-kpi__value" data-key-x="legacyTotalDigitisedPages" data-skeleton>&nbsp;</span>
+                            <span class="hp-kpi__sub">Pages digitised</span>
+                        </span>
+                        <span class="hp-ring" data-ring-x="legacyTotalDigitisedPercent"><svg viewBox="0 0 44 44" aria-hidden="true"><circle class="hp-ring__track" cx="22" cy="22" r="18"/><circle class="hp-ring__bar" cx="22" cy="22" r="18"/></svg><b>0%</b></span>
+                    </a>
+                </article>
+
+                <article class="hp-kpi small-box" data-tone="navy">
+                    <a href="#map" id="legacyRevenue" class="hp-kpi__link" data-hp-component title="Show on map">
+                        <span class="hp-kpi__icon"><svg aria-hidden="true"><use th:href="${icons} + '#i-legacy-rev'"/></svg></span>
+                        <span class="hp-kpi__body">
+                            <span class="hp-kpi__name"><i>8</i>Legacy Revenue Records<em class="hp-new">New</em></span>
+                            <span class="hp-kpi__value" data-key-x="revenueTotalDigitisedPages" data-skeleton>&nbsp;</span>
+                            <span class="hp-kpi__sub">Pages digitised</span>
+                        </span>
+                        <span class="hp-ring" data-ring-x="revenueTotalDigitisedPercent"><svg viewBox="0 0 44 44" aria-hidden="true"><circle class="hp-ring__track" cx="22" cy="22" r="18"/><circle class="hp-ring__bar" cx="22" cy="22" r="18"/></svg><b>0%</b></span>
+                    </a>
+                </article>
+
+                <article class="hp-kpi small-box" data-tone="teal">
+                    <a href="#map" id="sroModernization" class="hp-kpi__link" data-hp-component title="Show on map">
+                        <span class="hp-kpi__icon"><svg aria-hidden="true"><use th:href="${icons} + '#i-sro'"/></svg></span>
+                        <span class="hp-kpi__body">
+                            <span class="hp-kpi__name"><i>9</i>SRO Modernization<em class="hp-new">New</em></span>
+                            <span class="hp-kpi__value" data-key-x="srosModernisedTotal" data-skeleton>&nbsp;</span>
+                            <span class="hp-kpi__sub">SROs modernised of <b data-key-x="srosUsingOnlineRegistration">0</b> online</span>
+                        </span>
+                        <span class="hp-ring" data-ring-x="srosModernisedTotalPercent"><svg viewBox="0 0 44 44" aria-hidden="true"><circle class="hp-ring__track" cx="22" cy="22" r="18"/><circle class="hp-ring__bar" cx="22" cy="22" r="18"/></svg><b>0%</b></span>
+                    </a>
+                </article>
+            </div>
+
+            <h3 class="hp-subhead">Additional key indicators</h3>
+            <div class="hp-kpis">
+                <article class="hp-kpi" data-tone="navy">
+                    <div class="hp-kpi__link">
+                        <span class="hp-kpi__icon"><svg aria-hidden="true"><use th:href="${icons} + '#i-geo'"/></svg></span>
+                        <span class="hp-kpi__body">
+                            <span class="hp-kpi__name">Geo-referenced</span>
+                            <span class="hp-kpi__value" data-key="villagesGeoreferenced" data-skeleton>&nbsp;</span>
+                            <span class="hp-kpi__sub">Villages geo-referenced</span>
+                        </span>
+                        <span class="hp-ring" data-ring-village="villagesGeoreferenced"><svg viewBox="0 0 44 44" aria-hidden="true"><circle class="hp-ring__track" cx="22" cy="22" r="18"/><circle class="hp-ring__bar" cx="22" cy="22" r="18"/></svg><b>0%</b></span>
+                    </div>
+                </article>
+                <article class="hp-kpi" data-tone="saffron">
+                    <div class="hp-kpi__link">
+                        <span class="hp-kpi__icon"><svg aria-hidden="true"><use th:href="${icons} + '#i-ulpin'"/></svg></span>
+                        <span class="hp-kpi__body">
+                            <span class="hp-kpi__name">ULPIN</span>
+                            <span class="hp-kpi__value" data-key="villagesWithUlipn" data-skeleton>&nbsp;</span>
+                            <span class="hp-kpi__sub">Villages with ULPIN</span>
+                        </span>
+                        <span class="hp-ring" data-ring-village="villagesWithUlipn"><svg viewBox="0 0 44 44" aria-hidden="true"><circle class="hp-ring__track" cx="22" cy="22" r="18"/><circle class="hp-ring__bar" cx="22" cy="22" r="18"/></svg><b>0%</b></span>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================ CONNECTED LAND RECORD ============================ -->
+    <section class="hp-section hp-section--tint" id="chain" aria-labelledby="hp-chain-title">
+        <div class="hp-container">
+            <div class="hp-section__head">
+                <div>
+                    <span class="hp-kicker">Integrated land information</span>
+                    <h2 id="hp-chain-title">From record to parcel: the connected land record</h2>
+                </div>
+                <p>Each step builds on the one before it, towards one record per parcel linked to its owner.</p>
+            </div>
+            <ol class="hp-chain" id="hp-chain" aria-live="polite"><li class="hp-chain__loading" data-skeleton>&nbsp;</li></ol>
+        </div>
+    </section>
+
+    <!-- ============================ CITIZEN SERVICES ============================ -->
+    <section class="hp-section" id="services" aria-labelledby="hp-services-title">
+        <div class="hp-container">
+            <div class="hp-section__head">
+                <div>
+                    <span class="hp-kicker">Citizen services</span>
+                    <h2 id="hp-services-title">What citizens can do online</h2>
+                </div>
+                <p>Number of States/UTs offering each service.</p>
+            </div>
+            <div class="hp-services" id="hp-services" aria-live="polite"><div class="hp-services__loading" data-skeleton>&nbsp;</div></div>
+            <details class="hp-matrix">
+                <summary>View State/UT-wise availability</summary>
+                <div class="hp-matrix__wrap" id="hp-matrix"></div>
+            </details>
+        </div>
+    </section>
+
+    <!-- ============================ SURVEY PIPELINE ============================ -->
+    <section class="hp-section hp-section--tint" id="survey" aria-labelledby="hp-survey-title">
+        <div class="hp-container">
+            <div class="hp-section__head">
+                <div>
+                    <span class="hp-kicker">Survey / Re-survey</span>
+                    <h2 id="hp-survey-title">Survey pipeline: from drone flight to final record</h2>
+                </div>
+                <p>Villages at each stage of the modern survey.</p>
+            </div>
+            <div class="hp-split">
+                <div class="hp-panel hp-panel--pad">
+                    <h3 class="hp-panel__title">Villages by stage</h3>
+                    <div class="hp-funnel" id="hp-funnel"><div data-skeleton>&nbsp;</div></div>
+                    <p class="hp-note" id="hp-funnel-note"></p>
+                </div>
+                <div class="hp-panel hp-panel--pad">
+                    <h3 class="hp-panel__title">Area covered (sq. km)</h3>
+                    <div class="hp-area" id="hp-area"><div data-skeleton>&nbsp;</div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================ WOMEN + MODERNISATION ============================ -->
+    <section class="hp-section" id="people" aria-labelledby="hp-people-title">
+        <div class="hp-container">
+            <div class="hp-section__head">
+                <div>
+                    <span class="hp-kicker">Ownership and records</span>
+                    <h2 id="hp-people-title">Women land owners and records modernisation</h2>
+                </div>
+            </div>
+            <div class="hp-split">
+                <div class="hp-panel hp-panel--pad" id="hp-women">
+                    <h3 class="hp-panel__title">Women land owners</h3>
+                    <div class="hp-women">
+                        <div class="hp-donut" id="hp-women-donut" aria-hidden="true"></div>
+                        <div class="hp-women__text">
+                            <b class="hp-women__share" id="hp-women-share" data-skeleton>&nbsp;</b>
+                            <span>of land owners are women</span>
+                            <small id="hp-women-counts"></small>
+                        </div>
+                    </div>
+                    <h4 class="hp-mini-title">Highest share of women owners</h4>
+                    <ol class="hp-toplist" id="hp-women-top"></ol>
+                    <p class="hp-note" id="hp-women-note"></p>
+                </div>
+                <div class="hp-panel hp-panel--pad">
+                    <h3 class="hp-panel__title">Registration and legacy records</h3>
+                    <div class="hp-modern" id="hp-modern"><div data-skeleton>&nbsp;</div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================ COMPLETION LEADERS ============================ -->
+    <section class="hp-section hp-section--tint" id="leaders" aria-labelledby="hp-leaders-title">
+        <div class="hp-container">
+            <div class="hp-section__head">
+                <div>
+                    <span class="hp-kicker">Milestones</span>
+                    <h2 id="hp-leaders-title">States/UTs that have completed each component</h2>
+                </div>
+                <p>Completed means 99.5% or more.</p>
+            </div>
+            <div class="hp-leaders" id="hp-leaders" aria-live="polite"><div data-skeleton>&nbsp;</div></div>
+        </div>
+    </section>
+
+    <!-- ============================ TREND ============================ -->
+    <section class="hp-section" id="trend" aria-labelledby="hp-trend-title">
+        <div class="hp-container">
+            <div class="hp-section__head">
+                <div>
+                    <span class="hp-kicker">Progress over time</span>
+                    <h2 id="hp-trend-title">National progress since MIS 4.0 launch</h2>
+                </div>
+                <p>Month-end national percentage for each component. Select a name to show or hide it.</p>
+            </div>
+            <div class="hp-panel hp-panel--pad">
+                <div class="hp-trend-legend" id="hp-trend-legend" role="group" aria-label="Show or hide components"></div>
+                <div class="hp-trend" id="hp-trend"><div data-skeleton>&nbsp;</div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================ FRESHNESS + GRADING ============================ -->
+    <section class="hp-section hp-section--tint" id="quality" aria-labelledby="hp-quality-title">
+        <div class="hp-container">
+            <div class="hp-section__head">
+                <div>
+                    <span class="hp-kicker">Trust in records</span>
+                    <h2 id="hp-quality-title">Reporting coverage, linkages and safeguards</h2>
+                </div>
+            </div>
+            <div class="hp-split">
+                <div class="hp-panel hp-panel--pad">
+                    <h3 class="hp-panel__title">District MIS reporting</h3>
+                    <div class="hp-fresh" id="hp-fresh"><div data-skeleton>&nbsp;</div></div>
+                </div>
+                <div class="hp-panel hp-panel--pad">
+                    <h3 class="hp-panel__title">Record linkages and safeguards</h3>
+                    <div class="hp-safe" id="hp-safe"><div data-skeleton>&nbsp;</div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================ NAKSHA + OPEN DATA ============================ -->
+    <section class="hp-section" id="more" aria-labelledby="hp-more-title">
+        <div class="hp-container">
+            <h2 class="sr-only-gigw" id="hp-more-title">More from DILRMP</h2>
+            <div class="hp-split">
+                <a class="hp-cta" data-tone="teal" th:href="@{/naksha-dashboard}">
+                    <span class="hp-cta__icon"><svg aria-hidden="true"><use th:href="${icons} + '#i-ulpin'"/></svg></span>
+                    <span class="hp-cta__body">
+                        <b>NAKSHA: urban land survey</b>
+                        <span>National geospatial knowledge-based land survey of urban habitations. See progress of urban local bodies.</span>
+                    </span>
+                    <span class="hp-cta__go">Open Naksha dashboard<svg aria-hidden="true"><use th:href="${icons} + '#i-arrow'"/></svg></span>
+                </a>
+                <div class="hp-cta" data-tone="navy">
+                    <span class="hp-cta__icon"><svg aria-hidden="true"><use th:href="${icons} + '#i-download'"/></svg></span>
+                    <span class="hp-cta__body">
+                        <b>Open data</b>
+                        <span>Download State/UT-wise progress of every component, or the detailed physical progress reports.</span>
+                    </span>
+                    <span class="hp-cta__actions">
+                        <a class="hp-btn hp-btn--saffron hp-btn--sm" th:href="@{/site/home-preview/state-progress.csv}">State/UT progress (CSV)</a>
+                        <a class="hp-btn hp-btn--outline hp-btn--sm" th:href="@{/reports/download-progress-report}">All reports (PDF / Excel)</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<!-- ============================ FOOTER ============================ -->
+<footer class="hp-footer" role="contentinfo">
+    <div class="hp-marks">
+        <div class="hp-container hp-marks__inner">
+            <a href="https://www.digitalindia.gov.in/" target="_blank" rel="noopener noreferrer"><img th:src="@{/static/images/digital-india.png}" alt="Digital India"></a>
+            <a href="https://www.makeinindia.com/home" target="_blank" rel="noopener noreferrer"><img th:src="@{/static/images/makeinindia.png}" alt="Make in India"></a>
+            <a href="https://www.india.gov.in/" target="_blank" rel="noopener noreferrer"><img th:src="@{/static/images/india-gov.png}" alt="National Portal of India"></a>
+            <a href="https://igod.gov.in/" target="_blank" rel="noopener noreferrer"><img th:src="@{/static/images/goidirectory.png}" alt="Integrated Government Online Directory"></a>
+            <a href="https://data.gov.in/" target="_blank" rel="noopener noreferrer"><img th:src="@{/static/images/data-gov.png}" alt="Open Government Data Platform India"></a>
+            <a href="https://www.mygov.in/" target="_blank" rel="noopener noreferrer"><img th:src="@{/static/images/mygov.png}" alt="MyGov"></a>
+        </div>
+    </div>
+
+    <div class="hp-footer__main">
+        <div class="hp-container hp-footer__grid">
+            <div class="hp-footer__brand">
+                <div class="hp-footer__logo">
+                    <img th:src="@{/static/images/emblum.png}" alt="">
+                    <span><b>DILRMP-MIS 4.0</b><small>Department of Land Resources</small></span>
+                </div>
+                <p>Management Information System of the Digital India Land Records Modernization Programme, Ministry of Rural Development, Government of India.</p>
+                <a class="hp-btn hp-btn--saffron hp-btn--sm" th:href="@{/userProfile/contact-us}">Get support<svg aria-hidden="true"><use th:href="${icons} + '#i-arrow'"/></svg></a>
+            </div>
+            <div>
+                <h2>Quick links</h2>
+                <ul>
+                    <li><a th:href="@{/}">Home</a></li>
+                    <li><a th:href="@{/mis}">Login to MIS</a></li>
+                    <li><a th:href="@{/userProfile/about-us}">About Us</a></li>
+                    <li><a th:href="@{/site/sitemap}">Sitemap</a></li>
+                    <li><a th:href="@{/site/feedback}">Feedback</a></li>
+                    <li><a th:href="@{/site/help}">Help</a></li>
+                </ul>
+            </div>
+            <div>
+                <h2>Related portals</h2>
+                <ul>
+                    <li><a href="https://dolr.gov.in/" target="_blank" rel="noopener noreferrer">Department of Land Resources</a></li>
+                    <li><a href="https://ngdrs.gov.in/" target="_blank" rel="noopener noreferrer">NGDRS</a></li>
+                    <li><a href="https://larr.dolr.gov.in/" target="_blank" rel="noopener noreferrer">LACRRIS</a></li>
+                    <li><a href="https://dilrmp.gov.in/grading/" target="_blank" rel="noopener noreferrer">Grading Dashboard</a></li>
+                </ul>
+            </div>
+            <div>
+                <h2>Contact</h2>
+                <address>
+                    <p><svg aria-hidden="true"><use th:href="${icons} + '#i-pin'"/></svg><span>Department of Land Resources, Kartavya Bhavan-3, Dr. Rajendra Prasad Road, New Delhi-110001</span></p>
+                    <p><svg aria-hidden="true"><use th:href="${icons} + '#i-phone'"/></svg><span>011-23063224</span></p>
+                    <p><svg aria-hidden="true"><use th:href="${icons} + '#i-mail'"/></svg><span>support-dilrmp[at]gov[dot]in</span></p>
+                </address>
+            </div>
+        </div>
+    </div>
+
+    <div class="hp-footer__bottom">
+        <div class="hp-container hp-footer__bottom-inner">
+            <nav aria-label="Website policies">
+                <a th:href="@{/site/website-policies}">Website Policies</a>
+                <a th:href="@{/site/website-policies#copyright-policy}">Copyright</a>
+                <a th:href="@{/site/website-policies#hyperlinking-policy}">Hyperlinking</a>
+                <a th:href="@{/site/website-policies#privacy-policy}">Privacy</a>
+                <a th:href="@{/site/website-policies#terms-and-conditions}">Terms &amp; Conditions</a>
+                <a th:href="@{/site/website-policies#disclaimer}">Disclaimer</a>
+                <a th:href="@{/site/help#screen-reader-access}">Screen Reader Access</a>
+            </nav>
+            <p>
+                Content owned by Department of Land Resources, MoRD. Designed, developed and hosted by National Informatics Centre.
+                Last updated: <strong th:text="${@environment.getProperty('dilrmp.site.last-updated', '07 Oct 2026')}">07 Oct 2026</strong>
+                &middot; &copy; <span th:text="${#dates.year(#dates.createNow())}">2026</span>
+            </p>
+        </div>
+    </div>
+</footer>
+
+<script src="https://js.arcgis.com/3.25/"></script>
+<script th:src="@{/static/nlrmpmap/statemap.js}"></script>
+<script th:src="@{/static/js/home-preview.js}"></script>
+<script th:src="@{/static/js/home-insights.js}"></script>
+<script th:src="@{/static/js/home-map-panel.js}"></script>
+</body>
+</html>

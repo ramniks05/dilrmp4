@@ -89,31 +89,7 @@ public class HomePageController {
 
     @GetMapping("/")
     public String homePage(Model model, @RequestParam(name = "error", required = false) String error,HttpServletRequest request, HttpServletResponse response,HttpSession session) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         token = SecurityUtils.generateOneTimeToken();
-        String userName = auth.getName();
-        // Redirect authenticated users to their role home instead of showing public index (avoids extra redirects)
-        if (!userName.equals("anonymousUser")) {
-            try {
-                UserService userService = loogedInUserUtility.getLoggedinUser();
-                String roleName = userService.getRole();
-                if (roleName != null) {
-                    String roleHome = null;
-                    if (Role.USER_ROLE_STATE.equals(roleName)) roleHome = "state";
-                    else if (Role.USER_ROLE_ULB.equals(roleName)) roleHome = "ulb";
-                    else if (Role.USER_ROLE_STATEULB.equals(roleName)) roleHome = "ulb/naksha-home";
-                    else if (Role.USER_ROLE_GD.equals(roleName)) roleHome = "ulb/naksha-mis-venderdata/form";
-                    else if (Role.USER_ROLE_DISTRICT.equals(roleName)) roleHome = "district";
-                    else if (Role.USER_ROLE_ADC.equals(roleName)) roleHome = "adc";
-                    else if (Role.USER_ROLE_DOLR.equals(roleName) || Role.USER_ROLE_ADMIN.equals(roleName)) roleHome = "dolr";
-                    else if (Role.USER_ROLE_IGR.equals(roleName)) roleHome = "igr";
-                    else if (Role.USER_ROLE_SGO.equals(roleName)) roleHome = "sgo/monitor";
-                    if (roleHome != null) {
-                        return "redirect:/" + roleHome;
-                    }
-                }
-            } catch (Exception ignored) { }
-        }
 /*
         DashBordDTO nationalDashBordDTOList = dashBoardService.getNationalDashBoardData();
         model.addAttribute("nationalDashBordDTOList",nationalDashBordDTOList);
@@ -136,6 +112,55 @@ public class HomePageController {
 
 
         return "index";
+    }
+
+    @GetMapping("/mis")
+    public String misHome() {
+        String roleHome = roleHomePath();
+        if (roleHome != null) {
+            return "redirect:/" + roleHome;
+        }
+        return "redirect:/loginPage";
+    }
+
+    private String roleHomePath() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || "anonymousUser".equals(auth.getName())) {
+            return null;
+        }
+        try {
+            UserService userService = loogedInUserUtility.getLoggedinUser();
+            String roleName = userService.getRole();
+            if (Role.USER_ROLE_STATE.equals(roleName)) {
+                return "state";
+            }
+            if (Role.USER_ROLE_ULB.equals(roleName)) {
+                return "ulb";
+            }
+            if (Role.USER_ROLE_STATEULB.equals(roleName)) {
+                return "ulb/naksha-home";
+            }
+            if (Role.USER_ROLE_GD.equals(roleName)) {
+                return "ulb/naksha-mis-venderdata/form";
+            }
+            if (Role.USER_ROLE_DISTRICT.equals(roleName)) {
+                return "district";
+            }
+            if (Role.USER_ROLE_ADC.equals(roleName)) {
+                return "adc";
+            }
+            if (Role.USER_ROLE_DOLR.equals(roleName) || Role.USER_ROLE_ADMIN.equals(roleName)) {
+                return "dolr";
+            }
+            if (Role.USER_ROLE_IGR.equals(roleName)) {
+                return "igr";
+            }
+            if (Role.USER_ROLE_SGO.equals(roleName)) {
+                return "sgo/monitor";
+            }
+        } catch (Exception ignored) {
+        }
+        return null;
     }
 
 

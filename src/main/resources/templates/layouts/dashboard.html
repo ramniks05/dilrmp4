@@ -41,13 +41,9 @@
         integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <script type="text/javascript" th:src="@{/static/dilrmp/physical-monitoring/cryptoJs.min.js}"></script>
 <script th:src="@{/static/js/bootstrap.min.js}"></script>
-<!-- bs-custom-file-input -->
-<script th:src="@{/static/js/bs-custom-file-input.min.js}"></script>
 <script type="text/javascript" th:src="@{/dilrmp/physical_progress/staticJs/jquery.min.js}"></script>
 <script type="text/javascript" th:src="@{/dilrmp/physical_progress/staticJs/jquery-ui.js}"></script>
 
-<!-- AdminLTE App -->
-<!--<script th:src="@{/static/js/adminlteMin.js}"></script>-->
 <!-- DataTables  & Plugins -->
 <script th:src="@{/static/js/jquery.dataTables.min.js}"></script>
 <script th:src="@{/static/js/dataTables.bootstrap4.min.js}"></script>
@@ -64,45 +60,9 @@
 
 <script th:src="@{/static/plugins/chart.js/Chart.min.js}"></script>
 <script th:src="@{/static/js/adminlte.min.js}"></script>
-<script th:src="@{/static/plugins/jquery-mousewheel/jquery.mousewheel.js}"></script>
-<script th:src="@{/static/plugins/raphael/raphael.min.js}"></script>
-<script th:src="@{/static/plugins/jquery-mapael/jquery.mapael.min.js}"></script>
-<script th:src="@{/static/plugins/jquery-mapael/maps/usa_states.min.js}"></script>
-
-<script src="plugins/jquery-mapael/maps/usa_states.min.js"></script>
-<!-- Page specific script select option -->
-
-<script type="text/javascript" th:src="@{/static/js/choices.min.js}"></script>
-<!-- <script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script> -->
-<!-- <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script> -->
-<script type="text/javascript" th:src="@{/static/js/swiper-bundle.min.js}"></script>
-<script type="text/javascript" th:src="@{/dilrmp/district.js}"></script>
-<!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
 <script type="text/javascript" th:src="@{/static/js/chart.js}"></script>
-<script type="text/javascript" th:src="@{/static/js/chartumd.js}"></script>
 <script src='https://js.arcgis.com/3.25/'></script>
 <script type="text/javascript" th:src="@{/static/nlrmpmap/statemap.js}"></script>
-
-<script>
-        $(document).ready(function () {
-            if (!sessionStorage.getItem("SelectedItem")) {
-                sessionStorage.setItem('SelectedItem', "En");
-            }
-            if (sessionStorage.getItem("SelectedItem") == "Hi") {
-                $("#locale option[value='Hi']").attr('selected', true);
-            }
-            //window.location = $(':selected', this).attr('href');
-        })
-        $('#locale').change(function () {
-            sessionStorage.setItem('SelectedItem', $(':selected', this).attr('value'));
-            if (sessionStorage.getItem("SelectedItem") == "En") {
-                $("#locale option[value='En']").attr('selected', true);
-            } else {
-                $("#locale option[value='Hi']").attr('selected', true);
-            }
-            window.location = $(':selected', this).attr('href');
-        });
-</script>
 </body>
 
 </html>

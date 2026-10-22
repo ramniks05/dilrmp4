@@ -109,31 +109,31 @@
         #gifOverlay img {
             width: 150px;
             height: auto;
-        }
+ }
 
-        .display {
-            width: 100%;
-        }
+    .display {
+    width: 100%;
+    }
 
-        #wait {
-            width: 100px;
-            height: 130px;
-            text-align: center;
-            position: fixed;
-            left: 280px;
-            right: 0;
-            top: 40%;
-            z-index: 99;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.85);
-            border-radius: 20px;
+ #wait {
+    width: 100px;
+    height: 130px;
+    text-align: center;
+    position: fixed;
+    left: 280px;
+    right: 0;
+    top: 40%;
+    z-index: 99;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 20px;
             box-shadow: var(--ux4g-shadow-l1);
-            display: none;
-        }
+    display: none;
+    }
 
-        #wait img {
-            width: 100%;
-        }
+    #wait img {
+    width: 100%;
+    }
 
         /* ---------- Home page palette: navy + saffron ---------- */
         .home-v2 {
@@ -166,50 +166,14 @@
             padding-left: 1.5rem !important;
         }
 
-        /* ---------- Announcement ticker ---------- */
-        .home-v2 .hv-announcement {
-            padding: 1rem 1.5rem 0;
-        }
-
-        .home-v2 .hv-announcement-box {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            background: var(--ux4g-color-neutral-0);
-            border: 1px solid var(--hv-border);
-            border-left: 4px solid var(--hv-saffron);
-            border-radius: 10px;
-            padding: .5rem 1rem;
-            box-shadow: var(--ux4g-shadow-l1);
-        }
-
-        .home-v2 .hv-announcement-label {
-            flex: 0 0 auto;
-            background: var(--hv-navy);
-            color: var(--ux4g-color-neutral-0);
-            font-size: .75rem;
-            font-weight: 600;
-            letter-spacing: .02em;
-            text-transform: uppercase;
-            padding: .25rem .625rem;
-            border-radius: 999px;
-        }
-
-        .home-v2 .hv-announcement .gigw-ticker {
-            flex: 1 1 auto;
-            min-width: 0;
-        }
-
-        .home-v2 .hv-announcement .gigw-ticker-text {
-            margin: 0;
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--ux4g-color-red-700);
-        }
-
         /* ---------- KPI tiles ---------- */
         .home-v2 .top-boxes {
-            margin-top: 1.25rem;
+            margin-top: 1rem;
+        }
+
+        .home-v2 .top-boxes > [class*="col-"],
+        .home-v2 .card-body > .row > [class*="col-"] {
+            margin-bottom: .75rem !important;
         }
 
         .home-v2 .hv-tile {
@@ -219,20 +183,19 @@
             --tone-text: var(--hv-navy-600);
             position: relative;
             height: 100%;
-            padding: 1.25rem;
+            padding: .75rem .875rem;
             background: var(--ux4g-color-neutral-0);
             border: 1px solid var(--hv-border);
-            border-top: 4px solid var(--tone-bar);
-            border-radius: 12px;
+            border-left: 4px solid var(--tone-bar);
+            border-radius: 8px;
             box-shadow: var(--ux4g-shadow-l1);
             transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
         }
 
         .home-v2 .hv-tile:hover,
         .home-v2 .hv-tile:focus-within {
-            transform: translateY(-3px);
+            transform: translateY(-2px);
             box-shadow: var(--ux4g-shadow-l2);
-            border-color: var(--tone-bar);
         }
 
         .home-v2 .hv-tone-navy    { --tone: var(--ux4g-color-blue-800);   --tone-bar: var(--ux4g-color-blue-700);   --tone-soft: var(--ux4g-color-blue-100);   --tone-text: var(--ux4g-color-blue-800); }
@@ -249,27 +212,30 @@
 
         .home-v2 .hv-tile > a > .d-flex,
         .home-v2 .hv-tile > .d-flex {
-            flex-direction: column;
-            align-items: flex-start !important;
+            flex-direction: row;
+            align-items: center !important;
             gap: .75rem;
         }
 
         .home-v2 .hv-tile .ps-4 {
+            flex: 1 1 auto;
+            min-width: 0;
             padding-left: 0 !important;
         }
 
         .home-v2 .hv-tile .icon {
-            width: 48px;
-            height: 48px;
+            flex: 0 0 auto;
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 12px;
+            border-radius: 8px;
             background: var(--tone-soft);
         }
 
         .home-v2 .hv-tile .icon i {
-            font-size: 1.375rem;
+            font-size: 1.125rem;
             color: var(--tone);
         }
 
@@ -278,12 +244,12 @@
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            gap: .25rem .5rem;
+            gap: .125rem .5rem;
         }
 
         .home-v2 .hv-tile h4 {
             margin: 0;
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             font-weight: 700;
             line-height: 1.2;
             color: var(--hv-navy);
@@ -291,20 +257,20 @@
 
         .home-v2 .hv-tile [id$="Percent"] {
             display: inline-block;
-            padding: .125rem .5rem;
+            padding: 0 .4rem;
             border-radius: 999px;
             background: var(--tone-soft);
             color: var(--tone-text);
-            font-size: .8125rem;
+            font-size: .75rem;
             font-weight: 700;
-            line-height: 1.4;
+            line-height: 1.5;
         }
 
         .home-v2 .hv-tile p {
-            margin: .5rem 0 0;
-            font-size: .9375rem;
+            margin: .125rem 0 0 !important;
+            font-size: .875rem;
             font-weight: 600;
-            line-height: 1.35;
+            line-height: 1.3;
             color: var(--ux4g-color-neutral-800);
         }
 
@@ -316,9 +282,9 @@
 
         .home-v2 .hv-tile .line-height-lg {
             display: inline-block;
-            margin-top: .75rem;
-            line-height: 1.4;
-            font-size: .875rem;
+            margin-top: .25rem;
+            line-height: 1.3;
+            font-size: .8125rem;
             color: var(--tone-text) !important;
         }
 
@@ -332,15 +298,13 @@
             transform: translateX(3px);
         }
 
-        .home-v2 .hv-tile-chart > .d-flex {
-            align-items: center !important;
-            text-align: center;
+        .home-v2 .hv-tile-chart .ps-4 {
+            flex: 0 0 auto;
         }
 
         .home-v2 .hv-tile-chart img.resp-chart {
-            width: 100%;
-            max-width: 160px;
-            height: 90px;
+            width: 72px;
+            height: 48px;
             object-fit: contain;
         }
 
@@ -355,24 +319,24 @@
 
         /* ---------- Cards ---------- */
         .home-v2 .hv-panels {
-            margin-top: .5rem;
+            margin-top: .25rem;
         }
 
         .home-v2 .card {
             background: var(--ux4g-color-neutral-0);
             border: 1px solid var(--hv-border);
             border-top: 3px solid var(--hv-navy);
-            border-radius: 12px;
+            border-radius: 10px;
             box-shadow: var(--ux4g-shadow-l1);
-            margin-bottom: 1.25rem;
+            margin-bottom: 1rem;
         }
 
         .home-v2 .card > .card-header {
             display: flex;
             align-items: center;
             gap: .75rem;
-            min-height: 56px;
-            padding: .625rem 1rem;
+            min-height: 44px;
+            padding: .5rem .875rem;
             background: var(--ux4g-color-neutral-0);
             border-bottom: 1px solid var(--hv-border);
             border-top: 0;
@@ -428,7 +392,7 @@
 
         .home-v2 .card > .card-body {
             background: var(--ux4g-color-neutral-0);
-            padding: 1rem;
+            padding: .75rem;
             border-radius: 0 0 12px 12px;
         }
 
@@ -458,8 +422,8 @@
             align-items: center;
             justify-content: center;
             margin: 0;
-            cursor: pointer;
-        }
+  cursor: pointer;
+}
 
         .home-v2 .hv-file-icon {
             width: 32px;
@@ -472,16 +436,16 @@
             transform: translateY(-2px);
         }
 
-        .circle-img {
+.circle-img {
             width: 32px;
             height: 32px;
-            border-radius: 50%;
-            object-fit: cover;
+    border-radius: 50%;
+    object-fit: cover;
             border: 1px solid var(--ux4g-color-neutral-200);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-        .circle-img:hover {
+.circle-img:hover {
             transform: scale(1.15);
             box-shadow: var(--ux4g-shadow-l2);
         }
@@ -631,31 +595,13 @@
         }
 
         @media (max-width: 576px) {
-            .home-v2 .hv-tile { padding: 1rem; }
-            .home-v2 .hv-tile h4 { font-size: 1.25rem; }
-            .home-v2 .hv-announcement { padding: .75rem .75rem 0; }
+            .home-v2 .hv-tile h4 { font-size: 1.125rem; }
         }
     </style>
 </head>
 
 <body>
-<div id="dashboard-content" style="display: none;">
-    <div class="home-v2 announcement-header" layout:fragment="content">
-        <div class="hv-announcement px-lg-5">
-            <div class="hv-announcement-box">
-                <span class="hv-announcement-label">Announcement</span>
-                <div class="gigw-ticker" role="region" aria-label="Announcement">
-                    <div class="gigw-ticker-viewport" tabindex="0">
-                        <p class="gigw-ticker-text">The new MIS 4.0 was launched on October 15, 2024. All States/UTs are required to complete data entry by the end of this week.</p>
-                    </div>
-                    <button type="button" class="gigw-ticker-toggle" data-gigw-ticker-toggle aria-pressed="false" aria-label="Pause scrolling announcement">Pause</button>
-                </div>
-            </div>
-        </div>
-
-
-
-
+<div class="home-v2" layout:fragment="content">
         <section class="content">
             <div class="container-fluid">
 
@@ -941,12 +887,12 @@
                         <div class="card">
                             <div class="card-header">
                                 <h3 class="card-title" id="tabletitle"></h3>
-                                <div class="card-tools">
+                                    <div class="card-tools">
                                     <button type="button" class="btn btn-tool" data-card-widget="collapse" aria-label="Collapse">
-                                        <i class="fas fa-minus"></i>
-                                    </button>
-                                </div>
-                            </div>
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                    </div>
+                                        </div>
                             <div class="card-body hv-scroll">
                                 <div id="user_table"></div>
                             </div>
@@ -1117,7 +1063,7 @@
                                             <i class="fas fa-minus"></i>
                                         </button>
                                     </div>
-                                </div>
+                                        </div>
                                 <div class="card-body table-responsive">
                                     <table id="example5" class="table hv-table">
                                         <thead>
@@ -1157,7 +1103,7 @@
                                             <i class="fas fa-minus"></i>
                                         </button>
                                     </div>
-                                </div>
+                                        </div>
                                 <div class="card-body table-responsive">
                                     <table id="example6" class="table hv-table">
                                         <thead>
@@ -1295,7 +1241,6 @@
 
                                 </div>
         </section>
-    </div>
 </div>
 </body>
 

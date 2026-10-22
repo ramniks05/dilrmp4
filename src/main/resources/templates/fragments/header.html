@@ -16,6 +16,7 @@
                 <div class="ux4g-navbar-desktop">
                     <ul class="ux4g-navbar-links">
                         <li><a class="ux4g-text-link-s" th:href="@{/}">Home</a></li>
+                        <li><a class="ux4g-text-link-s" th:href="@{/mis}">MIS</a></li>
                         <li sec:authorize="!isAuthenticated()"><a class="ux4g-text-link-s" th:href="@{/dashboard-chart}">Chart</a></li>
                         <li sec:authorize="!isAuthenticated()"><a class="ux4g-text-link-s" th:href="@{/naksha-dashboard}">Naksha</a></li>
                         <li sec:authorize="!isAuthenticated()">
@@ -52,6 +53,11 @@
                     <li class="ux4g-list-item">
                         <a class="ux4g-list-item-row" th:href="@{/}">
                             <span class="ux4g-list-item-start"><span class="ux4g-icon-outlined" aria-hidden="true">home</span><span>Home</span></span>
+                        </a>
+                    </li>
+                    <li class="ux4g-list-item">
+                        <a class="ux4g-list-item-row" th:href="@{/mis}">
+                            <span class="ux4g-list-item-start"><span class="ux4g-icon-outlined" aria-hidden="true">login</span><span>MIS</span></span>
                         </a>
                     </li>
                     <li class="ux4g-list-item" sec:authorize="!isAuthenticated()">

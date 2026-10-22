@@ -30,16 +30,18 @@ public class SecurityHeadersConfiguration implements WebMvcConfigurer {
             "https://cdnjs.cloudflare.com " +
             "https://code.jquery.com " +
             "https://stackpath.bootstrapcdn.com " +
-            "https://cdn.jsdelivr.net; " +
+            "https://cdn.jsdelivr.net " +
+            "https://translation-plugin.bhashini.co.in; " +
         "style-src 'self' 'unsafe-inline' " +
             "https://fonts.googleapis.com " +
             "https://cdnjs.cloudflare.com " +
-            "https://stackpath.bootstrapcdn.com; " +
+            "https://stackpath.bootstrapcdn.com " +
+            "https://translation-plugin.bhashini.co.in; " +
         "font-src 'self' " +
             "https://fonts.gstatic.com " +
             "https://cdnjs.cloudflare.com; " +
         "img-src 'self' data: https:; " +
-        "connect-src 'self'; " +
+        "connect-src 'self' https://translation-plugin.bhashini.co.in; " +
         "frame-ancestors 'none'; " +
         "base-uri 'self'; " +
         "form-action 'self'";

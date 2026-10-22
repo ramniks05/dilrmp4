@@ -7,6 +7,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DILRMP MIS</title>
+    <th:block th:replace="~{fragments/favicon :: links}"></th:block>
     <meta name="description" content="DILRMP-MIS 4.0 - Management Information System of the Digital India Land Records Modernization Programme, Department of Land Resources, Ministry of Rural Development, Government of India.">
     <meta name="keywords" content="DILRMP, DILRMP MIS, Digital India Land Records Modernization Programme, Department of Land Resources, DoLR, Ministry of Rural Development, Land Records, Computerization of Land Records, Survey Resurvey, SRO, Modern Record Room">
     <meta name="author" content="Department of Land Resources, Ministry of Rural Development, Government of India">
@@ -28,21 +29,23 @@
     <link rel="stylesheet" th:href="@{/static/css/gigw.css}">
     <script th:src="@{/static/ux4g/3.3.2/ux4g.js}" defer></script>
     <script th:src="@{/static/js/gigw.js}" defer></script>
+    <link rel="stylesheet" th:href="@{/static/css/site-chrome.css}">
+    <link rel="stylesheet" th:href="@{/static/css/mis-theme.css}">
+    <script th:src="@{/static/js/site.js}" defer></script>
 
 </head>
 
 <body class="hold-transition sidebar-mini">
 
-<span th:replace="~{fragments/top-header :: top-header}"></span>
+<header th:replace="~{fragments/site-header :: site-header}"></header>
 <div class="wrapper">
-    <span sec:authorize="!isAuthenticated()" th:replace="~{fragments/header :: header}"></span>
     <div id="main-content" class="gigw-skip-target" tabindex="-1"></div>
 
     <section layout:fragment="content" id="content"><!--dynamic content-->
         <!--you can replace this using page-->
     </section>
 </div>
-<span th:replace="~{fragments/footer :: footer}"></span>
+<footer th:replace="~{fragments/site-footer :: site-footer}"></footer>
 <!-- Bootstrap 4 -->
 <script th:src="@{/static/js/bootstrap.min.js}"></script>
 <script th:src="@{/static/js/jquery.dataTables.min.js}"></script>

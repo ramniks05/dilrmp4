@@ -1,0 +1,56 @@
+<!--/* Physical progress drill-down: landing page > component (State/UT-wise) > State/UT (district-wise).
+     key is the component's URL segment under /physicalProgressReports; level is 'state' or 'district'. */-->
+<nav th:fragment="report-nav(key, level, stateName)" class="mis-report-nav" aria-label="Report navigation"
+     th:with="stateUrl=${'/physicalProgressReports/' + key + '/state-level'}">
+    <div class="mis-report-nav__bar">
+        <ol class="mis-crumbs">
+            <li><a th:href="@{/reports/physical-progress-report}">Physical Progress Report</a></li>
+            <li th:if="${level == 'district'}">
+                <a th:href="@{${stateUrl}}"><th:block th:replace="~{fragments/report-nav :: report-label(${key})}"></th:block></a>
+            </li>
+            <li th:if="${level == 'state'}" aria-current="page">
+                <th:block th:replace="~{fragments/report-nav :: report-label(${key})}"></th:block> <span class="mis-crumbs__level">State/UT-wise</span>
+            </li>
+            <li th:if="${level == 'district'}" aria-current="page">
+                <span th:text="${stateName != null and stateName != '' ? stateName : 'State/UT'}">State/UT</span> <span class="mis-crumbs__level">District-wise</span>
+            </li>
+        </ol>
+        <a class="mis-report-nav__back" th:if="${level == 'district'}" th:href="@{${stateUrl}}">
+            <i class="fas fa-arrow-left" aria-hidden="true"></i>All States/UTs
+        </a>
+        <a class="mis-report-nav__back" th:if="${level == 'state'}" th:href="@{/reports/physical-progress-report}">
+            <i class="fas fa-arrow-left" aria-hidden="true"></i>All reports
+        </a>
+    </div>
+
+    <p class="mis-report-nav__hint" th:if="${level == 'state' and key != 'sro'}">
+        <i class="fas fa-hand-pointer" aria-hidden="true"></i>Select a State/UT name in the table to see its district-wise report.
+    </p>
+
+    <ul class="mis-report-switch" th:if="${level == 'state'}" aria-label="Other physical progress reports">
+        <li><a th:href="@{/physicalProgressReports/clr/state-level}" th:attr="aria-current=${key == 'clr' ? 'page' : null}">CLR</a></li>
+        <li><a th:href="@{/physicalProgressReports/map/state-level}" th:attr="aria-current=${key == 'map' ? 'page' : null}">Map digitization</a></li>
+        <li><a th:href="@{/physicalProgressReports/mrr/state-level}" th:attr="aria-current=${key == 'mrr' ? 'page' : null}">MRR</a></li>
+        <li><a th:href="@{/physicalProgressReports/survey/state-level}" th:attr="aria-current=${key == 'survey' ? 'page' : null}">Survey/Re-survey</a></li>
+        <li><a th:href="@{/physicalProgressReports/rcms/state-level}" th:attr="aria-current=${key == 'rcms' ? 'page' : null}">e-RCMS</a></li>
+        <li><a th:href="@{/physicalProgressReports/aadhar-link/state-level}" th:attr="aria-current=${key == 'aadhar-link' ? 'page' : null}">Aadhaar linkage</a></li>
+        <li><a th:href="@{/physicalProgressReports/sro/state-level}" th:attr="aria-current=${key == 'sro' ? 'page' : null}">SRO computerization</a></li>
+        <li><a th:href="@{/physicalProgressReports/legacy-digitization/state-level}" th:attr="aria-current=${key == 'legacy-digitization' ? 'page' : null}">Legacy registered documents</a></li>
+        <li><a th:href="@{/physicalProgressReports/legacy-revenue/state-level}" th:attr="aria-current=${key == 'legacy-revenue' ? 'page' : null}">Legacy revenue records</a></li>
+        <li><a th:href="@{/physicalProgressReports/sro-modernization/state-level}" th:attr="aria-current=${key == 'sro-modernization' ? 'page' : null}">SRO modernization</a></li>
+    </ul>
+</nav>
+
+<th:block th:fragment="report-label(key)" th:switch="${key}">
+    <th:block th:case="'clr'">Computerization of Land Records (CLR)</th:block>
+    <th:block th:case="'map'">Map Digitization</th:block>
+    <th:block th:case="'mrr'">Modern Record Room (MRR)</th:block>
+    <th:block th:case="'survey'">Survey/Re-survey</th:block>
+    <th:block th:case="'rcms'">Revenue Court Management (e-RCMS)</th:block>
+    <th:block th:case="'aadhar-link'">Aadhaar linkage with RoR</th:block>
+    <th:block th:case="'sro'">Computerization of Registration (SRO)</th:block>
+    <th:block th:case="'legacy-digitization'">Legacy Registered Documents Digitization</th:block>
+    <th:block th:case="'legacy-revenue'">Legacy Revenue Records Digitization</th:block>
+    <th:block th:case="'sro-modernization'">SRO Modernization</th:block>
+    <th:block th:case="*">Report</th:block>
+</th:block>

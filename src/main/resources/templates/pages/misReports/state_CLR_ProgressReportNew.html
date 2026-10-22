@@ -383,11 +383,9 @@
                         </div>
 
                         <div class="card-body">
+                            <div th:replace="~{fragments/report-nav :: report-nav('clr', 'state', '')}"></div>
 
-                            <a th:href="@{/reports/physical-progress-report}" class="btn btn-primary" style="font-size: 13px;">
-                                ← Back
-                            </a>
-                            <a th:href="@{/physicalProgressReports/clr/state-level-as-on-date}" class="btn btn-primary" style="font-size: 13px;">
+                            <a sec:authorize="isAuthenticated()" th:href="@{/physicalProgressReports/clr/state-level-as-on-date}" class="btn btn-primary" style="font-size: 13px;">
                                 View Report As on Date
                             </a>
                             <form th:action="@{/physicalProgressReports/clr/sorting-clr}" method="post" id="searchForm">
@@ -552,7 +550,7 @@
                                     <tr th:each="report, status : ${stateClrList}"
                                         th:if="${report != null && report.stateId != 999}">
                                         <td th:text="${status.count}"></td>
-                                        <td><a th:href="@{/physicalProgressReports/clr/district-level/{stateId}(stateId=${report.stateId})}" th:text="${report.stateName}" target="_blank"></a></td>
+                                        <td><a th:href="@{/physicalProgressReports/clr/district-level/{stateId}(stateId=${report.stateId})}" th:text="${report.stateName}"></a></td>
                                         <td th:text="${report.formattingTotalDistrict != null ? report.formattingTotalDistrict : 0}"></td>
                                         <td th:text="${report.formattingTotalTehsils != null ? report.formattingTotalTehsils : 0}"></td>
                                         <td th:text="${report.formattingTotalVillages != null ? report.formattingTotalVillages : 0}"></td>

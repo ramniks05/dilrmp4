@@ -78,7 +78,7 @@ public class FlashMassageController {
 
             return ResponseEntity.ok(Map.of(
                     "status", "success",
-                    "message", "Flash message updated successfully!"
+                    "message", "Flash message published successfully."
             ));
         } catch (Exception e) {
             logger.error("Error occurred while saving the flash message: {}", e.getMessage(), e);
@@ -164,6 +164,7 @@ public class FlashMassageController {
 
                     Map<String, Object> flashMessageData = new HashMap<>();
                     flashMessageData.put("id", flashMessage.getId());
+                    flashMessageData.put("stateId", flashMessage.getState() != null ? flashMessage.getState().getId() : 999L);
                     flashMessageData.put(
                             "stateName",
                             flashMessage.getState() != null ? flashMessage.getState().getName() : "All State/UTs"
@@ -171,6 +172,8 @@ public class FlashMassageController {
                     flashMessageData.put("message", flashMessage.getMessage());
                     flashMessageData.put("startDate", flashMessage.getStringStartDate());
                     flashMessageData.put("endDate", flashMessage.getStringEndDate());
+                    flashMessageData.put("startIso", flashMessage.getStartDate() != null ? flashMessage.getStartDate().toString() : "");
+                    flashMessageData.put("endIso", flashMessage.getEndDate() != null ? flashMessage.getEndDate().toString() : "");
 
                     flashMessageList.add(flashMessageData);
                 }

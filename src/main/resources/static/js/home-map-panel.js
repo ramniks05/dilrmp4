@@ -9,14 +9,15 @@
         { label: '80 - 100%', colour: '#059212' }
     ];
     var COMPONENT_LABELS = {
-        clr: 'Computerization of Land Records', MapDigitization: 'Map Digitization', sro: 'SRO Computerization',
-        mrr: 'Modern Record Room', surveyReservey: 'Survey / Re-survey', rccms: 'e-RCMS', linkedwithaadhaar: 'Aadhaar with RoR',
-        sroModernization: 'SRO Modernization', legacyRegistered: 'Legacy Registered Documents', legacyRevenue: 'Legacy Revenue Records'
+        clr: 'Computerization of Land Records', MapDigitization: 'Digitization of Maps / FMBs / Tippans', sro: 'Computerization of Registration (SROs)',
+        mrr: 'Modern Record Rooms', surveyReservey: 'Survey / Re-survey', rccms: 'Computerization of Revenue Courts',
+        linkedwithaadhaar: 'Consent-based Aadhaar linkage with RoR', sroModernization: 'SRO Modernization',
+        legacyRegistered: 'Legacy Registered Documents Digitization', legacyRevenue: 'Legacy Revenue Records Digitization'
     };
     var MIS_MAP_TITLES = {
-        sroModernization: 'Percentage of SROs modernised',
-        legacyRegistered: 'Percentage of legacy registered document pages digitised',
-        legacyRevenue: 'Percentage of legacy revenue record pages digitised'
+        sroModernization: 'Percentage of SROs modernized',
+        legacyRegistered: 'Percentage of legacy registered document pages digitized',
+        legacyRevenue: 'Percentage of legacy revenue record pages digitized'
     };
     var pendingMisMap = null;
 
@@ -161,12 +162,15 @@
             .then(function (list) { districtCache[key] = list; return list; });
     }
 
+    function focusDistrictOnMap(lgd) {
+        if (typeof window.hpHighlightDistrict === 'function') { window.hpHighlightDistrict(lgd); }
+        if (typeof window.hpZoomToDistrict === 'function') { window.hpZoomToDistrict(lgd); }
+    }
+
     function drawDistricts(stateId) {
         if (typeof window.hpShowDistricts !== 'function') { return; }
         var restoreHighlight = function () {
-            if (currentDistrict && typeof window.hpHighlightDistrict === 'function') {
-                window.hpHighlightDistrict(currentDistrict.lgd);
-            }
+            if (currentDistrict) { focusDistrictOnMap(currentDistrict.lgd); }
         };
         if (isStateLevelOnly(component)) {
             window.hpShowDistricts(stateId, {}, COMPONENT_LABELS[component], restoreHighlight);
@@ -176,11 +180,7 @@
             if (String(window.hpSelectedStateId) !== String(stateId)) { return; }
             var byLgd = {};
             list.forEach(function (d) { if (d.lgd != null) { byLgd[d.lgd] = d.percent; } });
-            window.hpShowDistricts(stateId, byLgd, COMPONENT_LABELS[component], function () {
-                if (currentDistrict && typeof window.hpHighlightDistrict === 'function') {
-                    window.hpHighlightDistrict(currentDistrict.lgd);
-                }
-            });
+            window.hpShowDistricts(stateId, byLgd, COMPONENT_LABELS[component], restoreHighlight);
         });
     }
 
@@ -214,7 +214,7 @@
         if (!lgd || !current) { return; }
         el('hp-details-dynamic').innerHTML = '<div class="hp-dyn__loading" data-skeleton>&nbsp;</div>';
         show('district');
-        if (typeof window.hpHighlightDistrict === 'function') { window.hpHighlightDistrict(lgd); }
+        focusDistrictOnMap(lgd);
         $.ajax({ url: '/site/home-preview/district/' + encodeURIComponent(lgd), method: 'GET' })
             .done(function (d) {
                 currentDistrict = d;
@@ -231,6 +231,7 @@
     function leaveDistrict() {
         currentDistrict = null;
         if (typeof window.hpHighlightDistrict === 'function') { window.hpHighlightDistrict(null); }
+        if (typeof window.hpZoomToState === 'function') { window.hpZoomToState(current.id); }
         renderState(current);
         updateUrl();
     }
@@ -417,6 +418,20 @@
         if (state && /^\d+$/.test(state)) { openState(state, district && /^\d+$/.test(district) ? district : null); }
     });
 
+    function initZoom() {
+        document.querySelectorAll('[data-hp-zoom]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var action = btn.getAttribute('data-hp-zoom');
+                if (action === 'fit') {
+                    if (window.hpSelectedStateId) { backToIndia(); }
+                    else if (typeof window.hpResetMapExtent === 'function') { window.hpResetMapExtent(); }
+                } else if (typeof window.hpZoomBy === 'function') {
+                    window.hpZoomBy(action === 'in' ? 0.5 : 2);
+                }
+            });
+        });
+    }
+
     window.hpMapStateClick = function (id) { openState(id); };
     window.hpMapBackToIndia = function () { backToIndia(); };
 
@@ -425,5 +440,6 @@
         iconsUrl = use ? use.getAttribute('href').split('#')[0] : '';
         initSearch();
         initPanelClicks();
+        initZoom();
     });
 })();

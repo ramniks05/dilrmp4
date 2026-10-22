@@ -43,6 +43,7 @@
                         </div>
 
                         <div class="card-body">
+                            <div th:replace="~{fragments/report-nav :: report-nav('clr', 'district', ${stateName})}"></div>
                             <div>
                                 <!-- First heading with the dynamic content -->
                                 <h3 class="card-title" style="font-size: 15px; font-weight: bold;">

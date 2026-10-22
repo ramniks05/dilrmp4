@@ -1,6 +1,6 @@
 $(document).ready(function () {
-    document.getElementById("maptitle").innerHTML = "Percentage of villages with completed CLR";
-    document.getElementById("tabletitle").innerHTML = "Percentage of villages with completed CLR";
+    document.getElementById("maptitle").innerHTML = "Computerization of Land Records: % of villages completed";
+    document.getElementById("tabletitle").innerHTML = "Computerization of Land Records: % of villages completed";
     statemap("0", 0, 0, 0, 0);
     getAllMapDataChartforCLR();
 });
@@ -14,31 +14,31 @@ function loadMatribhoomiData(anchor) {
     document.getElementById("maptitle").innerHTML = "";
     document.getElementById("tabletitle").innerHTML = "";
     if (id === "clr") {
-        document.getElementById("maptitle").innerHTML = "Percentage of villages with completed CLR";
-        document.getElementById("tabletitle").innerHTML = "Percentage of villages with completed CLR";
+        document.getElementById("maptitle").innerHTML = "Computerization of Land Records: % of villages completed";
+        document.getElementById("tabletitle").innerHTML = "Computerization of Land Records: % of villages completed";
         statemap("0", 0, 0, 0, 0);
         getAllMapDataChartforCLR();
     } else if (id === "MapDigitization") {
-        document.getElementById("maptitle").innerHTML = "Percentage of Map digitization";
-        document.getElementById("tabletitle").innerHTML = "Percentage of Map digitization";
+        document.getElementById("maptitle").innerHTML = "Map digitization: % of maps / FMBs / tippans digitized";
+        document.getElementById("tabletitle").innerHTML = "Map digitization: % of maps / FMBs / tippans digitized";
         statemap("30", 0, 0, 0, 0);
         getAllMapDataChartforMapDigitization();
     }
     else if (id === "mrr") {
-        document.getElementById("maptitle").innerHTML = "Percentage of  Tehsil with completed MRR";
-        document.getElementById("tabletitle").innerHTML = "Percentage of  Tehsil with completed MRR";
+        document.getElementById("maptitle").innerHTML = "Modern Record Rooms: % of tehsils with completed MRR";
+        document.getElementById("tabletitle").innerHTML = "Modern Record Rooms: % of tehsils with completed MRR";
         statemap("6", 0, 0, 0, 0);
         getAllMapDataChartforMRR();
     }
     else if (id === "surveyReservey") {
-        document.getElementById("maptitle").innerHTML = "Percentage of Villages with completed Survey/Re-Survey";
-        document.getElementById("tabletitle").innerHTML = "Percentage of Villages with completed Survey/Re-Survey";
+        document.getElementById("maptitle").innerHTML = "Survey / Re-survey: % of villages with final publication of records";
+        document.getElementById("tabletitle").innerHTML = "Survey / Re-survey: % of villages with final publication of records";
         statemap("40", 0, 0, 0, 0);
         getAllMapDataChartforSurveyReservey();
     }
     else if (id === "sro") {
-        document.getElementById("maptitle").innerHTML = "Percentage of SRO Computerized";
-        document.getElementById("tabletitle").innerHTML = "Percentage of SRO Computerized";
+        document.getElementById("maptitle").innerHTML = "Computerization of Registration: % of SROs computerized";
+        document.getElementById("tabletitle").innerHTML = "Computerization of Registration: % of SROs computerized";
         statemap("50", 0, 0, 0, 0);
         getAllMapDataChartforSro();
     }
@@ -55,14 +55,14 @@ function loadMatribhoomiData(anchor) {
         getAllMapDataChartforVillagesCadastralMapLinkedwithRoR();
     }
     else if (id === "rccms") {
-        document.getElementById("maptitle").innerHTML = "RCCMS";
-        document.getElementById("tabletitle").innerHTML = "RCCMS";
+        document.getElementById("maptitle").innerHTML = "Computerization of Revenue Courts: % of courts computerized";
+        document.getElementById("tabletitle").innerHTML = "Computerization of Revenue Courts: % of courts computerized";
         statemap("80", 0, 0, 0, 0);
         getAllMapDataChartforRCCMS();
     }
     else if (id === "linkedwithaadhaar") {
-        document.getElementById("maptitle").innerHTML = "Aadhaar Linkage Status";
-        document.getElementById("tabletitle").innerHTML = "Aadhaar Linkage Status";
+        document.getElementById("maptitle").innerHTML = "Consent-based Aadhaar linkage: % of villages with all RoRs linked";
+        document.getElementById("tabletitle").innerHTML = "Consent-based Aadhaar linkage: % of villages with all RoRs linked";
         statemap("90", 0, 0, 0, 0);
         getAllMapDataChartforAadhar();
     }
@@ -130,6 +130,7 @@ function hpShowDistricts(stateId, percentByLgd, title, onDrawn) {
         }
         hpStateMap.districtLayer = layer;
         map.addLayer(layer);
+        hpBringHighlightsToTop();
     });
 }
 
@@ -171,6 +172,7 @@ function registerStateLayer(map, layer, generation) {
             hpStateMap.extent = map.extent;
             return;
         }
+        hpEnableMapNavigation(map);
         require(["esri/geometry/Extent"], function (Extent) {
             hpStateMap.extent = new Extent(HP_INDIA_EXTENT);
             if (!window.hpSelectedStateId) {
@@ -235,12 +237,56 @@ function hpHighlightDistrict(districtLgd) {
             var graphics = hpStateMap.districtLayer.graphics || [];
             for (var i = 0; i < graphics.length; i++) {
                 if (String(graphics[i].attributes.dist_lgd) === String(districtLgd)) {
-                    hpStateMap.selectLayer.add(new Graphic(graphics[i].geometry, new SimpleFillSymbol(SimpleFillSymbol.STYLE_NULL,
-                        new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color("#d46b08"), 4), null)));
+                    hpStateMap.selectLayer.add(new Graphic(graphics[i].geometry, new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
+                        new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color("#1d4ed8"), 2), new Color([29, 78, 216, 0.14]))));
                     break;
                 }
             }
+            hpBringHighlightsToTop();
         });
+}
+
+/* Thin saffron outline around the selected State/UT; pass null to clear. */
+function hpHighlightState(geometry) {
+    var map = hpStateMap.map;
+    if (!map) { return; }
+    require(["esri/layers/GraphicsLayer", "esri/graphic", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol", "esri/Color"],
+        function (GraphicsLayer, Graphic, SimpleFillSymbol, SimpleLineSymbol, Color) {
+            if (hpStateMap.map !== map) { return; }
+            if (!hpStateMap.stateSelectLayer) {
+                hpStateMap.stateSelectLayer = new GraphicsLayer();
+                map.addLayer(hpStateMap.stateSelectLayer);
+            }
+            hpStateMap.stateSelectLayer.clear();
+            if (!geometry) { return; }
+            hpStateMap.stateSelectLayer.add(new Graphic(geometry, new SimpleFillSymbol(SimpleFillSymbol.STYLE_NULL,
+                new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color("#f57c00"), 2.5), null)));
+            hpBringHighlightsToTop();
+        });
+}
+
+/* District fills are added after the outlines, so move the outlines back on top (State/UT, then district). */
+function hpBringHighlightsToTop() {
+    var map = hpStateMap.map;
+    if (!map) { return; }
+    [hpStateMap.stateSelectLayer, hpStateMap.selectLayer].forEach(function (layer) {
+        if (layer && map.getLayer(layer.id)) {
+            map.reorderLayer(layer, map.graphicsLayerIds.length - 1);
+        }
+    });
+}
+
+/* Zooms to one district of the selected State/UT once the district layer has drawn it. */
+function hpZoomToDistrict(districtLgd) {
+    var map = hpStateMap.map;
+    var graphics = (hpStateMap.districtLayer && hpStateMap.districtLayer.graphics) || [];
+    for (var i = 0; i < graphics.length; i++) {
+        if (String(graphics[i].attributes.dist_lgd) === String(districtLgd) && graphics[i].geometry) {
+            map.setExtent(graphics[i].geometry.getExtent().expand(1.8));
+            return true;
+        }
+    }
+    return false;
 }
 
 /* State/UT map for components that /api/chart does not serve. percentByState maps State LGD code to a percentage. */
@@ -317,20 +363,76 @@ function zoomToStateGraphic(graphic) {
 }
 
 function hpZoomToState(stateId) {
-    if (!hpStateMap.layer || !hpStateMap.layer.graphics) { return false; }
-    for (var i = 0; i < hpStateMap.layer.graphics.length; i++) {
-        var g = hpStateMap.layer.graphics[i];
+    var layer = hpStateMap.layer;
+    if (!layer || !layer.graphics) { return false; }
+    for (var i = 0; i < layer.graphics.length; i++) {
+        var g = layer.graphics[i];
         if (g.attributes && String(g.attributes.State_LGD) === String(stateId)) {
             zoomToStateGraphic(g);
             hpStateMap.zoomedState = String(stateId);
+            hpHighlightState(g.geometry);
             return true;
         }
     }
-    return false;
+    if (!layer.loaded || !/^\d+$/.test(String(stateId))) { return false; }
+    // The State layer only holds the States/UTs currently in view, so fetch an off-screen one from the service.
+    var map = hpStateMap.map;
+    hpStateMap.zoomedState = String(stateId);
+    require(["esri/tasks/query"], function (Query) {
+        var q = new Query();
+        q.where = "State_LGD = " + Number(stateId);
+        q.returnGeometry = true;
+        q.outFields = ["State_LGD"];
+        q.outSpatialReference = map.spatialReference;
+        layer.queryFeatures(q, function (result) {
+            var feature = result && result.features && result.features[0];
+            if (!feature || hpStateMap.map !== map || String(window.hpSelectedStateId) !== String(stateId)) { return; }
+            map.setExtent(feature.geometry.getExtent().expand(1.3));
+            hpHighlightState(feature.geometry);
+        });
+    });
+    return true;
+}
+
+/* Home page only: each statemap() branch switches navigation off on load; this load handler runs after
+   those, so panning and zooming come back without touching the shared per-component code. Double-click
+   zoom stays off because a click selects a State/UT. */
+function hpEnableMapNavigation(map) {
+    // The individual enableX() calls only reconnect handlers while map navigation as a whole is on.
+    map.enableMapNavigation();
+    map.enablePan();
+    map.enableScrollWheelZoom();
+    map.enableRubberBandZoom();
+    map.enableKeyboardNavigation();
+    if (typeof map.enablePinchZoom === "function") { map.enablePinchZoom(); }
+    map.disableDoubleClickZoom();
+    map.disableShiftDoubleClickZoom();
+}
+
+var HP_MIN_SCALE = 2000;
+var HP_MAX_SCALE = 60000000;
+
+/* Zooms by factor (< 1 zooms in, > 1 out) keeping anchor (a map point) fixed on screen; centre if omitted. */
+function hpZoomBy(factor, anchor) {
+    var map = hpStateMap.map;
+    if (!map || !map.extent) { return; }
+    var scale = map.getScale();
+    if (factor > 1 && scale * factor > HP_MAX_SCALE) {
+        if (hpStateMap.extent) { map.setExtent(hpStateMap.extent, true); }
+        return;
+    }
+    if (factor < 1 && scale * factor < HP_MIN_SCALE) { return; }
+    var e = map.extent;
+    var p = anchor || e.getCenter();
+    require(["esri/geometry/Extent"], function (Extent) {
+        map.setExtent(new Extent(p.x - (p.x - e.xmin) * factor, p.y - (p.y - e.ymin) * factor,
+            p.x + (e.xmax - p.x) * factor, p.y + (e.ymax - p.y) * factor, e.spatialReference));
+    });
 }
 
 function hpResetMapExtent() {
     hpClearDistricts();
+    if (hpStateMap.stateSelectLayer) { hpStateMap.stateSelectLayer.clear(); }
     hpStateMap.zoomedState = null;
     if (hpStateMap.map && hpStateMap.extent) {
         hpStateMap.map.setExtent(hpStateMap.extent, true);

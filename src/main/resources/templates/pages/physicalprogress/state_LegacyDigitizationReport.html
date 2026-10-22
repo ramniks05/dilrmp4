@@ -33,7 +33,7 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <a th:href="@{/reports/physical-progress-report}" class="btn btn-primary" style="font-size: 13px;">&larr; Back</a>
+                            <div th:replace="~{fragments/report-nav :: report-nav('legacy-digitization', 'state', '')}"></div>
                             <div class="table-responsive text-nowrap mt-3" th:fragment="reportTable">
                                 <table id="example2" class="table table-bordered table-striped-columns table-success table-striped">
                                     <thead class="card-info wrap-text" style="background-color: var(--dilrmp-th-bg); color: var(--dilrmp-th-text)">
@@ -98,7 +98,7 @@
                                         <td>
                                             <a th:unless="${hideStateLinks}"
                                                th:href="@{/physicalProgressReports/legacy-digitization/district-level/{stateId}(stateId=${data.stateId})}"
-                                               th:text="${data.stateName}" target="_blank">State</a>
+                                               th:text="${data.stateName}">State</a>
                                             <span th:if="${hideStateLinks}" th:text="${data.stateName}"></span>
                                         </td>
                                         <td th:text="${data.formattingTotalDistrict}">0</td>

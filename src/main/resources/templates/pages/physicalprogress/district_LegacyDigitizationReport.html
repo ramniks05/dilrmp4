@@ -35,7 +35,7 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <a th:href="@{/physicalProgressReports/legacy-digitization/state-level}" class="btn btn-primary" style="font-size: 13px;">&larr; Back</a>
+                            <div th:replace="~{fragments/report-nav :: report-nav('legacy-digitization', 'district', ${stateName})}"></div>
                             <div class="table-responsive text-nowrap mt-3">
                                 <table id="example2" class="table table-bordered table-striped-columns table-success table-striped">
                                     <thead class="card-info wrap-text" style="background-color: var(--dilrmp-th-bg); color: var(--dilrmp-th-text)">

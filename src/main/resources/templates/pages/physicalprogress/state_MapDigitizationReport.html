@@ -363,9 +363,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <a th:href="@{/reports/physical-progress-report}" class="btn btn-primary" style="font-size: 13px;">
-                            ← Back
-                        </a>
+                        <div th:replace="~{fragments/report-nav :: report-nav('map', 'state', '')}"></div>
                         <form th:action="@{/physicalProgressReports/map/sorting-map}" method="post" id="searchForm">
                             <div class="form-group mt-3">
                                 <div class="form-outline ms-3" style="width: 20%;">
@@ -553,7 +551,7 @@
                                 <tbody>
                                 <tr th:each="data, iterator : ${reportData}">
                                     <td th:text="${iterator.count}"></td>
-                                    <td><a th:unless="${hideStateLinks}" th:href="@{/physicalProgressReports/map/district-level/{lgdCode}(lgdCode=${data.lgdCode})}" th:text="${data.stateName}" target="_blank"></a><span th:if="${hideStateLinks}" th:text="${data.stateName}"></span></td>
+                                    <td><a th:unless="${hideStateLinks}" th:href="@{/physicalProgressReports/map/district-level/{lgdCode}(lgdCode=${data.lgdCode})}" th:text="${data.stateName}"></a><span th:if="${hideStateLinks}" th:text="${data.stateName}"></span></td>
 
                                     <td th:text="${data.formattingTotalDistrict}"></td>
                                     <td th:text="${data.formattingTotalTehsils}"></td>

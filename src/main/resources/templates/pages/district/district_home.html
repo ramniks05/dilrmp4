@@ -159,18 +159,9 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-12">
+          <div th:replace="~{fragments/flash-messages :: flash-messages(${flashMessages})}"></div>
           <div class="card card-info">
-            <div class="card-header" style="background-color: var(--ux4g-bg-primary); text-align: center; padding: 10px">
-              <div th:if="${flashMessage}" style="display: inline-block; background-color: #ffffff; padding: 10px 20px; border-radius: 8px; box-shadow: var(--ux4g-shadow-l1)">
-                <marquee scrollamount="10" style="font-size: 16px; color: red; font-weight: bold">
-                  <div th:if="${flashMessages != null}">
-                    <h4 style="margin: 0; display: inline;" th:each="msg, iterStat : ${flashMessages}">
-                      <span style="color: red;" th:text="${msg}"></span>
-                      <span th:if="${!iterStat.last}" style="color: blue; padding: 0 5px;">|</span>
-                    </h4>
-                  </div>
-                </marquee>
-              </div>
+              <div class="card-header">
               <div >
                 <div class="col-sm-10">
                   <h3 class="card-title" style="font-size: 1.125rem">District Master Summary</h3>

@@ -1,0 +1,84 @@
+<header th:fragment="site-header" class="hp-header" id="hp-header" th:with="icons=@{/static/images/icons/dilrmp-icons.svg}">
+    <div th:replace="~{fragments/site-header :: site-gov-bar}"></div>
+
+    <div class="hp-brand-bar">
+        <div class="hp-container hp-brand-bar__inner">
+            <a class="hp-brand" th:href="@{/}" title="Home - DILRMP-MIS 4.0">
+                <img class="hp-brand__emblem" th:src="@{/static/images/emblum.png}" alt="National Emblem of India">
+                <span class="hp-brand__divider" aria-hidden="true"></span>
+                <span class="hp-brand__text">
+                    <span class="hp-brand__hi" lang="hi">भूमि संसाधन विभाग</span>
+                    <span class="hp-brand__en">Department of Land Resources</span>
+                    <span class="hp-brand__sub">Ministry of Rural Development, Government of India</span>
+                </span>
+            </a>
+            <div class="hp-brand-bar__end">
+                <span class="hp-product">
+                    <span class="hp-product__name">DILRMP-MIS <b>4.0</b></span>
+                    <span class="hp-product__tag">Digital India Land Records Modernization Programme</span>
+                </span>
+                <img class="hp-brand__di" th:src="@{/static/images/digital-india.png}" alt="Digital India">
+            </div>
+        </div>
+    </div>
+
+    <nav class="hp-nav" aria-label="Main navigation">
+        <div class="hp-container hp-nav__inner">
+            <button type="button" class="hp-nav__toggle" aria-controls="hp-nav-menu" aria-expanded="false" data-hp-nav-toggle>
+                <svg aria-hidden="true"><use th:href="${icons} + '#i-menu'"/></svg><span>Menu</span>
+            </button>
+            <ul class="hp-nav__menu" id="hp-nav-menu">
+                <li><a th:href="@{/}">Home</a></li>
+                <li><a th:href="@{/userProfile/about-us}">About Us</a></li>
+                <li><a th:href="@{/dashboard-chart}">Chart</a></li>
+                <li><a th:href="@{/reports/physical-progress-report}">Report</a></li>
+                <li><a th:href="@{/reports/download-progress-report}">Download Report</a></li>
+                <li><a th:href="@{/naksha-dashboard}">Naksha</a></li>
+                <li><a target="_blank" rel="noopener noreferrer" title="RCCMS Dashboard (opens in a new window)"
+                       href="https://wdcpmksymapservice.dolr.gov.in/vias/shared/oxvBnEldKhf26JaTSSy5bMKs4jOoB9bTvTlZV6ul2OhnOgZhzK3YQAUxF9DTaWGrF9fpHc4EtrjEflghciXmPKQWH7">RCCMS Dashboard</a></li>
+                <li><a th:href="@{/userProfile/contact-us}">Contact Us</a></li>
+            </ul>
+            <a sec:authorize="!isAuthenticated()" id="myBtn" class="hp-btn hp-btn--saffron hp-nav__cta" th:href="@{/loginPage}">
+                <svg aria-hidden="true"><use th:href="${icons} + '#i-login'"/></svg>Login
+            </a>
+            <a sec:authorize="isAuthenticated()" class="hp-btn hp-btn--saffron hp-nav__cta" th:href="@{/logout}">
+                <svg aria-hidden="true"><use th:href="${icons} + '#i-back'"/></svg>Logout
+            </a>
+        </div>
+        <div class="hp-tricolour" aria-hidden="true"><span></span><span></span><span></span></div>
+    </nav>
+</header>
+
+<div th:fragment="site-gov-bar" class="hp-gov-bar">
+    <div class="hp-container hp-gov-bar__inner">
+        <div class="hp-gov-bar__start">
+            <a href="https://www.india.gov.in/" target="_blank" rel="noopener noreferrer" title="Government of India - National Portal (opens in a new window)">
+                <span class="hp-flag" aria-hidden="true"></span>
+                <span><span lang="hi">भारत सरकार</span> | Government of India</span>
+            </a>
+            <span class="hp-gov-bar__sep" aria-hidden="true"></span>
+            <a href="https://dilrmp.gov.in/dilrmpold" target="_blank" rel="noopener noreferrer" title="Old MIS 3.0 (opens in a new window)">Old MIS 3.0 (till 14.10.2024)</a>
+            <span class="hp-gov-bar__sep" aria-hidden="true"></span>
+            <span class="hp-visitors" title="Users currently online (one per browser)">Online: <strong th:text="${session.onlineVisitors != null ? session.onlineVisitors : 0}">0</strong></span>
+            <span class="hp-visitors" title="Total visitors (first visit count)">Total visitors: <strong th:text="${session.totalVisitorsFormatted != null ? session.totalVisitorsFormatted : '0'}">0</strong></span>
+        </div>
+        <nav class="hp-gov-bar__tools" aria-label="Accessibility tools">
+            <a href="#main-content">Skip to Main Content</a>
+            <a th:href="@{/site/help#screen-reader-access}">Screen Reader Access</a>
+            <div class="hp-tool-group" role="group" aria-label="Text size">
+                <button type="button" data-gigw-text="dec" aria-label="Decrease text size" title="Decrease text size">A<sup>-</sup></button>
+                <button type="button" data-gigw-text="md" aria-label="Normal text size" title="Normal text size">A</button>
+                <button type="button" data-gigw-text="inc" aria-label="Increase text size" title="Increase text size">A<sup>+</sup></button>
+            </div>
+            <div class="hp-tool-group" role="group" aria-label="Colour contrast">
+                <button type="button" class="hp-contrast hp-contrast--dark" data-gigw-contrast="high" aria-label="High contrast" title="High contrast">A</button>
+                <button type="button" class="hp-contrast hp-contrast--light" data-gigw-contrast="normal" aria-label="Normal contrast" title="Normal contrast">A</button>
+            </div>
+            <div class="bhashini-plugin-container hp-lang" title="Translate this page (BHASHINI)"></div>
+        </nav>
+    </div>
+    <!-- The domain must be mapped in the BHASHINI dashboard; unmapped hosts get "Host is not mapped" from the API. -->
+    <script defer src="https://translation-plugin.bhashini.co.in/v3/website_translation_utility.js"
+            page-source-language="en"
+            language-icon-color="#ffffff"></script>
+</div>

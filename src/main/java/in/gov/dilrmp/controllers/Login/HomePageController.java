@@ -111,7 +111,7 @@ public class HomePageController {
 
 
 
-        return "index";
+        return "pages/site/home-preview";
     }
 
     @GetMapping("/mis")
@@ -388,6 +388,7 @@ public class HomePageController {
             responseMap.put("revenueCourtsComputerized", nationalDashBordDTOList.getRevenueCourtsComputerized());
             responseMap.put("villagesWith100PercentRorLinkedAadhaar", nationalDashBordDTOList.getVillagesWith100PercentRorLinkedAadhaar());
             responseMap.put("totalSro", nationalDashBordDTOList.getTotalSro());
+            responseMap.put("sroComputerized", nationalDashBordDTOList.getSroComputerized());
             responseMap.put("villagesWithUlipn", nationalDashBordDTOList.getVillagesWithUlipn());
 
             // Return the response entity with the dashboard data

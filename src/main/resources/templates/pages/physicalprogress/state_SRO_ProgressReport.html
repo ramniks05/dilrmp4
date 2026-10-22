@@ -336,9 +336,7 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <a th:href="@{/reports/physical-progress-report}" class="btn btn-primary" style="font-size: 13px;">
-                                ← Back
-                            </a>
+                            <div th:replace="~{fragments/report-nav :: report-nav('sro', 'state', '')}"></div>
                             <!--                        <form hx-get="/physicalProgressReports/sro/reportData" method="get" hx-swap="outerHTML"-->
                             <!--                              hx-target="#sro-tbody" id="searchForm" hx-indicator="#loadingIndicator">-->
                             <!--                            <div class="form-group mt-3 d-flex align-items-center">-->

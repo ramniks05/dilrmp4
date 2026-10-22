@@ -38,7 +38,31 @@ function hideLoader() {
     $("#wait").removeClass("active");
 }
 
+function loadNewComponentStats() {
+    if (!document.getElementById('legacyTotalDigitisedPages')) {
+        return;
+    }
+    var counts = ['legacyTotalDigitisedPages', 'legacyTotalPages', 'revenueTotalDigitisedPages', 'revenueTotalPages',
+        'srosModernisedTotal', 'srosUsingOnlineRegistration'];
+    var percents = ['legacyTotalDigitisedPercent', 'revenueTotalDigitisedPercent', 'srosModernisedTotalPercent'];
+    $.ajax({ url: '/site/home-preview/component-totals', method: 'GET' })
+        .done(function (totals) {
+            counts.forEach(function (key) {
+                var n = Number(totals[key]);
+                $('#' + key).text(isFinite(n) ? Math.round(n).toLocaleString('en-IN') : '-');
+            });
+            percents.forEach(function (key) {
+                var p = Number(totals[key]);
+                $('#' + key).text(isFinite(p) ? p.toFixed(1) + '%' : '-');
+            });
+        })
+        .fail(function () {
+            counts.concat(percents).forEach(function (key) { $('#' + key).text('-'); });
+        });
+}
+
 $(document).ready(function () {
+    loadNewComponentStats();
     $.ajax({
         url: '/getDolrDashboardData',
         method: 'GET',
@@ -56,6 +80,7 @@ $(document).ready(function () {
             $('#revenueCourtsComputerized').text(formatIndianNumber(data.revenueCourtsComputerized || '0'));
             $('#villagesWith100PercentRorLinkedAadhaar').text(formatIndianNumber(data.villagesWith100PercentRorLinkedAadhaar || '0'));
             $('#totalSro').text(formatIndianNumber(data.totalSro || '0'));
+            $('#sroComputerized').text(formatIndianNumber(data.sroComputerized || '0'));
             $('#villagesWithUlipn').text(formatIndianNumber(data.villagesWithUlipn || '0'));
 
             let allChartData = [
@@ -65,7 +90,7 @@ $(document).ready(function () {
                 { label: 'Surveyed Villages', value: data.villagesDroneFlyingCompleted || 0 },
                 { label: 'e-RCCMS Computerized', value: data.revenueCourtsComputerized || 0 },
                 { label: 'Aadhaar Linked With RoR', value: data.villagesWith100PercentRorLinkedAadhaar || 0 },
-                { label: 'SROs Computerized', value: data.totalSro || 0 },
+                { label: 'SROs Computerized', value: data.sroComputerized || 0 },
                 { label: 'ULPIN Generated', value: data.villagesWithUlipn || 0 }
             ];
 

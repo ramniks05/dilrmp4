@@ -115,9 +115,93 @@
 
 
                         <div class="card-body">
+                            <section class="mis-stats" aria-labelledby="misStatsCoverage">
+                                <h3 class="mis-stats__title" id="misStatsCoverage">Coverage</h3>
+                                <div class="mis-stats__grid">
+                                    <article class="mis-stat" data-tone="navy">
+                                        <span class="mis-stat__icon"><i class="fas fa-flag" aria-hidden="true"></i></span>
+                                        <span class="mis-stat__body"><span class="mis-stat__label">States/UTs</span><b class="mis-stat__value">36</b></span>
+                                    </article>
+                                    <article class="mis-stat" data-tone="navy">
+                                        <span class="mis-stat__icon"><i class="fas fa-city" aria-hidden="true"></i></span>
+                                        <span class="mis-stat__body"><span class="mis-stat__label">Districts</span><b class="mis-stat__value" id="totalDistrict">&hellip;</b></span>
+                                    </article>
+                                    <article class="mis-stat" data-tone="navy">
+                                        <span class="mis-stat__icon"><i class="fas fa-landmark" aria-hidden="true"></i></span>
+                                        <span class="mis-stat__body"><span class="mis-stat__label">Tehsils</span><b class="mis-stat__value" id="totalTehsil">&hellip;</b></span>
+                                    </article>
+                                    <article class="mis-stat" data-tone="navy">
+                                        <span class="mis-stat__icon"><i class="fas fa-home" aria-hidden="true"></i></span>
+                                        <span class="mis-stat__body"><span class="mis-stat__label">Villages</span><b class="mis-stat__value" id="totalVillage">&hellip;</b></span>
+                                    </article>
+                                </div>
 
-                            <h3>  Physical Progress </h3>
-                            <hr>
+                                <h3 class="mis-stats__title" id="misStatsProgress">Physical progress (national)</h3>
+                                <div class="mis-stats__grid" aria-labelledby="misStatsProgress">
+                                    <article class="mis-stat" data-tone="green">
+                                        <span class="mis-stat__icon"><i class="fas fa-sitemap" aria-hidden="true"></i></span>
+                                        <span class="mis-stat__body"><span class="mis-stat__label">CLR completed (villages)</span><b class="mis-stat__value" id="villagesComputerizationCompleted">&hellip;</b></span>
+                                    </article>
+                                    <article class="mis-stat" data-tone="saffron">
+                                        <span class="mis-stat__icon"><i class="fas fa-map" aria-hidden="true"></i></span>
+                                        <span class="mis-stat__body"><span class="mis-stat__label">Digitized mapsheets / FMBs / tippans</span><b class="mis-stat__value" id="totalDigitizedMapsFmbTippans">&hellip;</b></span>
+                                    </article>
+                                    <article class="mis-stat" data-tone="teal">
+                                        <span class="mis-stat__icon"><i class="fas fa-archive" aria-hidden="true"></i></span>
+                                        <span class="mis-stat__body"><span class="mis-stat__label">Modern Record Rooms completed</span><b class="mis-stat__value" id="mrrCompleted">&hellip;</b></span>
+                                    </article>
+                                    <article class="mis-stat" data-tone="navy">
+                                        <span class="mis-stat__icon"><i class="fas fa-satellite" aria-hidden="true"></i></span>
+                                        <span class="mis-stat__body"><span class="mis-stat__label">Surveyed villages</span><b class="mis-stat__value" id="villagesDroneFlyingCompleted">&hellip;</b></span>
+                                    </article>
+                                    <article class="mis-stat" data-tone="saffron">
+                                        <span class="mis-stat__icon"><i class="fas fa-balance-scale" aria-hidden="true"></i></span>
+                                        <span class="mis-stat__body"><span class="mis-stat__label">e-RCMS computerized courts</span><b class="mis-stat__value" id="revenueCourtsComputerized">&hellip;</b></span>
+                                    </article>
+                                    <article class="mis-stat" data-tone="teal">
+                                        <span class="mis-stat__icon"><i class="fas fa-link" aria-hidden="true"></i></span>
+                                        <span class="mis-stat__body"><span class="mis-stat__label">Villages with Aadhaar linked to RoR</span><b class="mis-stat__value" id="villagesWith100PercentRorLinkedAadhaar">&hellip;</b></span>
+                                    </article>
+                                    <article class="mis-stat" data-tone="green">
+                                        <span class="mis-stat__icon"><i class="fas fa-building" aria-hidden="true"></i></span>
+                                        <span class="mis-stat__body"><span class="mis-stat__label">SROs computerized</span><b class="mis-stat__value" id="sroComputerized">&hellip;</b><small class="mis-stat__sub">of <span id="totalSro">&hellip;</span> SROs</small></span>
+                                    </article>
+                                    <article class="mis-stat" data-tone="navy">
+                                        <span class="mis-stat__icon"><i class="fas fa-fingerprint" aria-hidden="true"></i></span>
+                                        <span class="mis-stat__body"><span class="mis-stat__label">Villages with ULPIN</span><b class="mis-stat__value" id="villagesWithUlipn">&hellip;</b></span>
+                                    </article>
+                                </div>
+
+                                <h3 class="mis-stats__title" id="misStatsNew">New components</h3>
+                                <div class="mis-stats__grid mis-stats__grid--3" aria-labelledby="misStatsNew">
+                                    <article class="mis-stat" data-tone="green">
+                                        <span class="mis-stat__icon"><i class="fas fa-file-alt" aria-hidden="true"></i></span>
+                                        <span class="mis-stat__body">
+                                            <span class="mis-stat__label">Legacy registered documents: pages digitised<em class="mis-stat__new">New</em></span>
+                                            <b class="mis-stat__value" id="legacyTotalDigitisedPages">&hellip;</b>
+                                            <small class="mis-stat__sub"><span id="legacyTotalDigitisedPercent">&hellip;</span> of <span id="legacyTotalPages">&hellip;</span> pages</small>
+                                        </span>
+                                    </article>
+                                    <article class="mis-stat" data-tone="navy">
+                                        <span class="mis-stat__icon"><i class="fas fa-scroll" aria-hidden="true"></i></span>
+                                        <span class="mis-stat__body">
+                                            <span class="mis-stat__label">Legacy revenue records: pages digitised<em class="mis-stat__new">New</em></span>
+                                            <b class="mis-stat__value" id="revenueTotalDigitisedPages">&hellip;</b>
+                                            <small class="mis-stat__sub"><span id="revenueTotalDigitisedPercent">&hellip;</span> of <span id="revenueTotalPages">&hellip;</span> pages</small>
+                                        </span>
+                                    </article>
+                                    <article class="mis-stat" data-tone="saffron">
+                                        <span class="mis-stat__icon"><i class="fas fa-building" aria-hidden="true"></i></span>
+                                        <span class="mis-stat__body">
+                                            <span class="mis-stat__label">SROs modernised<em class="mis-stat__new">New</em></span>
+                                            <b class="mis-stat__value" id="srosModernisedTotal">&hellip;</b>
+                                            <small class="mis-stat__sub"><span id="srosModernisedTotalPercent">&hellip;</span> of <span id="srosUsingOnlineRegistration">&hellip;</span> SROs using online registration</small>
+                                        </span>
+                                    </article>
+                                </div>
+                            </section>
+
+                            <h3 class="mis-stats__title">Charts</h3>
                             <div class="row">
                                 <div class="col-sm-4">
                                     <div id="containerState" style="height: 300px;"></div>
@@ -133,197 +217,11 @@
 
                             <div id="dashboardBarChart" style="height: 400px;"></div>
                             <div id="chartFilters"></div>
-                             <hr>
                             <div id="wait">
                                 <img th:src="@{/images/loading.gif}"  />
                                 <br />Please Wait...
                             </div>
-                            <div class="row">
-
-                                <div class="col-md-3 stretch-card grid-margin">
-
-                                    <div class="card bg-gradient-info1 card-img-holder text-white">
-                                        <div class="card-body">
-                                            <img th:src="@{/images/circle.svg}"
-                                                 class="card-img-absolute" alt="circle-image">
-                                            <h6 class="font-weight-normal mb-3">Total States/UTs
-
-                                               <i
-                                                        class="mdi mdi-chart-line mdi-24px float-right"></i>
-                                            </h6>
-                                            <h3 class="mb-5"><span>36</span>
-                                            </h3>
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 stretch-card grid-margin">
-                                    <div class=" card bg-gradient-danger1 card-img-holder text-white">
-                                        <div class="card-body">
-                                            <img th:src="@{/images/circle.svg}"
-                                                 class="card-img-absolute" alt="circle-image">
-                                            <h6 class="font-weight-normal mb-3">Total Districts
-                                                <i class="mdi mdi-diamond mdi-24px float-right"></i>
-                                            </h6>
-                                            <h3 class="mb-5"><span  id="totalDistrict"/></h3>
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 stretch-card grid-margin">
-                                    <div class="card bg-gradient-danger2 card-img-holder text-white">
-                                        <div class="card-body">
-                                            <img th:src="@{/images/circle.svg}"
-                                                 class="card-img-absolute" alt="circle-image">
-                                            <h6 class="font-weight-normal mb-3">Total Tehsils
-                                                <i
-                                                        class="mdi mdi-diamond mdi-24px float-right"></i>
-                                            </h6>
-                                            <h3 class="mb-5"id="totalTehsil"></h3>
-
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-3 stretch-card grid-margin">
-                                    <div class="card bg-gradient-successO card-img-holder text-white">
-                                        <div class="card-body">
-                                            <img th:src="@{/images/circle.svg}"
-                                                 class="card-img-absolute" alt="circle-image">
-                                            <h6 class="font-weight-normal mb-3">Total Villages
-                                                <i class="mdi mdi-bookmark-outline mdi-24px float-right"></i>
-                                            </h6>
-                                            <h3 class="mb-5" id="totalVillage"></h3>
-
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <div class="row">
-
-                                <div class="col-md-3 stretch-card grid-margin">
-                                    <div class=" card bg-gradient-danger3 card-img-holder text-white">
-                                        <div class="card-body">
-                                            <img th:src="@{/images/circle.svg}"
-                                                 class="card-img-absolute" alt="circle-image">
-                                            <h6 class="font-weight-normal mb-3">Total CLR Completed (Villages)
-                                                <i class="mdi mdi-diamond mdi-24px float-right"></i>
-                                            </h6>
-                                            <h3 class="mb-5" id="villagesComputerizationCompleted"></h3>
-
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-3 stretch-card grid-margin">
-                                    <div class=" card bg-gradient-danger4 card-img-holder text-white">
-                                        <div class="card-body">
-                                            <img th:src="@{/images/circle.svg}"
-                                                 class="card-img-absolute" alt="circle-image">
-                                            <h6 class="font-weight-normal mb-3">Total Digitized Mapsheets/FMB's/Tippan's
-                                                <i class="mdi mdi-diamond mdi-24px float-right"></i>
-                                            </h6>
-                                            <h3 class="mb-5" id="totalDigitizedMapsFmbTippans"></h3>
-
-                                        </div>
-                                    </div>
-                                </div>
-
-
-                                <div class="col-md-3 stretch-card grid-margin">
-                                    <div class=" card bg-gradient-danger5 card-img-holder text-white">
-                                        <div class="card-body">
-                                            <img th:src="@{/images/circle.svg}"
-                                                 class="card-img-absolute" alt="circle-image">
-                                            <h6 class="font-weight-normal mb-3">Completed Modern Record Room
-                                                <i class="mdi mdi-diamond mdi-24px float-right"></i>
-                                            </h6>
-                                            <h3 class="mb-5" id="mrrCompleted"></h3>
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 stretch-card grid-margin">
-                                    <div class=" card bg-gradient-danger6 card-img-holder text-white">
-                                        <div class="card-body">
-                                            <img th:src="@{/images/circle.svg}"
-                                                 class="card-img-absolute" alt="circle-image">
-                                            <h6 class="font-weight-normal mb-3">Total Surveyed Villages
-                                                <i class="mdi mdi-diamond mdi-24px float-right"></i>
-                                            </h6>
-                                            <h3 class="mb-5" id="villagesDroneFlyingCompleted"></h3>
-
-                                        </div>
-                                    </div>
-                                </div>
-
-
-                            </div>
-                            <!-- 2nd Row End -->
-
-                            <!-- 3rd Row Started -->
-                            <div class="row">
-
-                                <div class="col-md-3 stretch-card grid-margin">
-                                    <div class=" card bg-gradient-danger2 card-img-holder text-white">
-                                        <div class="card-body">
-                                            <img th:src="@{/images/circle.svg}"
-                                                 class="card-img-absolute" alt="circle-image">
-                                            <h6 class="font-weight-normal mb-3">Total e-RCCMS Computerized
-                                                <i class="mdi mdi-diamond mdi-24px float-right"></i>
-                                            </h6>
-                                            <h3 class="mb-5"id="revenueCourtsComputerized"></h3>
-
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-3 stretch-card grid-margin">
-                                    <div class=" card bg-gradient-info1 card-img-holder text-white">
-                                        <div class="card-body">
-                                            <img th:src="@{/images/circle.svg}"
-                                                 class="card-img-absolute" alt="circle-image">
-                                            <h6 class="font-weight-normal mb-3">Total Aadhaar Linked With RoR
-                                                <i class="mdi mdi-diamond mdi-24px float-right"></i>
-                                            </h6>
-                                            <h3 class="mb-5" id="villagesWith100PercentRorLinkedAadhaar"></h3>
-
-                                        </div>
-                                    </div>
-                                </div>
-
-
-                                <div class="col-md-3 stretch-card grid-margin">
-                                    <div class=" card bg-gradient-danger4 card-img-holder text-white">
-                                        <div class="card-body">
-                                            <img th:src="@{/images/circle.svg}"
-                                                 class="card-img-absolute" alt="circle-image">
-                                            <h6 class="font-weight-normal mb-3">Total SRO's Computerized
-                                                <i class="mdi mdi-diamond mdi-24px float-right"></i>
-                                            </h6>
-                                            <h3 class="mb-5" id="totalSro"></h3>
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 stretch-card grid-margin">
-                                    <div class=" card bg-gradient-successO card-img-holder text-white">
-                                        <div class="card-body">
-                                            <img th:src="@{/images/circle.svg}"
-                                                 class="card-img-absolute" alt="circle-image">
-                                            <h6 class="font-weight-normal mb-3">Total ULPIN Generated
-                                                <i class="mdi mdi-diamond mdi-24px float-right"></i>
-                                            </h6>
-                                            <h3 class="mb-5" id="villagesWithUlipn"></h3>
-
-                                        </div>
-                                    </div>
-                                </div>
-
-                              </div>
-                            </div>
+                        </div>
 
 
                         </div>

@@ -1,0 +1,79 @@
+<footer th:fragment="site-footer" class="hp-footer" role="contentinfo" th:with="icons=@{/static/images/icons/dilrmp-icons.svg}">
+    <div class="hp-footer__main">
+        <div class="hp-container hp-footer__grid">
+            <div class="hp-footer__brand">
+                <div class="hp-footer__logo">
+                    <img th:src="@{/static/images/emblum.png}" alt="">
+                    <span><b>DILRMP-MIS 4.0</b><small>Department of Land Resources</small></span>
+                </div>
+                <p>Management Information System of the Digital India Land Records Modernization Programme, Ministry of Rural Development, Government of India.</p>
+                <a class="hp-btn hp-btn--saffron hp-btn--sm" th:href="@{/userProfile/contact-us}">Get support<svg aria-hidden="true"><use th:href="${icons} + '#i-arrow'"/></svg></a>
+            </div>
+            <div>
+                <h2>Quick links</h2>
+                <ul>
+                    <li><a th:href="@{/}">Home</a></li>
+                    <li><a th:href="@{/mis}">Login to MIS</a></li>
+                    <li><a th:href="@{/userProfile/about-us}">About Us</a></li>
+                    <li><a th:href="@{/reports/physical-progress-report}">Physical Progress Report</a></li>
+                    <li><a th:href="@{/site/sitemap}">Sitemap</a></li>
+                    <li><a th:href="@{/site/feedback}">Feedback</a></li>
+                    <li><a th:href="@{/site/help}">Help</a></li>
+                </ul>
+            </div>
+            <div>
+                <h2>Related portals</h2>
+                <ul>
+                    <li><a href="https://dolr.gov.in/" target="_blank" rel="noopener noreferrer">Department of Land Resources</a></li>
+                    <li><a href="https://ngdrs.gov.in/" target="_blank" rel="noopener noreferrer">NGDRS</a></li>
+                    <li><a href="https://larr.dolr.gov.in/" target="_blank" rel="noopener noreferrer">LACRRIS</a></li>
+                    <li><a href="https://dilrmp.gov.in/grading/" target="_blank" rel="noopener noreferrer">Grading Dashboard</a></li>
+                    <li><a href="https://www.india.gov.in/" target="_blank" rel="noopener noreferrer">National Portal of India</a></li>
+                    <li><a href="https://data.gov.in/" target="_blank" rel="noopener noreferrer">Open Government Data</a></li>
+                </ul>
+            </div>
+            <div>
+                <h2>Contact</h2>
+                <address>
+                    <p><svg aria-hidden="true"><use th:href="${icons} + '#i-pin'"/></svg><span>Department of Land Resources, Kartavya Bhavan-3, Dr. Rajendra Prasad Road, New Delhi-110001</span></p>
+                    <p><svg aria-hidden="true"><use th:href="${icons} + '#i-phone'"/></svg><span>011-23063224</span></p>
+                    <p><svg aria-hidden="true"><use th:href="${icons} + '#i-mail'"/></svg><span>support-dilrmp[at]gov[dot]in</span></p>
+                </address>
+            </div>
+        </div>
+
+        <div class="hp-container hp-footer__partners">
+            <div class="hp-footer__logos">
+                <a href="https://www.nic.in/" target="_blank" rel="noopener noreferrer" title="National Informatics Centre (opens in a new window)">
+                    <img th:src="@{/static/images/nic-logo.png}" alt="National Informatics Centre">
+                </a>
+                <a href="https://www.digitalindia.gov.in/" target="_blank" rel="noopener noreferrer" title="Digital India (opens in a new window)">
+                    <img th:src="@{/static/images/digital-india.png}" alt="Digital India">
+                </a>
+            </div>
+            <p class="hp-footer__disclaimer">
+                <strong>Disclaimer:</strong> Data presented on this site is updated by the respective State Governments / UT Administrations and the
+                Department of Land Resources, Ministry of Rural Development, Government of India.
+            </p>
+        </div>
+    </div>
+
+    <div class="hp-footer__bottom">
+        <div class="hp-container hp-footer__bottom-inner">
+            <nav aria-label="Website policies">
+                <a th:href="@{/site/website-policies}">Website Policies</a>
+                <a th:href="@{/site/website-policies#copyright-policy}">Copyright</a>
+                <a th:href="@{/site/website-policies#hyperlinking-policy}">Hyperlinking</a>
+                <a th:href="@{/site/website-policies#privacy-policy}">Privacy</a>
+                <a th:href="@{/site/website-policies#terms-and-conditions}">Terms &amp; Conditions</a>
+                <a th:href="@{/site/website-policies#disclaimer}">Disclaimer</a>
+                <a th:href="@{/site/help#screen-reader-access}">Screen Reader Access</a>
+            </nav>
+            <p>
+                Content owned by Department of Land Resources, MoRD. Designed, developed and hosted by National Informatics Centre.
+                Last updated: <strong th:text="${@environment.getProperty('dilrmp.site.last-updated', '07 Oct 2026')}">07 Oct 2026</strong>
+                &middot; &copy; <span th:text="${#dates.year(#dates.createNow())}">2026</span>
+            </p>
+        </div>
+    </div>
+</footer>

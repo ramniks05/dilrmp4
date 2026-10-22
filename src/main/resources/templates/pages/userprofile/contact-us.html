@@ -1,345 +1,94 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="layouts/dashboard">
-
+      layout:decorate="~{layouts/site}">
 <head>
-    <meta charset="UTF-8">
-    <title>DILRMP-MIS 4.0</title>
-
-
-    <style>
-
-
-
-
-/*--------------------------------------------------------------
-/** 1. VARIABLES
---------------------------------------------------------------*/
-
-/* on mobile devices below 600px
- */
-
- @media (min-width: 768px) {
-    .g-md-3, .gy-md-3 {
-        --bs-gutter-y: 1rem;
-    }
-}
-@media (min-width: 768px) {
-    .g-md-3, .gx-md-3 {
-        --bs-gutter-x: 1rem;
-    }
-}
-
-.row>* {
-    flex-shrink: 0;
-    width: 100%;
-    max-width: 100%;
-    padding-right: calc(var(--bs-gutter-x)* .5);
-    padding-left: calc(var(--bs-gutter-x)* .5);
-    margin-top: var(--bs-gutter-y);
-}
-@media screen and (max-width: 600px) {
-  :root {
-    --header-height: 100px;
-    --header-height-min: 80px;
-  }
-}
-
-/* Theme Colors */
-:root {
-  --primary-color: var(--ux4g-color-primary-600);
-  --light-primary-color: var(--ux4g-color-primary-50);
-  --secondary-color: var(--ux4g-color-blue-600);
-  --light-secondary-color: var(--ux4g-color-blue-100);
-  --tertiary-color: var(--ux4g-color-secondary-50);
-  --dark-color: var(--ux4g-text-neutral-primary);
-  --light-color: #FFFFFF;
-  --grey-color: #BBC7D4;
-  --light-dark-color: #727272;
-  --light-grey-color: #f5f5f5;
-}
-
-/* Fonts */
-:root {
-  --body-font: var(--ux4g-font-family-base);
-  --heading-font: var(--ux4g-font-family-base);
-}
-
-body {
-
-  --bs-link-color: var(--dark-color);
-  --bs-link-hover-color: var(--dark-color);
-
-  --bs-link-color-rgb: 40, 40, 40;
-  --bs-link-hover-color-rgb: 0, 0, 0;
-
-  --bs-light-rgb: 248, 248, 248;
-
-  --bs-font-sans-serif: var(--body-font);
-  --bs-body-font-family: var(--bs-font-sans-serif);
-  --bs-body-font-size: 1rem;
-  --bs-body-font-weight: 400;
-  --bs-body-line-height: 1.3rem;
-  --bs-body-color: var(--dark-color);
-
-  --bs-primary: var(--ux4g-color-primary-600);
-  --bs-primary-rgb: 74, 43, 194;
-  --bs-primary-bg-subtle: var(--ux4g-color-primary-50);
-
-  --bs-border-color: var(--ux4g-border-color-neutral-subtle);
-
-  --bs-secondary: var(--ux4g-color-blue-600);
-  --bs-secondary-rgb: 50, 113, 234;
-  --bs-secondary-bg-subtle: var(--ux4g-color-blue-100);
-
-  --bs-tertiary: var(--ux4g-color-secondary-600);
-  --bs-tertiary-bg-subtle: var(--ux4g-color-secondary-50);
-
-}
-
-/*----- catergory Section Style -------------------------*/
-.category-paragraph {
-  transition: all 0.3s ease-in;
-}
-
-.primary {
-  background: var(--bs-primary-bg-subtle);
-  transition: all 0.3s ease-in;
-}
-
-.svg-primary {
-  color: var(--primary-color);
-  transition: all 0.3s ease-in;
-}
-
-.primary:hover {
-  background: var(--bs-primary);
-  box-shadow: var(--ux4g-shadow-l2);
-}
-
-.secondary {
-  background: var(--bs-secondary-bg-subtle);
-  transition: all 0.3s ease-in;
-}
-
-.svg-secondary {
-  color: var(--secondary-color);
-  transition: all 0.3s ease-in;
-}
-
-.secondary:hover {
-  background: var(--bs-secondary);
-  box-shadow: var(--ux4g-shadow-l2);
-}
-
-.tertiary {
-  background: var(--bs-tertiary-bg-subtle);
-  transition: all 0.3s ease-in;
-}
-
-.svg-tertiary {
-  color: var(--bs-tertiary);
-  transition: all 0.3s ease-in;
-}
-
-.tertiary:hover {
-  background: var(--bs-tertiary);
-  box-shadow: var(--ux4g-shadow-l2);
-}
-
-.gray {
-  background: var(--ux4g-color-neutral-100);
-  transition: all 0.3s ease-in;
-}
-
-.svg-gray {
-  color: var(--bs-gray);
-  transition: all 0.3s ease-in;
-}
-
-.gray:hover {
-  background: var(--ux4g-color-primary-600);
-  box-shadow: var(--ux4g-shadow-l2);
-}
-
-.primary:hover .svg-primary,
-.primary:hover .category-paragraph,
-.secondary:hover .svg-secondary,
-.secondary:hover .category-paragraph,
-.tertiary:hover .svg-tertiary,
-.tertiary:hover .category-paragraph,
-.gray:hover .svg-gray,
-.gray:hover .category-paragraph {
-  color: var(--light-color);
-}
-
-
-
-@media screen and (max-width: 800px) {
-  .product-box {
-    width: 50%;
-  }
-}
-
-.fw-bold {
-    font-weight:  500!important;
-}
-
-a {
-    color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity, 1));
-    text-decoration: underline;
-}
-
-
-.container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
-    --bs-gutter-x: 1.5rem;
-    --bs-gutter-y: 0;
-    width: 100%;
-    padding-right: calc(var(--bs-gutter-x)* .5);
-    padding-left: calc(var(--bs-gutter-x)* .5);
-    margin-right: auto;
-    margin-left: auto;
-
-
-
-}
-img, svg {
-    vertical-align: middle;
-}
-.svg-primary {
-    color: var(--primary-color);
-    transition: all 0.3s ease-in;
-}
-.iconContent1 {
-    font-size: 60px;
-    color: var(--ux4g-color-primary-600);
-}
-
-.top-boxes {
-    padding-top: 20px;
-    padding-bottom: 12%;
-}
-
-
-    </style>
+    <title>Contact Us - DILRMP-MIS 4.0</title>
 </head>
 <body>
-<!-- Content Wrapper. Contains page content -->
-<div class="content" layout:fragment="content">
+<main id="main-content" tabindex="-1" layout:fragment="content" th:with="icons=@{/static/images/icons/dilrmp-icons.svg}">
 
-    <div class="card-header" style="background-color: var(--ux4g-bg-primary); text-align: center; padding: 10px">
-        <div style="display: inline-block; background-color: #ffffff; padding: 10px 20px; border-radius: 8px; box-shadow: var(--ux4g-shadow-l1)">
-            <div class="gigw-ticker" role="region" aria-label="Announcement">
-                <div class="gigw-ticker-viewport" tabindex="0">
-                    <p class="gigw-ticker-text" style="margin: 0; font-size: 16px; color: #c00000; font-weight: bold">The new MIS 4.0 was launched on October 15, 2024. All States/UTs are required to complete data entry by the end of this week.</p>
-                </div>
-                <button type="button" class="gigw-ticker-toggle" data-gigw-ticker-toggle aria-pressed="false" aria-label="Pause scrolling announcement">Pause</button>
-            </div>
+    <section class="hp-page-hero" aria-labelledby="hp-page-title">
+        <div class="hp-container">
+            <nav class="hp-crumbs" aria-label="Breadcrumb">
+                <a th:href="@{/}">Home</a><span aria-hidden="true">/</span><span aria-current="page">Contact Us</span>
+            </nav>
+            <h1 id="hp-page-title">Contact Us</h1>
+            <p>Reach the DILRMP-MIS team for help with data entry, reports and technical issues.</p>
         </div>
-    </div>
+    </section>
 
-    <section>
-        <div class="container " style="max-width: 75%;">
-
-            <!--<div class="row top-boxes px-4 px-lg-5 mt-4" >
-                <div class="col-lg-12 col-12">
-                    <h4>Contact Us</h4>
-                    <hr>
+    <section class="hp-section" aria-labelledby="hp-support-title">
+        <div class="hp-container">
+            <div class="hp-section__head">
+                <div>
+                    <span class="hp-kicker">Technical support</span>
+                    <h2 id="hp-support-title">Contact for DILRMP Technical Support</h2>
                 </div>
-            </div>-->
-            <div class="row top-boxes">
-
-                <h3>Contact for DILRMP Technical Support</h3>
-
-            <hr>
-
-            <div class="row g-md-3 mt-2">
-                <div class="col-md-4">
-                    <div class="primary rounded-3 p-4 my-3">
-
-                        <div class="d-flex align-items-center">
-
-
-                            <div class="ps-4">
-                                <h2  class="category-paragraph"  ></h2>
-                                <p class="category-paragraph fw-bold  mb-1">
-                                <div class="text-center category-paragraph fw-bold  mb-1" >
-                                    <h5 class="support-MISheading"> Director</h5>
-                                    <h5 class="fw-bolder">Shri Shyam Kumar</h5><br><br>
-
-                                    Email: shyamkumar[dot]dad[at]gov[dot]in<br>
-                                    Contact No: +91-11-23062456
-                                </div>
-                                </p>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                </div>
-                <div class="col-md-4">
-                    <div class="secondary rounded-3 p-4 my-3">
-
-                        <div class="d-flex align-items-center">
-
-                            <div class="ps-4">
-
-                                <p class="category-paragraph fw-bold  mb-1">
-                                <div class="text-center category-paragraph fw-bold  mb-1">
-                                    <h5 class="support-MISheading">Technical Support for MIS</h5>
-                                    <h5 class="fw-bolder">
-                                        Dr. Ganesh Khadanga</h5>
-                                    <h6>Scientist-F and HOD</h6><br>
-                                    Email: ganesh[at]nic[dot]in<br>
-                                    Contact No:+91-11-23063224 | +91-11-23063272
-                                </div>
-                                </p>
-
-                            </div>
-                        </div>
-
-
-                    </div>
-
-
-
-                </div>
-                <div class="col-md-4">
-                    <div class="tertiary rounded-3 p-4 my-3">
-
-                        <div class="d-flex align-items-center">
-
-                            <div class="ps-4">
-
-                                <p class="category-paragraph fw-bold  mb-1">
-                                <div class="text-center category-paragraph fw-bold  mb-1">
-
-                                    <h5 class="support-MISheading">Technical Support for MIS</h5>
-                                    <h5 class="fw-bolder">
-                                        Ramesh Kumar</h5>
-                                    <h6>Project Manager</h6><br>
-                                    Email: support-dilrmp[at]gov[dot]in<br>
-                                    Contact No:+91-11-23065802
-
-                                </div></p>
-
-                            </div>
-                        </div>
-
-
-                    </div>
-
-
-                </div>
-
             </div>
 
+            <div class="hp-contacts">
+                <article class="hp-contact" data-tone="navy">
+                    <span class="hp-contact__avatar" aria-hidden="true">AS</span>
+                    <span class="hp-contact__role">Director</span>
+                    <h3>Shri Amit Kumar Singh</h3>
+                    <ul>
+                        <li><svg aria-hidden="true"><use th:href="${icons} + '#i-mail'"/></svg><span>amitkumarsingh[at]ord[dot]gov[dot]in</span></li>
+                        <li><svg aria-hidden="true"><use th:href="${icons} + '#i-phone'"/></svg><a href="tel:+911124011527">011-24011527</a></li>
+                    </ul>
+                </article>
+
+                <article class="hp-contact" data-tone="saffron">
+                    <span class="hp-contact__avatar" aria-hidden="true">GK</span>
+                    <span class="hp-contact__role">Technical Support for MIS</span>
+                    <h3>Dr. Ganesh Khadanga</h3>
+                    <p class="hp-contact__desig">Scientist-F and HOD</p>
+                    <ul>
+                        <li><svg aria-hidden="true"><use th:href="${icons} + '#i-mail'"/></svg><span>ganesh[at]nic[dot]in</span></li>
+                        <li><svg aria-hidden="true"><use th:href="${icons} + '#i-phone'"/></svg>
+                            <span><a href="tel:+911123063224">+91-11-23063224</a> | <a href="tel:+911123063272">+91-11-23063272</a></span></li>
+                    </ul>
+                </article>
+
+                <article class="hp-contact" data-tone="green">
+                    <span class="hp-contact__avatar" aria-hidden="true">RK</span>
+                    <span class="hp-contact__role">Technical Support for MIS</span>
+                    <h3>Ramesh Kumar</h3>
+                    <p class="hp-contact__desig">Project Manager</p>
+                    <ul>
+                        <li><svg aria-hidden="true"><use th:href="${icons} + '#i-mail'"/></svg><span>support-dilrmp[at]gov[dot]in</span></li>
+                        <li><svg aria-hidden="true"><use th:href="${icons} + '#i-phone'"/></svg><a href="tel:+911123065802">+91-11-23065802</a></li>
+                    </ul>
+                </article>
             </div>
         </div>
     </section>
-</div>
-</body>
 
+    <section class="hp-section hp-section--tint" aria-labelledby="hp-office-title">
+        <div class="hp-container">
+            <h2 class="sr-only-gigw" id="hp-office-title">Office and helpdesk</h2>
+            <div class="hp-split">
+                <div class="hp-panel hp-panel--pad">
+                    <h3 class="hp-panel__title">Office address</h3>
+                    <address class="hp-info-list">
+                        <p><svg aria-hidden="true"><use th:href="${icons} + '#i-pin'"/></svg>
+                            <span>Department of Land Resources, Ministry of Rural Development, Government of India,
+                                Kartavya Bhavan-3, Dr. Rajendra Prasad Road, New Delhi-110001</span></p>
+                    </address>
+                </div>
+                <div class="hp-panel hp-panel--pad">
+                    <h3 class="hp-panel__title">DILRMP-MIS helpdesk</h3>
+                    <div class="hp-info-list">
+                        <p><svg aria-hidden="true"><use th:href="${icons} + '#i-phone'"/></svg><a href="tel:+911123063224">011-23063224</a></p>
+                        <p><svg aria-hidden="true"><use th:href="${icons} + '#i-mail'"/></svg><span>support-dilrmp[at]gov[dot]in</span></p>
+                    </div>
+                    <div class="hp-cta__actions">
+                        <a class="hp-btn hp-btn--saffron hp-btn--sm" th:href="@{/site/feedback}">Send feedback</a>
+                        <a class="hp-btn hp-btn--outline hp-btn--sm" th:href="@{/site/help}">Help</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
 </html>

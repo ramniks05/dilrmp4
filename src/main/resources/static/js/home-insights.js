@@ -53,9 +53,8 @@
     function renderChain(chain) {
         var el = host('hp-chain');
         if (!chain || !chain.steps) { unavailable('hp-chain'); return; }
-        el.innerHTML = chain.steps.map(function (s, i) {
+        el.innerHTML = chain.steps.map(function (s) {
             return '<li class="hp-chain__step" style="--p:' + s.percent + '%">'
-                + '<span class="hp-chain__no">' + (i + 1) + '</span>'
                 + '<span class="hp-chain__label">' + esc(s.label) + '</span>'
                 + '<b class="hp-chain__pct">' + num(s.percent).toFixed(1) + '%</b>'
                 + '<span class="hp-chain__bar"><i></i></span>'
@@ -161,14 +160,14 @@
 
     function yearNote(m) {
         if (!m || !m.yearEarliest) { return ''; }
-        return 'Digitised up to the year ' + esc(m.yearEarliest) + ' to ' + esc(m.yearLatest) + ', as reported by ' + indian(m.yearDistricts) + ' districts.';
+        return 'Digitized up to the year ' + esc(m.yearEarliest) + ' to ' + esc(m.yearLatest) + ', as reported by ' + indian(m.yearDistricts) + ' districts.';
     }
 
     function renderModernisation(mod) {
         if (!mod) { unavailable('hp-modern'); return; }
         var html = '';
         if (mod.sro) {
-            html += splitBar('SRO modernisation', [
+            html += splitBar('SRO modernization', [
                 { label: 'State / PPP funds', value: mod.sro.stateFunds, cls: 'is-state' },
                 { label: 'DILRMP funds', value: mod.sro.dilrmpFunds, cls: 'is-dilrmp' }
             ], mod.sro.online, 'SROs with online registration');

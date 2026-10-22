@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:title-pattern="$CONTENT_TITLE">DILRMP-MIS 4.0</title>
+    <th:block th:replace="~{fragments/favicon :: links}"></th:block>
+    <meta name="description" content="DILRMP-MIS 4.0 - Management Information System of the Digital India Land Records Modernization Programme, Department of Land Resources, Ministry of Rural Development, Government of India.">
+    <meta name="author" content="Department of Land Resources, Ministry of Rural Development, Government of India">
+
+    <link rel="stylesheet" th:href="@{/static/ux4g/3.3.2/ux4g-dilrmp.css}">
+    <link rel="stylesheet" th:href="@{/static/css/gigw.css}">
+    <link rel="stylesheet" th:href="@{/static/css/site-chrome.css}">
+    <link rel="stylesheet" th:href="@{/static/css/home-preview.css}">
+    <script th:src="@{/static/js/gigw.js}" defer></script>
+    <script th:src="@{/static/js/site.js}" defer></script>
+</head>
+<body class="hp">
+<a class="hp-skip" href="#main-content">Skip to main content</a>
+
+<header th:replace="~{fragments/site-header :: site-header}"></header>
+
+<main id="main-content" tabindex="-1" layout:fragment="content"></main>
+
+<footer th:replace="~{fragments/site-footer :: site-footer}"></footer>
+</body>
+</html>

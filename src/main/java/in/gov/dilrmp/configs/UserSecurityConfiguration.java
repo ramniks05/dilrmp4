@@ -82,6 +82,9 @@ public class UserSecurityConfiguration {
                             .expiredUrl("/login?sessionExpired")
                     )
                     .authorizeHttpRequests(requests -> requests
+                                                .requestMatchers("/physicalProgressReports/as-on-date/**",
+                                                                "/physicalProgressReports/clr/state-level-as-on-date")
+                                                .authenticated()
                                                 .requestMatchers("/userProfile/contact-us").permitAll()
                                                 .requestMatchers("/userProfile/about-us").permitAll()
                                                 .requestMatchers("/site/**").permitAll()
@@ -106,7 +109,7 @@ public class UserSecurityConfiguration {
                                                 .requestMatchers("/dolr/state-profile-word/**")
                                                 .hasRole("DOLR")
                                                 .requestMatchers("/state/state-profile-word/**")
-                                                .hasRole("STATE")
+                                                .denyAll()
                                                 .requestMatchers("/dolr/**")
                                                 .hasAnyRole("DOLR","ADMIN","SGO")
                                                 .requestMatchers("/state/**")

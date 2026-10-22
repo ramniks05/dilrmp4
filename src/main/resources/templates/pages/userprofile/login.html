@@ -1,87 +1,19 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="layouts/dashboard1">
-
+      layout:decorate="~{layouts/site}">
 <head>
-    <meta charset="UTF-8">
-    <title>DILRMP-MIS-4.0-login</title>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
-            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <title>Login - DILRMP-MIS 4.0</title>
+    <script th:src="@{/static/js/jquery.min.js}"></script>
     <script type="text/javascript" th:src="@{/static/dilrmp/physical-monitoring/cryptoJs.min.js}"></script>
 
+    <script th:inline="javascript">
+        var captchaUrl = /*[[@{/dilrmp/captcha}]]*/ 'dilrmp/captcha';
 
-    <style>
-        .flex-message {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: var(--ux4g-bg-primary-strong);
-            margin-bottom: 20px;
-            font-size: 17px;
-            /*color: #8B008B;*/
-            color: 	#FFFFFF;
-            font-weight: 500;
-            overflow: hidden;
-        }
-
-        .flex-message p {
-            margin: 0;
-            animation: marquee 25s linear infinite;
-        }
-
-        @keyframes marquee {
-            0% {
-                transform: translateX(100%);
-            }
-            100% {
-                transform: translateX(-100%);
-            }
-        }
-
-        .nato-text {
-    font-family: var(--font-nato);
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 30px;
-    color: #000;
-    margin-bottom: 0.0rem;
-}
-.shadow-box {
-    box-shadow: var(--ux4g-shadow-l1);
-    margin-top: 5rem;
-    margin-bottom: 5rem;
-}
-
-.btn-link:hover {
-    color: #ffffff;
-    text-decoration: none;
-
-}
-.btn-primary {
-    color: #fff;
-    background-color: var(--ux4g-bg-primary);
-    border-color: #36d0e9;
-    box-shadow: none;
-}
-
-.btn-link {
-    font-weight: 400;
-    color: #4db1c1;
-    text-decoration: none;
-}
-button:hover {
-    background-color: var(--ux4g-bg-primary);
-}
-
-
-
-    </style>
-
-    <script>
-        jQuery.noConflict();
-        $(document).ready(function () {
+        jQuery(function ($) {
             $('#pwd').attr('autocomplete', 'new-password');
             var passwordEntered = false;
+            var passwordHashed = false;
+
             function hashAndSet(valueSelector, oneTimeTokenSelector) {
                 var oneTimeToken = "";
                 var value = $(valueSelector).val();
@@ -90,100 +22,88 @@ button:hover {
                 var hashedValue = combinedValue;
                 $(valueSelector).val(hashedValue);
             }
-            $('#pwd').on('blur', function () {
+
+            function hidePassword() {
+                $('#pwd').attr('type', 'password');
+                $('#pwdToggle').attr({'aria-pressed': 'false', 'aria-label': 'Show password', 'title': 'Show password'})
+                    .find('use').attr('href', $('#pwdToggle').data('icon-show'));
+            }
+
+            function hashPassword() {
                 if (passwordEntered) {
                     hashAndSet('#pwd', '#oneTimeToken');
                     passwordEntered = false;
+                    passwordHashed = true;
+                    hidePassword();
                 }
-            });
-            //
+            }
+
+            $('#pwd').on('blur', hashPassword);
             $('#pwd').on('input', function () {
                 passwordEntered = true;
             });
-            //
+            // A hashed value cannot be edited, so start again when the officer comes back to the field.
+            $('#pwd').on('focus', function () {
+                if (passwordHashed) {
+                    $(this).val('');
+                    passwordHashed = false;
+                }
+            });
             $(document).on('click', function (event) {
-                if (!$(event.target).closest('#pwd').length) {
+                if (!$(event.target).closest('#pwd, #pwdToggle').length) {
                     $('#pwd').trigger('blur');
                 }
             });
-            jQuery('#refreshCaptcha').click(function () {
 
-                $('#captchaImage').attr('src', 'dilrmp/captcha?' + new Date().getTime());
+            $('#pwdToggle').on('mousedown', function (event) {
+                event.preventDefault();
+            });
+            $('#pwdToggle').on('click', function () {
+                if (passwordHashed) { return; }
+                var show = $('#pwd').attr('type') === 'password';
+                $('#pwd').attr('type', show ? 'text' : 'password');
+                $(this).attr({
+                    'aria-pressed': String(show),
+                    'aria-label': show ? 'Hide password' : 'Show password',
+                    'title': show ? 'Hide password' : 'Show password'
+                }).find('use').attr('href', $(this).data(show ? 'icon-hide' : 'icon-show'));
+            });
 
+            $('#refreshCaptcha').on('click', function () {
+                $('#captchaImage').attr('src', captchaUrl + '?' + new Date().getTime());
+                $('#captcha').val('').focus();
             });
 
             $('#login').submit(function (event) {
+                hashPassword();
                 var userName = $("#loginIdRead").val();
                 var captcha = $("#captcha").val();
-                var captcha1 = $("#captcha").val();
-
-                var pwd = $("#password_show_for_otp").val();
                 var pwd1 = $("#pwd").val();
-                var bol = false;
+                $('.hp-input input').removeClass('is-invalid');
 
-                if (userName != '') {
-                    $("#invalidotp").text("");
-                    $('#loginIdRead').css({
-                        "background-color": "white"
-                    });
-                    bol = true;
-                } else {
-                    $("#invalidotp").text("Please Enter Username");
-                    $('#loginIdRead').css({
-                        "background-color": "yellow"
-                    });
-                    $('#loginIdRead').focus();
-
-                    bol = false;
-                    return bol;
+                if (userName == '') {
+                    $("#invalidotp").text("Please enter your User ID");
+                    $('#loginIdRead').addClass('is-invalid').focus();
+                    return false;
                 }
-
-                if (pwd1 != '') {
-                    $("#invalidotp").text("");
-                    $('#pwd').css({
-                        "background-color": "white"
-                    });
-                    bol = true;
-                } else {
-                    $("#invalidotp").text("Please Enter Password");
-                    $('#pwd').css({
-                        "background-color": "yellow"
-                    });
-                    $('#pwd').focus();
-
-                    bol = false;
-                    return bol;
+                if (pwd1 == '') {
+                    $("#invalidotp").text("Please enter your password");
+                    $('#pwd').addClass('is-invalid').focus();
+                    return false;
                 }
-
-                if (captcha != '') {
-                    if (captcha.length == 6) {
-                        $("#invalidotp").text("");
-                        $('#captcha').css({
-                            "background-color": "white"
-                        });
-                        bol = true;
-                    } else {
-                        $("#invalidotp").text("Please Enter 6 digit Captcha");
-                        $('#captcha').css({
-                            "background-color": "yellow"
-                        });
-                        $('#captcha').focus();
-
-                        bol = false;
-                        return bol;
-                    }
-                } else {
-                    $("#invalidotp").text("Please Enter Captcha");
-                    $('#captcha').css({
-                        "background-color": "yellow"
-                    });
-                    $('#captcha').focus();
-                    bol = false;
-                    return bol;
-
+                if (captcha == '') {
+                    $("#invalidotp").text("Please enter the CAPTCHA");
+                    $('#captcha').addClass('is-invalid').focus();
+                    return false;
                 }
+                if (captcha.length != 6) {
+                    $("#invalidotp").text("Please enter the 6 character CAPTCHA");
+                    $('#captcha').addClass('is-invalid').focus();
+                    return false;
+                }
+                $("#invalidotp").text("");
                 event.preventDefault();
-                $(this).unbind('submit').submit();
+                $(this).off('submit').submit();
             });
         });
     </script>
@@ -205,120 +125,115 @@ button:hover {
         });
     </script>
 </head>
-
 <body>
-<!-- Content Wrapper. Contains page content -->
-<div class="content" layout:fragment="content">
+<main id="main-content" tabindex="-1" layout:fragment="content" th:with="icons=@{/static/images/icons/dilrmp-icons.svg}">
 
-    <section id="top-nav" class="bg-secondary">
+    <section class="hp-login" aria-labelledby="hp-login-title">
+        <div class="hp-container hp-login__grid">
 
-<!--        <div class="card-header" style="background-color: var(--ux4g-bg-primary); text-align: center">-->
-<!--            <marquee>-->
-<!--                <h4 style="text-align: center; color:#000;">-->
-<!--                    New User ID 's  available in respective State/UT Login  /  नई उपयोगकर्ता आईडी संबंधित राज्य/केंद्र शासित प्रदेश लॉगिन पर उपलब्ध है-->
-<!--                </h4>-->
-<!--            </marquee>-->
+            <div class="hp-login__intro">
+                <nav class="hp-crumbs" aria-label="Breadcrumb">
+                    <a th:href="@{/}">Home</a><span aria-hidden="true">/</span><span aria-current="page">Login</span>
+                </nav>
+                <span class="hp-login__kicker"><svg aria-hidden="true"><use th:href="${icons} + '#i-shield'"/></svg>Secure officer login</span>
+                <h1 id="hp-login-title">Sign in to <span>DILRMP-MIS 4.0</span></h1>
+                <p>For authorised officers of the Department of Land Resources, States/UTs, Districts and IGR offices to enter and monitor programme progress.</p>
 
-<!--        </div>-->
-
-        <div class="card-header" style="background-color: var(--ux4g-bg-primary); text-align: center; padding: 10px">
-            <div style="display: inline-block; background-color: #ffffff; padding: 10px 20px; border-radius: 8px; box-shadow: var(--ux4g-shadow-l1)">
-                <marquee scrollamount="10" style="font-size: 16px; color: red; font-weight: bold">
-                    <h4 style="margin: 4px;">New User ID 's  available in respective State/UT Login  /  नई उपयोगकर्ता आईडी संबंधित राज्य/केंद्र शासित प्रदेश लॉगिन पर उपलब्ध है</h4>
-                </marquee>
-            </div>
-        </div>
-    </section>
-
-    <div class="row justify-content-center" >
-        <div class="card text-center col-md-4 mt-3 col-sm-10 p-0 shadow-box" >
-            <div class="card-header p-0">
-                <h2>Login Page</h2>
-            </div>
-
-            <div th:if="${param.error}">
-                <p style="color: red;" th:text="${param.error}"></p>
-            </div>
-<!--            <div th:if="${param.error}">-->
-<!--                <p style="color: red;">Invalid Credentials! Please try again.</p>-->
-<!--            </div>-->
-
-            <div th:if="${param.errorCaptcha}">
-                <p style="color: red;">Invalid Captcha! Please try again</p>
-            </div>
-
-
-            <div th:if="${message!= null}" class="alert alert-danger" role="alert">
-                <span th:text="${message}"></span>
-            </div>
-
-            <div th:if="${session.error}">
-                <p style="color: red;" th:text="${session.error}"></p>
-            </div>
-            <div class="card-body">
-                <p class="card-tittle">
-                <form th:action="@{/login}" method="post" id="login" autocomplete="off">
-
-                    <input id="oneTimeToken" type="hidden" name="oneTimeToken" th:value="${token}" />
-                <div class="input-group mb-3">
-                    <label class="nato-text"> User ID</label>
-
+                <div class="hp-login__notice" role="note">
+                    <svg aria-hidden="true"><use th:href="${icons} + '#i-info'"/></svg>
+                    <div>
+                        <strong>New User IDs are available in the respective State/UT login.</strong>
+                        <span lang="hi">नई उपयोगकर्ता आईडी संबंधित राज्य/केंद्र शासित प्रदेश लॉगिन पर उपलब्ध है।</span>
+                    </div>
                 </div>
 
-                    <div class="input-group mb-3">
+                <ul class="hp-login__roles" aria-label="Who can log in">
+                    <li><span aria-hidden="true"><svg><use th:href="${icons} + '#i-tehsil'"/></svg></span>DoLR, Ministry</li>
+                    <li><span aria-hidden="true"><svg><use th:href="${icons} + '#i-state'"/></svg></span>State / UT</li>
+                    <li><span aria-hidden="true"><svg><use th:href="${icons} + '#i-district'"/></svg></span>District</li>
+                    <li><span aria-hidden="true"><svg><use th:href="${icons} + '#i-sro'"/></svg></span>IGR / Registration</li>
+                </ul>
+            </div>
 
-                        <input type="text" id="loginIdRead" name="username" class="form-control"
-                               placeholder="Username" autocomplete="off">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-envelope"></span>
-                            </div>
-                        </div>
+            <div class="hp-login__card">
+                <div class="hp-login__head">
+                    <span class="hp-login__badge" aria-hidden="true"><svg><use th:href="${icons} + '#i-lock'"/></svg></span>
+                    <div>
+                        <h2>Login</h2>
+                        <p>Enter your User ID, password and the code shown.</p>
                     </div>
-                <div class="input-group mb-3">
-                    <label class="nato-text">
-                        Password
-                    </label>
-
                 </div>
-                    <div class="input-group mb-3">
-                        <input type="password" id="pwd" name="password" class="form-control" placeholder="Password"
-                               autocomplete="off">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                    <span id="password_show_button" class="input-group-addon"><i class="fa fa-eye"
-                                                                                                 aria-hidden="true"></i></span>
-                            </div>
+
+                <div th:if="${param.error}" class="hp-alert" role="alert">
+                    <svg aria-hidden="true"><use th:href="${icons} + '#i-info'"/></svg><span th:text="${param.error}"></span>
+                </div>
+                <div th:if="${param.errorCaptcha}" class="hp-alert" role="alert">
+                    <svg aria-hidden="true"><use th:href="${icons} + '#i-info'"/></svg><span>Invalid CAPTCHA. Please try again.</span>
+                </div>
+                <div th:if="${message != null}" class="hp-alert" role="alert">
+                    <svg aria-hidden="true"><use th:href="${icons} + '#i-info'"/></svg><span th:text="${message}"></span>
+                </div>
+                <div th:if="${session.error}" class="hp-alert" role="alert">
+                    <svg aria-hidden="true"><use th:href="${icons} + '#i-info'"/></svg><span th:text="${session.error}"></span>
+                </div>
+
+                <form th:action="@{/login}" method="post" id="login" autocomplete="off" novalidate>
+                    <input id="oneTimeToken" type="hidden" name="oneTimeToken" th:value="${token}"/>
+
+                    <div class="hp-field">
+                        <label for="loginIdRead">User ID</label>
+                        <div class="hp-input">
+                            <svg aria-hidden="true"><use th:href="${icons} + '#i-user'"/></svg>
+                            <input type="text" id="loginIdRead" name="username" placeholder="Enter your User ID" autocomplete="off" required>
                         </div>
                     </div>
 
-
-                    <div class="mb-3">
-                        <input type="text" id="captcha" name="captcha" class="form-control"
-                               placeholder="Enter CAPTCHA" maxlength="6">
-                    </div>
-                    <div class="mb-3 row align-items-center">
-                        <div class="col-auto">
-                            <img th:src="@{/dilrmp/captcha}" id="captchaImage" alt="CAPTCHA Image" />
-                        </div>
-                        <div class="col-auto">
-                            <button type="button" id="refreshCaptcha" class="btn btn-link">
-                                <i class="bi bi-arrow-clockwise"></i> Refresh CAPTCHA
+                    <div class="hp-field">
+                        <label for="pwd">Password</label>
+                        <div class="hp-input">
+                            <svg aria-hidden="true"><use th:href="${icons} + '#i-lock'"/></svg>
+                            <input type="password" id="pwd" name="password" placeholder="Enter your password" autocomplete="off" required>
+                            <button type="button" id="pwdToggle" class="hp-input__btn" aria-controls="pwd" aria-pressed="false"
+                                    aria-label="Show password" title="Show password"
+                                    th:attr="data-icon-show=${icons} + '#i-eye', data-icon-hide=${icons} + '#i-eye-off'">
+                                <svg aria-hidden="true"><use th:href="${icons} + '#i-eye'"/></svg>
                             </button>
                         </div>
                     </div>
-                    <div class="input-group mb-3">
-                        <button type="submit" class="btn btn-primary btn-block">Login</button>
+
+                    <div class="hp-field">
+                        <label for="captcha">Security code (CAPTCHA)</label>
+                        <div class="hp-captcha">
+                            <img th:src="@{/dilrmp/captcha}" id="captchaImage" alt="CAPTCHA image: type the characters shown">
+                            <button type="button" id="refreshCaptcha" class="hp-captcha__refresh" aria-label="Refresh CAPTCHA" title="Refresh CAPTCHA">
+                                <svg aria-hidden="true"><use th:href="${icons} + '#i-refresh'"/></svg>
+                            </button>
+                        </div>
+                        <div class="hp-input">
+                            <svg aria-hidden="true"><use th:href="${icons} + '#i-shield'"/></svg>
+                            <input type="text" id="captcha" name="captcha" placeholder="Type the 6 characters above" maxlength="6" autocomplete="off" required>
+                        </div>
                     </div>
 
+                    <p id="invalidotp" class="hp-form-error" role="alert" aria-live="assertive"></p>
+
+                    <button type="submit" class="hp-btn hp-btn--saffron hp-btn--block">
+                        <svg aria-hidden="true"><use th:href="${icons} + '#i-login'"/></svg>Login
+                    </button>
+
+                    <div class="hp-login__links">
+                        <a th:href="@{/userProfile/forget-password}">Forgot password?</a>
+                        <a th:href="@{/site/help#login-help}">Need help?</a>
+                    </div>
                 </form>
+
+                <p class="hp-login__foot">
+                    <svg aria-hidden="true"><use th:href="${icons} + '#i-shield'"/></svg>
+                    Your password is encrypted on this device before it is sent. Never share your User ID or password.
+                </p>
             </div>
-
         </div>
-    </div>
-</div>
-
-
+    </section>
+</main>
 </body>
-
 </html>

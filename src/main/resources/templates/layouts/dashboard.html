@@ -7,6 +7,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DILRMP MIS</title>
+    <th:block th:replace="~{fragments/favicon :: links}"></th:block>
     <meta name="description" content="DILRMP-MIS 4.0 - Management Information System of the Digital India Land Records Modernization Programme, Department of Land Resources, Ministry of Rural Development, Government of India.">
     <meta name="keywords" content="DILRMP, DILRMP MIS, Digital India Land Records Modernization Programme, Department of Land Resources, DoLR, Ministry of Rural Development, Land Records, Computerization of Land Records, Survey Resurvey, SRO, Modern Record Room">
     <meta name="author" content="Department of Land Resources, Ministry of Rural Development, Government of India">
@@ -17,13 +18,21 @@
     <script th:src="@{/static/ux4g/3.3.2/ux4g.js}" defer></script>
     <script th:src="@{/static/js/gigw.js}" defer></script>
     <span th:replace="~{fragments/head :: head}"></span>
+    <link th:href="@{/static/css/site-chrome.css}" rel="stylesheet"/>
+    <link th:href="@{/static/css/mis-theme.css}" rel="stylesheet"/>
+    <script th:src="@{/static/js/site.js}" defer></script>
+    <script th:src="@{/static/js/mis-shell.js}" defer></script>
 
 <body class="hold-transition sidebar-mini">
 
-<span th:replace="~{fragments/top-header :: top-header}"></span>
+<th:block sec:authorize="!isAuthenticated()">
+    <header th:replace="~{fragments/site-header :: site-header}"></header>
+</th:block>
+<div sec:authorize="isAuthenticated()" class="hp-header">
+    <div th:replace="~{fragments/site-header :: site-gov-bar}"></div>
+</div>
 <div class="wrapper">
     <span sec:authorize="isAuthenticated()" th:replace="~{fragments/user-profile-bar :: user-profile-bar}"></span>
-    <span sec:authorize="!isAuthenticated()" th:replace="~{fragments/header :: header}"></span>
     <span sec:authorize="isAuthenticated()" th:replace="~{fragments/sidebar :: sidebar}"></span>
 
     <div id="main-content" class="gigw-skip-target" tabindex="-1"></div>
@@ -31,7 +40,7 @@
         <!--you can replace this using page-->
     </section>
 </div>
-<span th:replace="~{fragments/footer :: footer}"></span>
+<footer th:replace="~{fragments/site-footer :: site-footer}"></footer>
 
 
 <!-- Bootstrap 4 -->

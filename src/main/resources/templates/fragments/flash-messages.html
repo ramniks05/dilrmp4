@@ -1,0 +1,11 @@
+<!--/* Flash messages published by DoLR for the signed-in user's State/UT (and for all States/UTs). */-->
+<section th:fragment="flash-messages(messages)" th:if="${messages != null and !#lists.isEmpty(messages)}"
+         class="mis-flash" aria-label="Announcements from DoLR">
+    <span class="mis-flash__icon" aria-hidden="true"><i class="fas fa-bullhorn"></i></span>
+    <div class="mis-flash__body">
+        <b class="mis-flash__title" th:text="${#lists.size(messages) > 1 ? 'Announcements from DoLR' : 'Announcement from DoLR'}">Announcement from DoLR</b>
+        <ul class="mis-flash__list">
+            <li th:each="msg : ${messages}" th:text="${msg}">Message</li>
+        </ul>
+    </div>
+</section>

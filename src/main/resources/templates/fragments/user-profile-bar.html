@@ -1,44 +1,40 @@
-
-<!-- Navbar -->
-<nav class="main-header navbar navbar-expand navbar-white navbar-light" th:fragment="user-profile-bar">
-  <!-- Left navbar links -->
-  <ul class="navbar-nav">
+<nav class="main-header navbar navbar-expand mis-topbar" th:fragment="user-profile-bar" aria-label="MIS workspace">
+  <ul class="navbar-nav align-items-center">
     <li class="nav-item">
-      <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+      <a class="nav-link mis-topbar__toggle" data-widget="pushmenu" href="#" role="button" aria-label="Show or hide the menu" title="Show or hide the menu">
+        <i class="fas fa-bars" aria-hidden="true"></i>
+      </a>
     </li>
-    <li class="nav-item d-none d-sm-inline-block">
-      <a th:href="@{/}" class="nav-link">Home</a>
+    <li class="nav-item mis-topbar__title">
+      <span class="mis-topbar__kicker">DILRMP-MIS 4.0</span>
+      <span class="mis-topbar__page" id="misPageTitle">Dashboard</span>
     </li>
   </ul>
-  <!-- Right navbar links -->
-  <ul class="navbar-nav ml-auto">
-    <span class="user-loggedin" th:text="${session.userInfo}"></span>&nbsp
-     <!-- Notifications Dropdown Menu -->
-    <li class="nav-item">
-      <a class="nav-link" >
 
-        <span id="currentTime" class="font-weight-bold dilrmp-clock"></span>
-      </a>
-
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" >
-        <i class="far fa-user logged-in font-weight-bold dilrmp-user-dot">●</i>
-        <span class="font-weight-bold dilrmp-user-name" th:text="${session.user}"></span>
-      </a>
-
-    </li>
-
-    <li class="nav-item">
-      <a th:href="@{/logout}" class="btn btn-link btn-rounded">
-        <i class="fas fa-sign-out-alt"></i> Log Out
+  <ul class="navbar-nav ml-auto align-items-center mis-topbar__end">
+    <li class="nav-item d-none d-md-flex">
+      <a class="mis-topbar__link" th:href="@{/}" title="Open the public home page">
+        <i class="fas fa-globe-asia" aria-hidden="true"></i><span>Public site</span>
       </a>
     </li>
-    <li class="nav-item">
-
+    <li class="nav-item d-none d-lg-flex">
+      <span class="mis-topbar__clock" title="Current date and time">
+        <i class="far fa-clock" aria-hidden="true"></i><span id="currentTime"></span>
+      </span>
     </li>
-
-
+    <li class="nav-item">
+      <span class="mis-topbar__user" th:with="uname=${#strings.isEmpty(session.user) ? 'User' : session.user}">
+        <span class="mis-avatar" aria-hidden="true" th:text="${#strings.toUpperCase(#strings.substring(uname, 0, 1))}">U</span>
+        <span class="mis-topbar__who">
+          <b th:text="${uname}">User</b>
+          <small th:replace="~{fragments/sidebar :: role-label}">Officer</small>
+        </span>
+      </span>
+    </li>
+    <li class="nav-item">
+      <a th:href="@{/logout}" class="mis-topbar__logout" title="Log out">
+        <i class="fas fa-sign-out-alt" aria-hidden="true"></i><span class="d-none d-sm-inline">Log out</span>
+      </a>
+    </li>
   </ul>
 </nav>
-

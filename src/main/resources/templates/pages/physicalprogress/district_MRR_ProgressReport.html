@@ -66,9 +66,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <a th:href="@{/reports/physical-progress-report}" class="btn btn-primary" style="font-size: 13px;">
-                            ← Back
-                        </a>
+                        <div th:replace="~{fragments/report-nav :: report-nav('mrr', 'district', ${stateName})}"></div>
                         <div class="table-responsive text-nowrap">
                             <table id="example2" class="table table-bordered  table-striped-columns table-success table-striped  table-responsive">
                                 <thead class="card-info wrap-text" style="background-color: var(--dilrmp-th-bg); color: var(--dilrmp-th-text)">

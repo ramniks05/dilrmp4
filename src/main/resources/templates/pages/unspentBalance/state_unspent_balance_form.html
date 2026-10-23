@@ -4,10 +4,10 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card card-info">
-                        <div class="card-header" style="background: linear-gradient(to right, #32b4c8 0%, rgb(64 101 142));">
+                        <div class="card-header">
                             <div class="row">
                                 <div class="col-sm-10">
-                                    <h3 class="card-title" style="color: #eff3f6; font-size: 24px; font-family: auto; text-shadow: 2px 2px 4px #090a0a; letter-spacing: 2px;">
+                                    <h3 class="card-title" style="font-size: 1.125rem">
                                         Unspent Balance Data Entry
                                     </h3>
                                 </div>
@@ -101,22 +101,23 @@
     </section>
 
     <style>
-        .ub-filter-table { max-width: 520px; background-color: #d9ead3; }
-        .ub-filter-table td { vertical-align: middle; border-color: #b6d7a8 !important; padding: 8px 12px; }
-        .ub-filter-label { width: 45%; white-space: nowrap; }
+        .ub-filter-table { max-width: 520px; background-color: var(--mis-bg, #f5f8fd); border-radius: 10px; overflow: hidden; }
+        .ub-filter-table td { vertical-align: middle; border-color: var(--mis-line, #dbe3f0) !important; padding: 8px 12px; }
+        .ub-filter-label { width: 45%; white-space: nowrap; color: var(--mis-navy, #012358); }
         .ub-filter-value { width: 55%; }
 
         #ubTable { margin-bottom: 0; }
-        #ubTable thead th { background-color: #cfe2f3; color: #1a1d26; text-align: center; vertical-align: middle; font-size: 13px; border-color: #9fc5e8 !important; }
-        #ubTable td { vertical-align: middle; font-size: 13px; }
+        #ubTable thead th { background-color: #eef3fb; color: var(--mis-navy, #012358); text-align: center; vertical-align: middle; font-size: 13px; font-weight: 700; border-color: var(--mis-line, #dbe3f0) !important; }
+        #ubTable td { vertical-align: middle; font-size: 13px; border-color: var(--mis-line, #dbe3f0); }
         #ubTable .ub-col-sn { width: 7%; text-align: center; white-space: nowrap; }
         #ubTable .ub-col-amount { width: 28%; }
-        #ubTable .ub-row-group td { background-color: #d9ead3; font-weight: 700; }
-        #ubTable .ub-row-subtotal td { background-color: #f2f2f2; font-weight: 700; }
+        #ubTable .ub-row-group td { background-color: #f3f6fb; color: var(--mis-navy, #012358); font-weight: 700; }
+        #ubTable .ub-row-subtotal td { background-color: #fafbfd; font-weight: 700; }
         #ubTable .ub-row-sub .ub-col-component { padding-left: 32px; }
-        #ubTable .ub-row-total td { background-color: #fff2cc; font-weight: 700; }
+        #ubTable .ub-row-total td { background-color: #fff4e6; color: var(--mis-navy, #012358); font-weight: 800; border-top: 2px solid var(--mis-saffron, #f57c00); }
         #ubTable .ub-calc { text-align: right; font-weight: 700; }
-        #ubTable input.form-control { font-size: 13px; padding: 4px 8px; height: auto; }
+        #ubTable input.form-control { font-size: 13px; padding: 4px 8px; height: auto; border-radius: 6px; }
+        #ubTable input.form-control:focus { border-color: var(--mis-navy, #012358); box-shadow: 0 0 0 3px rgba(4, 64, 159, .15); }
     </style>
 
     <script>

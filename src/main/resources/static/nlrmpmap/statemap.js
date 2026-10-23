@@ -73,8 +73,8 @@ function loadMatribhoomiData(anchor) {
 /* Lets a page react to State/UT clicks and zoom requests. Pages that do not define
    window.hpMapStateClick keep the existing behaviour. */
 /* BharatMaps Admin Boundary District service: layer 0 = State, layer 1 = District. */
-var HP_BOUNDARY_SERVICE_URL = 'https://mapservice.gov.in/gismapservice/rest/services/BharatMapService/Admin_Boundary_District/MapServer';
-var HP_BOUNDARY_SERVICE_TOKEN = 'pyoVAzN-WABd_Ng9pKqrbbYhZGSs4N2xyusUJ7wjBi26egADkPE6PdVEZoTSV_zU';
+var HP_BOUNDARY_SERVICE_URL = 'https://mapservice.gov.in/gismapservice/rest/services/BharatMapService/Admin_Boundary_Village/MapServer';
+var HP_BOUNDARY_SERVICE_TOKEN = 'RC8vcGojsNt3GLCKzRWLKMVSh4e-HQVPx3QaXecXrUwIFIB37XRG_aJwIsX6bMd7';
 
 var hpStateMap = { map: null, layer: null, extent: null, districtLayer: null };
 var HP_INDIA_EXTENT = { xmin: 7189291.79, ymin: 563260.13, xmax: 11244335.73, ymax: 4780505.83, spatialReference: { wkid: 102100 } };

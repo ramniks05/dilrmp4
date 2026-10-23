@@ -656,17 +656,7 @@ a.hp-cta:hover { box-shadow: var(--ux4g-shadow-l2); }
 .hp-aims li { padding: 6px 12px; border-radius: 999px; background: var(--hp-navy-50); color: var(--hp-navy-800); font-size: 13px; font-weight: 600; }
 .hp-about-note { margin-top: 14px; text-align: center; }
 
-/* ---------------- Home: programme facts and the 10 indicator cards ---------------- */
-.hp-hero__facts { display: flex; flex-wrap: wrap; gap: 8px; margin: -8px 0 22px; padding: 0; list-style: none; }
-.hp-hero__facts li {
-    padding: 5px 12px;
-    border: 1px solid rgba(255, 255, 255, .22);
-    border-radius: 999px;
-    background: rgba(255, 255, 255, .08);
-    color: #e8efff;
-    font-size: 13px;
-    font-weight: 600;
-}
+/* ---------------- Home: the 10 indicator cards ---------------- */
 .hp-kpis--indicators { --cols: 4; }
 .hp-kpis--indicators .hp-kpi__link { align-items: flex-start; }
 .hp-kpis--indicators .hp-kpi__name { display: block; min-height: 2.5em; white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.25; overflow-wrap: anywhere; }

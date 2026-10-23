@@ -232,6 +232,12 @@
                         <p>CNA Bank Balance Report</p>
                     </a>
                 </li>
+                <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN')">
+                    <a href="#" hx-get="/dolr/unspent-balance/report" hx-target="#content" hx-swap="innerHTML" hx-push-url="false" class="nav-link">
+                        <i class="nav-icon fas fa-rupee-sign"></i>
+                        <p>Unspent Balance Report</p>
+                    </a>
+                </li>
 
                 <!-- ============ Data entry (State / District / IGR / Naksha users) ============ -->
                 <li class="nav-header" sec:authorize="hasAnyRole('ROLE_STATE','ROLE_DISTRICT','ROLE_ADC','ROLE_IGR','ROLE_STATEULB','ROLE_GD')">Data entry</li>
@@ -245,6 +251,12 @@
                     <a href="#" hx-get="/state/state-mis-data/form" hx-target="#content" hx-swap="innerHTML" hx-push-url="false" class="nav-link">
                         <i class="nav-icon fas fa-landmark"></i>
                         <p>State MIS Data Entry</p>
+                    </a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ROLE_STATE')">
+                    <a href="#" hx-get="/state/unspent-balance/form" hx-target="#content" hx-swap="innerHTML" hx-push-url="false" class="nav-link">
+                        <i class="nav-icon fas fa-rupee-sign"></i>
+                        <p>Unspent Balance Data Entry</p>
                     </a>
                 </li>
                 <li class="nav-item" sec:authorize="hasRole('ROLE_STATE') || hasRole('ROLE_IGR')">

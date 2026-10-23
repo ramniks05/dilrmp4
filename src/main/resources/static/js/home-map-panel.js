@@ -9,10 +9,10 @@
         { label: '80 - 100%', colour: '#059212' }
     ];
     var COMPONENT_LABELS = {
-        clr: 'Computerization of Land Records', MapDigitization: 'Digitization of Maps / FMBs / Tippans', sro: 'Computerization of Registration (SROs)',
-        mrr: 'Modern Record Rooms', surveyReservey: 'Survey / Re-survey', rccms: 'Computerization of Revenue Courts',
-        linkedwithaadhaar: 'Consent-based Aadhaar linkage with RoR', sroModernization: 'SRO Modernization',
-        legacyRegistered: 'Legacy Registered Documents Digitization', legacyRevenue: 'Legacy Revenue Records Digitization'
+        clr: 'Computerization of Land Records', MapDigitization: 'Digitization of Maps / FMBs / Tippans', sro: 'Computerization of Registration Process (SROs)',
+        mrr: 'Modern Record Room (Tehsil)', surveyReservey: 'Survey / Re-survey', rccms: 'Computerization of Revenue Courts',
+        linkedwithaadhaar: 'Consent-based Aadhaar integration with RoR', sroModernization: 'Modernization of SROs',
+        legacyRegistered: 'Scanning of Legacy Registered Documents', legacyRevenue: 'Scanning of Legacy Revenue Records'
     };
     var MIS_MAP_TITLES = {
         sroModernization: 'Percentage of SROs modernized',

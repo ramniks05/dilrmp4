@@ -1,0 +1,64 @@
+<!-- Inline on purpose: the loader must paint before any external stylesheet or script arrives. -->
+<th:block th:fragment="style">
+    <style>
+        .pg-loader { position: fixed; inset: 0; z-index: 2147483000; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+            background: rgba(245, 248, 253, .94); color: #012358; font: 600 15px/1.4 "Noto Sans", "Segoe UI", Arial, sans-serif; text-align: center;
+            opacity: 1; visibility: visible; transition: opacity .25s ease, visibility 0s linear 0s; }
+        .pg-loader.is-hidden { opacity: 0; visibility: hidden; transition: opacity .25s ease, visibility 0s linear .25s; }
+        .pg-loader__ring { width: 54px; height: 54px; border-radius: 50%; border: 5px solid #d6e2f5; border-top-color: #f57c00; border-right-color: #04409f;
+            animation: pg-spin .9s linear infinite; }
+        .pg-loader__text small { display: block; margin-top: 2px; color: #4b5b76; font-size: 13px; font-weight: 500; }
+        @keyframes pg-spin { to { transform: rotate(360deg); } }
+        @media (prefers-reduced-motion: reduce) { .pg-loader__ring { animation-duration: 2.4s; } }
+        @media print { .pg-loader { display: none !important; } }
+    </style>
+</th:block>
+
+<th:block th:fragment="overlay">
+    <div id="pgLoader" class="pg-loader bhashini-skip-translation" role="status" aria-live="polite">
+        <span class="pg-loader__ring" aria-hidden="true"></span>
+        <span class="pg-loader__text"><span lang="hi">कृपया प्रतीक्षा करें…</span><small>Loading, please wait…</small></span>
+    </div>
+    <script>
+        (function () {
+            var el = document.getElementById('pgLoader');
+            var timer = null;
+            function hide() { clearTimeout(timer); el.classList.add('is-hidden'); }
+            function show() {
+                el.classList.remove('is-hidden');
+                clearTimeout(timer);
+                // Downloads and mailto/tel links fire beforeunload without leaving the page.
+                timer = setTimeout(hide, 15000);
+            }
+            if (document.readyState === 'complete') { hide(); } else { window.addEventListener('load', hide); }
+            // Never keep the page covered if a third-party script stalls the load event.
+            timer = setTimeout(hide, 20000);
+
+            // Downloads, new tabs and in-page links do not leave the page, so they must not raise the loader.
+            var FILE_HINT = /(pdf|excel|xlsx?|docx?|csv|zip|download|export)/i;
+            var skipNext = false, skipTimer = null;
+            function expireSkip() { clearTimeout(skipTimer); skipTimer = setTimeout(function () { skipNext = false; }, 2000); }
+            document.addEventListener('click', function (e) {
+                var a = e.target.closest ? e.target.closest('a[href]') : null;
+                if (!a) { return; }
+                var href = a.getAttribute('href') || '';
+                skipNext = e.defaultPrevented || e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0
+                    || a.hasAttribute('download') || (a.target && a.target !== '_self')
+                    || /^(#|javascript:|mailto:|tel:)/i.test(href)
+                    || FILE_HINT.test(href + ' ' + (a.id || '') + ' ' + (a.title || ''));
+                expireSkip();
+            }, true);
+            document.addEventListener('submit', function (e) {
+                var f = e.target;
+                skipNext = (f.target && f.target !== '_self') || FILE_HINT.test((f.getAttribute('action') || '') + ' ' + (f.id || ''));
+                expireSkip();
+            }, true);
+            window.addEventListener('beforeunload', function () {
+                if (skipNext) { skipNext = false; return; }
+                show();
+            });
+            // Back/forward cache restores the page with the loader still showing.
+            window.addEventListener('pageshow', function (e) { if (e.persisted) { hide(); } });
+        })();
+    </script>
+</th:block>

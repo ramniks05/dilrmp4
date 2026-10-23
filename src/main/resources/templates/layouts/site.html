@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title layout:title-pattern="$CONTENT_TITLE">DILRMP-MIS 4.0</title>
     <th:block th:replace="~{fragments/favicon :: links}"></th:block>
+    <th:block th:replace="~{fragments/page-loader :: style}"></th:block>
     <meta name="description" content="DILRMP-MIS 4.0 - Management Information System of the Digital India Land Records Modernization Programme, Department of Land Resources, Ministry of Rural Development, Government of India.">
     <meta name="author" content="Department of Land Resources, Ministry of Rural Development, Government of India">
 
@@ -18,6 +19,7 @@
     <script th:src="@{/static/js/site.js}" defer></script>
 </head>
 <body class="hp">
+<th:block th:replace="~{fragments/page-loader :: overlay}"></th:block>
 <a class="hp-skip" href="#main-content">Skip to main content</a>
 
 <header th:replace="~{fragments/site-header :: site-header}"></header>

@@ -53,22 +53,22 @@ public class HomeInsightsService {
             {"clr", "Computerization of Land Records (villages)", "state_clr_report_view", "state_id", "clr_completion_percent"},
             {"maps", "Digitization of Maps / FMBs / Tippans", "map_digitization_report_view", "lgd_code", "digitized_maps_fmb_tippans_percent"},
             {"mapsRor", "Integration of RoR with cadastral maps", "map_digitization_report_view", "lgd_code", "villages_linked_with_ror_percent"},
-            {"sro", "Computerization of Registration (SROs)", "state_registration_report_view", "state_id", "online_registration_percent"},
-            {"mrr", "Modern Record Rooms", "mrr_report_view", "state_id", "mrr_completed_out_of_sanctioned_percent"},
+            {"sro", "Computerization of Registration Process (SROs)", "state_registration_report_view", "state_id", "online_registration_percent"},
+            {"mrr", "Modern Record Room (Tehsil)", "mrr_report_view", "state_id", "mrr_completed_out_of_sanctioned_percent"},
             {"survey", "Survey / Re-survey", "survey_resurvey_report_view", "state_id", "survey_completed_village_percent"},
             {"rcms", "Computerization of Revenue Courts", "rcms_report_view", "state_id", "revenue_courts_computerized_percent"},
-            {"aadhaar", "Consent-based Aadhaar linkage with RoR", "linked_aadhaar_report_view", "state_id", "villages_with_100_percent_ror_linked_aadhaar_percent"}
+            {"aadhaar", "Consent-based Aadhaar integration with RoR", "linked_aadhaar_report_view", "state_id", "villages_with_100_percent_ror_linked_aadhaar_percent"}
     };
 
     /** {label, backup table, key column, percent column} */
     private static final String[][] TRENDS = {
             {"Computerization of Land Records (villages)", "state_clr_report_view_backup", "state_id", "clr_completion_percent"},
             {"Maps / FMBs / Tippans digitized", "map_digitization_report_view_backup", "lgd_code", "digitized_maps_fmb_tippans_percent"},
-            {"Computerization of Registration (SROs)", "state_registration_report_view_backup", "state_id", "online_registration_percent"},
-            {"Modern Record Rooms", "mrr_report_view_backup", "state_id", "mrr_completed_out_of_sanctioned_percent"},
+            {"Computerization of Registration Process (SROs)", "state_registration_report_view_backup", "state_id", "online_registration_percent"},
+            {"Modern Record Room (Tehsil)", "mrr_report_view_backup", "state_id", "mrr_completed_out_of_sanctioned_percent"},
             {"Survey / Re-survey", "survey_resurvey_report_view_backup", "state_id", "survey_completed_village_percent"},
             {"Computerization of Revenue Courts", "rcms_report_view_backup", "state_id", "revenue_courts_computerized_percent"},
-            {"Consent-based Aadhaar linkage", "linked_aadhaar_report_view_backup", "state_id", "villages_with100percent_ror_linked_aadhaar_percent"}
+            {"Consent-based Aadhaar integration", "linked_aadhaar_report_view_backup", "state_id", "villages_with100percent_ror_linked_aadhaar_percent"}
     };
 
     /** Map component ids used by statemap.js: {map id, label, state view, state key, state column, district view, district column}.
@@ -78,24 +78,24 @@ public class HomeInsightsService {
                     "district_clr_report_view", "clr_completion_percent"},
             {"MapDigitization", "Digitization of Maps / FMBs / Tippans", "map_digitization_report_view", "lgd_code", "digitized_maps_fmb_tippans_percent",
                     "district_map_digitization_report_view", "digitized_maps_fmb_tippans_percent"},
-            {"sro", "Computerization of Registration (SROs)", "state_registration_report_view", "state_id", "online_registration_percent",
+            {"sro", "Computerization of Registration Process (SROs)", "state_registration_report_view", "state_id", "online_registration_percent",
                     null, null},
-            {"mrr", "Modern Record Rooms", "mrr_report_view", "state_id", "mrr_completed_out_of_sanctioned_percent",
+            {"mrr", "Modern Record Room (Tehsil)", "mrr_report_view", "state_id", "mrr_completed_out_of_sanctioned_percent",
                     "district_mrr_report_view", "mrr_completed_out_of_sanctioned_percent"},
             {"surveyReservey", "Survey / Re-survey", "survey_resurvey_report_view", "state_id", "survey_completed_village_percent",
                     "district_survey_resurvey_report_view", "survey_completed_village_percent"},
             {"rccms", "Computerization of Revenue Courts", "rcms_report_view", "state_id", "revenue_courts_computerized_percent",
                     "district_rcms_report_view", "revenue_courts_computerized_percent"},
-            {"linkedwithaadhaar", "Consent-based Aadhaar linkage with RoR", "linked_aadhaar_report_view", "state_id", "villages_with_100_percent_ror_linked_aadhaar_percent",
+            {"linkedwithaadhaar", "Consent-based Aadhaar integration with RoR", "linked_aadhaar_report_view", "state_id", "villages_with_100_percent_ror_linked_aadhaar_percent",
                     "district_linked_aadhaar_report_view", "villages_with_100_percent_ror_linked_aadhaar_percent"}
     };
 
     /** District MIS sums for the components without a report view: {map id, label, numerator, denominator}. */
     private static final String[][] MIS_COMPONENTS = {
-            {"legacyRegistered", "Legacy Registered Documents Digitization", "legacy_total_digitised_pages", "legacy_total_pages"},
-            {"legacyRevenue", "Legacy Revenue Records Digitization", "coalesce(revenue_legacy_digitised_state_funds_pages, 0) + coalesce(revenue_legacy_digitised_dilrmp_funds_pages, 0)",
+            {"legacyRegistered", "Scanning of Legacy Registered Documents", "legacy_total_digitised_pages", "legacy_total_pages"},
+            {"legacyRevenue", "Scanning of Legacy Revenue Records", "coalesce(revenue_legacy_digitised_state_funds_pages, 0) + coalesce(revenue_legacy_digitised_dilrmp_funds_pages, 0)",
                     "revenue_legacy_total_pages"},
-            {"sroModernization", "SRO Modernization", "coalesce(sros_modernised_state_funds, 0) + coalesce(sros_modernised_dilrmp_funds, 0)", "sro_computerized"}
+            {"sroModernization", "Modernization of SROs", "coalesce(sros_modernised_state_funds, 0) + coalesce(sros_modernised_dilrmp_funds, 0)", "sro_computerized"}
     };
 
     /** Order of components in the State/UT and district panels; SRO components come last as in the District MIS form. */
@@ -514,7 +514,7 @@ public class HomeInsightsService {
         steps.add(step("Maps / FMBs / Tippans digitized", "maps / FMBs / tippans", map.get("total_digitized_maps_fmb_tippans"), map.get("total_maps_fmb_tippans")));
         steps.add(step("RoR integrated with cadastral maps", "villages", map.get("villages_linked_with_ror"), map.get("total_villages")));
         steps.add(step("Parcels geo-referenced", "land parcels", map.get("georeferenced_land_parcels"), map.get("total_land_parcels")));
-        steps.add(step("Parcels with ULPIN", "land parcels", map.get("land_parcels_with_ulipn"), map.get("total_land_parcels")));
+        steps.add(step("Parcels with Bhu-Aadhaar (ULPIN)", "land parcels", map.get("land_parcels_with_ulipn"), map.get("total_land_parcels")));
         steps.add(step("RoR linked with Aadhaar (consent-based)", "RoRs", aadhaar.get("ror_linked_with_aadhaar"), aadhaar.get("total_ror")));
         steps.add(step("RoR linked with mobile number", "RoRs", aadhaar.get("ror_linked_with_mobile_number"), aadhaar.get("total_ror")));
         return Map.of("steps", steps);

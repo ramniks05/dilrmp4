@@ -164,11 +164,21 @@
                     </div>
                 </div>
 
-                <div th:if="${param.error}" class="hp-alert" role="alert">
-                    <svg aria-hidden="true"><use th:href="${icons} + '#i-info'"/></svg><span th:text="${param.error}"></span>
+                <div th:if="${param.error}" class="hp-alert" role="alert" th:with="code=${param.error[0]}, mins=${param.minutes != null ? param.minutes[0] : null}">
+                    <svg aria-hidden="true"><use th:href="${icons} + '#i-info'"/></svg>
+                    <span th:switch="${code}">
+                        <th:block th:case="'attempt1'">Invalid User ID or password. You have 2 more attempts before your account is locked.</th:block>
+                        <th:block th:case="'attempt2'">Invalid User ID or password. You have 1 more attempt before your account is locked.</th:block>
+                        <th:block th:case="'locked'">Your account has been locked after 3 failed login attempts. Please try again after 3 minutes.</th:block>
+                        <th:block th:case="'blocked'" th:text="${mins == null or mins == '0'
+                                ? 'Your account is temporarily locked. Please try again in a minute.'
+                                : 'Your account is temporarily locked. Please try again in ' + mins + (mins == '1' ? ' minute.' : ' minutes.')}">Your account is temporarily locked.</th:block>
+                        <th:block th:case="'active'">This User ID is already logged in on another browser or device. Please log out there first, or try again after some time.</th:block>
+                        <th:block th:case="*">Invalid User ID or password. Please try again.</th:block>
+                    </span>
                 </div>
                 <div th:if="${param.errorCaptcha}" class="hp-alert" role="alert">
-                    <svg aria-hidden="true"><use th:href="${icons} + '#i-info'"/></svg><span>Invalid CAPTCHA. Please try again.</span>
+                    <svg aria-hidden="true"><use th:href="${icons} + '#i-info'"/></svg><span>The security code (CAPTCHA) you entered is incorrect. Please try again.</span>
                 </div>
                 <div th:if="${message != null}" class="hp-alert" role="alert">
                     <svg aria-hidden="true"><use th:href="${icons} + '#i-info'"/></svg><span th:text="${message}"></span>

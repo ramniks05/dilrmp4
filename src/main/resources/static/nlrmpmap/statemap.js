@@ -25,8 +25,8 @@ function loadMatribhoomiData(anchor) {
         getAllMapDataChartforMapDigitization();
     }
     else if (id === "mrr") {
-        document.getElementById("maptitle").innerHTML = "Modern Record Rooms: % of tehsils with completed MRR";
-        document.getElementById("tabletitle").innerHTML = "Modern Record Rooms: % of tehsils with completed MRR";
+        document.getElementById("maptitle").innerHTML = "Modern Record Room (Tehsil): % of tehsils with completed MRR";
+        document.getElementById("tabletitle").innerHTML = "Modern Record Room (Tehsil): % of tehsils with completed MRR";
         statemap("6", 0, 0, 0, 0);
         getAllMapDataChartforMRR();
     }
@@ -37,8 +37,8 @@ function loadMatribhoomiData(anchor) {
         getAllMapDataChartforSurveyReservey();
     }
     else if (id === "sro") {
-        document.getElementById("maptitle").innerHTML = "Computerization of Registration: % of SROs computerized";
-        document.getElementById("tabletitle").innerHTML = "Computerization of Registration: % of SROs computerized";
+        document.getElementById("maptitle").innerHTML = "Computerization of Registration Process: % of SROs computerized";
+        document.getElementById("tabletitle").innerHTML = "Computerization of Registration Process: % of SROs computerized";
         statemap("50", 0, 0, 0, 0);
         getAllMapDataChartforSro();
     }
@@ -61,8 +61,8 @@ function loadMatribhoomiData(anchor) {
         getAllMapDataChartforRCCMS();
     }
     else if (id === "linkedwithaadhaar") {
-        document.getElementById("maptitle").innerHTML = "Consent-based Aadhaar linkage: % of villages with all RoRs linked";
-        document.getElementById("tabletitle").innerHTML = "Consent-based Aadhaar linkage: % of villages with all RoRs linked";
+        document.getElementById("maptitle").innerHTML = "Consent-based Aadhaar integration: % of villages with all RoRs linked";
+        document.getElementById("tabletitle").innerHTML = "Consent-based Aadhaar integration: % of villages with all RoRs linked";
         statemap("90", 0, 0, 0, 0);
         getAllMapDataChartforAadhar();
     }
@@ -167,6 +167,7 @@ function registerStateLayer(map, layer, generation) {
         hpRetireMap(hpStateMap.map);
     }
     hpStateMap = { map: map, layer: layer, extent: null, districtLayer: null, zoomedState: null };
+    hpDecoratePopup(map);
     map.on("load", function () {
         if (typeof window.hpMapStateClick !== "function") {
             hpStateMap.extent = map.extent;
@@ -274,6 +275,65 @@ function hpBringHighlightsToTop() {
             map.reorderLayer(layer, map.graphicsLayerIds.length - 1);
         }
     });
+}
+
+/* Home page only: the component maps build their hover text as "Label : value" lines; this turns that
+   text into a card (name, figures, coloured percentage bar) without touching each component's code. */
+function hpDecoratePopup(map) {
+    var iw = map.infoWindow;
+    if (!iw || iw.hpDecorated) { return; }
+    iw.hpDecorated = true;
+    var setContent = iw.setContent;
+    iw.setContent = function (content) {
+        if (typeof window.hpMapStateClick === "function" && typeof content === "string") {
+            if (iw.domNode && iw.domNode.classList) { iw.domNode.classList.add("hp-popup"); }
+            content = hpFormatPopup(content);
+        }
+        return setContent.call(iw, content);
+    };
+}
+
+function hpFormatPopup(html) {
+    var esc = function (s) {
+        return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; });
+    };
+    var name = null, pct = null, rows = [];
+    String(html).replace(/^\s*<div>/i, "").replace(/<\/div>\s*$/i, "").split(/<br\s*\/?>/i).forEach(function (part) {
+        var holder = document.createElement("div");
+        holder.innerHTML = part;
+        var text = (holder.textContent || "").replace(/\s+/g, " ").trim();
+        var at = text.indexOf(":");
+        if (at < 0) { return; }
+        var label = text.slice(0, at).trim(), value = text.slice(at + 1).trim();
+        if (value === "" || /^(undefined|null|NaN)$/i.test(value)) { value = "Not reported"; }
+        if (/^(state\s*name|district)$/i.test(label)) { name = value; }
+        else if (/percent/i.test(label)) { pct = value; }
+        else { rows.push([label, value]); }
+    });
+    if (name === null && pct === null && !rows.length) { return html; }
+
+    var out = '<div class="hp-pop">';
+    if (name !== null) { out += '<div class="hp-pop__name">' + esc(name) + '</div>'; }
+    if (pct !== null) {
+        var p = parseFloat(pct);
+        if (isNaN(p)) {
+            out += '<div class="hp-pop__pct is-empty">' + esc(pct) + '</div>';
+        } else {
+            var shown = Math.max(0, Math.min(100, p));
+            out += '<div class="hp-pop__pct"><b>' + p.toFixed(2) + '%</b><span class="hp-pop__bar"><i style="width:' + shown
+                + '%;background:' + fillColorOnMap(p) + '"></i></span></div>';
+        }
+    }
+    if (rows.length) {
+        out += '<dl class="hp-pop__rows">';
+        rows.forEach(function (r) {
+            var v = r[1];
+            if (/^-?\d+(\.\d+)?$/.test(v)) { v = Number(v).toLocaleString("en-IN"); }
+            out += '<div><dt>' + esc(r[0]) + '</dt><dd>' + esc(v) + '</dd></div>';
+        });
+        out += '</dl>';
+    }
+    return out + '</div>';
 }
 
 /* Zooms to one district of the selected State/UT once the district layer has drawn it. */
@@ -396,15 +456,16 @@ function hpZoomToState(stateId) {
 
 /* Home page only: each statemap() branch switches navigation off on load; this load handler runs after
    those, so panning and zooming come back without touching the shared per-component code. Double-click
-   zoom stays off because a click selects a State/UT. */
+   zoom stays off because a click selects a State/UT; wheel zoom stays off so the mouse wheel scrolls the
+   page (the +/- buttons zoom instead). */
 function hpEnableMapNavigation(map) {
     // The individual enableX() calls only reconnect handlers while map navigation as a whole is on.
     map.enableMapNavigation();
     map.enablePan();
-    map.enableScrollWheelZoom();
     map.enableRubberBandZoom();
     map.enableKeyboardNavigation();
     if (typeof map.enablePinchZoom === "function") { map.enablePinchZoom(); }
+    map.disableScrollWheelZoom();
     map.disableDoubleClickZoom();
     map.disableShiftDoubleClickZoom();
 }

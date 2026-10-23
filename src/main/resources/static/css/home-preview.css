@@ -134,6 +134,24 @@
 .hp-zoom button:focus-visible { outline: 3px solid var(--hp-navy-100); outline-offset: -3px; }
 .hp-zoom svg { width: 18px; height: 18px; }
 #mapDiv { cursor: grab; }
+
+/* Map hover popup (ArcGIS infoWindow), restyled as a card. */
+.esriPopup.hp-popup .esriPopupWrapper { border: 0; border-radius: 12px; overflow: hidden; box-shadow: 0 12px 28px rgba(0, 25, 68, .22), 0 0 0 1px rgba(1, 35, 88, .08); }
+/* The component name is already the map heading, so the title and zoom-to rows are dropped. */
+.esriPopup.hp-popup .sizer:not(.content) { display: none !important; }
+.esriPopup.hp-popup .contentPane { max-height: none; padding: 10px 12px 12px; background: #fff; }
+.esriPopup.hp-popup .pointer, .esriPopup.hp-popup .outerPointer { background: #fff; box-shadow: none; }
+.hp-pop { min-width: 190px; color: var(--hp-ink, #1f2937); font-family: var(--ux4g-font-family-base); }
+.hp-pop__name { margin-bottom: 6px; font-size: 15.5px; font-weight: 700; line-height: 1.25; color: var(--hp-navy-900, #001944); }
+.hp-pop__pct { display: grid; gap: 5px; margin-bottom: 8px; }
+.hp-pop__pct b { font-size: 22px; font-weight: 800; line-height: 1; color: var(--hp-navy-900, #001944); }
+.hp-pop__pct.is-empty { font-size: 13px; font-weight: 600; color: var(--hp-muted, #64748b); }
+.hp-pop__bar { display: block; height: 6px; border-radius: 999px; background: #e8edf5; overflow: hidden; }
+.hp-pop__bar i { display: block; height: 100%; border-radius: inherit; }
+.hp-pop__rows { display: grid; gap: 4px; margin: 0; padding-top: 8px; border-top: 1px solid var(--hp-line, #e3e8f0); }
+.hp-pop__rows div { display: flex; justify-content: space-between; gap: 12px; font-size: 12.5px; }
+.hp-pop__rows dt { font-weight: 500; color: var(--hp-muted, #64748b); }
+.hp-pop__rows dd { margin: 0; font-weight: 700; color: var(--hp-ink, #1f2937); text-align: right; white-space: nowrap; }
 #mapDiv:active { cursor: grabbing; }
 
 .hp-details { padding: 18px; gap: 16px; }
@@ -774,7 +792,8 @@ a.hp-cta:hover { box-shadow: var(--ux4g-shadow-l2); }
     font-size: 14px;
     font-weight: 600;
 }
-.hp-alert svg { margin-top: 2px; }
+.hp-alert svg { flex: 0 0 auto; width: 18px; height: 18px; margin-top: 1px; }
+.hp-alert span { line-height: 1.4; }
 
 .hp-field { display: grid; gap: 6px; margin-bottom: 16px; }
 .hp-field label { font-size: 14px; font-weight: 700; color: var(--hp-navy-900); }

@@ -12,7 +12,6 @@ public class UnspentBalanceRow {
 
     public static final String TYPE_GROUP = "GROUP";
     public static final String TYPE_ITEM = "ITEM";
-    public static final String TYPE_PARENT = "PARENT";
     public static final String TYPE_SUB_ITEM = "SUB_ITEM";
     public static final String TYPE_SUBTOTAL = "SUBTOTAL";
     public static final String TYPE_TOTAL = "TOTAL";

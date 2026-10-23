@@ -46,6 +46,10 @@
                                                 <button type="submit" class="btn btn-primary btn-sm">
                                                     <i class="fas fa-search"></i> View Report
                                                 </button>
+                                                <a class="btn btn-success btn-sm" th:href="@{/dolr/unspent-balance/report/all-states/excel}"
+                                                   title="All States / UTs in a single Excel sheet">
+                                                    <i class="fas fa-file-excel"></i> All States Excel
+                                                </a>
                                             </td>
                                         </tr>
                                         </tbody>
@@ -85,7 +89,6 @@
         #ubReportTable .ub-col-amount { width: 28%; text-align: right; }
         #ubReportTable .ub-row-group td { background-color: #d9ead3; font-weight: 700; }
         #ubReportTable .ub-row-subtotal td { background-color: #f2f2f2; font-weight: 700; }
-        #ubReportTable .ub-row-parent td { font-weight: 700; }
         #ubReportTable .ub-row-sub .ub-col-component { padding-left: 32px; }
         #ubReportTable .ub-row-total td { background-color: #fff2cc; font-weight: 700; }
     </style>
@@ -112,7 +115,6 @@
                 <h5 class="mb-1">
                     <span th:text="${reportTitle}"></span> &ndash; <span th:text="${stateName}"></span>
                 </h5>
-                <small class="text-muted">Last updated by State: <span th:text="${lastUpdatedOn}"></span></small>
             </div>
             <div class="mt-2 mt-md-0">
                 <a class="btn btn-danger btn-sm" th:href="@{/dolr/unspent-balance/report/pdf(stateId=${stateId})}">
@@ -148,8 +150,7 @@
                         <td class="text-right" th:text="${row.label}"></td>
                         <td class="ub-col-amount" th:text="${row.amountText}"></td>
                     </tr>
-                    <tr th:if="${row.editable or row.rowType == 'PARENT'}"
-                        th:class="${row.rowType == 'PARENT'} ? 'ub-row-parent' : (${row.rowType == 'SUB_ITEM'} ? 'ub-row-sub' : '')">
+                    <tr th:if="${row.editable}" th:class="${row.rowType == 'SUB_ITEM'} ? 'ub-row-sub' : ''">
                         <td class="ub-col-sn" th:text="${row.serialNo}"></td>
                         <td class="ub-col-component" th:text="${row.label}"></td>
                         <td class="ub-col-amount" th:text="${row.amountText}"></td>
@@ -159,7 +160,7 @@
             </table>
         </div>
         <p class="text-muted mt-2 mb-0">
-            <small>Reference: <span th:text="${letterReference}"></span>. <span th:text="${componentNote}"></span></small>
+            <small th:text="${componentNote}"></small>
         </p>
     </th:block>
 </div>

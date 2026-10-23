@@ -11,4 +11,6 @@ import java.util.List;
 public interface UnspentBalanceRepository extends JpaRepository<UnspentBalance, Long> {
 
     List<UnspentBalance> findByStateIdAndAsOnDateOrderByDisplayOrderAsc(Long stateId, LocalDate asOnDate);
+
+    List<UnspentBalance> findByAsOnDate(LocalDate asOnDate);
 }

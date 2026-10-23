@@ -39,14 +39,9 @@ public class StateUnspentBalanceController {
             State state = loggedInState();
             model.addAttribute("stateName", state.getName());
             model.addAttribute("reportTitle", UnspentBalanceService.REPORT_TITLE);
-            model.addAttribute("letterReference", UnspentBalanceService.LETTER_REFERENCE);
             model.addAttribute("componentNote", UnspentBalanceService.COMPONENT_NOTE);
-            model.addAttribute("lastDate", unspentBalanceService.getLastDateText());
-            model.addAttribute("entryOpen", unspentBalanceService.isEntryOpen());
             model.addAttribute("amountHeader", unspentBalanceService.getAmountHeader());
             model.addAttribute("rows", unspentBalanceService.getRows(state.getId()));
-            model.addAttribute("lastUpdatedOn", UnspentBalanceReportExporter.lastUpdatedText(
-                    unspentBalanceService.getLastUpdatedOn(state.getId())));
             return "pages/unspentBalance/state_unspent_balance_form :: unspent-balance-form";
         } catch (Exception e) {
             logger.error("Error loading unspent balance form", e);
@@ -73,8 +68,6 @@ public class StateUnspentBalanceController {
             unspentBalanceService.save(state.getId(), amounts, user != null ? user.getUsername() : null);
             response.put("status", "success");
             response.put("message", "Unspent balance as on " + unspentBalanceService.getAsOnDateText() + " saved successfully.");
-            response.put("lastUpdatedOn", UnspentBalanceReportExporter.lastUpdatedText(
-                    unspentBalanceService.getLastUpdatedOn(state.getId())));
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             response.put("status", "error");
@@ -97,7 +90,7 @@ public class StateUnspentBalanceController {
         try {
             State state = loggedInState();
             UnspentBalanceReportExporter.writePdf(response, state.getName(), unspentBalanceService.getAmountHeader(),
-                    unspentBalanceService.getLastUpdatedOn(state.getId()), unspentBalanceService.getRows(state.getId()));
+                    unspentBalanceService.getRows(state.getId()));
         } catch (IllegalStateException e) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
         }
@@ -108,7 +101,7 @@ public class StateUnspentBalanceController {
         try {
             State state = loggedInState();
             UnspentBalanceReportExporter.writeExcel(response, state.getName(), unspentBalanceService.getAmountHeader(),
-                    unspentBalanceService.getLastUpdatedOn(state.getId()), unspentBalanceService.getRows(state.getId()));
+                    unspentBalanceService.getRows(state.getId()));
         } catch (IllegalStateException e) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
         }

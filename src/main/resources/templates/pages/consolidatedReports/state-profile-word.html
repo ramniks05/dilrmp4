@@ -82,8 +82,7 @@
                                     <strong th:text="${mis.stateName + ' – Profile as on ' + #temporals.format(mis.asOnDate, 'dd-MM-yyyy')}"></strong>
                                     &nbsp;|&nbsp; Status:
                                     <span th:if="${entry == null}" class="badge badge-secondary">Not saved</span>
-                                    <span th:if="${entry != null and !locked}" class="badge badge-warning">Draft</span>
-                                    <span th:if="${locked}" class="badge badge-success">Final (locked)</span>
+                                    <span th:if="${entry != null}" class="badge badge-success">Saved</span>
                                     <span th:if="${entry != null}" class="ml-2 text-muted"
                                           th:text="${'Last saved' + (entry.updatedBy != null ? ' by ' + entry.updatedBy : '') + ' on ' + #temporals.format(entry.updatedOn, 'dd-MM-yyyy HH:mm')}"></span>
                                     <div th:if="${prefilledFrom != null}" class="text-info mt-1"
@@ -98,7 +97,7 @@
                                     <input type="hidden" name="stateId" th:value="${input.stateId}">
                                     <input type="hidden" name="asOnDate" th:value="${#temporals.format(input.asOnDate, 'yyyy-MM-dd')}">
 
-                                    <fieldset th:disabled="${locked}">
+                                    <fieldset>
 
                                     <!-- 1. State level information -->
                                     <div class="section">
@@ -332,19 +331,11 @@
                                     </fieldset>
 
                                     <div class="actions">
-                                        <th:block th:if="${!locked}">
-                                            <button type="button" class="btn btn-secondary"
-                                                    th:attr="hx-post=${basePath + '/save?action=draft'}" hx-include="#spwForm"
-                                                    hx-target="#spwBody" hx-swap="innerHTML">
-                                                <i class="fas fa-save"></i> Save as Draft
-                                            </button>
-                                            <button type="button" class="btn btn-success"
-                                                    th:attr="hx-post=${basePath + '/save?action=final'}" hx-include="#spwForm"
-                                                    hx-target="#spwBody" hx-swap="innerHTML"
-                                                    hx-confirm="After Final Save the entries for this State and date cannot be changed. Continue?">
-                                                <i class="fas fa-check-circle"></i> Final Save
-                                            </button>
-                                        </th:block>
+                                        <button type="button" class="btn btn-primary"
+                                                th:attr="hx-post=${basePath + '/save'}" hx-include="#spwForm"
+                                                hx-target="#spwBody" hx-swap="innerHTML">
+                                            <i class="fas fa-save"></i> Save
+                                        </button>
                                         <button type="submit" class="btn btn-primary">
                                             <i class="fas fa-file-word"></i> Download Word
                                         </button>

@@ -80,7 +80,7 @@ public class StateProfileWordController {
 
     @PostMapping("/save")
     public String save(HttpServletRequest request, @ModelAttribute StateProfileWordInput input,
-                       @RequestParam("action") String action, Principal principal, Model model) {
+                       Principal principal, Model model) {
         model.addAttribute("basePath", basePath(request));
         input.setStateId(resolveStateId(request, input.getStateId()));
         if (input.getStateId() == null || input.getStateId() <= 0) {
@@ -88,18 +88,8 @@ public class StateProfileWordController {
             return PAGE + "::profileBody";
         }
         input.setAsOnDate(clampDate(input.getAsOnDate()));
-        boolean finalSave = "final".equalsIgnoreCase(action);
-        StateProfileWordEntry entry;
-        try {
-            entry = stateProfileWordEntryService.save(input, finalSave, principal == null ? null : principal.getName());
-            model.addAttribute("message", finalSave
-                    ? "Final saved. The profile is now locked; download the Word file to edit further."
-                    : "Saved as draft.");
-        } catch (IllegalStateException e) {
-            model.addAttribute("error", e.getMessage());
-            entry = stateProfileWordEntryService.find(input.getStateId(), input.getAsOnDate()).orElse(null);
-            input = stateProfileWordEntryService.toInput(entry, input.getStateId(), input.getAsOnDate());
-        }
+        StateProfileWordEntry entry = stateProfileWordEntryService.save(input, principal == null ? null : principal.getName());
+        model.addAttribute("message", "Profile saved. You can edit it again at any time.");
         fillBody(model, input, entry);
         return PAGE + "::profileBody";
     }
@@ -113,10 +103,6 @@ public class StateProfileWordController {
             return;
         }
         input.setAsOnDate(clampDate(input.getAsOnDate()));
-        Optional<StateProfileWordEntry> saved = stateProfileWordEntryService.find(input.getStateId(), input.getAsOnDate());
-        if (saved.isPresent() && StateProfileWordEntry.FINAL.equals(saved.get().getStatus())) {
-            input = stateProfileWordEntryService.toInput(saved.get(), input.getStateId(), input.getAsOnDate());
-        }
 
         byte[] file = stateProfileWordService.build(input);
         String fileName = "State_Profile_" + stateProfileWordService.stateName(input.getStateId()).trim().replaceAll("[^A-Za-z0-9]+", "_")
@@ -189,7 +175,7 @@ public class StateProfileWordController {
     private void fillBody(Model model, StateProfileWordInput input, StateProfileWordEntry entry) {
         model.addAttribute("input", input);
         model.addAttribute("entry", entry);
-        model.addAttribute("locked", entry != null && StateProfileWordEntry.FINAL.equals(entry.getStatus()));
+        model.addAttribute("locked", false);
         StateProfileWordService.MisData mis = stateProfileWordService.misData(input.getStateId(), input.getAsOnDate());
         Map<String, String[]> entered = input.ulbDetailsByName();
         List<String[]> ulbRows = new ArrayList<>();

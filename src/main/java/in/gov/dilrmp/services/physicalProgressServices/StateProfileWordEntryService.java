@@ -51,13 +51,10 @@ public class StateProfileWordEntryService {
         return in;
     }
 
-    /** @throws IllegalStateException when the profile for this state and date is already final */
+    /** Saves the profile for this State/UT and date. A saved profile can be edited again at any time. */
     @Transactional
-    public StateProfileWordEntry save(StateProfileWordInput in, boolean finalSave, String user) {
+    public StateProfileWordEntry save(StateProfileWordInput in, String user) {
         StateProfileWordEntry entry = find(in.getStateId(), in.getAsOnDate()).orElseGet(StateProfileWordEntry::new);
-        if (StateProfileWordEntry.FINAL.equals(entry.getStatus())) {
-            throw new IllegalStateException("This profile is already final and cannot be changed.");
-        }
         BeanUtils.copyProperties(in, entry, NOT_COPIED);
         entry.setStateId(in.getStateId());
         entry.setAsOnDate(in.getAsOnDate());
@@ -66,13 +63,7 @@ public class StateProfileWordEntryService {
         LocalDateTime now = LocalDateTime.now();
         entry.setUpdatedBy(user);
         entry.setUpdatedOn(now);
-        if (finalSave) {
-            entry.setStatus(StateProfileWordEntry.FINAL);
-            entry.setFinalSavedBy(user);
-            entry.setFinalSavedOn(now);
-        } else {
-            entry.setStatus(StateProfileWordEntry.DRAFT);
-        }
+        entry.setStatus(StateProfileWordEntry.DRAFT);
         return repository.save(entry);
     }
 

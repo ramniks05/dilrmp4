@@ -48,4 +48,9 @@ public interface CnaBankBalanceReportRepository extends JpaRepository<CnaBankBal
 
     @Query("SELECT DISTINCT r.uploadedOn FROM CnaBankBalanceReport r ORDER BY r.uploadedOn DESC")
     List<LocalDateTime> findDistinctUploadedOn();
+
+    @Modifying(clearAutomatically = true)
+    @Query(value = "UPDATE cna_bank_balance_report SET as_on_date = CAST(uploaded_on AS date) "
+            + "WHERE as_on_date IS NULL AND uploaded_on IS NOT NULL", nativeQuery = true)
+    int backfillAsOnDate();
 }

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/site}">
+<head>
+    <title>Home - DILRMP-MIS 4.0</title>
+    <link rel="stylesheet" th:href="@{/static/css/public-home.css}">
+    <script th:src="@{/static/js/public-home.js}" defer></script>
+</head>
+<body>
+<main id="main-content" class="ph" tabindex="-1" layout:fragment="content"
+      th:with="icons=@{/static/images/icons/dilrmp-icons.svg}">
+
+    <section class="ph-banner" aria-label="Highlights from the Department of Land Resources">
+        <div class="ph-slider" data-ph-slider aria-roledescription="carousel" aria-label="Highlights from the Department of Land Resources">
+            <div class="ph-slider__viewport">
+                <div class="ph-slider__slide is-active" role="group" aria-roledescription="slide" aria-label="1 of 2">
+                    <img src="https://ccps.digifootprint.gov.in/static//uploads/2026/02/7372b2bfbd8df4553aa6757004686dd8.jpg" alt="Share your ideas and suggestions with the Prime Minister for Mann Ki Baat on 25 October 2026. Phone lines are open from 6 to 23 October 2026. Dial 1800 11 7800, toll-free." width="1800" height="600">
+                </div>
+                <div class="ph-slider__slide" role="group" aria-roledescription="slide" aria-label="2 of 2" hidden>
+                    <img src="https://master-dolr.digifootprint.gov.in/static/uploads/2025/09/fb1775c8933ad1fb7b7d09410783c193.jpeg" alt="Hon'ble Minister of Rural Development addressed Ministry officials at Karmchari Sankalp Sammelan on 18 August 2026 at C. Subramanian Hall, Pusa Institute, New Delhi." width="1800" height="600" loading="lazy">
+                </div>
+            </div>
+            <div class="ph-slider__controls">
+                <button type="button" data-ph-pause aria-label="Pause">Pause</button>
+                <button type="button" data-ph-prev aria-label="Previous slide">
+                    <svg aria-hidden="true"><use th:href="${icons} + '#i-back'"/></svg>
+                </button>
+                <div class="ph-slider__dots">
+                    <button type="button" data-ph-go="0" aria-label="Slide 1" aria-current="true"></button>
+                    <button type="button" data-ph-go="1" aria-label="Slide 2"></button>
+                </div>
+                <button type="button" data-ph-next aria-label="Next slide">
+                    <svg aria-hidden="true"><use th:href="${icons} + '#i-arrow'"/></svg>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section class="ph-ticker" aria-labelledby="ph-news-title">
+        <h2 id="ph-news-title">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path fill="currentColor" d="M4 9.5v5h3.2L13 19.2V4.8L7.2 9.5H4z"/><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M16 9.2a3.6 3.6 0 010 5.6M18.4 6.8a6.4 6.4 0 010 10.4"/></svg>
+            Announcements
+        </h2>
+        <div class="ph-ticker__viewport">
+            <div class="ph-ticker__track">
+                <p>
+                    <span class="ph-ticker__item"><time datetime="2026-11-02">02 Nov 2026</time> MIS Dashboard opened for public view.</span>
+                    <span class="ph-ticker__item"><time datetime="2026-10-20">20 Oct 2026</time> States and Union Territories may update physical progress after signing in.</span>
+                    <span class="ph-ticker__item"><time datetime="2026-10-07">07 Oct 2026</time> Progress reports are available for download in PDF and Excel.</span>
+                </p>
+                <p aria-hidden="true">
+                    <span class="ph-ticker__item"><time datetime="2026-11-02">02 Nov 2026</time> MIS Dashboard opened for public view.</span>
+                    <span class="ph-ticker__item"><time datetime="2026-10-20">20 Oct 2026</time> States and Union Territories may update physical progress after signing in.</span>
+                    <span class="ph-ticker__item"><time datetime="2026-10-07">07 Oct 2026</time> Progress reports are available for download in PDF and Excel.</span>
+                </p>
+            </div>
+        </div>
+        <button type="button" data-ph-ticker-pause aria-label="Pause announcements">Pause</button>
+    </section>
+
+    <section class="ph-about-band" aria-labelledby="ph-title">
+        <div class="ux4g-container ph-about-grid">
+            <div>
+                <h1 id="ph-title">
+                    <svg aria-hidden="true"><use th:href="${icons} + '#i-state'"/></svg>
+                    About the programme
+                </h1>
+                <p>DILRMP 3.0, for 2026–27 to 2030–31, is the next phase of the Digital India Land Records Modernization Programme. The first phase digitised records, maps and registration. This phase joins them into one parcel-centric Land Stack.</p>
+                <p>The Land Stack is a GIS-based public infrastructure. Each land parcel is given one geospatial identity: the geo-referenced cadastral map, linked with the Unique Land Parcel Identification Number (ULPIN, or Bhu-Aadhaar) and the Record of Rights. The records remain with the State or Union Territory that maintains them. DILRMP-MIS 4.0 is where that progress is reported.</p>
+                <div class="ph-tiles">
+                    <a th:href="@{/dashboard}">
+                        <svg aria-hidden="true"><use th:href="${icons} + '#i-map'"/></svg>
+                        MIS Dashboard
+                    </a>
+                    <a th:href="@{/reports/download-progress-report}">
+                        <svg aria-hidden="true"><use th:href="${icons} + '#i-download'"/></svg>
+                        Download reports
+                    </a>
+                    <a th:href="@{/userProfile/about-us}">
+                        <svg aria-hidden="true"><use th:href="${icons} + '#i-user'"/></svg>
+                        About us
+                    </a>
+                </div>
+            </div>
+            <aside class="ph-ministry" aria-labelledby="ph-ministers-title">
+                <h2 id="ph-ministers-title">Ministry</h2>
+                <ul class="ph-leaders">
+                    <li>
+                        <img src="https://master-dolr.digifootprint.gov.in/static/uploads/2025/09/ac3c31e6ea09936b282bfe8c0d5a76d9.jpg" alt="" width="88" height="108">
+                        <div>
+                            <h3>Shri Shivraj Singh Chouhan</h3>
+                            <p>Minister of Rural Development, Agriculture &amp; Farmers Welfare</p>
+                        </div>
+                    </li>
+                    <li>
+                        <img src="https://master-dolr.digifootprint.gov.in/static/uploads/2025/09/a3af7d4ef6527834fa82f6515fa92e45.jpg" alt="" width="88" height="108" loading="lazy">
+                        <div>
+                            <h3>Dr. Chandra Sekhar Pemmasani</h3>
+                            <p>Minister of State for Rural Development &amp; Communications</p>
+                        </div>
+                    </li>
+                    <li>
+                        <img src="https://master-dolr.digifootprint.gov.in/static/uploads/2025/09/d03838e14f62a18a27ab0f4b7af2d489.jpg" alt="" width="88" height="108" loading="lazy">
+                        <div>
+                            <h3>Shri Kamlesh Paswan</h3>
+                            <p>Minister of State for Rural Development</p>
+                        </div>
+                    </li>
+                </ul>
+            </aside>
+        </div>
+    </section>
+
+    <section class="ph-band" aria-labelledby="ph-metrics-title">
+        <div class="ux4g-container ph-band-grid">
+            <div>
+                <h2 id="ph-metrics-title">
+                    <svg aria-hidden="true"><use th:href="${icons} + '#i-district'"/></svg>
+                    Key figures
+                </h2>
+                <p class="ph-lead">Reported by States and Union Territories in DILRMP-MIS 4.0.</p>
+                <ul class="ph-metrics" data-ph-metrics>
+                    <li>
+                        <strong data-ph-count="totalDistrict">—</strong>
+                        <span>Districts</span>
+                    </li>
+                    <li>
+                        <strong data-ph-count="totalTehsil">—</strong>
+                        <span>Tehsils</span>
+                    </li>
+                    <li>
+                        <strong data-ph-count="totalVillage">—</strong>
+                        <span>Villages</span>
+                    </li>
+                    <li>
+                        <strong data-ph-percent="rorComputerizedPercent">—</strong>
+                        <span>Records of Rights computerized</span>
+                        <span class="ph-meter" aria-hidden="true"><i data-ph-bar></i></span>
+                    </li>
+                    <li>
+                        <strong data-ph-percent="digitizedCadastralMapsPercent">—</strong>
+                        <span>Cadastral maps digitized</span>
+                        <span class="ph-meter" aria-hidden="true"><i data-ph-bar></i></span>
+                    </li>
+                    <li>
+                        <strong data-ph-percent="sroComputerizedPercent">—</strong>
+                        <span>Sub-Registrar Offices computerized</span>
+                        <span class="ph-meter" aria-hidden="true"><i data-ph-bar></i></span>
+                    </li>
+                    <li class="ph-metrics__note">Land Stack focus</li>
+                    <li>
+                        <strong data-ph-percent="villagesWithUlipnPercent">—</strong>
+                        <span>Villages with ULPIN (Bhu-Aadhaar)</span>
+                        <span class="ph-meter" aria-hidden="true"><i data-ph-bar></i></span>
+                    </li>
+                    <li>
+                        <strong data-ph-percent="villagesGeoreferencedPercent">—</strong>
+                        <span>Villages geo-referenced</span>
+                        <span class="ph-meter" aria-hidden="true"><i data-ph-bar></i></span>
+                    </li>
+                    <li>
+                        <strong data-ph-percent="villagesDroneFlyingCompletedPercent">—</strong>
+                        <span>Villages with drone flying completed</span>
+                        <span class="ph-meter" aria-hidden="true"><i data-ph-bar></i></span>
+                    </li>
+                    <li>
+                        <strong data-ph-percent="villagesWith100PercentRorLinkedAadhaarPercent">—</strong>
+                        <span>Villages with all Records of Rights linked to Aadhaar</span>
+                        <span class="ph-meter" aria-hidden="true"><i data-ph-bar></i></span>
+                    </li>
+                    <li>
+                        <strong data-ph-percent="totalRevenueCourtsPercent">—</strong>
+                        <span>Revenue courts computerized</span>
+                        <span class="ph-meter" aria-hidden="true"><i data-ph-bar></i></span>
+                    </li>
+                </ul>
+            </div>
+            <aside class="ph-whatsnew" aria-labelledby="ph-new-title">
+                <h2 id="ph-new-title">
+                    <svg aria-hidden="true" viewBox="0 0 24 24"><path fill="currentColor" d="M4 9.5v5h3.2L13 19.2V4.8L7.2 9.5H4z"/><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M16 9.2a3.6 3.6 0 010 5.6M18.4 6.8a6.4 6.4 0 010 10.4"/></svg>
+                    What's new
+                </h2>
+                <ul>
+                    <li>
+                        <time datetime="2026-11-02">02 Nov 2026</time>
+                        <span>MIS Dashboard opened for public view.</span>
+                    </li>
+                    <li>
+                        <time datetime="2026-10-20">20 Oct 2026</time>
+                        <span>States and Union Territories may update physical progress after signing in.</span>
+                    </li>
+                    <li>
+                        <time datetime="2026-10-07">07 Oct 2026</time>
+                        <span>Progress reports are available for download in PDF and Excel.</span>
+                    </li>
+                </ul>
+            </aside>
+        </div>
+    </section>
+
+    <section class="ph-block" aria-labelledby="ph-core-title">
+        <div class="ux4g-container">
+            <h2 id="ph-core-title">
+                <svg aria-hidden="true"><use th:href="${icons} + '#i-geo'"/></svg>
+                DILRMP 3.0
+            </h2>
+            <ul class="ph-aims">
+                <li>Transparent land governance</li>
+                <li>Secure and accurate land information</li>
+                <li>Informed decisions</li>
+                <li>Ease of doing business</li>
+                <li>Citizen-centric services</li>
+            </ul>
+            <div class="ph-grid">
+                <article>
+                    <span class="ph-mark" aria-hidden="true"><svg><use th:href="${icons} + '#i-geo'"/></svg></span>
+                    <h3>Land Stack</h3>
+                    <p>One platform for the geo-referenced map, ULPIN and the Record of Rights of each parcel.</p>
+                </article>
+                <article>
+                    <span class="ph-mark" aria-hidden="true"><svg><use th:href="${icons} + '#i-ulpin'"/></svg></span>
+                    <h3>ULPIN (Bhu-Aadhaar)</h3>
+                    <p>A unique identity for every land parcel, so departments can refer to the same parcel.</p>
+                </article>
+                <article>
+                    <span class="ph-mark" aria-hidden="true"><svg><use th:href="${icons} + '#i-sro'"/></svg></span>
+                    <h3>Registration Repository</h3>
+                    <p>Registered documents on one platform, with high-footfall Sub-Registrar Offices modernised for citizens.</p>
+                </article>
+                <article>
+                    <span class="ph-mark" aria-hidden="true"><svg><use th:href="${icons} + '#i-map'"/></svg></span>
+                    <h3>NAKSHA</h3>
+                    <p>Accurate and legally valid urban land records, leading to an Urban Property Card.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="ph-band" aria-labelledby="ph-do-title">
+        <div class="ux4g-container">
+            <h2 id="ph-do-title">
+                <svg aria-hidden="true"><use th:href="${icons} + '#i-user'"/></svg>
+                What you can do
+            </h2>
+            <div class="ph-do">
+                <a th:href="@{/dashboard}">
+                    <svg aria-hidden="true"><use th:href="${icons} + '#i-map'"/></svg>
+                    <strong>See national progress</strong>
+                    <span>Open the MIS Dashboard for the map and every component.</span>
+                </a>
+                <a th:href="@{/reports/download-progress-report}">
+                    <svg aria-hidden="true"><use th:href="${icons} + '#i-download'"/></svg>
+                    <strong>Download reports</strong>
+                    <span>Physical progress in PDF and Excel, as reported by the States and Union Territories.</span>
+                </a>
+                <a th:href="@{/userProfile/contact-us}">
+                    <svg aria-hidden="true"><use th:href="${icons} + '#i-phone'"/></svg>
+                    <strong>Contact us</strong>
+                    <span>Department of Land Resources, Kartavya Bhavan-3, New Delhi. Phone 011-23063224.</span>
+                </a>
+                <a th:href="@{/site/feedback}">
+                    <svg aria-hidden="true"><use th:href="${icons} + '#i-mail'"/></svg>
+                    <strong>Send feedback</strong>
+                    <span>Write to the department through the feedback form.</span>
+                </a>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

@@ -32,6 +32,16 @@ public class CnaBankBalanceReport {
     @Column(name = "report_date")
     private LocalDate reportDate;
 
+    /** Date selected at upload. One CNA file is allowed for each as-on date. */
+    @Column(name = "as_on_date")
+    private LocalDate asOnDate;
+
     @Column(name = "uploaded_on")
     private LocalDateTime uploadedOn;
+
+    @Transient
+    private String stateName;
+
+    @Transient
+    private Integer lgdCode;
 }

@@ -15,6 +15,7 @@
                                     <label for="cnaExcelFile">Select Excel File (.xlsx)</label>
                                     <input type="file" id="cnaExcelFile" name="file" class="form-control" accept=".xlsx" required />
                                 </div>
+                                <p class="text-muted small">More than one file can be uploaded on the same day. The report date is the Balance Date in the Excel file. Each CNA code can be saved only once for a Balance Date. The state name is shown from the CNA code.</p>
                                 <button type="button" id="uploadCnaReport" class="btn btn-primary">Upload</button>
                             </form>
 
@@ -23,17 +24,18 @@
                             <hr>
 
                             <h4>View Report</h4>
+                            <p class="text-muted small cna-date-legend"><span class="cna-date-mark"></span> A marked date in the calendar already has data.</p>
                             <div class="row">
                                 <div class="col-md-5">
                                     <div class="card card-outline card-secondary">
-                                        <div class="card-header"><strong>As On Date Report</strong></div>
+                                        <div class="card-header"><strong>Balance Date</strong></div>
                                         <div class="card-body">
-                                            <p class="text-muted small">Shows data only if an upload was done on the selected date.</p>
+                                            <p class="text-muted small">Shows rows for the selected Balance Date. The upload date is not used.</p>
                                             <div class="form-group">
-                                                <label for="asOnDate">As On Date</label>
-                                                <input type="date" id="asOnDate" class="form-control" />
+                                                <label for="asOnDate">Balance Date</label>
+                                                <input type="text" id="asOnDate" class="form-control cna-date" placeholder="dd-mm-yyyy" autocomplete="off" readonly />
                                             </div>
-                                            <button type="button" id="viewAsOnDateReport" class="btn btn-info">View As On Date Report</button>
+                                            <button type="button" id="viewAsOnDateReport" class="btn btn-info">View Balance Date</button>
                                         </div>
                                     </div>
                                 </div>
@@ -41,23 +43,23 @@
                                     <div class="card card-outline card-secondary">
                                         <div class="card-header"><strong>Between Dates Report</strong></div>
                                         <div class="card-body">
-                                            <p class="text-muted small">Shows all uploads between the selected date range.</p>
+                                            <p class="text-muted small">Shows rows whose Balance Date falls in the selected range. The upload date is not used.</p>
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="fromDate">From Date</label>
-                                                        <input type="date" id="fromDate" class="form-control" />
+                                                        <input type="text" id="fromDate" class="form-control cna-date" placeholder="dd-mm-yyyy" autocomplete="off" readonly />
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="toDate">To Date</label>
-                                                        <input type="date" id="toDate" class="form-control" />
+                                                        <input type="text" id="toDate" class="form-control cna-date" placeholder="dd-mm-yyyy" autocomplete="off" readonly />
                                                     </div>
                                                 </div>
                                             </div>
                                             <button type="button" id="viewBetweenDatesReport" class="btn btn-info">View Between Dates Report</button>
-                                            <button type="button" id="viewLatestReport" class="btn btn-secondary ml-2">View Latest Upload</button>
+                                            <button type="button" id="viewLatestReport" class="btn btn-secondary ml-2">View Latest Date</button>
                                         </div>
                                     </div>
                                 </div>
@@ -67,30 +69,51 @@
 
                             <hr>
 
-                            <h4 id="reportTitle" th:text="${reportTitle}">Latest Upload</h4>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h4 id="reportTitle" class="mb-0" th:text="${reportTitle}">Latest Upload</h4>
+                                <div>
+                                    <a id="cnaPdfDownload" href="/dolr/cna-bank-balance/report/pdf" title="Download PDF">
+                                        <img th:src="@{/images/pdf.png}" alt="PDF" class="btn-img" width="40" height="40"/>
+                                    </a>
+                                    <a id="cnaExcelDownload" href="/dolr/cna-bank-balance/report/excel" title="Download Excel">
+                                        <img th:src="@{/images/excel.png}" alt="Excel" class="btn-img" width="40" height="40"/>
+                                    </a>
+                                </div>
+                            </div>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-striped" id="cnaReportTable">
                                     <thead>
                                     <tr>
                                         <th>S.No.</th>
+                                        <th class="text-left">State / UT</th>
                                         <th>CNA Code</th>
                                         <th>CNA Name</th>
                                         <th>Bank Balance (in Crore)</th>
-                                        <th>Report Date</th>
+                                        <th>Balance Date</th>
                                         <th>Uploaded On</th>
                                     </tr>
                                     </thead>
                                     <tbody id="cnaReportTableBody">
                                     <tr th:if="${#lists.isEmpty(reports)}">
-                                        <td colspan="6" class="text-center">No records uploaded yet.</td>
+                                        <td colspan="7" class="text-center">No records uploaded yet.</td>
                                     </tr>
                                     <tr th:each="report, stat : ${reports}">
                                         <td th:text="${stat.count}"></td>
+                                        <td class="text-left" th:text="${report.stateName != null ? report.stateName : 'Not linked'}"></td>
                                         <td th:text="${report.cnaCode}"></td>
                                         <td th:text="${report.cnaName}"></td>
                                         <td th:text="${report.bankBalance}"></td>
                                         <td th:text="${report.reportDate != null ? #temporals.format(report.reportDate, 'dd-MM-yyyy') : '-'}"></td>
                                         <td th:text="${report.uploadedOn != null ? #temporals.format(report.uploadedOn, 'dd-MM-yyyy HH:mm') : '-'}"></td>
+                                    </tr>
+                                    <tr th:if="${!#lists.isEmpty(reports)}" class="cna-total-row">
+                                        <td></td>
+                                        <td class="text-left">Total</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td th:text="${totalBalance}"></td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -102,18 +125,165 @@
         </div>
     </section>
 
+    <style>
+        .cna-date {
+            height: 38px;
+            padding-right: 36px;
+            border: 1px solid #c5d0e0;
+            border-radius: 8px;
+            background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23012c6f' stroke-width='1.8'%3E%3Crect x='3.5' y='5' width='17' height='15' rx='2'/%3E%3Cpath d='M8 3.5v3M16 3.5v3M3.5 10h17'/%3E%3C/svg%3E") right 10px center / 18px no-repeat;
+            color: #012c6f;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: none;
+        }
+        .cna-date:focus {
+            border-color: #012c6f;
+            box-shadow: 0 0 0 3px rgba(1, 44, 111, 0.15);
+        }
+        #cnaReportTable .cna-total-row td {
+            background: #fff4e6;
+            color: #012c6f;
+            font-weight: 800;
+            border-top: 2px solid #fa8c16;
+        }
+        .cna-date-mark {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            margin-right: 6px;
+            vertical-align: 1px;
+            border-radius: 50%;
+            background: #fa8c16;
+        }
+        #ui-datepicker-div.cna-datepicker {
+            z-index: 2000 !important;
+            width: 292px;
+            padding: 0 0 10px;
+            border: 0;
+            border-radius: 14px;
+            background: #fff;
+            color: #012c6f;
+            font-family: "Noto Sans", "Segoe UI", sans-serif;
+            box-shadow: 0 16px 40px rgba(1, 28, 71, 0.22);
+            overflow: hidden;
+        }
+        #ui-datepicker-div.cna-datepicker .ui-datepicker-header {
+            padding: 12px 12px 10px;
+            border: 0;
+            border-radius: 0;
+            background: #012c6f;
+            color: #fff;
+        }
+        #ui-datepicker-div.cna-datepicker .ui-datepicker-title {
+            margin: 0 34px;
+            line-height: 32px;
+            font-size: 15px;
+            font-weight: 700;
+        }
+        #ui-datepicker-div.cna-datepicker .ui-datepicker-title select {
+            height: 30px;
+            margin: 0 2px;
+            padding: 0 6px;
+            border: 0;
+            border-radius: 6px;
+            background: #fff;
+            color: #012c6f;
+            font-weight: 700;
+        }
+        #ui-datepicker-div.cna-datepicker .ui-datepicker-prev,
+        #ui-datepicker-div.cna-datepicker .ui-datepicker-next {
+            top: 14px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.16);
+            cursor: pointer;
+        }
+        #ui-datepicker-div.cna-datepicker .ui-datepicker-prev { left: 10px; }
+        #ui-datepicker-div.cna-datepicker .ui-datepicker-next { right: 10px; }
+        #ui-datepicker-div.cna-datepicker .ui-datepicker-prev:hover,
+        #ui-datepicker-div.cna-datepicker .ui-datepicker-next:hover { background: rgba(255, 255, 255, 0.3); }
+        #ui-datepicker-div.cna-datepicker .ui-datepicker-prev .ui-icon,
+        #ui-datepicker-div.cna-datepicker .ui-datepicker-next .ui-icon { display: none; }
+        #ui-datepicker-div.cna-datepicker .ui-datepicker-prev:after,
+        #ui-datepicker-div.cna-datepicker .ui-datepicker-next:after {
+            display: block;
+            color: #fff;
+            font-size: 20px;
+            line-height: 26px;
+            text-align: center;
+        }
+        #ui-datepicker-div.cna-datepicker .ui-datepicker-prev:after { content: "\2039"; }
+        #ui-datepicker-div.cna-datepicker .ui-datepicker-next:after { content: "\203A"; }
+        #ui-datepicker-div.cna-datepicker table.ui-datepicker-calendar { width: calc(100% - 16px); margin: 8px; }
+        #ui-datepicker-div.cna-datepicker th {
+            padding: 4px 0 6px;
+            color: #6b7c93;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+        #ui-datepicker-div.cna-datepicker td { padding: 2px; }
+        #ui-datepicker-div.cna-datepicker td a.ui-state-default,
+        #ui-datepicker-div.cna-datepicker td span.ui-state-default {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            margin: 0 auto;
+            padding: 0;
+            border: 0;
+            border-radius: 8px;
+            background: transparent;
+            color: #1c2b45;
+            font-weight: 600;
+            text-align: center;
+        }
+        #ui-datepicker-div.cna-datepicker td a.ui-state-default:hover {
+            background: #e8eef8;
+            color: #012c6f;
+        }
+        #ui-datepicker-div.cna-datepicker td.ui-datepicker-today a.ui-state-default {
+            box-shadow: inset 0 0 0 1.5px #fa8c16;
+            color: #012c6f;
+        }
+        #ui-datepicker-div.cna-datepicker td.ui-datepicker-current-day a.ui-state-active {
+            background: #012c6f;
+            color: #fff;
+        }
+        #ui-datepicker-div.cna-datepicker td.cna-has-data a.ui-state-default:after {
+            content: "";
+            width: 5px;
+            height: 5px;
+            margin-top: 1px;
+            border-radius: 50%;
+            background: #fa8c16;
+        }
+        #ui-datepicker-div.cna-datepicker td.ui-datepicker-current-day.cna-has-data a.ui-state-active:after {
+            background: #ffd591;
+        }
+        #ui-datepicker-div.cna-datepicker td.ui-datepicker-other-month a.ui-state-default { color: #b7c3d4; }
+        #ui-datepicker-div.cna-datepicker .ui-datepicker-buttonpane { display: none; }
+    </style>
+    <script th:inline="javascript">
+        window.cnaSharedOnDates = /*[[${availableSharedOnDates}]]*/ [];
+    </script>
     <script>
         (function () {
             function showMessage(target, type, message) {
                 $(target).html('<div class="alert alert-' + type + '">' + message + '</div>');
             }
 
-            function renderReportTable(reports) {
+            function renderReportTable(reports, totalBalance) {
                 const tbody = $("#cnaReportTableBody");
                 tbody.empty();
 
                 if (!reports || reports.length === 0) {
-                    tbody.append('<tr><td colspan="6" class="text-center">No records found for selected criteria.</td></tr>');
+                    tbody.append('<tr><td colspan="7" class="text-center">No records found for selected criteria.</td></tr>');
                     return;
                 }
 
@@ -121,6 +291,7 @@
                     tbody.append(
                         '<tr>' +
                         '<td>' + report.serialNo + '</td>' +
+                        '<td class="text-left">' + (report.stateName || 'Not linked') + '</td>' +
                         '<td>' + (report.cnaCode || '') + '</td>' +
                         '<td>' + (report.cnaName || '') + '</td>' +
                         '<td>' + (report.bankBalance || '-') + '</td>' +
@@ -129,6 +300,15 @@
                         '</tr>'
                     );
                 });
+                tbody.append(
+                    '<tr class="cna-total-row">' +
+                    '<td></td>' +
+                    '<td class="text-left">Total</td>' +
+                    '<td></td><td></td>' +
+                    '<td>' + (totalBalance || '0') + '</td>' +
+                    '<td></td><td></td>' +
+                    '</tr>'
+                );
             }
 
             function handleReportResponse(response) {
@@ -142,7 +322,7 @@
 
                 const reports = response.reports || [];
                 $("#reportTitle").text(response.reportTitle || "Report");
-                renderReportTable(reports);
+                renderReportTable(reports, response.totalBalance);
 
                 if (reports.length === 0) {
                     showMessage("#reportFilterMessage", "warning",
@@ -154,7 +334,67 @@
                 }
             }
 
+            function sharedOnLookup() {
+                var lookup = {};
+                var dates = window.cnaSharedOnDates || [];
+                for (var i = 0; i < dates.length; i++) {
+                    lookup[dates[i]] = true;
+                }
+                return lookup;
+            }
+
+            function markSharedDay(date) {
+                var key = $.datepicker.formatDate("yy-mm-dd", date);
+                if (sharedOnLookup()[key]) {
+                    return [true, "cna-has-data", "Data available"];
+                }
+                return [true, "", ""];
+            }
+
+            function isoFromPicker(selector) {
+                var $input = $(selector);
+                if (!$input.length || !$input.hasClass("hasDatepicker")) {
+                    return "";
+                }
+                var date = $input.datepicker("getDate");
+                return date ? $.datepicker.formatDate("yy-mm-dd", date) : "";
+            }
+
+            function initCnaDatepickers() {
+                if (!window.jQuery || !jQuery.fn.datepicker) {
+                    return;
+                }
+                $(".cna-date").each(function () {
+                    var $input = $(this);
+                    if ($input.hasClass("hasDatepicker")) {
+                        $input.datepicker("destroy");
+                    }
+                    $input.datepicker({
+                        dateFormat: "dd-mm-yy",
+                        changeMonth: true,
+                        changeYear: true,
+                        maxDate: 0,
+                        showOtherMonths: true,
+                        selectOtherMonths: true,
+                        beforeShow: function () {
+                            $("#ui-datepicker-div").addClass("cna-datepicker");
+                        },
+                        beforeShowDay: markSharedDay
+                    });
+                });
+            }
+
+            var cnaExportQuery = "";
+
+            function setCnaDownloads() {
+                $("#cnaPdfDownload").attr("href", "/dolr/cna-bank-balance/report/pdf" + cnaExportQuery);
+                $("#cnaExcelDownload").attr("href", "/dolr/cna-bank-balance/report/excel" + cnaExportQuery);
+            }
+
             function bindCnaReportEvents() {
+                cnaExportQuery = "";
+                setCnaDownloads();
+                initCnaDatepickers();
                 $(document).off("click.cnaReport", "#uploadCnaReport");
                 $(document).off("click.cnaReport", "#viewAsOnDateReport");
                 $(document).off("click.cnaReport", "#viewBetweenDatesReport");
@@ -198,9 +438,9 @@
                 });
 
                 $(document).on("click.cnaReport", "#viewAsOnDateReport", function () {
-                    const asOnDate = $("#asOnDate").val();
+                    const asOnDate = isoFromPicker("#asOnDate");
                     if (!asOnDate) {
-                        showMessage("#reportFilterMessage", "danger", "Please select As On Date.");
+                        showMessage("#reportFilterMessage", "danger", "Please select the Balance Date.");
                         return;
                     }
 
@@ -212,11 +452,15 @@
                         data: { asOnDate: asOnDate },
                         dataType: "json",
                         success: function (response) {
+                            if (response && response.status === "success") {
+                                cnaExportQuery = "?date=" + encodeURIComponent(asOnDate);
+                                setCnaDownloads();
+                            }
                             handleReportResponse(response);
                         },
                         error: function (xhr) {
                             const message = (xhr.responseJSON && xhr.responseJSON.message)
-                                ? xhr.responseJSON.message : "Failed to load As On Date report.";
+                                ? xhr.responseJSON.message : "Failed to load the Balance Date report.";
                             $("#reportTitle").text("Report");
                             renderReportTable([]);
                             showMessage("#reportFilterMessage", "danger", message);
@@ -225,8 +469,8 @@
                 });
 
                 $(document).on("click.cnaReport", "#viewBetweenDatesReport", function () {
-                    const fromDate = $("#fromDate").val();
-                    const toDate = $("#toDate").val();
+                    const fromDate = isoFromPicker("#fromDate");
+                    const toDate = isoFromPicker("#toDate");
                     if (!fromDate || !toDate) {
                         showMessage("#reportFilterMessage", "danger", "Please select both From Date and To Date.");
                         return;
@@ -240,6 +484,11 @@
                         data: { fromDate: fromDate, toDate: toDate },
                         dataType: "json",
                         success: function (response) {
+                            if (response && response.status === "success") {
+                                cnaExportQuery = "?fromDate=" + encodeURIComponent(fromDate)
+                                    + "&toDate=" + encodeURIComponent(toDate);
+                                setCnaDownloads();
+                            }
                             handleReportResponse(response);
                         },
                         error: function (xhr) {

@@ -2,6 +2,8 @@ package in.gov.dilrmp.controllers.cna;
 
 import in.gov.dilrmp.models.cna.CnaBankBalanceReport;
 import in.gov.dilrmp.services.cna.CnaBankBalanceReportService;
+import in.gov.dilrmp.utils.CnaBankBalanceReportExporter;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -36,11 +40,15 @@ public class CnaBankBalanceReportController {
         try {
             List<CnaBankBalanceReport> reports = cnaBankBalanceReportService.getLatestUploadReport();
             model.addAttribute("reports", reports);
-            model.addAttribute("reportTitle", "Latest Upload");
+            model.addAttribute("totalBalance", totalBalance(reports));
+            model.addAttribute("reportTitle", latestDateTitle(reports));
+            model.addAttribute("availableSharedOnDates", cnaBankBalanceReportService.getDistinctSharedOnDates());
             return "pages/cna/cnaBankBalanceReport :: cna-bank-balance";
         } catch (Exception e) {
             logger.error("Error loading CNA bank balance page", e);
             model.addAttribute("reports", List.of());
+            model.addAttribute("totalBalance", "0");
+            model.addAttribute("availableSharedOnDates", List.of());
             model.addAttribute("reportTitle", "Latest Upload");
             model.addAttribute("pageError", "Unable to load CNA bank balance report. Please try again.");
             return "pages/cna/cnaBankBalanceReport :: cna-bank-balance";
@@ -77,10 +85,11 @@ public class CnaBankBalanceReportController {
         try {
             List<CnaBankBalanceReport> reports = cnaBankBalanceReportService.getReportAsOnDate(asOnDate);
             response.put("status", "success");
-            response.put("reportTitle", "As On Date: " + asOnDate.format(DATE_FORMATTER));
+            response.put("reportTitle", "Balance Date: " + asOnDate.format(DATE_FORMATTER));
             response.put("reports", toReportRows(reports));
+            response.put("totalBalance", totalBalance(reports));
             if (reports.isEmpty()) {
-                response.put("message", "No upload found on " + asOnDate.format(DATE_FORMATTER) + ".");
+                response.put("message", "No record found for Balance Date " + asOnDate.format(DATE_FORMATTER) + ".");
             }
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
@@ -90,7 +99,7 @@ public class CnaBankBalanceReportController {
         } catch (Exception e) {
             logger.error("Error generating as-on-date CNA report", e);
             response.put("status", "error");
-            response.put("message", "Failed to generate As On Date report.");
+            response.put("message", "Failed to generate the Balance Date report.");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
@@ -104,11 +113,12 @@ public class CnaBankBalanceReportController {
         try {
             List<CnaBankBalanceReport> reports = cnaBankBalanceReportService.getReportBetweenDates(fromDate, toDate);
             response.put("status", "success");
-            response.put("reportTitle", "Between Dates: " + fromDate.format(DATE_FORMATTER)
+            response.put("reportTitle", "Balance Date: " + fromDate.format(DATE_FORMATTER)
                     + " to " + toDate.format(DATE_FORMATTER));
             response.put("reports", toReportRows(reports));
+            response.put("totalBalance", totalBalance(reports));
             if (reports.isEmpty()) {
-                response.put("message", "No uploads found between selected dates.");
+                response.put("message", "No records found for the selected Balance Dates.");
             }
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
@@ -123,12 +133,69 @@ public class CnaBankBalanceReportController {
         }
     }
 
+    @GetMapping("/cna-bank-balance/report/pdf")
+    public void downloadPdf(
+            @RequestParam(value = "date", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam(value = "fromDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @RequestParam(value = "toDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+            HttpServletResponse response) throws IOException {
+        writeDownload(date, fromDate, toDate, response, true);
+    }
+
+    @GetMapping("/cna-bank-balance/report/excel")
+    public void downloadExcel(
+            @RequestParam(value = "date", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam(value = "fromDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @RequestParam(value = "toDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+            HttpServletResponse response) throws IOException {
+        writeDownload(date, fromDate, toDate, response, false);
+    }
+
+    private void writeDownload(LocalDate date, LocalDate fromDate, LocalDate toDate,
+                               HttpServletResponse response, boolean pdf) throws IOException {
+        try {
+            List<CnaBankBalanceReport> reports = cnaBankBalanceReportService.getReportForDownload(date, fromDate, toDate);
+            String heading = downloadHeading(date, fromDate, toDate, reports);
+            if (pdf) {
+                CnaBankBalanceReportExporter.writePdf(response, reports, heading);
+            } else {
+                CnaBankBalanceReportExporter.writeExcel(response, reports, heading);
+            }
+        } catch (IllegalArgumentException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error downloading CNA bank balance report", e);
+            if (!response.isCommitted()) {
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Unable to download the report.");
+            }
+        }
+    }
+
+    private static String downloadHeading(LocalDate date, LocalDate fromDate, LocalDate toDate,
+                                          List<CnaBankBalanceReport> reports) {
+        if (date != null) {
+            return "Balance Date: " + date.format(DATE_FORMATTER);
+        }
+        if (fromDate != null && toDate != null) {
+            return "Balance Date: " + fromDate.format(DATE_FORMATTER) + " to " + toDate.format(DATE_FORMATTER);
+        }
+        return latestDateTitle(reports);
+    }
+
+    private static String latestDateTitle(List<CnaBankBalanceReport> reports) {
+        if (reports == null || reports.isEmpty() || reports.get(0).getReportDate() == null) {
+            return "Latest Balance Date";
+        }
+        return "Balance Date: " + reports.get(0).getReportDate().format(DATE_FORMATTER);
+    }
+
     private List<Map<String, String>> toReportRows(List<CnaBankBalanceReport> reports) {
         List<Map<String, String>> rows = new ArrayList<>();
         int index = 1;
         for (CnaBankBalanceReport report : reports) {
             Map<String, String> row = new LinkedHashMap<>();
             row.put("serialNo", String.valueOf(index++));
+            row.put("stateName", report.getStateName() != null ? report.getStateName() : "Not linked");
             row.put("cnaCode", report.getCnaCode());
             row.put("cnaName", report.getCnaName());
             row.put("bankBalance", report.getBankBalance() != null ? report.getBankBalance().toPlainString() : "-");
@@ -138,5 +205,17 @@ public class CnaBankBalanceReportController {
             rows.add(row);
         }
         return rows;
+    }
+
+    private static String totalBalance(List<CnaBankBalanceReport> reports) {
+        BigDecimal total = BigDecimal.ZERO;
+        if (reports != null) {
+            for (CnaBankBalanceReport report : reports) {
+                if (report.getBankBalance() != null) {
+                    total = total.add(report.getBankBalance());
+                }
+            }
+        }
+        return total.toPlainString();
     }
 }

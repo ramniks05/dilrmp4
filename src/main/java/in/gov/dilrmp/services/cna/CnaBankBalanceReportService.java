@@ -1,6 +1,9 @@
 package in.gov.dilrmp.services.cna;
 
+import in.gov.dilrmp.models.administrativeBoundry.State;
 import in.gov.dilrmp.models.cna.CnaBankBalanceReport;
+import in.gov.dilrmp.models.cna.CnaLgdLink;
+import in.gov.dilrmp.repositories.administrativeBoundry.StateRepositry;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -22,7 +25,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,16 +47,31 @@ public class CnaBankBalanceReportService {
     @Autowired
     private CnaBankBalanceReportRepository repository;
 
+    @Autowired
+    private CnaLgdLinkService cnaLgdLinkService;
+
+    @Autowired
+    private StateRepositry stateRepositry;
+
     public List<CnaBankBalanceReport> findAll() {
-        return repository.findAllByOrderByCnaNameAsc();
+        return withStateNames(repository.findAllByOrderByCnaNameAsc());
     }
 
+    @Transactional
     public List<CnaBankBalanceReport> getLatestUploadReport() {
-        LocalDateTime latestUpload = repository.findLatestUploadOn();
-        if (latestUpload == null) {
+        cnaLgdLinkService.seedLinks();
+        repository.backfillAsOnDate();
+        LocalDate latestSharedOn = repository.findLatestReportDate();
+        if (latestSharedOn == null) {
             return Collections.emptyList();
         }
-        return findByUploadDay(latestUpload.toLocalDate());
+        return withStateNames(repository.findByReportDate(latestSharedOn));
+    }
+
+    public List<String> getDistinctSharedOnDates() {
+        return repository.findDistinctReportDates().stream()
+                .map(LocalDate::toString)
+                .collect(Collectors.toList());
     }
 
     public List<LocalDate> getDistinctUploadDates() {
@@ -61,24 +82,17 @@ public class CnaBankBalanceReportService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public List<CnaBankBalanceReport> getReportAsOnDate(LocalDate asOnDate) {
         if (asOnDate == null) {
-            throw new IllegalArgumentException("Please select a date for the As On Date report.");
+            throw new IllegalArgumentException("Please select the Balance Date.");
         }
-        LocalDateTime startOfDay = asOnDate.atStartOfDay();
-        LocalDateTime endOfDay = asOnDate.plusDays(1).atStartOfDay();
-        if (repository.countByUploadDateRange(startOfDay, endOfDay) == 0) {
-            return Collections.emptyList();
-        }
-        return findByUploadDay(asOnDate);
+        cnaLgdLinkService.seedLinks();
+        repository.backfillAsOnDate();
+        return withStateNames(repository.findByReportDate(asOnDate));
     }
 
-    private List<CnaBankBalanceReport> findByUploadDay(LocalDate uploadDay) {
-        return repository.findByUploadedOnBetween(
-                uploadDay.atStartOfDay(),
-                uploadDay.plusDays(1).atStartOfDay());
-    }
-
+    @Transactional
     public List<CnaBankBalanceReport> getReportBetweenDates(LocalDate fromDate, LocalDate toDate) {
         if (fromDate == null || toDate == null) {
             throw new IllegalArgumentException("Please select both From Date and To Date.");
@@ -86,9 +100,20 @@ public class CnaBankBalanceReportService {
         if (fromDate.isAfter(toDate)) {
             throw new IllegalArgumentException("From Date cannot be after To Date.");
         }
-        LocalDateTime fromDateTime = fromDate.atStartOfDay();
-        LocalDateTime toDateTime = toDate.plusDays(1).atStartOfDay();
-        return repository.findByUploadedOnBetween(fromDateTime, toDateTime);
+        cnaLgdLinkService.seedLinks();
+        repository.backfillAsOnDate();
+        return withStateNames(repository.findBySharedOnDateBetween(fromDate, toDate));
+    }
+
+    @Transactional
+    public List<CnaBankBalanceReport> getReportForDownload(LocalDate date, LocalDate fromDate, LocalDate toDate) {
+        if (date != null) {
+            return getReportAsOnDate(date);
+        }
+        if (fromDate != null || toDate != null) {
+            return getReportBetweenDates(fromDate, toDate);
+        }
+        return getLatestUploadReport();
     }
 
     @Transactional
@@ -102,25 +127,103 @@ public class CnaBankBalanceReportService {
             throw new IllegalArgumentException("Only .xlsx Excel files are supported.");
         }
 
-        LocalDate uploadDate = LocalDate.now();
-        LocalDateTime startOfDay = uploadDate.atStartOfDay();
-        LocalDateTime endOfDay = uploadDate.plusDays(1).atStartOfDay();
-        if (repository.countByUploadDateRange(startOfDay, endOfDay) > 0) {
-            throw new IllegalArgumentException(
-                    "Data has already been uploaded for today ("
-                            + uploadDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
-                            + "). Only one upload per day is allowed.");
-        }
+        cnaLgdLinkService.seedLinks();
+        repository.backfillAsOnDate();
 
         List<CnaBankBalanceReport> records = parseExcel(file);
         if (records.isEmpty()) {
             throw new IllegalArgumentException("No valid data rows found in the Excel file.");
         }
 
+        DateTimeFormatter sharedOnFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        Set<String> seenKeys = new HashSet<>();
+        List<String> duplicates = new ArrayList<>();
+        List<String> missingDates = new ArrayList<>();
+        for (CnaBankBalanceReport record : records) {
+            if (record.getReportDate() == null) {
+                missingDates.add(record.getCnaCode());
+                continue;
+            }
+            String key = CnaLgdLinkService.normalize(record.getCnaCode()) + "|" + record.getReportDate();
+            if (!seenKeys.add(key)) {
+                duplicates.add(record.getCnaCode() + " (" + record.getReportDate().format(sharedOnFormat) + ")");
+            }
+        }
+        if (!missingDates.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Balance Date is missing for CNA code(s): " + String.join(", ", missingDates) + ".");
+        }
+        if (!duplicates.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "These CNA codes are repeated for the same Balance Date: " + String.join(", ", duplicates) + ".");
+        }
+
+        List<String> alreadySaved = new ArrayList<>();
+        Map<LocalDate, Set<String>> savedByDate = new java.util.HashMap<>();
+        for (CnaBankBalanceReport record : records) {
+            Set<String> savedCodes = savedByDate.computeIfAbsent(record.getReportDate(), date -> {
+                Set<String> codes = new HashSet<>();
+                for (String code : repository.findCnaCodesByReportDate(date)) {
+                    codes.add(CnaLgdLinkService.normalize(code));
+                }
+                return codes;
+            });
+            if (savedCodes.contains(CnaLgdLinkService.normalize(record.getCnaCode()))) {
+                alreadySaved.add(record.getCnaCode() + " (" + record.getReportDate().format(sharedOnFormat) + ")");
+            }
+        }
+        if (!alreadySaved.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "These CNA codes are already saved for that Balance Date: " + String.join(", ", alreadySaved)
+                            + ". Each CNA code can be uploaded only once for a Balance Date.");
+        }
+
+        Map<String, CnaLgdLink> links = cnaLgdLinkService.allByCode();
+        List<String> unknown = new ArrayList<>();
+        for (CnaBankBalanceReport record : records) {
+            if (!links.containsKey(CnaLgdLinkService.normalize(record.getCnaCode()))) {
+                unknown.add(record.getCnaCode());
+            }
+        }
+        if (!unknown.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "These CNA codes are not linked to an LGD state code: " + String.join(", ", unknown)
+                            + ". State name cannot be shown until the code is linked.");
+        }
+
         List<CnaBankBalanceReport> saved = repository.saveAll(records);
         repository.flush();
         logger.info("CNA bank balance upload saved {} record(s)", saved.size());
         return saved.size();
+    }
+
+    private List<CnaBankBalanceReport> withStateNames(List<CnaBankBalanceReport> reports) {
+        if (reports == null || reports.isEmpty()) {
+            return reports == null ? Collections.emptyList() : reports;
+        }
+        Map<String, CnaLgdLink> links = cnaLgdLinkService.allByCode();
+        Map<Integer, String> stateNames = new java.util.HashMap<>();
+        for (State state : stateRepositry.findAll()) {
+            if (state.getLgdCode() != null) {
+                stateNames.put(state.getLgdCode(), state.getName());
+            }
+        }
+        for (CnaBankBalanceReport report : reports) {
+            CnaLgdLink link = links.get(CnaLgdLinkService.normalize(report.getCnaCode()));
+            if (link == null) {
+                continue;
+            }
+            report.setLgdCode(link.getLgdCode());
+            report.setStateName(stateNames.get(link.getLgdCode()));
+        }
+        List<CnaBankBalanceReport> sorted = new ArrayList<>(reports);
+        sorted.sort(Comparator
+                .comparing(CnaBankBalanceReport::getReportDate, Comparator.nullsLast(Comparator.reverseOrder()))
+                .thenComparing(report -> report.getStateName() == null ? "" : report.getStateName(),
+                        String.CASE_INSENSITIVE_ORDER)
+                .thenComparing(report -> report.getCnaCode() == null ? "" : report.getCnaCode(),
+                        String.CASE_INSENSITIVE_ORDER));
+        return sorted;
     }
 
     private static class ColumnMapping {

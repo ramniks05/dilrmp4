@@ -15,7 +15,7 @@
                                     <label for="cnaExcelFile">Select Excel File (.xlsx)</label>
                                     <input type="file" id="cnaExcelFile" name="file" class="form-control" accept=".xlsx" required />
                                 </div>
-                                <p class="text-muted small">More than one file can be uploaded on the same day. The report date is the Balance Date in the Excel file. Each CNA code can be saved only once for a Balance Date. The state name is shown from the CNA code.</p>
+                                <p class="text-muted small">More than one file can be uploaded on the same day if each file has a different “DW Report data last refreshed on” date. That header date is the Report Date used for filter and duplicate check. Bank Balance Last Shared On is kept from each row as in the sheet. The state name is shown from the CNA code.</p>
                                 <button type="button" id="uploadCnaReport" class="btn btn-primary">Upload</button>
                             </form>
 
@@ -28,14 +28,14 @@
                             <div class="row">
                                 <div class="col-md-5">
                                     <div class="card card-outline card-secondary">
-                                        <div class="card-header"><strong>Balance Date</strong></div>
+                                        <div class="card-header"><strong>Report Date</strong></div>
                                         <div class="card-body">
-                                            <p class="text-muted small">Shows rows for the selected Balance Date. The upload date is not used.</p>
+                                            <p class="text-muted small">Shows rows for the selected Report Date (DW Report data last refreshed on). The Last Shared On column is not used for this filter.</p>
                                             <div class="form-group">
-                                                <label for="asOnDate">Balance Date</label>
+                                                <label for="asOnDate">Report Date</label>
                                                 <input type="text" id="asOnDate" class="form-control cna-date" placeholder="dd-mm-yyyy" autocomplete="off" readonly />
                                             </div>
-                                            <button type="button" id="viewAsOnDateReport" class="btn btn-info">View Balance Date</button>
+                                            <button type="button" id="viewAsOnDateReport" class="btn btn-info">View Report Date</button>
                                         </div>
                                     </div>
                                 </div>
@@ -43,7 +43,7 @@
                                     <div class="card card-outline card-secondary">
                                         <div class="card-header"><strong>Between Dates Report</strong></div>
                                         <div class="card-body">
-                                            <p class="text-muted small">Shows rows whose Balance Date falls in the selected range. The upload date is not used.</p>
+                                            <p class="text-muted small">Shows rows whose Report Date (DW refreshed on) falls in the selected range.</p>
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="form-group">
@@ -89,13 +89,14 @@
                                         <th>CNA Code</th>
                                         <th>CNA Name</th>
                                         <th>Bank Balance (in Crore)</th>
-                                        <th>Balance Date</th>
+                                        <th>Report Date</th>
+                                        <th>Bank Balance Last Shared On</th>
                                         <th>Uploaded On</th>
                                     </tr>
                                     </thead>
                                     <tbody id="cnaReportTableBody">
                                     <tr th:if="${#lists.isEmpty(reports)}">
-                                        <td colspan="7" class="text-center">No records uploaded yet.</td>
+                                        <td colspan="8" class="text-center">No records uploaded yet.</td>
                                     </tr>
                                     <tr th:each="report, stat : ${reports}">
                                         <td th:text="${stat.count}"></td>
@@ -103,6 +104,7 @@
                                         <td th:text="${report.cnaCode}"></td>
                                         <td th:text="${report.cnaName}"></td>
                                         <td th:text="${report.bankBalance}"></td>
+                                        <td th:text="${report.asOnDate != null ? #temporals.format(report.asOnDate, 'dd-MM-yyyy') : '-'}"></td>
                                         <td th:text="${report.reportDate != null ? #temporals.format(report.reportDate, 'dd-MM-yyyy') : '-'}"></td>
                                         <td th:text="${report.uploadedOn != null ? #temporals.format(report.uploadedOn, 'dd-MM-yyyy HH:mm') : '-'}"></td>
                                     </tr>
@@ -112,6 +114,7 @@
                                         <td></td>
                                         <td></td>
                                         <td th:text="${totalBalance}"></td>
+                                        <td></td>
                                         <td></td>
                                         <td></td>
                                     </tr>
@@ -283,7 +286,7 @@
                 tbody.empty();
 
                 if (!reports || reports.length === 0) {
-                    tbody.append('<tr><td colspan="7" class="text-center">No records found for selected criteria.</td></tr>');
+                    tbody.append('<tr><td colspan="8" class="text-center">No records found for selected criteria.</td></tr>');
                     return;
                 }
 
@@ -295,6 +298,7 @@
                         '<td>' + (report.cnaCode || '') + '</td>' +
                         '<td>' + (report.cnaName || '') + '</td>' +
                         '<td>' + (report.bankBalance || '-') + '</td>' +
+                        '<td>' + (report.asOnDate || '-') + '</td>' +
                         '<td>' + (report.reportDate || '-') + '</td>' +
                         '<td>' + (report.uploadedOn || '-') + '</td>' +
                         '</tr>'
@@ -306,7 +310,7 @@
                     '<td class="text-left">Total</td>' +
                     '<td></td><td></td>' +
                     '<td>' + (totalBalance || '0') + '</td>' +
-                    '<td></td><td></td>' +
+                    '<td></td><td></td><td></td>' +
                     '</tr>'
                 );
             }
@@ -440,7 +444,7 @@
                 $(document).on("click.cnaReport", "#viewAsOnDateReport", function () {
                     const asOnDate = isoFromPicker("#asOnDate");
                     if (!asOnDate) {
-                        showMessage("#reportFilterMessage", "danger", "Please select the Balance Date.");
+                        showMessage("#reportFilterMessage", "danger", "Please select the Report Date.");
                         return;
                     }
 
@@ -460,7 +464,7 @@
                         },
                         error: function (xhr) {
                             const message = (xhr.responseJSON && xhr.responseJSON.message)
-                                ? xhr.responseJSON.message : "Failed to load the Balance Date report.";
+                                ? xhr.responseJSON.message : "Failed to load the Report Date report.";
                             $("#reportTitle").text("Report");
                             renderReportTable([]);
                             showMessage("#reportFilterMessage", "danger", message);

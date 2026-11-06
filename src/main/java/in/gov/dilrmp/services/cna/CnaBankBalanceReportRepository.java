@@ -7,7 +7,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -29,9 +28,4 @@ public interface CnaBankBalanceReportRepository extends JpaRepository<CnaBankBal
 
     @Query("SELECT COUNT(r) FROM CnaBankBalanceReport r WHERE r.asOnDate = :asOnDate")
     long countByAsOnDate(@Param("asOnDate") LocalDate asOnDate);
-
-    @Query("SELECT DISTINCT r.uploadedOn FROM CnaBankBalanceReport r ORDER BY r.uploadedOn DESC")
-    List<LocalDateTime> findDistinctUploadedOn();
-
-    List<CnaBankBalanceReport> findByUploadedOnOrderByIdAsc(LocalDateTime uploadedOn);
 }

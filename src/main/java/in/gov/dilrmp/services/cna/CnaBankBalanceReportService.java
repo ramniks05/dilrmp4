@@ -65,7 +65,6 @@ public class CnaBankBalanceReportService {
     @Transactional
     public List<CnaBankBalanceReport> getLatestUploadReport() {
         cnaLgdLinkService.seedLinks();
-        realignLegacyAsOnDateFromFirstSharedOn();
         LocalDate latestAsOnDate = repository.findLatestAsOnDate();
         if (latestAsOnDate == null) {
             return Collections.emptyList();
@@ -73,19 +72,9 @@ public class CnaBankBalanceReportService {
         return withStateNames(repository.findByAsOnDate(latestAsOnDate));
     }
 
-    @Transactional
     public List<String> getDistinctSharedOnDates() {
-        realignLegacyAsOnDateFromFirstSharedOn();
         return repository.findDistinctAsOnDates().stream()
                 .map(LocalDate::toString)
-                .collect(Collectors.toList());
-    }
-
-    public List<LocalDate> getDistinctUploadDates() {
-        return repository.findDistinctUploadedOn().stream()
-                .map(LocalDateTime::toLocalDate)
-                .distinct()
-                .sorted(Comparator.reverseOrder())
                 .collect(Collectors.toList());
     }
 
@@ -95,7 +84,6 @@ public class CnaBankBalanceReportService {
             throw new IllegalArgumentException("Please select the Report Date.");
         }
         cnaLgdLinkService.seedLinks();
-        realignLegacyAsOnDateFromFirstSharedOn();
         return withStateNames(repository.findByAsOnDate(asOnDate));
     }
 
@@ -108,63 +96,7 @@ public class CnaBankBalanceReportService {
             throw new IllegalArgumentException("From Date cannot be after To Date.");
         }
         cnaLgdLinkService.seedLinks();
-        realignLegacyAsOnDateFromFirstSharedOn();
         return withStateNames(repository.findByAsOnDateBetween(fromDate, toDate));
-    }
-
-    /**
-     * Old uploads stored Report Date from the upload day. Reset each upload batch so Report Date
-     * becomes the first row's Bank Balance Last Shared On (report_date), which matches the sheet.
-     * Skips batches already aligned, and skips new-style uploads where Report Date is not the upload day.
-     */
-    @Transactional
-    public int realignLegacyAsOnDateFromFirstSharedOn() {
-        int updated = 0;
-        for (LocalDateTime uploadedOn : repository.findDistinctUploadedOn()) {
-            if (uploadedOn == null) {
-                continue;
-            }
-            List<CnaBankBalanceReport> batch = repository.findByUploadedOnOrderByIdAsc(uploadedOn);
-            if (batch.isEmpty()) {
-                continue;
-            }
-
-            LocalDate firstSharedOn = null;
-            for (CnaBankBalanceReport row : batch) {
-                if (row.getReportDate() != null) {
-                    firstSharedOn = row.getReportDate();
-                    break;
-                }
-            }
-            if (firstSharedOn == null) {
-                continue;
-            }
-
-            LocalDate uploadDay = uploadedOn.toLocalDate();
-            boolean looksLikeLegacyUploadDay = true;
-            boolean alreadyAligned = true;
-            for (CnaBankBalanceReport row : batch) {
-                LocalDate asOn = row.getAsOnDate();
-                if (asOn == null || !asOn.equals(uploadDay)) {
-                    looksLikeLegacyUploadDay = false;
-                }
-                if (asOn == null || !asOn.equals(firstSharedOn)) {
-                    alreadyAligned = false;
-                }
-            }
-            if (alreadyAligned || !looksLikeLegacyUploadDay) {
-                continue;
-            }
-
-            for (CnaBankBalanceReport row : batch) {
-                row.setAsOnDate(firstSharedOn);
-                updated++;
-            }
-            repository.saveAll(batch);
-            logger.info("CNA legacy Report Date set to first Last Shared On {} for upload {}",
-                    firstSharedOn, uploadedOn);
-        }
-        return updated;
     }
 
     @Transactional

@@ -37,7 +37,7 @@ public final class MonthlyDoReportExporter {
     }
 
     public static void writePdf(HttpServletResponse response, Report report) throws IOException {
-        String fileName = "Monthly_DO_Report_Part_B_" + report.month + ".pdf";
+        String fileName = "Monthly_DO_Report_" + report.month + ".pdf";
         Document document = new Document(PageSize.A4.rotate(), 24, 24, 24, 24);
         try {
             response.setContentType("application/pdf");
@@ -92,12 +92,12 @@ public final class MonthlyDoReportExporter {
     }
 
     public static void writeExcel(HttpServletResponse response, Report report) throws IOException {
-        String fileName = "Monthly_DO_Report_Part_B_" + report.month + ".xlsx";
+        String fileName = "Monthly_DO_Report_" + report.month + ".xlsx";
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
 
         try (XSSFWorkbook workbook = new XSSFWorkbook()) {
-            XSSFSheet sheet = workbook.createSheet("Part B");
+            XSSFSheet sheet = workbook.createSheet("Monthly DO Report");
             CellStyle titleStyle = workbook.createCellStyle();
             XSSFFont titleFont = workbook.createFont();
             titleFont.setBold(true);

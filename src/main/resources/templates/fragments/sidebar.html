@@ -107,6 +107,12 @@
                                 <p>Physical Progress As on Date</p>
                             </a>
                         </li>
+                        <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN')">
+                            <a href="#" hx-get="/dolr/monthly-do-report" hx-target="#content" hx-swap="innerHTML" hx-push-url="false" class="nav-link" title="Monthly DO Report">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Monthly DO Report</p>
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a href="#" hx-get="/dolr/date-wise-report" hx-target="#content" hx-swap="innerHTML" hx-push-url="false" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>

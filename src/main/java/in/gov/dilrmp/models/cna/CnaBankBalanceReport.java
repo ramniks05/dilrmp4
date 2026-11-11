@@ -29,10 +29,11 @@ public class CnaBankBalanceReport {
     @Column(name = "bank_balance", nullable = false)
     private BigDecimal bankBalance;
 
+    /** Bank Balance Last Shared On from the Excel row (may differ by CNA). */
     @Column(name = "report_date")
     private LocalDate reportDate;
 
-    /** Date selected at upload. One CNA file is allowed for each as-on date. */
+    /** DW Report data last refreshed on — one date for the whole Excel file; used for filter and duplicate check. */
     @Column(name = "as_on_date")
     private LocalDate asOnDate;
 

@@ -1,0 +1,93 @@
+<div th:fragment="monthly-do-report">
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-info">
+                        <div class="card-header">
+                            <h3 class="card-title" style="font-size: 1.125rem">
+                                Monthly DO Report
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-muted mb-3">
+                                Annexure to Monthly D.O. Letter — Land Records Modernization programme.
+                                Figures are national totals from DILRMP MIS as on month-end dates.
+                            </p>
+
+                            <form id="monthlyDoReportForm" class="form-row align-items-end mb-3"
+                                  hx-get="/dolr/monthly-do-report"
+                                  hx-target="#content"
+                                  hx-swap="innerHTML"
+                                  hx-push-url="false">
+                                <div class="col-md-3 mb-2">
+                                    <label for="month">Select Month</label>
+                                    <input type="month" id="month" name="month" class="form-control"
+                                           th:value="${selectedMonth}"
+                                           th:attr="min=${minMonth}, max=${maxMonth}"
+                                           required>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <button type="submit" class="btn btn-primary">Show Report</button>
+                                    <a class="btn btn-outline-danger ml-2"
+                                       th:href="@{/dolr/monthly-do-report/pdf(month=${selectedMonth})}"
+                                       target="_blank" title="Download PDF">
+                                        <img th:src="@{/images/pdf.png}" alt="PDF" width="28" height="28">
+                                        PDF
+                                    </a>
+                                    <a class="btn btn-outline-success ml-1"
+                                       th:href="@{/dolr/monthly-do-report/excel(month=${selectedMonth})}"
+                                       target="_blank" title="Download Excel">
+                                        <img th:src="@{/images/excel.png}" alt="Excel" width="28" height="28">
+                                        Excel
+                                    </a>
+                                </div>
+                            </form>
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-sm text-center" style="font-size: 13px;">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th colspan="8" class="text-center">
+                                            Information to be provided Monthly
+                                            <span class="d-block text-muted font-weight-normal"
+                                                  th:text="'Month: ' + ${report.monthLabel}">Month</span>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="8" class="text-center">Land Records Modernization programme</th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 5%;">S. No</th>
+                                        <th style="width: 24%;">Indicator</th>
+                                        <th th:text="'Previous Month (as on ' + ${report.previousAsOnLabel} + ')'">Previous Month</th>
+                                        <th th:text="'Current Month (as on ' + ${report.currentAsOnLabel} + ')'">Current Month</th>
+                                        <th th:text="'Current Month Previous FY (as on ' + ${report.previousFyAsOnLabel} + ')'">Previous FY</th>
+                                        <th>Year to Date (Current FY)</th>
+                                        <th>Year to Date (Previous FY)</th>
+                                        <th>% change in YTD from previous FY</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="row : ${report.rows}">
+                                        <td th:text="${row.sno}">1</td>
+                                        <td class="text-left" th:text="${row.indicator}">Indicator</td>
+                                        <td class="text-right" th:text="${row.previousMonthFormatted}">0</td>
+                                        <td class="text-right" th:text="${row.currentMonthFormatted}">0</td>
+                                        <td class="text-right" th:text="${row.currentMonthPreviousFyFormatted}">0</td>
+                                        <td class="text-right" th:text="${row.ytdCurrentFyFormatted}">0</td>
+                                        <td class="text-right" th:text="${row.ytdPreviousFyFormatted}">0</td>
+                                        <td th:text="${row.percentChangeFormatted}">0%</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <p class="small text-muted mb-0" th:text="${report.note}">Note</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

@@ -44,6 +44,11 @@ public class CnaBankBalanceReportService {
             DateTimeFormatter.ofPattern("dd-MMM-yyyy")
     };
 
+    private static final java.util.regex.Pattern HEADER_REFRESHED_DATE =
+            java.util.regex.Pattern.compile(
+                    "last\\s+refreshed\\s+on\\s*:\\s*(\\d{1,2}[/.-]\\d{1,2}[/.-]\\d{4})",
+                    java.util.regex.Pattern.CASE_INSENSITIVE);
+
     @Autowired
     private CnaBankBalanceReportRepository repository;
 
@@ -60,36 +65,26 @@ public class CnaBankBalanceReportService {
     @Transactional
     public List<CnaBankBalanceReport> getLatestUploadReport() {
         cnaLgdLinkService.seedLinks();
-        repository.backfillAsOnDate();
-        LocalDate latestSharedOn = repository.findLatestReportDate();
-        if (latestSharedOn == null) {
+        LocalDate latestAsOnDate = repository.findLatestAsOnDate();
+        if (latestAsOnDate == null) {
             return Collections.emptyList();
         }
-        return withStateNames(repository.findByReportDate(latestSharedOn));
+        return withStateNames(repository.findByAsOnDate(latestAsOnDate));
     }
 
     public List<String> getDistinctSharedOnDates() {
-        return repository.findDistinctReportDates().stream()
+        return repository.findDistinctAsOnDates().stream()
                 .map(LocalDate::toString)
-                .collect(Collectors.toList());
-    }
-
-    public List<LocalDate> getDistinctUploadDates() {
-        return repository.findDistinctUploadedOn().stream()
-                .map(LocalDateTime::toLocalDate)
-                .distinct()
-                .sorted(Comparator.reverseOrder())
                 .collect(Collectors.toList());
     }
 
     @Transactional
     public List<CnaBankBalanceReport> getReportAsOnDate(LocalDate asOnDate) {
         if (asOnDate == null) {
-            throw new IllegalArgumentException("Please select the Balance Date.");
+            throw new IllegalArgumentException("Please select the Report Date.");
         }
         cnaLgdLinkService.seedLinks();
-        repository.backfillAsOnDate();
-        return withStateNames(repository.findByReportDate(asOnDate));
+        return withStateNames(repository.findByAsOnDate(asOnDate));
     }
 
     @Transactional
@@ -101,8 +96,7 @@ public class CnaBankBalanceReportService {
             throw new IllegalArgumentException("From Date cannot be after To Date.");
         }
         cnaLgdLinkService.seedLinks();
-        repository.backfillAsOnDate();
-        return withStateNames(repository.findBySharedOnDateBetween(fromDate, toDate));
+        return withStateNames(repository.findByAsOnDateBetween(fromDate, toDate));
     }
 
     @Transactional
@@ -128,54 +122,36 @@ public class CnaBankBalanceReportService {
         }
 
         cnaLgdLinkService.seedLinks();
-        repository.backfillAsOnDate();
 
         List<CnaBankBalanceReport> records = parseExcel(file);
         if (records.isEmpty()) {
             throw new IllegalArgumentException("No valid data rows found in the Excel file.");
         }
 
-        DateTimeFormatter sharedOnFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        Set<String> seenKeys = new HashSet<>();
-        List<String> duplicates = new ArrayList<>();
-        List<String> missingDates = new ArrayList<>();
-        for (CnaBankBalanceReport record : records) {
-            if (record.getReportDate() == null) {
-                missingDates.add(record.getCnaCode());
-                continue;
-            }
-            String key = CnaLgdLinkService.normalize(record.getCnaCode()) + "|" + record.getReportDate();
-            if (!seenKeys.add(key)) {
-                duplicates.add(record.getCnaCode() + " (" + record.getReportDate().format(sharedOnFormat) + ")");
-            }
-        }
-        if (!missingDates.isEmpty()) {
+        LocalDate headerDate = records.get(0).getAsOnDate();
+        if (headerDate == null) {
             throw new IllegalArgumentException(
-                    "Balance Date is missing for CNA code(s): " + String.join(", ", missingDates) + ".");
+                    "Could not find 'DW Report data last refreshed on' date in the Excel header.");
+        }
+        DateTimeFormatter displayFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        if (repository.countByAsOnDate(headerDate) > 0) {
+            throw new IllegalArgumentException(
+                    "A CNA report for Report Date " + headerDate.format(displayFormat)
+                            + " (DW Report data last refreshed on) is already uploaded. "
+                            + "Upload a file with a different refreshed-on date, or keep the existing data.");
+        }
+
+        Set<String> seenCodes = new HashSet<>();
+        List<String> duplicates = new ArrayList<>();
+        for (CnaBankBalanceReport record : records) {
+            String code = CnaLgdLinkService.normalize(record.getCnaCode());
+            if (!seenCodes.add(code)) {
+                duplicates.add(record.getCnaCode());
+            }
         }
         if (!duplicates.isEmpty()) {
             throw new IllegalArgumentException(
-                    "These CNA codes are repeated for the same Balance Date: " + String.join(", ", duplicates) + ".");
-        }
-
-        List<String> alreadySaved = new ArrayList<>();
-        Map<LocalDate, Set<String>> savedByDate = new java.util.HashMap<>();
-        for (CnaBankBalanceReport record : records) {
-            Set<String> savedCodes = savedByDate.computeIfAbsent(record.getReportDate(), date -> {
-                Set<String> codes = new HashSet<>();
-                for (String code : repository.findCnaCodesByReportDate(date)) {
-                    codes.add(CnaLgdLinkService.normalize(code));
-                }
-                return codes;
-            });
-            if (savedCodes.contains(CnaLgdLinkService.normalize(record.getCnaCode()))) {
-                alreadySaved.add(record.getCnaCode() + " (" + record.getReportDate().format(sharedOnFormat) + ")");
-            }
-        }
-        if (!alreadySaved.isEmpty()) {
-            throw new IllegalArgumentException(
-                    "These CNA codes are already saved for that Balance Date: " + String.join(", ", alreadySaved)
-                            + ". Each CNA code can be uploaded only once for a Balance Date.");
+                    "These CNA codes are repeated in the Excel file: " + String.join(", ", duplicates) + ".");
         }
 
         Map<String, CnaLgdLink> links = cnaLgdLinkService.allByCode();
@@ -218,7 +194,8 @@ public class CnaBankBalanceReportService {
         }
         List<CnaBankBalanceReport> sorted = new ArrayList<>(reports);
         sorted.sort(Comparator
-                .comparing(CnaBankBalanceReport::getReportDate, Comparator.nullsLast(Comparator.reverseOrder()))
+                .comparing(CnaBankBalanceReport::getAsOnDate, Comparator.nullsLast(Comparator.reverseOrder()))
+                .thenComparing(CnaBankBalanceReport::getReportDate, Comparator.nullsLast(Comparator.reverseOrder()))
                 .thenComparing(report -> report.getStateName() == null ? "" : report.getStateName(),
                         String.CASE_INSENSITIVE_ORDER)
                 .thenComparing(report -> report.getCnaCode() == null ? "" : report.getCnaCode(),
@@ -265,6 +242,11 @@ public class CnaBankBalanceReportService {
 
             FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
             DataFormatter dataFormatter = new DataFormatter();
+            LocalDate headerRefreshedOn = findHeaderRefreshedOnDate(sheet, evaluator, dataFormatter);
+            if (headerRefreshedOn == null) {
+                throw new IllegalArgumentException(
+                        "Could not find 'Note : DW Report data last refreshed on : dd/MM/yyyy' in the Excel header.");
+            }
             ColumnMapping mapping = findColumnMapping(sheet, evaluator, dataFormatter);
 
             for (int rowIndex = mapping.headerRowIndex + 1; rowIndex <= sheet.getLastRowNum(); rowIndex++) {
@@ -276,7 +258,7 @@ public class CnaBankBalanceReportService {
                 String cnaCode = getDataCellValue(sheet, row, mapping.cnaCodeCol, evaluator, dataFormatter);
                 String cnaName = getDataCellValue(sheet, row, mapping.cnaNameCol, evaluator, dataFormatter);
                 BigDecimal bankBalance = getDataCellValueAsBigDecimal(sheet, row, mapping.bankBalanceCol, evaluator, dataFormatter);
-                LocalDate reportDate = getDataCellValueAsDate(sheet, row, mapping.reportDateCol, evaluator, dataFormatter);
+                LocalDate lastSharedOn = getDataCellValueAsDate(sheet, row, mapping.reportDateCol, evaluator, dataFormatter);
 
                 if (cnaCode.isBlank() && cnaName.isBlank()) {
                     continue;
@@ -302,7 +284,8 @@ public class CnaBankBalanceReportService {
                 record.setCnaCode(cnaCode.trim());
                 record.setCnaName(cnaName.trim());
                 record.setBankBalance(bankBalance);
-                record.setReportDate(reportDate);
+                record.setAsOnDate(headerRefreshedOn);
+                record.setReportDate(lastSharedOn);
                 record.setUploadedOn(uploadedOn);
                 records.add(record);
             }
@@ -310,6 +293,55 @@ public class CnaBankBalanceReportService {
 
         logger.info("CNA bank balance parse found {} data row(s)", records.size());
         return records;
+    }
+
+    private LocalDate findHeaderRefreshedOnDate(Sheet sheet, FormulaEvaluator evaluator, DataFormatter dataFormatter) {
+        int lastRowToScan = Math.min(sheet.getLastRowNum(), 15);
+        for (int rowIndex = sheet.getFirstRowNum(); rowIndex <= lastRowToScan; rowIndex++) {
+            Row row = sheet.getRow(rowIndex);
+            if (row == null) {
+                continue;
+            }
+            for (int colIndex = 0; colIndex < MAX_COLUMNS_TO_SCAN; colIndex++) {
+                String text = getHeaderCellValue(sheet, row, colIndex, evaluator, dataFormatter);
+                if (text.isBlank()) {
+                    continue;
+                }
+                java.util.regex.Matcher matcher = HEADER_REFRESHED_DATE.matcher(text);
+                if (matcher.find()) {
+                    LocalDate parsed = parseFlexibleDate(matcher.group(1));
+                    if (parsed != null) {
+                        logger.info("CNA Excel header refreshed-on date {} found at row {}", parsed, rowIndex + 1);
+                        return parsed;
+                    }
+                    throw new IllegalArgumentException(
+                            "Unable to parse DW Report refreshed-on date: " + matcher.group(1));
+                }
+            }
+        }
+        return null;
+    }
+
+    private LocalDate parseFlexibleDate(String dateText) {
+        if (dateText == null || dateText.isBlank()) {
+            return null;
+        }
+        String trimmed = dateText.trim();
+        String[] candidates = {
+                trimmed,
+                trimmed.replace('.', '/'),
+                trimmed.replace('-', '/'),
+                trimmed.replace('.', '-')
+        };
+        for (String candidate : candidates) {
+            for (DateTimeFormatter formatter : DATE_FORMATTERS) {
+                try {
+                    return LocalDate.parse(candidate, formatter);
+                } catch (DateTimeParseException ignored) {
+                }
+            }
+        }
+        return null;
     }
 
     private ColumnMapping findColumnMapping(Sheet sheet, FormulaEvaluator evaluator, DataFormatter dataFormatter) {
@@ -373,11 +405,12 @@ public class CnaBankBalanceReportService {
 
         if (found.length() == 0) {
             return "Invalid Excel format. Could not find any expected header columns. " +
-                    "Required: 'Unique Code of IAs/SNA', 'Name of IAs/SNA', 'CNA Bank Balance', 'Bank Balance Last Shared On'.";
+                    "Required: 'Unique Code of CNA', 'Name of CNA', 'CNA Bank Balance', 'Bank Balance Last Shared On', "
+                    + "and the header note 'DW Report data last refreshed on'.";
         }
 
         return "Invalid Excel format. Found " + mapping.mappedCount() + " of 4 required columns (" + found + "). " +
-                "Please ensure all four header columns are present in the Excel file.";
+                "Please ensure all four header columns are present, plus 'DW Report data last refreshed on' in the header note.";
     }
 
     private void appendFoundColumn(StringBuilder found, String columnName) {
@@ -618,15 +651,22 @@ public class CnaBankBalanceReportService {
         }
 
         String dateText = formatCellValue(cell, evaluator, dataFormatter);
-        if (dateText.isBlank() || isSmallInteger(dateText)) {
+        if (dateText.isBlank() || isNullOrDash(dateText) || isSmallInteger(dateText)) {
             return null;
         }
 
-        for (DateTimeFormatter formatter : DATE_FORMATTERS) {
-            try {
-                return LocalDate.parse(dateText, formatter);
-            } catch (DateTimeParseException ignored) {
-            }
+        // Keep only the date part when Excel shows "dd/MM/yyyy hh:mm:ss AM"
+        String dateOnly = dateText;
+        java.util.regex.Matcher matcher = java.util.regex.Pattern
+                .compile("(\\d{1,2}[/.-]\\d{1,2}[/.-]\\d{4})")
+                .matcher(dateText);
+        if (matcher.find()) {
+            dateOnly = matcher.group(1);
+        }
+
+        LocalDate parsed = parseFlexibleDate(dateOnly);
+        if (parsed != null) {
+            return parsed;
         }
 
         if (dateText.contains("/") || dateText.contains("-")) {

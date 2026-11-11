@@ -85,11 +85,11 @@ public class CnaBankBalanceReportController {
         try {
             List<CnaBankBalanceReport> reports = cnaBankBalanceReportService.getReportAsOnDate(asOnDate);
             response.put("status", "success");
-            response.put("reportTitle", "Balance Date: " + asOnDate.format(DATE_FORMATTER));
+            response.put("reportTitle", "Report Date: " + asOnDate.format(DATE_FORMATTER));
             response.put("reports", toReportRows(reports));
             response.put("totalBalance", totalBalance(reports));
             if (reports.isEmpty()) {
-                response.put("message", "No record found for Balance Date " + asOnDate.format(DATE_FORMATTER) + ".");
+                response.put("message", "No record found for Report Date " + asOnDate.format(DATE_FORMATTER) + ".");
             }
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
@@ -99,7 +99,7 @@ public class CnaBankBalanceReportController {
         } catch (Exception e) {
             logger.error("Error generating as-on-date CNA report", e);
             response.put("status", "error");
-            response.put("message", "Failed to generate the Balance Date report.");
+            response.put("message", "Failed to generate the Report Date report.");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
@@ -113,12 +113,12 @@ public class CnaBankBalanceReportController {
         try {
             List<CnaBankBalanceReport> reports = cnaBankBalanceReportService.getReportBetweenDates(fromDate, toDate);
             response.put("status", "success");
-            response.put("reportTitle", "Balance Date: " + fromDate.format(DATE_FORMATTER)
+            response.put("reportTitle", "Report Date: " + fromDate.format(DATE_FORMATTER)
                     + " to " + toDate.format(DATE_FORMATTER));
             response.put("reports", toReportRows(reports));
             response.put("totalBalance", totalBalance(reports));
             if (reports.isEmpty()) {
-                response.put("message", "No records found for the selected Balance Dates.");
+                response.put("message", "No records found for the selected Report Dates.");
             }
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
@@ -174,19 +174,19 @@ public class CnaBankBalanceReportController {
     private static String downloadHeading(LocalDate date, LocalDate fromDate, LocalDate toDate,
                                           List<CnaBankBalanceReport> reports) {
         if (date != null) {
-            return "Balance Date: " + date.format(DATE_FORMATTER);
+            return "Report Date: " + date.format(DATE_FORMATTER);
         }
         if (fromDate != null && toDate != null) {
-            return "Balance Date: " + fromDate.format(DATE_FORMATTER) + " to " + toDate.format(DATE_FORMATTER);
+            return "Report Date: " + fromDate.format(DATE_FORMATTER) + " to " + toDate.format(DATE_FORMATTER);
         }
         return latestDateTitle(reports);
     }
 
     private static String latestDateTitle(List<CnaBankBalanceReport> reports) {
-        if (reports == null || reports.isEmpty() || reports.get(0).getReportDate() == null) {
-            return "Latest Balance Date";
+        if (reports == null || reports.isEmpty() || reports.get(0).getAsOnDate() == null) {
+            return "Latest Report Date";
         }
-        return "Balance Date: " + reports.get(0).getReportDate().format(DATE_FORMATTER);
+        return "Report Date: " + reports.get(0).getAsOnDate().format(DATE_FORMATTER);
     }
 
     private List<Map<String, String>> toReportRows(List<CnaBankBalanceReport> reports) {
@@ -199,6 +199,7 @@ public class CnaBankBalanceReportController {
             row.put("cnaCode", report.getCnaCode());
             row.put("cnaName", report.getCnaName());
             row.put("bankBalance", report.getBankBalance() != null ? report.getBankBalance().toPlainString() : "-");
+            row.put("asOnDate", report.getAsOnDate() != null ? report.getAsOnDate().format(DATE_FORMATTER) : "-");
             row.put("reportDate", report.getReportDate() != null ? report.getReportDate().format(DATE_FORMATTER) : "-");
             row.put("uploadedOn", report.getUploadedOn() != null
                     ? report.getUploadedOn().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")) : "-");

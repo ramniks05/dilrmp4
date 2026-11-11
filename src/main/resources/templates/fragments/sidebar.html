@@ -239,6 +239,13 @@
                     </a>
                 </li>
                 <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN')">
+                    <a href="#" hx-get="/dolr/prayas-darpan" hx-target="#content" hx-swap="innerHTML" hx-push-url="false" class="nav-link"
+                       title="PRAYAS / DARPAN push history — check if monthly data went through">
+                        <i class="nav-icon fas fa-share-square"></i>
+                        <p>PRAYAS Push Log</p>
+                    </a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN')">
                     <a href="#" hx-get="/dolr/unspent-balance/report" hx-target="#content" hx-swap="innerHTML" hx-push-url="false" class="nav-link">
                         <i class="nav-icon fas fa-rupee-sign"></i>
                         <p>Unspent Balance Report</p>

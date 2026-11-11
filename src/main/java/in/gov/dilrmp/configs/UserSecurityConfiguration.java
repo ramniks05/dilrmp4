@@ -96,7 +96,7 @@ public class UserSecurityConfiguration {
 
 
                                                 .requestMatchers("/","/mis","/favicon.ico","/error","/dashboard-chart","/getDashboardData","/getStateData","/getDocument", "/loginPage","/check-login","/getToken","/static/**", "/user/create-igr-user",
-                                                                "/captcha-servlet", "/PhyscialComponent/**","/api/chart/**","/physicalProgressReports/**","/physcial/report/**","/css/**","/js/**","/plugins/**","/naksha-dashboard",
+                                                                "/captcha-servlet", "/PhyscialComponent/**","/api/chart/**","/api/prayas/**","/api/ogd/**","/physicalProgressReports/**","/physcial/report/**","/css/**","/js/**","/plugins/**","/naksha-dashboard",
 
                                                                 "/dilrmp/**", "/images/**","/dashboard/**","/master/report/pdf/**","/PhyscialComponent/CLR/**","/topandbottom/report/**")
                                                 .permitAll()

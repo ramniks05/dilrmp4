@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Builds Annexure Part B of the monthly D.O. letter from national MIS totals
+ * Builds the monthly D.O. letter report from national MIS totals
  * (CLR + Map Digitization grand-total rows) as on month-end dates.
  */
 @Service

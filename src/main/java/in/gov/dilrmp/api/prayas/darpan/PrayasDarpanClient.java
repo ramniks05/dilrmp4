@@ -12,6 +12,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.net.http.HttpTimeoutException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -32,70 +33,92 @@ public class PrayasDarpanClient {
     public PrayasDarpanClient(PrayasDarpanProperties properties) {
         this.properties = properties;
         this.httpClient = HttpClient.newBuilder()
-                .connectTimeout(Duration.ofSeconds(30))
+                .connectTimeout(Duration.ofSeconds(Math.max(5, properties.getConnectTimeoutSeconds())))
                 .build();
     }
 
     public GetDateResult getDate() throws Exception {
-        JsonObject body = identityJson();
-        HttpResponse<String> response = postJson(properties.getGetdateUrl(), body.toString());
-        int status = response.statusCode();
-        String raw = response.body() == null ? "" : response.body();
-        logger.info("DARPAN getdate HTTP {} body length {}", status, raw.length());
+        try {
+            JsonObject body = identityJson();
+            HttpResponse<String> response = postJson(properties.getGetdateUrl(), body.toString());
+            int status = response.statusCode();
+            String raw = response.body() == null ? "" : response.body();
+            logger.info("DARPAN getdate HTTP {} body length {}", status, raw.length());
 
-        if (status != properties.getSuccessHttpStatus() && status != 200) {
-            return GetDateResult.httpError(status, raw);
-        }
+            if (status != properties.getSuccessHttpStatus() && status != 200) {
+                return GetDateResult.httpError(status, raw);
+            }
 
-        JsonObject json = JsonParser.parseString(raw).getAsJsonObject();
-        if (json.has("Status")) {
-            int code = parseInt(json.get("Status"));
-            String message = json.has("Message") ? json.get("Message").getAsString() : "";
-            return GetDateResult.status(code, message, raw);
-        }
+            JsonObject json = JsonParser.parseString(raw).getAsJsonObject();
+            if (json.has("Status")) {
+                int code = parseInt(json.get("Status"));
+                String message = json.has("Message") ? json.get("Message").getAsString() : "";
+                return GetDateResult.status(code, message, raw);
+            }
 
-        List<LocalDate> dates = new ArrayList<>();
-        Set<Integer> groups = new LinkedHashSet<>();
-        groups.add(properties.getGroupId());
+            List<LocalDate> dates = new ArrayList<>();
+            Set<Integer> groups = new LinkedHashSet<>();
+            groups.add(properties.getGroupId());
 
-        if (json.has("RetDMDashCaption") && json.get("RetDMDashCaption").isJsonArray()) {
-            JsonArray arr = json.getAsJsonArray("RetDMDashCaption");
-            for (JsonElement el : arr) {
-                JsonObject row = el.getAsJsonObject();
-                if (row.has("datadate")) {
-                    dates.add(LocalDate.parse(row.get("datadate").getAsString().trim(), DARPAN_DATE));
-                }
-                if (row.has("Group_Id")) {
-                    String groupRaw = row.get("Group_Id").getAsString();
-                    for (String part : groupRaw.split("#")) {
-                        String trimmed = part.trim();
-                        if (!trimmed.isEmpty()) {
-                            groups.add(Integer.parseInt(trimmed));
+            if (json.has("RetDMDashCaption") && json.get("RetDMDashCaption").isJsonArray()) {
+                JsonArray arr = json.getAsJsonArray("RetDMDashCaption");
+                for (JsonElement el : arr) {
+                    JsonObject row = el.getAsJsonObject();
+                    if (row.has("datadate")) {
+                        dates.add(LocalDate.parse(row.get("datadate").getAsString().trim(), DARPAN_DATE));
+                    }
+                    if (row.has("Group_Id")) {
+                        String groupRaw = row.get("Group_Id").getAsString();
+                        for (String part : groupRaw.split("#")) {
+                            String trimmed = part.trim();
+                            if (!trimmed.isEmpty()) {
+                                groups.add(Integer.parseInt(trimmed));
+                            }
                         }
                     }
                 }
             }
+            return GetDateResult.dates(dates, new ArrayList<>(groups), raw);
+        } catch (HttpTimeoutException ex) {
+            throw new IllegalStateException(
+                    "Timeout contacting DARPAN getdate (" + properties.getGetdateUrl()
+                            + "). Server could not reach prayasapi.darpan.nic.in in time — check firewall/proxy or ask DARPAN if API is up.",
+                    ex);
+        } catch (java.io.IOException ex) {
+            throw new IllegalStateException(
+                    "Network error contacting DARPAN getdate (" + properties.getGetdateUrl() + "): " + ex.getMessage(),
+                    ex);
         }
-        return GetDateResult.dates(dates, new ArrayList<>(groups), raw);
     }
 
     public PushResult pushData(String encryptedPayloadJson) throws Exception {
-        HttpResponse<String> response = postJson(properties.getPushdataUrl(), encryptedPayloadJson);
-        int status = response.statusCode();
-        String raw = response.body() == null ? "" : response.body();
-        logger.info("DARPAN pushdata HTTP {} body length {}", status, raw.length());
+        try {
+            HttpResponse<String> response = postJson(properties.getPushdataUrl(), encryptedPayloadJson);
+            int status = response.statusCode();
+            String raw = response.body() == null ? "" : response.body();
+            logger.info("DARPAN pushdata HTTP {} body length {}", status, raw.length());
 
-        if (status != properties.getSuccessHttpStatus() && status != 200) {
+            if (status != properties.getSuccessHttpStatus() && status != 200) {
+                return PushResult.httpError(status, raw);
+            }
+
+            JsonObject json = JsonParser.parseString(raw).getAsJsonObject();
+            if (json.has("Status")) {
+                int code = parseInt(json.get("Status"));
+                String message = json.has("Message") ? json.get("Message").getAsString() : "";
+                return PushResult.status(code, message, raw);
+            }
             return PushResult.httpError(status, raw);
+        } catch (HttpTimeoutException ex) {
+            throw new IllegalStateException(
+                    "Timeout contacting DARPAN pushdata (" + properties.getPushdataUrl()
+                            + "). Check firewall/proxy or DARPAN API availability.",
+                    ex);
+        } catch (java.io.IOException ex) {
+            throw new IllegalStateException(
+                    "Network error contacting DARPAN pushdata (" + properties.getPushdataUrl() + "): " + ex.getMessage(),
+                    ex);
         }
-
-        JsonObject json = JsonParser.parseString(raw).getAsJsonObject();
-        if (json.has("Status")) {
-            int code = parseInt(json.get("Status"));
-            String message = json.has("Message") ? json.get("Message").getAsString() : "";
-            return PushResult.status(code, message, raw);
-        }
-        return PushResult.httpError(status, raw);
     }
 
     private JsonObject identityJson() {
@@ -111,7 +134,7 @@ public class PrayasDarpanClient {
     private HttpResponse<String> postJson(String url, String body) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
-                .timeout(Duration.ofSeconds(120))
+                .timeout(Duration.ofSeconds(Math.max(15, properties.getRequestTimeoutSeconds())))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(body))
                 .build();

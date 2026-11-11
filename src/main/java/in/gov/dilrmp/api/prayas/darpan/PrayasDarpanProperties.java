@@ -38,6 +38,12 @@ public class PrayasDarpanProperties {
     /** Expected HTTP status from DARPAN APIs (legacy sample used 201). */
     private int successHttpStatus = 201;
 
+    /** Connect timeout to DARPAN host (seconds). */
+    private int connectTimeoutSeconds = 20;
+
+    /** Full request timeout for getdate/pushdata (seconds). */
+    private int requestTimeoutSeconds = 90;
+
     public boolean isEnabled() {
         return enabled;
     }
@@ -148,5 +154,21 @@ public class PrayasDarpanProperties {
 
     public void setSuccessHttpStatus(int successHttpStatus) {
         this.successHttpStatus = successHttpStatus;
+    }
+
+    public int getConnectTimeoutSeconds() {
+        return connectTimeoutSeconds;
+    }
+
+    public void setConnectTimeoutSeconds(int connectTimeoutSeconds) {
+        this.connectTimeoutSeconds = connectTimeoutSeconds;
+    }
+
+    public int getRequestTimeoutSeconds() {
+        return requestTimeoutSeconds;
+    }
+
+    public void setRequestTimeoutSeconds(int requestTimeoutSeconds) {
+        this.requestTimeoutSeconds = requestTimeoutSeconds;
     }
 }

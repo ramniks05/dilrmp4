@@ -7,7 +7,9 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import jakarta.persistence.UniqueConstraint;
 import in.gov.dilrmp.models.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,6 +17,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Table(name = "district", uniqueConstraints = @UniqueConstraint(name = "uk_district_lgd_code", columnNames = "lgd_code"))
 @Getter
 @Setter
 @AllArgsConstructor

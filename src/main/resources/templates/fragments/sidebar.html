@@ -347,6 +347,12 @@
                         <p>Timeline Backup</p>
                     </a>
                 </li>
+                <li class="nav-item" sec:authorize="hasRole('ROLE_DOLR') || hasRole('ROLE_ADMIN')">
+                    <a href="#" hx-get="/dolr/add-new-district" hx-target="#content" hx-swap="innerHTML" hx-push-url="false" class="nav-link">
+                        <i class="nav-icon fas fa-map-marker-alt"></i>
+                        <p>Add New District</p>
+                    </a>
+                </li>
 
                 <!-- ============ Account ============ -->
                 <li class="nav-header">Account</li>

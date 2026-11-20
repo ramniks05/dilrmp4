@@ -485,6 +485,7 @@ public class HomeInsightsService {
     private Map<String, Object> survey() {
         Map<String, Object> r = jdbc.queryForMap("select total_villages, villages_survey_sanction_not_started, villages_drone_flying_completed,"
                 + " villages_map1_generated, villages_draft_map_published, villages_final_promulgation_done,"
+                + " survey_completed_village_percent,"
                 + " total_rural_revenue_area, area_sanctioned_for_survey, area_drone_flying_completed"
                 + " from survey_resurvey_report_view where state_id = 999");
         Map<String, Object> out = new LinkedHashMap<>();
@@ -496,6 +497,9 @@ public class HomeInsightsService {
         stages.add(stage("Draft map published", toLong(r.get("villages_draft_map_published"))));
         stages.add(stage("Final promulgation", toLong(r.get("villages_final_promulgation_done"))));
         out.put("stages", stages);
+        out.put("completedVillages", toLong(r.get("villages_final_promulgation_done")));
+        out.put("completedPercent", r.get("survey_completed_village_percent") == null
+                ? null : toDouble(r.get("survey_completed_village_percent")));
         out.put("totalArea", toDouble(r.get("total_rural_revenue_area")));
         out.put("areaSanctioned", toDouble(r.get("area_sanctioned_for_survey")));
         out.put("areaFlown", toDouble(r.get("area_drone_flying_completed")));

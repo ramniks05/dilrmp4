@@ -61,6 +61,10 @@
                                            th:href="@{/physicalProgressReports/as-on-date/pdf(asOnDate=${asOnDate}, component=${selectedComponent.name()})}">
                                             Download PDF
                                         </a>
+                                        <button type="button" class="btn btn-success ml-2" id="downloadAllZip" style="font-size: 16px;"
+                                                th:attr="data-base=@{/physicalProgressReports/as-on-date/zip}">
+                                            Download All (ZIP)
+                                        </button>
                                     </div>
                                 </div>
                             </form>
@@ -70,10 +74,11 @@
                                     Data is available from
                                     <strong id="availableFrom" th:text="${minDate != null ? #temporals.format(minDate, 'dd-MM-yyyy') : '-'}"></strong>
                                     onwards.
+                                    Download All (ZIP) saves every component report for the selected date in one file.
                                 </p>
                             </div>
 
-                            <div class="mt-2" th:if="${reportReady}">
+                            <div class="mt-2" id="asOnDateReport" th:if="${reportReady}">
                                 <h4 class="text-center font-weight-bold mb-2" style="font-size: 18px;"
                                     th:text="${selectedComponent.label + ' - As on ' + #temporals.format(asOnDate, 'dd-MM-yyyy')}"></h4>
                                 <div th:replace="~{__${reportFragment}__ :: reportTable}"></div>
@@ -94,6 +99,36 @@
                                 #ui-datepicker-div .ui-datepicker-next:after { content: '\203A'; font-size: 20px; }
                                 #ui-datepicker-div .ui-state-disabled { opacity: 0.35; }
                                 #ui-datepicker-div select { font-size: 13px; padding: 1px; }
+                                #asOnDateReport .table-responsive {
+                                    max-height: calc(100vh - 230px);
+                                    overflow: auto;
+                                    position: relative;
+                                }
+                                #asOnDateReport table {
+                                    border-collapse: separate !important;
+                                    border-spacing: 0;
+                                    margin-bottom: 0;
+                                }
+                                #asOnDateReport .as-on-sticky-head {
+                                    position: sticky;
+                                    z-index: 3;
+                                }
+                                #asOnDateReport .as-on-sticky-col {
+                                    position: sticky;
+                                    z-index: 2;
+                                }
+                                #asOnDateReport thead .as-on-sticky-col {
+                                    z-index: 5;
+                                }
+                                #asOnDateReport .as-on-col-edge {
+                                    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.12);
+                                }
+                                #asOnDateReport thead tr:last-child > .as-on-sticky-head {
+                                    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.18);
+                                }
+                                #asOnDateReport thead tr:last-child > .as-on-sticky-head.as-on-col-edge {
+                                    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.12), 0 2px 0 rgba(0, 0, 0, 0.18);
+                                }
                             </style>
                             <script th:inline="javascript">
                                 window.asOnDateIsoParts = function (iso) {
@@ -148,6 +183,29 @@
                                         $display.datepicker('show');
                                     });
                                 };
+                                window.downloadAsOnDateZip = function () {
+                                    var button = document.getElementById('downloadAllZip');
+                                    var hidden = document.getElementById('asOnDate');
+                                    var iso = hidden ? hidden.value : '';
+                                    if (!button || !iso) {
+                                        window.alert('Select a date first.');
+                                        return;
+                                    }
+                                    var base = button.getAttribute('data-base');
+                                    var url = base + '?asOnDate=' + encodeURIComponent(iso);
+                                    var link = document.createElement('a');
+                                    link.href = url;
+                                    link.style.display = 'none';
+                                    document.body.appendChild(link);
+                                    link.click();
+                                    link.remove();
+                                };
+                                var zipButton = document.getElementById('downloadAllZip');
+                                if (zipButton) {
+                                    zipButton.onclick = function () {
+                                        window.downloadAsOnDateZip();
+                                    };
+                                };
                                 window.updateAsOnDateLimit = function (sel) {
                                     var minIso = sel.options[sel.selectedIndex].getAttribute('data-min');
                                     var display = document.getElementById('asOnDateDisplay');
@@ -178,10 +236,176 @@
                                         }
                                     }
                                 };
+                                window.freezeAsOnDateReport = function () {
+                                    var root = document.getElementById('asOnDateReport');
+                                    if (!root) {
+                                        return;
+                                    }
+                                    var table = root.querySelector('table');
+                                    var wrap = root.querySelector('.table-responsive');
+                                    if (!table || !wrap) {
+                                        return;
+                                    }
+                                    table.classList.remove('table-responsive');
+                                    var headRows = [];
+                                    var theads = table.querySelectorAll('thead');
+                                    for (var t = 0; t < theads.length; t++) {
+                                        var rows = theads[t].children;
+                                        for (var r = 0; r < rows.length; r++) {
+                                            if (rows[r].tagName === 'TR') {
+                                                headRows.push(rows[r]);
+                                            }
+                                        }
+                                    }
+                                    var grid = [];
+                                    headRows.forEach(function (tr, rowIndex) {
+                                        var col = 0;
+                                        var cells = tr.children;
+                                        for (var i = 0; i < cells.length; i++) {
+                                            var cell = cells[i];
+                                            if (!grid[rowIndex]) {
+                                                grid[rowIndex] = [];
+                                            }
+                                            while (grid[rowIndex][col]) {
+                                                col++;
+                                            }
+                                            var colSpan = cell.colSpan || 1;
+                                            var rowSpan = cell.rowSpan || 1;
+                                            cell.setAttribute('data-col-start', String(col));
+                                            for (var rr = 0; rr < rowSpan; rr++) {
+                                                if (!grid[rowIndex + rr]) {
+                                                    grid[rowIndex + rr] = [];
+                                                }
+                                                for (var cc = 0; cc < colSpan; cc++) {
+                                                    grid[rowIndex + rr][col + cc] = cell;
+                                                }
+                                            }
+                                            col += colSpan;
+                                        }
+                                    });
+                                    var headerCells = table.querySelectorAll('thead th, thead td');
+                                    var headBg = '#4a6c52';
+                                    if (headerCells.length) {
+                                        var painted = window.getComputedStyle(headerCells[0]).backgroundColor;
+                                        if (!window.asOnDateClearColor(painted)) {
+                                            headBg = painted;
+                                        }
+                                    }
+                                    for (var h = 0; h < headerCells.length; h++) {
+                                        headerCells[h].style.top = '';
+                                        headerCells[h].style.left = '';
+                                        headerCells[h].classList.add('as-on-sticky-head');
+                                    }
+                                    var bodyCells = table.querySelectorAll('tbody > tr > td, tfoot > tr > td');
+                                    var freezeCells = [];
+                                    function rememberFreezeCell(cell) {
+                                        var start = cell.getAttribute('data-col-start');
+                                        if (start === null && cell.parentElement) {
+                                            start = String(Array.prototype.indexOf.call(cell.parentElement.children, cell));
+                                            cell.setAttribute('data-col-start', start);
+                                        }
+                                        if ((start !== '0' && start !== '1') || (cell.colSpan || 1) !== 1) {
+                                            return;
+                                        }
+                                        cell.classList.add('as-on-sticky-col');
+                                        cell.style.minWidth = start === '0' ? '56px' : '150px';
+                                        if (start === '1') {
+                                            cell.classList.add('as-on-col-edge');
+                                        }
+                                        freezeCells.push(cell);
+                                    }
+                                    for (var hc = 0; hc < headerCells.length; hc++) {
+                                        rememberFreezeCell(headerCells[hc]);
+                                    }
+                                    for (var bc = 0; bc < bodyCells.length; bc++) {
+                                        rememberFreezeCell(bodyCells[bc]);
+                                    }
+                                    var top = 0;
+                                    headRows.forEach(function (tr) {
+                                        var band = window.asOnDateRowBand(tr);
+                                        var cells = tr.children;
+                                        for (var i = 0; i < cells.length; i++) {
+                                            cells[i].style.top = top + 'px';
+                                            window.asOnDateFillBackground(cells[i], headBg);
+                                        }
+                                        top += band;
+                                    });
+                                    var col0 = table.querySelector('[data-col-start="0"]');
+                                    var firstWidth = col0 ? col0.getBoundingClientRect().width : 0;
+                                    for (var s = 0; s < freezeCells.length; s++) {
+                                        var item = freezeCells[s];
+                                        var start = item.getAttribute('data-col-start');
+                                        item.style.left = start === '0' ? '0px' : firstWidth + 'px';
+                                        var inBody = item.parentElement && item.parentElement.parentElement
+                                            && item.parentElement.parentElement.tagName !== 'THEAD';
+                                        window.asOnDateFillBackground(item, inBody ? '#ffffff' : headBg);
+                                    }
+                                };
+                                window.asOnDateRowBand = function (tr) {
+                                    var height = 0;
+                                    var cells = tr.children;
+                                    for (var i = 0; i < cells.length; i++) {
+                                        if ((cells[i].rowSpan || 1) !== 1) {
+                                            continue;
+                                        }
+                                        var band = cells[i].getBoundingClientRect().height;
+                                        if (band > 0 && (height === 0 || band < height)) {
+                                            height = band;
+                                        }
+                                    }
+                                    if (!height) {
+                                        height = tr.getBoundingClientRect().height;
+                                    }
+                                    return height;
+                                };
+                                window.asOnDateFillBackground = function (cell, fallback) {
+                                    var bg = window.getComputedStyle(cell).backgroundColor;
+                                    if (window.asOnDateClearColor(bg) && cell.parentElement) {
+                                        bg = window.getComputedStyle(cell.parentElement).backgroundColor;
+                                    }
+                                    if (window.asOnDateClearColor(bg)) {
+                                        bg = fallback;
+                                    }
+                                    cell.style.backgroundColor = bg;
+                                };
+                                window.asOnDateClearColor = function (color) {
+                                    return !color || color === 'transparent' || color === 'rgba(0, 0, 0, 0)';
+                                };
+                                window.scheduleAsOnDateFreeze = function () {
+                                    window.freezeAsOnDateReport();
+                                    window.requestAnimationFrame(function () {
+                                        window.freezeAsOnDateReport();
+                                    });
+                                };
                                 if (document.readyState === 'loading') {
-                                    document.addEventListener('DOMContentLoaded', window.initAsOnDatePicker);
+                                    document.addEventListener('DOMContentLoaded', function () {
+                                        window.initAsOnDatePicker();
+                                        window.scheduleAsOnDateFreeze();
+                                    });
                                 } else {
                                     window.initAsOnDatePicker();
+                                    window.scheduleAsOnDateFreeze();
+                                }
+                                if (window._asOnDateFreezeResize) {
+                                    window.removeEventListener('resize', window._asOnDateFreezeResize);
+                                }
+                                window._asOnDateFreezeResize = function () {
+                                    window.scheduleAsOnDateFreeze();
+                                };
+                                window.addEventListener('resize', window._asOnDateFreezeResize);
+                                if (!window._asOnDateFreezeHtmx) {
+                                    window._asOnDateFreezeHtmx = true;
+                                    document.body.addEventListener('htmx:afterSettle', function (evt) {
+                                        var target = evt.detail && evt.detail.target;
+                                        if (!target || !window.scheduleAsOnDateFreeze) {
+                                            return;
+                                        }
+                                        if (target.id === 'content' || (target.querySelector && target.querySelector('#asOnDateReport'))) {
+                                            if (document.getElementById('asOnDateReport')) {
+                                                window.scheduleAsOnDateFreeze();
+                                            }
+                                        }
+                                    });
                                 }
                             </script>
                         </div>

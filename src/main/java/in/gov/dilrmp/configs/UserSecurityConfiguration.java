@@ -108,6 +108,8 @@ public class UserSecurityConfiguration {
                                                 .hasRole("IGR")
                                                 .requestMatchers("/dolr/state-profile-word/**")
                                                 .hasRole("DOLR")
+                                                .requestMatchers("/dolr/add-new-district", "/dolr/add-new-district/**")
+                                                .hasAnyRole("DOLR","ADMIN")
                                                 .requestMatchers("/state/state-profile-word/**")
                                                 .denyAll()
                                                 .requestMatchers("/dolr/**")

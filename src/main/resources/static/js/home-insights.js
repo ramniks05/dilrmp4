@@ -95,6 +95,40 @@
         host('hp-matrix').innerHTML = '<table><thead>' + head + '</thead><tbody>' + rows + '</tbody></table>';
     }
 
+    var RING_LENGTH = 113.1;
+
+    function setGlanceRing(ring, percent) {
+        var p = Math.max(0, Math.min(100, num(percent)));
+        var bar = ring.querySelector('.hp-ring__bar');
+        if (bar) { bar.style.strokeDasharray = (p / 100 * RING_LENGTH).toFixed(2) + ' ' + RING_LENGTH; }
+        var label = ring.querySelector('b');
+        if (label) { label.textContent = p.toFixed(1) + '%'; }
+        ring.setAttribute('title', p.toFixed(2) + '%');
+    }
+
+    /** Survey / Re-survey in Progress at a Glance uses the Milestones completion series. */
+    function renderSurveyGlance(survey, leaders) {
+        var valueEl = host('hp-survey-glance-value');
+        var ring = host('hp-survey-glance-ring');
+        var sub = host('hp-survey-glance-sub');
+        if (!valueEl || !ring) { return; }
+        var leader = null;
+        (leaders || []).forEach(function (l) { if (l.key === 'survey') { leader = l; } });
+        if (!survey || !leader) {
+            valueEl.removeAttribute('data-skeleton');
+            valueEl.textContent = '-';
+            return;
+        }
+        valueEl.removeAttribute('data-skeleton');
+        valueEl.textContent = indian(survey.completedVillages);
+        var percent = leader.national != null ? leader.national : survey.completedPercent;
+        setGlanceRing(ring, percent);
+        if (sub) {
+            var complete = (leader.complete || []).length;
+            sub.textContent = 'Villages with survey completed \u00b7 ' + complete + ' States/UTs complete';
+        }
+    }
+
     function renderSurvey(survey) {
         if (!survey || !survey.stages) { unavailable('hp-funnel'); unavailable('hp-area'); return; }
         var top = Math.max.apply(null, survey.stages.map(function (s) { return num(s.villages); }).concat([1]));
@@ -330,6 +364,7 @@
                 renderChain(data.chain);
                 renderServices(data.services);
                 renderSurvey(data.survey);
+                renderSurveyGlance(data.survey, data.leaders);
                 renderWomen(data.women);
                 renderModernisation(data.modernisation);
                 renderLeaders(data.leaders);
@@ -339,6 +374,7 @@
             })
             .fail(function () {
                 ['hp-chain', 'hp-services', 'hp-funnel', 'hp-area', 'hp-modern', 'hp-leaders', 'hp-trend', 'hp-fresh', 'hp-safe'].forEach(unavailable);
+                renderSurveyGlance(null, null);
             });
     }
 

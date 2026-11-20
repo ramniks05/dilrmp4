@@ -1,0 +1,132 @@
+<div th:fragment="prayas-darpan-log">
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-info">
+                        <div class="card-header">
+                            <h3 class="card-title" style="font-size: 1.125rem">
+                                PRAYAS Push Log (DARPAN)
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-muted mb-2">
+                                Live MIS indicators are pushed to PRAYAS / DARPAN automatically on the
+                                <strong>1st of every month at 06:00</strong>. Use this screen to confirm whether
+                                a push succeeded, and to run a manual push if needed.
+                            </p>
+                            <p class="text-muted small mb-3">
+                                Project code: <span th:text="${projectCode}">10086</span>
+                                · Frequency: Monthly (<span th:text="${frequencyId}">1</span>)
+                                · Push enabled:
+                                <span th:text="${pushEnabled} ? 'Yes' : 'No'">Yes</span>
+                            </p>
+
+                            <div class="mb-3">
+                                <button type="button" id="prayasDarpanPushNow" class="btn btn-primary"
+                                        th:disabled="${!pushEnabled}">
+                                    Push data now
+                                </button>
+                                <button type="button" id="prayasDarpanRefresh" class="btn btn-secondary ml-2">
+                                    Refresh log
+                                </button>
+                            </div>
+
+                            <div id="prayasDarpanMessage" class="mb-3"></div>
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-sm" id="prayasDarpanLogTable">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th>S.No.</th>
+                                        <th>Request start</th>
+                                        <th>Request end</th>
+                                        <th>Trigger</th>
+                                        <th>Data date from</th>
+                                        <th>Data date to</th>
+                                        <th>Status</th>
+                                        <th>Code</th>
+                                        <th class="text-left">Message</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:if="${#lists.isEmpty(logs)}">
+                                        <td colspan="9" class="text-center text-muted">
+                                            No push attempts logged yet. Use “Push data now” or wait for the monthly job.
+                                        </td>
+                                    </tr>
+                                    <tr th:each="log, stat : ${logs}">
+                                        <td th:text="${stat.count}">1</td>
+                                        <td th:text="${log.reqStartDt != null ? #temporals.format(log.reqStartDt, 'dd-MM-yyyy HH:mm:ss') : '-'}">-</td>
+                                        <td th:text="${log.reqEndDt != null ? #temporals.format(log.reqEndDt, 'dd-MM-yyyy HH:mm:ss') : '-'}">-</td>
+                                        <td th:text="${log.triggerSource != null ? log.triggerSource : '-'}">-</td>
+                                        <td th:text="${log.datadtFrom != null ? #temporals.format(log.datadtFrom, 'dd-MM-yyyy') : '-'}">-</td>
+                                        <td th:text="${log.datadtTo != null ? #temporals.format(log.datadtTo, 'dd-MM-yyyy') : '-'}">-</td>
+                                        <td>
+                                            <span th:if="${log.status != null and log.status == 1}" class="badge badge-success">Success</span>
+                                            <span th:if="${log.status == null or log.status != 1}" class="badge badge-danger">Failed</span>
+                                        </td>
+                                        <td th:text="${log.errorCode != null ? log.errorCode : '-'}">-</td>
+                                        <td class="text-left" th:text="${log.msg != null ? log.msg : '-'}">-</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        (function () {
+            function showMessage(type, message) {
+                var box = document.getElementById("prayasDarpanMessage");
+                if (!box) return;
+                box.innerHTML = '<div class="alert alert-' + type + ' mb-0">' + message + '</div>';
+            }
+
+            function refreshPage() {
+                if (window.htmx) {
+                    htmx.ajax("GET", "/dolr/prayas-darpan", "#content");
+                } else {
+                    window.location.reload();
+                }
+            }
+
+            var pushBtn = document.getElementById("prayasDarpanPushNow");
+            if (pushBtn) {
+                pushBtn.addEventListener("click", function () {
+                    if (!confirm("Push live PRAYAS indicators to DARPAN now?")) {
+                        return;
+                    }
+                    showMessage("info", "Pushing to DARPAN, please wait...");
+                    pushBtn.disabled = true;
+                    fetch("/dolr/prayas-darpan/push", {
+                        method: "POST",
+                        headers: {"Accept": "application/json"}
+                    }).then(function (r) {
+                        return r.json().then(function (body) {
+                            return {ok: r.ok, body: body};
+                        });
+                    }).then(function (res) {
+                        var body = res.body || {};
+                        var msg = body.message || (res.ok ? "Push finished." : "Push failed.");
+                        showMessage(body.status === "success" ? "success"
+                            : (body.status === "partial" ? "warning" : "danger"), msg);
+                        setTimeout(refreshPage, 1200);
+                    }).catch(function () {
+                        showMessage("danger", "Push request failed. Please try again.");
+                        pushBtn.disabled = false;
+                    });
+                });
+            }
+
+            var refreshBtn = document.getElementById("prayasDarpanRefresh");
+            if (refreshBtn) {
+                refreshBtn.addEventListener("click", refreshPage);
+            }
+        })();
+    </script>
+</div>

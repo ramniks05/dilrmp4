@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,12 +39,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 
+import in.gov.dilrmp.models.user.Role;
 import in.gov.dilrmp.models.user.User;
 import in.gov.dilrmp.models.user.UserProfile;
 import in.gov.dilrmp.repositories.user.UserRepositry;
 import in.gov.dilrmp.services.user.UserProfileService;
 import in.gov.dilrmp.services.user.UserService;
 import in.gov.dilrmp.utils.LoogedInUserUtility;
+import in.gov.dilrmp.utils.UserUtility;
 
 
 @Controller
@@ -60,6 +63,9 @@ public class UserProfileController {
 
     @Autowired
     StateService stateService;
+
+    @Autowired
+    DistrictService districtService;
 
     @Autowired
     UserLoginHistoryService userLoginHistoryService;
@@ -435,34 +441,60 @@ public class UserProfileController {
     @PostMapping("/reset-password")
     public ResponseEntity<String> resetPassword(@RequestParam String userName) {
         try {
-            // Check if the user exists
-            boolean exists = userService.doesUserNameExist(userName);
-
-            // If the user does not exist, log the event and return an error response
-            if (!exists) {
-                logger.warn("Attempt to reset password for non-existing user: {}", userName);
+            if (userName == null || userName.isBlank()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User name is required.");
+            }
+            String trimmedUserName = userName.trim();
+            Optional<User> userOptional = userService.findUserName(trimmedUserName);
+            if (userOptional.isEmpty()) {
+                logger.warn("Attempt to reset password for non-existing user: {}", trimmedUserName);
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
             }
 
-            // Use a hardcoded hashed password (for example purposes)
-            String hashedPassword = "633eca23d39973d68da8af63962fba9ac2f9aa19920920e9977387d2851b3bdf";
+            User user = userOptional.get();
+            Integer lgdCode = resolveLgdCode(user);
+            if (Role.USER_ROLE_STATE.equals(user.getRoleId()) && lgdCode == null) {
+                logger.warn("LGD code missing for state user: {}", trimmedUserName);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("LGD code was not found for this state user.");
+            }
 
-            // Call the service to update the password in the database
-            boolean success = userService.resetPassword(userName, hashedPassword);
+            String plainPassword = UserUtility.generateResetPassword(user.getUserName(), user.getRoleId(), lgdCode);
+            if (plainPassword == null) {
+                logger.warn("No default password rule for user {} with role {}", trimmedUserName, user.getRoleId());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("A default password cannot be generated for this user role.");
+            }
+
+            String hashedPassword = SecurityUtils.hashWithSHA256(plainPassword);
+            boolean success = userService.resetPassword(user.getUserName(), hashedPassword);
 
             if (success) {
-                logger.info("Password reset successfully for user: {}", userName);
-                return ResponseEntity.ok("Password reset successfully with default password( Dolr$wE3Q@1A3 )");
+                logger.info("Password reset successfully for user: {}", trimmedUserName);
+                return ResponseEntity.ok("Password reset successfully with default password ( " + plainPassword + " )");
             } else {
-                logger.error("Failed to reset password for user: {}", userName);
+                logger.error("Failed to reset password for user: {}", trimmedUserName);
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to reset password.");
             }
         } catch (Exception e) {
-            // Log the exception
             logger.error("An error occurred while resetting the password for user: {}. Error: {}", userName, e.getMessage(), e);
-            // Return an internal server error response
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while resetting the password.");
         }
+    }
+
+    private Integer resolveLgdCode(User user) {
+        if (user == null || user.getId() == null || user.getRoleId() == null) {
+            return null;
+        }
+        if (Role.USER_ROLE_STATE.equals(user.getRoleId())) {
+            State state = stateService.findStateByUserID(user.getId());
+            return state == null ? null : state.getLgdCode();
+        }
+        if (Role.USER_ROLE_DISTRICT.equals(user.getRoleId())) {
+            District district = districtService.findDistrictByUserID(user.getId());
+            return district == null ? null : district.getLgdCode();
+        }
+        return null;
     }
 
 

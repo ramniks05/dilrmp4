@@ -30,6 +30,11 @@ public interface DistrictRepositry extends CrudRepository<District, Long> {
     @Query("SELECT s FROM District s order by s.name")
     List<District> districtlist();
 
+    @Query("SELECT d FROM District d WHERE d.lgdCode = :lgdCode")
+    List<District> findByLgdCode(@Param("lgdCode") Integer lgdCode);
+
+    @Query("SELECT d.id, d.name, d.lgdCode FROM District d WHERE d.state.id = :stateId ORDER BY d.name ASC")
+    List<Object[]> findOptionsByStateId(@Param("stateId") Long stateId);
 
 }
 

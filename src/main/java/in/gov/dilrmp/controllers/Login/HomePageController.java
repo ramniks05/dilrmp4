@@ -111,6 +111,11 @@ public class HomePageController {
 
 
 
+        return "pages/site/home";
+    }
+
+    @GetMapping("/dashboard")
+    public String nationalDashboard() {
         return "pages/site/home-preview";
     }
 

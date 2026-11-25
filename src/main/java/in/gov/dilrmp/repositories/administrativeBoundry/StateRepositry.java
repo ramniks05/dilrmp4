@@ -49,6 +49,9 @@ public interface StateRepositry extends CrudRepository<State, Long> {
     @Query("SELECT s FROM State s WHERE s.id = :userId")
     public State findStateByAdcUserID(@Param("userId") Long userId);
 
+    @Query("SELECT s FROM State s JOIN FETCH s.muser u WHERE u.roleId = :role ORDER BY s.name ASC")
+    List<State> findStatesWithUserByRole(@Param("role") String role);
+
 
 
 }

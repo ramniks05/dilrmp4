@@ -1,0 +1,476 @@
+<div th:fragment="add-new-district" class="mis-add-district">
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card card-info">
+                        <div class="card-header">
+                            <h3 class="card-title" id="districtFormTitle" style="font-size: 1.125rem">
+                                <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                                Add New District
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <button type="button" class="btn btn-primary btn-sm" id="districtModeAdd">Add New District</button>
+                                <button type="button" class="btn btn-outline-primary btn-sm" id="districtModeEdit">Edit District</button>
+                            </div>
+                            <p class="text-muted" id="districtFormHelp">
+                                Create a district and its district login. All fields are required.
+                                The login name is the district name, with the first letter uppercase, followed by the LGD Code.
+                                The default password is that login name plus @dolr (for example, ABC and 123 become username Abc123 and password Abc123@dolr).
+                            </p>
+
+                            <form id="addDistrictForm" novalidate autocomplete="off" th:attr="data-mode=${mode}">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="districtStateId">State <span style="color:red" aria-hidden="true">*</span></label>
+                                            <select id="districtStateId" name="stateId" class="form-control" required>
+                                                <option value="">Select State</option>
+                                                <option th:each="state : ${states}"
+                                                        th:value="${state.id}"
+                                                        th:text="${state.name}">
+                                                </option>
+                                            </select>
+                                            <small class="text-danger d-block" id="districtStateError" role="alert"></small>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6 d-none" id="districtPickerCol">
+                                        <div class="form-group">
+                                            <label for="districtPicker">District <span style="color:red" aria-hidden="true">*</span></label>
+                                            <select id="districtPicker" class="form-control">
+                                                <option value="">Select District</option>
+                                            </select>
+                                            <small class="text-muted">Choose the district to edit. Its login and password stay the same.</small>
+                                            <small class="text-danger d-block" id="districtPickerError" role="alert"></small>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="districtName">District Name <span style="color:red" aria-hidden="true">*</span></label>
+                                            <input type="text" id="districtName" name="districtName" class="form-control"
+                                                   maxlength="100" required autocomplete="off"
+                                                   placeholder="Enter the district name">
+                                            <small class="text-muted">3 to 100 characters. Letters and spaces only. Numbers and special characters are not allowed.</small>
+                                            <small class="text-danger d-block" id="districtNameError" role="alert"></small>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="districtLgdCode">LGD Code <span style="color:red" aria-hidden="true">*</span></label>
+                                            <input type="text" id="districtLgdCode" name="lgdCode" class="form-control"
+                                                   inputmode="numeric" maxlength="9" required autocomplete="off"
+                                                   placeholder="Enter the numeric LGD code">
+                                            <small class="text-danger d-block" id="districtLgdError" role="alert"></small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-3">
+                                    <button type="submit" class="btn btn-primary" id="addDistrictSubmit">
+                                        <i class="fas fa-save" aria-hidden="true"></i>
+                                        <span id="addDistrictSubmitLabel">Save District</span>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-primary" id="addDistrictReset">Clear</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script th:inline="javascript">
+        (function () {
+            var form = document.getElementById('addDistrictForm');
+            if (!form || form.getAttribute('data-bound') === 'true') {
+                return;
+            }
+            form.setAttribute('data-bound', 'true');
+
+            var saveUrl = /*[[@{/dolr/add-new-district}]]*/ '/dolr/add-new-district';
+            var updateUrl = /*[[@{/dolr/add-new-district/update}]]*/ '/dolr/add-new-district/update';
+            var checkUrl = /*[[@{/dolr/add-new-district/check-lgd}]]*/ '/dolr/add-new-district/check-lgd';
+            var districtsUrl = /*[[@{/dolr/add-new-district/districts}]]*/ '/dolr/add-new-district/districts';
+            var districtUrl = /*[[@{/dolr/add-new-district/district}]]*/ '/dolr/add-new-district/district';
+            var namePattern = /^(?=.{3,100}$)[A-Za-z]+(?: [A-Za-z]+)*$/;
+            var submitting = false;
+            var lgdTaken = false;
+            var mode = form.getAttribute('data-mode') === 'edit' ? 'edit' : 'add';
+
+            var stateField = document.getElementById('districtStateId');
+            var nameField = document.getElementById('districtName');
+            var lgdField = document.getElementById('districtLgdCode');
+            var districtField = document.getElementById('districtPicker');
+            var districtPickerCol = document.getElementById('districtPickerCol');
+            var submitButton = document.getElementById('addDistrictSubmit');
+            var submitLabel = document.getElementById('addDistrictSubmitLabel');
+            var formTitle = document.getElementById('districtFormTitle');
+            var formHelp = document.getElementById('districtFormHelp');
+
+            function setError(id, message) {
+                var el = document.getElementById(id);
+                if (el) {
+                    el.textContent = message || '';
+                }
+            }
+
+            function clearErrors() {
+                setError('districtStateError', '');
+                setError('districtPickerError', '');
+                setError('districtNameError', '');
+                setError('districtLgdError', '');
+            }
+
+            function editing() {
+                return mode === 'edit';
+            }
+
+            function selectedDistrictId() {
+                return editing() && districtField && districtField.value ? Number(districtField.value) : null;
+            }
+
+            function normalizeName(value) {
+                return (value || '').trim().replace(/\s+/g, ' ');
+            }
+
+            function lgdValue() {
+                return (lgdField.value || '').replace(/\D/g, '');
+            }
+
+            function validateFields() {
+                clearErrors();
+                var name = normalizeName(nameField.value);
+                var lgd = lgdValue();
+                var message = '';
+
+                if (!stateField.value) {
+                    message = 'Please select a State.';
+                    setError('districtStateError', message);
+                } else if (editing() && !districtField.value) {
+                    message = 'Please select a district to edit.';
+                    setError('districtPickerError', message);
+                } else if (!name) {
+                    message = 'District name is required.';
+                    setError('districtNameError', message);
+                } else if (!namePattern.test(name)) {
+                    message = 'Enter a district name of 3 to 100 characters. Use letters and spaces only. Numbers and special characters are not allowed.';
+                    setError('districtNameError', message);
+                } else if (!lgd) {
+                    message = 'LGD Code is required.';
+                    setError('districtLgdError', message);
+                } else if (!/^[1-9][0-9]{0,8}$/.test(lgd)) {
+                    message = 'Enter a valid numeric LGD Code.';
+                    setError('districtLgdError', message);
+                } else if (lgdTaken) {
+                    message = 'LGD Code already exists. Enter a unique LGD Code.';
+                    setError('districtLgdError', message);
+                }
+                return message;
+            }
+
+            function setBusy(busy) {
+                submitting = busy;
+                submitButton.disabled = busy;
+                submitLabel.textContent = busy ? 'Saving...' : (editing() ? 'Update District' : 'Save District');
+            }
+
+            function showError(message) {
+                Swal.fire({
+                    title: editing() ? 'Unable to update district' : 'Unable to add district',
+                    text: message || (editing()
+                        ? 'The district could not be updated. Please try again.'
+                        : 'The district could not be added. Please try again.'),
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+
+            function responseMessage(xhr, fallback) {
+                if (xhr && xhr.responseJSON && xhr.responseJSON.message) {
+                    return xhr.responseJSON.message;
+                }
+                if (xhr && xhr.status === 401) {
+                    return 'Your session has expired. Please log in again.';
+                }
+                return fallback;
+            }
+
+            function checkLgd(done) {
+                var lgd = lgdValue();
+                if (!/^[1-9][0-9]{0,8}$/.test(lgd)) {
+                    lgdTaken = false;
+                    if (done) {
+                        done(false);
+                    }
+                    return;
+                }
+                var checkData = { lgdCode: lgd };
+                var currentId = selectedDistrictId();
+                if (currentId) {
+                    checkData.districtId = currentId;
+                }
+                $.ajax({
+                    url: checkUrl,
+                    method: 'GET',
+                    data: checkData,
+                    dataType: 'json'
+                }).done(function (response) {
+                    lgdTaken = !!(response && response.exists);
+                    setError('districtLgdError', lgdTaken ? response.message : '');
+                    if (done) {
+                        done(lgdTaken);
+                    }
+                }).fail(function (xhr) {
+                    lgdTaken = false;
+                    var message = responseMessage(xhr, 'LGD Code could not be checked. Please try again.');
+                    setError('districtLgdError', message);
+                    if (done) {
+                        done(true);
+                    }
+                });
+            }
+
+            nameField.addEventListener('input', function () {
+                var start = nameField.selectionStart || 0;
+                var cleaned = nameField.value.replace(/[^A-Za-z ]/g, '');
+                if (nameField.value === cleaned) {
+                    setError('districtNameError', '');
+                    return;
+                }
+                var caret = nameField.value.slice(0, start).replace(/[^A-Za-z ]/g, '').length;
+                nameField.value = cleaned;
+                nameField.setSelectionRange(caret, caret);
+                setError('districtNameError', '');
+            });
+
+            lgdField.addEventListener('input', function () {
+                var digits = lgdValue();
+                if (lgdField.value !== digits) {
+                    lgdField.value = digits;
+                }
+                lgdTaken = false;
+                setError('districtLgdError', '');
+            });
+
+            lgdField.addEventListener('blur', function () {
+                var lgd = lgdValue();
+                if (!lgd) {
+                    return;
+                }
+                if (!/^[1-9][0-9]{0,8}$/.test(lgd)) {
+                    setError('districtLgdError', 'Enter a valid numeric LGD Code.');
+                    return;
+                }
+                checkLgd();
+            });
+
+            function fillDistrictOptions(rows, selectedId) {
+                districtField.innerHTML = '<option value="">Select District</option>';
+                (rows || []).forEach(function (row) {
+                    var option = document.createElement('option');
+                    option.value = row.id;
+                    option.textContent = row.name + (row.lgdCode ? ' (' + row.lgdCode + ')' : '');
+                    districtField.appendChild(option);
+                });
+                if (selectedId) {
+                    districtField.value = String(selectedId);
+                    districtField.dispatchEvent(new Event('change'));
+                }
+            }
+
+            function loadDistricts(stateId, selectedId) {
+                fillDistrictOptions([], null);
+                if (!stateId) {
+                    return;
+                }
+                $.ajax({
+                    url: districtsUrl,
+                    method: 'GET',
+                    data: { stateId: stateId },
+                    dataType: 'json'
+                }).done(function (rows) {
+                    fillDistrictOptions(rows, selectedId);
+                }).fail(function (xhr) {
+                    setError('districtPickerError', responseMessage(xhr, 'Districts could not be loaded. Please try again.'));
+                });
+            }
+
+            function applyMode(nextMode) {
+                mode = nextMode === 'edit' ? 'edit' : 'add';
+                form.setAttribute('data-mode', mode);
+                var editingNow = editing();
+                districtPickerCol.classList.toggle('d-none', !editingNow);
+                document.getElementById('districtModeAdd').className = editingNow
+                    ? 'btn btn-outline-primary btn-sm' : 'btn btn-primary btn-sm';
+                document.getElementById('districtModeEdit').className = editingNow
+                    ? 'btn btn-primary btn-sm' : 'btn btn-outline-primary btn-sm';
+                formTitle.innerHTML = editingNow
+                    ? '<i class="fas fa-edit" aria-hidden="true"></i> Edit District'
+                    : '<i class="fas fa-map-marker-alt" aria-hidden="true"></i> Add New District';
+                formHelp.textContent = editingNow
+                    ? 'Select a state and district, then update the name, LGD code, or state. The existing login username and password are not changed.'
+                    : 'Create a district and its district login. All fields are required. The login name is the district name, with the first letter uppercase, followed by the LGD Code. The default password is that login name plus @dolr (for example, ABC and 123 become username Abc123 and password Abc123@dolr).';
+                submitLabel.textContent = editingNow ? 'Update District' : 'Save District';
+                if (!editingNow) {
+                    fillDistrictOptions([], null);
+                } else if (stateField.value) {
+                    loadDistricts(stateField.value, districtField.value);
+                }
+            }
+
+            document.getElementById('districtModeAdd').addEventListener('click', function () {
+                if (submitting || mode === 'add') {
+                    return;
+                }
+                form.reset();
+                lgdTaken = false;
+                clearErrors();
+                applyMode('add');
+            });
+
+            document.getElementById('districtModeEdit').addEventListener('click', function () {
+                if (submitting || mode === 'edit') {
+                    return;
+                }
+                nameField.value = '';
+                lgdField.value = '';
+                lgdTaken = false;
+                clearErrors();
+                applyMode('edit');
+            });
+
+            stateField.addEventListener('change', function () {
+                if (!editing()) {
+                    return;
+                }
+                nameField.value = '';
+                lgdField.value = '';
+                lgdTaken = false;
+                setError('districtPickerError', '');
+                loadDistricts(stateField.value, null);
+            });
+
+            districtField.addEventListener('change', function () {
+                var id = districtField.value;
+                nameField.value = '';
+                lgdField.value = '';
+                lgdTaken = false;
+                clearErrors();
+                if (!id) {
+                    return;
+                }
+                $.ajax({
+                    url: districtUrl,
+                    method: 'GET',
+                    data: { id: id },
+                    dataType: 'json'
+                }).done(function (row) {
+                    nameField.value = row && row.districtName ? row.districtName : '';
+                    lgdField.value = row && row.lgdCode ? row.lgdCode : '';
+                }).fail(function (xhr) {
+                    setError('districtPickerError', responseMessage(xhr, 'The district could not be loaded. Please try again.'));
+                });
+            });
+
+            document.getElementById('addDistrictReset').addEventListener('click', function () {
+                if (submitting) {
+                    return;
+                }
+                form.reset();
+                lgdTaken = false;
+                clearErrors();
+                if (editing()) {
+                    fillDistrictOptions([], null);
+                }
+            });
+
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+                if (submitting) {
+                    return;
+                }
+                var clientError = validateFields();
+                if (clientError) {
+                    showError(clientError);
+                    return;
+                }
+                setBusy(true);
+                checkLgd(function (blocked) {
+                    if (blocked) {
+                        setBusy(false);
+                        showError(document.getElementById('districtLgdError').textContent
+                            || 'LGD Code already exists. Enter a unique LGD Code.');
+                        return;
+                    }
+                    var payload = {
+                        stateId: Number(stateField.value),
+                        districtName: normalizeName(nameField.value),
+                        lgdCode: Number(lgdValue())
+                    };
+                    if (editing()) {
+                        payload.id = selectedDistrictId();
+                    }
+                    $.ajax({
+                        url: editing() ? updateUrl : saveUrl,
+                        method: 'POST',
+                        contentType: 'application/json',
+                        dataType: 'json',
+                        data: JSON.stringify(payload)
+                    }).done(function (response) {
+                        var name = response && response.districtName ? response.districtName : normalizeName(nameField.value);
+                        var lgd = response && response.lgdCode ? response.lgdCode : lgdValue();
+                        var userName = response && response.userName ? response.userName : '';
+                        var password = response && response.password ? response.password : '';
+                        var text = editing()
+                            ? 'District ' + name + ' with LGD Code ' + lgd + ' has been updated.'
+                            : 'District ' + name + ' with LGD Code ' + lgd + ' has been added.';
+                        if (!editing() && userName) {
+                            text += ' Login username: ' + userName + '.';
+                        }
+                        if (!editing() && password) {
+                            text += ' Default password: ' + password + '.';
+                        }
+                        if (editing()) {
+                            text += ' The district login and password were not changed.';
+                        }
+                        Swal.fire({
+                            title: editing() ? 'District updated' : 'District added',
+                            text: text,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        });
+                        var keepState = stateField.value;
+                        var keepDistrict = editing() ? selectedDistrictId() : null;
+                        form.reset();
+                        lgdTaken = false;
+                        clearErrors();
+                        if (editing()) {
+                            stateField.value = keepState;
+                            loadDistricts(keepState, keepDistrict);
+                        }
+                    }).fail(function (xhr) {
+                        var message = responseMessage(xhr, editing()
+                            ? 'The district could not be updated. Please try again.'
+                            : 'The district could not be added. Please try again.');
+                        if (xhr && xhr.responseJSON && xhr.responseJSON.message
+                                && xhr.responseJSON.message.toLowerCase().indexOf('lgd') !== -1) {
+                            setError('districtLgdError', message);
+                            lgdTaken = true;
+                        }
+                        showError(message);
+                    }).always(function () {
+                        setBusy(false);
+                    });
+                });
+            });
+
+            applyMode(mode);
+        })();
+    </script>
+</div>

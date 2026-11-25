@@ -1,0 +1,143 @@
+<div th:fragment="admin-user-list">
+    <section class="content">
+        <div class="container-fluid">
+            <div class="card card-info">
+                <div class="card-header">
+                    <h3 class="card-title" style="font-size: 1.125rem">
+                        <i class="fas fa-users-cog" aria-hidden="true"></i>
+                        User Management
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row align-items-end mb-3">
+                        <div class="col-md-4">
+                            <label for="adminRole">User Role</label>
+                            <select id="adminRole" name="role" class="form-control"
+                                    hx-get="/userProfile/admin-user-list"
+                                    hx-target="#content"
+                                    hx-swap="innerHTML"
+                                    hx-push-url="false"
+                                    hx-trigger="change">
+                                <option value="ROLE_STATE" th:selected="${selectedRole == 'ROLE_STATE'}">ROLE_STATE</option>
+                                <option value="ROLE_DISTRICT" th:selected="${selectedRole == 'ROLE_DISTRICT'}">ROLE_DISTRICT</option>
+                                <option value="ROLE_IGR" th:selected="${selectedRole == 'ROLE_IGR'}">ROLE_IGR</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4" th:if="${stateRequired}">
+                            <label for="adminState">State</label>
+                            <select id="adminState" name="stateId" class="form-control"
+                                    hx-get="/userProfile/admin-user-list"
+                                    hx-target="#content"
+                                    hx-swap="innerHTML"
+                                    hx-push-url="false"
+                                    hx-trigger="change"
+                                    hx-include="#adminRole">
+                                <option value="">Select State</option>
+                                <option th:each="state : ${states}"
+                                        th:value="${state.id}"
+                                        th:text="${state.name}"
+                                        th:selected="${selectedStateId != null and selectedStateId == state.id}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 text-md-right mt-3 mt-md-0">
+                            <a th:if="${!awaitingState}"
+                               class="btn btn-danger mb-2"
+                               th:href="@{/userProfile/admin-user-list/pdf(role=${selectedRole}, stateId=${selectedStateId})}">
+                                <i class="fas fa-file-pdf" aria-hidden="true"></i>
+                                Download PDF
+                            </a>
+                            <a th:if="${selectedRole == 'ROLE_STATE'}"
+                               class="btn btn-primary mb-2 ml-md-2"
+                               th:href="@{/userProfile/admin-user-list/zip}">
+                                <i class="fas fa-file-archive" aria-hidden="true"></i>
+                                Download All Users ZIP
+                            </a>
+                        </div>
+                    </div>
+
+                    <p class="text-muted" th:if="${awaitingState}">
+                        Select a state to view the user list.
+                    </p>
+                    <p class="text-muted" th:if="${!awaitingState and selectedRole == 'ROLE_STATE'}">
+                        All State users
+                    </p>
+                    <p class="text-muted" th:if="${!awaitingState and stateRequired and selectedStateName != ''}">
+                        <span th:text="${selectedRole}">ROLE</span>
+                        users for
+                        <span th:text="${selectedStateName}">State</span>
+                    </p>
+
+                    <div class="table-responsive" th:if="${!awaitingState}">
+                        <table id="adminUserTable" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>S.No.</th>
+                                    <th>Username</th>
+                                    <th>State/UT</th>
+                                    <th th:if="${selectedRole == 'ROLE_DISTRICT'}">District Name</th>
+                                    <th>LGD Code</th>
+                                    <th>Account Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="user, stat : ${users}">
+                                    <td th:text="${stat.count}">1</td>
+                                    <td th:text="${user.username}">username</td>
+                                    <td th:text="${user.stateName}">State</td>
+                                    <td th:if="${selectedRole == 'ROLE_DISTRICT'}" th:text="${user.districtName}">-</td>
+                                    <td th:text="${user.lgdCode}">0</td>
+                                    <td th:text="${user.accountStatus}">Active</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <script th:inline="none">
+                            (function () {
+                                function initAdminUserTable() {
+                                    if (!window.jQuery || !jQuery.fn.DataTable) {
+                                        return;
+                                    }
+                                    var table = jQuery('#adminUserTable');
+                                    if (!table.length) {
+                                        return;
+                                    }
+                                    if (jQuery.fn.DataTable.isDataTable(table)) {
+                                        table.DataTable().destroy();
+                                    }
+                                    table.DataTable({
+                                        paging: false,
+                                        searching: true,
+                                        ordering: true,
+                                        info: false,
+                                        order: [[1, 'asc']],
+                                        columnDefs: [
+                                            { orderable: false, targets: 0 }
+                                        ],
+                                        language: {
+                                            search: "Search:",
+                                            lengthMenu: "Display _MENU_ records per page",
+                                            emptyTable: "No users found.",
+                                            zeroRecords: "No matching users found."
+                                        },
+                                        drawCallback: function () {
+                                            var api = this.api();
+                                            var start = api.page.info().start;
+                                            api.column(0, { page: 'current' }).nodes().each(function (cell, i) {
+                                                cell.innerHTML = start + i + 1;
+                                            });
+                                        }
+                                    });
+                                }
+                                if (document.readyState === 'loading') {
+                                    document.addEventListener('DOMContentLoaded', initAdminUserTable);
+                                } else {
+                                    initAdminUserTable();
+                                }
+                            })();
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

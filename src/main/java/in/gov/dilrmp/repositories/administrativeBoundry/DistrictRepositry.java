@@ -36,5 +36,11 @@ public interface DistrictRepositry extends CrudRepository<District, Long> {
     @Query("SELECT d.id, d.name, d.lgdCode FROM District d WHERE d.state.id = :stateId ORDER BY d.name ASC")
     List<Object[]> findOptionsByStateId(@Param("stateId") Long stateId);
 
+    @Query("SELECT d FROM District d JOIN FETCH d.muser u JOIN FETCH d.state s WHERE u.roleId = :role AND s.id = :stateId ORDER BY d.name ASC")
+    List<District> findDistrictUsersByStateAndRole(@Param("role") String role, @Param("stateId") Long stateId);
+
+    @Query("SELECT d FROM District d JOIN FETCH d.muser u JOIN FETCH d.state s WHERE u.roleId = :role ORDER BY s.name ASC, d.name ASC")
+    List<District> findDistrictUsersByRole(@Param("role") String role);
+
 }
 
